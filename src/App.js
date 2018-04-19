@@ -22,7 +22,8 @@ class App extends Component {
 		super(props);
 
 		this.state = {
-			width: window.innerWidth
+			width: window.innerWidth,
+			res: "low-img"
 		};
 	}
 	updateWidth() {
@@ -39,7 +40,11 @@ class App extends Component {
 			throttle(this.updateWidth.bind(this), 1000)
 		);
 		this.routeFix();
-		swal();
+		let my_image = new Image();
+		my_image.src = "/img/iss-master.jpg";
+		this.setState({
+			res: "high-img"
+		});
 	}
 	routeFix = () => {
 		if (/\/login/.test(window.location.pathname)) {
@@ -108,12 +113,19 @@ class App extends Component {
 				<Route
 					exact
 					path="/login"
-					component={props => <Portal {...props} />}
+					component={props => (
+						<div id="entry-portal" className={`${this.state.res}`}>
+							<Portal {...props} />
+						</div>
+					)}
 				/>
 				<Route
 					path="/app"
 					component={props => (
-						<div className="wrapper" id="main-layout">
+						<div
+							className={`wrapper ${this.state.res}`}
+							id="main-layout"
+						>
 							{this.state.width >= 768 ? (
 								<DesktopLayout {...props} />
 							) : (

@@ -162,36 +162,34 @@ export default class EntryPortal extends Component {
 	};
 	render() {
 		return (
-			<div className="wrapper" id="entry-portal">
-				<div id="portal-wrapper">
-					<div id="portal-header">
-						<img
-							src="https://s3.us-east-2.amazonaws.com/athares-images/Athares-logo-small-white.png"
-							id="portal-logo"
-							alt="logo"
-						/>
-						<img
-							src="https://s3.us-east-2.amazonaws.com/athares-images/Athares-full-small-white.png"
-							id="portal-brand"
-							alt="brand"
-						/>
-					</div>
-					{this.state.loginVisible ? (
-						<Login
-							login={this.state.login}
-							updateInfo={this.updateLoginInfo}
-							togglePortal={this.togglePortal}
-							tryLogin={this.tryLogin}
-						/>
-					) : (
-						<Register
-							register={this.state.register}
-							updateInfo={this.updateRegisterInfo}
-							togglePortal={this.togglePortal}
-							tryRegister={this.tryRegister}
-						/>
-					)}
+			<div id="portal-wrapper">
+				<div id="portal-header">
+					<img
+						src="https://s3.us-east-2.amazonaws.com/athares-images/Athares-logo-small-white.png"
+						id="portal-logo"
+						alt="logo"
+					/>
+					<img
+						src="https://s3.us-east-2.amazonaws.com/athares-images/Athares-full-small-white.png"
+						id="portal-brand"
+						alt="brand"
+					/>
 				</div>
+				{this.state.loginVisible ? (
+					<Login
+						login={this.state.login}
+						updateInfo={this.updateLoginInfo}
+						togglePortal={this.togglePortal}
+						tryLogin={this.tryLogin}
+					/>
+				) : (
+					<Register
+						register={this.state.register}
+						updateInfo={this.updateRegisterInfo}
+						togglePortal={this.togglePortal}
+						tryRegister={this.tryRegister}
+					/>
+				)}
 			</div>
 		);
 	}

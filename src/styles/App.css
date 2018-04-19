@@ -70,7 +70,6 @@ a:focus,
 a:active {
   font-family: "Avenir", sans-serif;
   outline: none;
-  background: none;
 }
 /* remember to define focus styles! */
 :focus {
@@ -117,8 +116,7 @@ input[type="search"],
   justify-content: flex-start;
   z-index: 1;
 }
-#entry-portal::before,
-#main-layout::before {
+.high-img::before {
   height: 100vh;
   width: 100vw;
   margin: 0;
@@ -126,12 +124,25 @@ input[type="search"],
   content: " ";
   top: 0;
   left: 0;
-  background: url(https://s3.us-east-2.amazonaws.com/athares-images/iss-master.jpg)
-    center no-repeat;
+  background: url(/img/iss-master.jpg) center no-repeat;
   background-size: cover;
   opacity: 0.8;
   z-index: -1;
-  /*filter: blur(2px);*/
+  transform: scale(1.1);
+}
+.low-img::before {
+  height: 100vh;
+  width: 100vw;
+  margin: 0;
+  position: absolute;
+  content: " ";
+  top: 0;
+  left: 0;
+  background: url(/img/iss-low.jpg) center no-repeat;
+  background-size: cover;
+  opacity: 0.8;
+  z-index: -1;
+  filter: saturate(8%);
   transform: scale(1.1);
 }
 #portal-login,
@@ -879,8 +890,7 @@ input[type="search"],
   content: "";
   position: absolute;
   z-index: -1;
-  background: url(https://s3.us-east-2.amazonaws.com/athares-images/particle-trails.jpg)
-    center no-repeat;
+  background: url(/img/particle-trails.jpg) center no-repeat;
   background-size: cover;
   height: 100%;
   width: 100%;
@@ -953,8 +963,7 @@ input[type="search"],
   right: 0;
   height: 100vh;
   width: 100vw;
-  background: url(https://s3.us-east-2.amazonaws.com/athares-images/call-to-action.jpg)
-    center no-repeat;
+  background: url(/img/call-to-action.jpg) center no-repeat;
   background-size: cover;
 }
 .timeline-point::before {
@@ -1135,8 +1144,7 @@ a:visited {
   height: 10em;
 }
 .loader:before {
-  background: url(https://s3.us-east-2.amazonaws.com/athares-images/Athares-logo-small-white.png)
-    center no-repeat;
+  background: url(/img/Athares-logo-small-white.png) center no-repeat;
   position: fixed;
   content: "";
 }

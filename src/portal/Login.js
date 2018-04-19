@@ -48,7 +48,7 @@ export default class Login extends Component {
                 </div>
                 <button
                     id="login-button"
-                    className="f6 link dim br-pill ba bw1 ph3 pv2 mb2 dib black"
+                    className="f6 link dim br-pill ba bg-white bw1 ph3 pv2 mb2 dib black"
                     onClick={this.props.tryLogin}
                 >
                     LOGIN

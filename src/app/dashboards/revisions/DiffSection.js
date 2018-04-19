@@ -1,5 +1,5 @@
 import React from "react";
-import Diff from "react-stylable-diff";
+import Diff from "react-stylable-diff/dist";
 // import Diff from "react-stylable-diff/dist/react-diff.js";
 
 const DiffSection = ({ oldText, newText, mode }) => {
