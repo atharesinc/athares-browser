@@ -6261,6 +6261,14 @@ react-scroll-parallax@^1.3.3:
   dependencies:
     prop-types "^15.5.10"
 
+react-stylable-diff-common@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/react-stylable-diff-common/-/react-stylable-diff-common-1.0.0.tgz#aa1fc723c8948752351566d93e951f6a4a5b4313"
+  dependencies:
+    diff "^1.2.0"
+    prop-types "^15.6.0"
+    react "^16.0.0"
+
 react-stylable-diff@1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/react-stylable-diff/-/react-stylable-diff-1.0.1.tgz#db9fcf7243f32382cd4e14146a8ac47cc521817e"
@@ -6280,6 +6288,15 @@ react-transition-group@^1.2.0:
     loose-envify "^1.3.1"
     prop-types "^15.5.6"
     warning "^3.0.0"
+
+react@^16.0.0:
+  version "16.3.2"
+  resolved "https://registry.yarnpkg.com/react/-/react-16.3.2.tgz#fdc8420398533a1e58872f59091b272ce2f91ea9"
+  dependencies:
+    fbjs "^0.8.16"
+    loose-envify "^1.1.0"
+    object-assign "^4.1.1"
+    prop-types "^15.6.0"
 
 react@^16.3.1:
   version "16.3.1"

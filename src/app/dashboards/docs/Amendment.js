@@ -11,23 +11,6 @@ export default class Amendment extends React.Component {
 			text: this.props.text
 		};
 	}
-	// componentDidMount() {
-	// 	document
-	// 		.querySelector(".editableText")
-	// 		.addEventListener("keydown", insertTabAtCaret);
-	// }
-	// insertTabAtCaret = event => {
-	// 	if (event.keyCode === 9) {
-	// 		event.preventDefault();
-	// 		var range = window.getSelection().getRangeAt(0);
-
-	// 		var tabNode = document.createTextNode("\u00a0\u00a0\u00a0\u00a0");
-	// 		range.insertNode(tabNode);
-
-	// 		range.setStartAfter(tabNode);
-	// 		range.setEndAfter(tabNode);
-	// 	}
-	// };
 	cancel = () => {
 		this.setState({
 			editMode: false,
