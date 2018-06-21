@@ -3,6 +3,8 @@ import "tachyons";
 import "./styles/App.css";
 // import "sweetalert/dist/sweetalert.min.css";
 import "./styles/swaloverride.css";
+import 'react-perfect-scrollbar/dist/css/styles.css';
+
 import swal from "sweetalert";
 import { Switch, Route } from "react-router-dom";
 import SplashPage from "./splash/landing";

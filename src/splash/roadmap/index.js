@@ -5,7 +5,7 @@ import Footer from "../Footer";
 const Roadmap = props => {
 	return (
 		<div id="roadmap-wrapper" className="splash">
-			<Navbar />
+			<Navbar top={props.top}/>
 			<div className="ph3 ph5-ns pt6 sans-serif white">
 				<div className="center mw9">
 					<h3 className="f5 fw6 ttu tracke">
