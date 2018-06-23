@@ -20,7 +20,7 @@ const Nav = props => {
 					}}
 				>
 					<div className="grey-screen pb5 pb6-m pb6-l">
-						<Navbar {...props} />
+						<Navbar {...props} top={props.top}/>
 						<div className="tc-l pt6 ph3">
 							<h1 className="f1 f1-m lh-title mv0">
 								<span className="lh-copy white pa1 tracked-tight">

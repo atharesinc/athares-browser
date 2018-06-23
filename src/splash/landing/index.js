@@ -5,16 +5,27 @@ import Distributed from "./Distributed";
 import Illustration from "./Illustration";
 import Footer from "../Footer";
 import CallToAction from "./CallToAction";
+import PerfectScrollbar from 'react-perfect-scrollbar'
 
-const SplashPage = props => {
+class SplashPage extends React.Component {
+	state = {
+		top: 0
+	};
+	updateScroll = ({scrollTop}) => {
+		this.setState({top: scrollTop});
+	}
+	render(){
 	return (
+		<PerfectScrollbar
+		onScrollY={this.updateScroll}
+		>
 		<div className="splash">
 			{/*
 				<video autoPlay muted loop preload="true" id="splash-video">
 									<source src="./img/earth.mp4" type="video/mp4" />
 								</video> 
 			*/}
-			<Splash {...props} />
+			<Splash {...this.props} top={this.state.top}/>
 			<Body />
 			<div
 				className="w-100 bg-white"
@@ -36,7 +47,9 @@ const SplashPage = props => {
 			<CallToAction />
 			<Footer />
 		</div>
+		</PerfectScrollbar>
 	);
+}
 };
 
 export default SplashPage;

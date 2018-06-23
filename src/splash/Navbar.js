@@ -6,7 +6,7 @@ export default class Navbar extends Component {
 		window.addEventListener("scroll", this.animateBackground, true);
 	}
 	animateBackground = () => {
-		const h = document.getElementById("root").scrollTop;
+		const h = this.props.top;
 
 		document.getElementById("splash-nav").style.background =
 			h > 100 ? "#000000cc" : "transparent";

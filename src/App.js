@@ -2,6 +2,10 @@ import React, { Component } from "react";
 import "tachyons";
 import "./styles/App.css";
 import "./styles/swaloverride.css";
+import 'react-perfect-scrollbar/dist/css/styles.css';
+
+import swal from "sweetalert";
+
 import { Switch, Route } from "react-router-dom";
 import SplashPage from "./splash/landing";
 import Roadmap from "./splash/roadmap";
