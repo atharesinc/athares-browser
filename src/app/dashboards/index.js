@@ -1,5 +1,6 @@
 import React, { Component } from "react";
-import Chat from "./chat";
+import GroupChat from "./chat";
+import DM from "./dmChat";
 import createCircle from "./createCircle";
 import createChannel from "./createChannel";
 import createDM from "./createDM";
@@ -18,9 +19,10 @@ class Dashboards extends Component {
 			<Switch>
 				<Route
 					exact
-					path={`${match.path}/channel/:name`}
-					component={Chat}
+					path={`${match.path}/circle/:id/channel/:id`}
+					component={GroupChat}
 				/>
+				<Route exact path={`/app/channel/:id`} component={DM} />
 				<Route exact path={`${match.path}/`} component={Dashboard} />
 				<Route
 					exact

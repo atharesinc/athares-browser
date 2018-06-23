@@ -1,7 +1,12 @@
-import React from "react";
+import React, { Component } from "react";
 import ErrorSwap from "../../../utils/ErrorSwap";
+import { compose, graphql } from "react-apollo";
+import { createChannel } from "../../../graphql/mutations";
+import { getActiveCircle, checkIfNameUnique } from "../../../graphql/queries";
+import Loader from "../../Loader";
+import throttle from "lodash.throttle";
 
-class createChannel extends React.Component {
+class CreateChannel extends Component {
 	constructor(props) {
 		super(props);
 
@@ -12,42 +17,77 @@ class createChannel extends React.Component {
 		};
 	}
 	updateName = e => {
-		this.setState({
-			name: e.target.value.substring(0, 51)
-		});
+		const name = e.target.value.substring(0, 51);
+		this.setState(
+			{
+				name,
+				isTaken: false
+			},
+			() => {
+				this.props.checkIfNameUnique.refetch({
+					id: this.props.getActiveCircle.activeCircle.id,
+					name
+				});
+			}
+		);
 	};
 	updateDesc = e => {
 		this.setState({
 			description: e.target.value.substring(0, 301)
 		});
 	};
-	onSubmit = e => {
+	onSubmit = async e => {
 		e.preventDefault();
-		console.log(this.state);
+		console.log(this.state, this.props.getActiveCircle);
+
+		if (this.state.trim().length === 0) {
+			return false;
+		}
+
+		/* Check if doesn't exist */
+		if (this.props.checkIfNameUnique.Circle.channels.length !== 0) {
+			return false;
+		}
+
 		// validate & trim fields
 
-		// make sure name isnt taken
-		// const isTaken = channelNameInCircleTakenMutation({variables: {name: this.state.name}});
-		// if (isTaken) {
-		// 	this.setState({
-		// 		isTaken: true
-		// 	});
-		// 	return false;
-		// }
-
-		// create channel
-		// const channel = {
-		// 	variables: {name: this.state.name, description: this.state.description}
-		// };
-		// const res = createChannelMutation(channel);
-		// redirect to newly created channel dashboard
-	};
-	clearError = () => {
-		this.setState({
-			isTaken: false
+		/* create circle */
+		const res = await this.props.createChannel({
+			variables: {
+				name: this.state.name,
+				circleId: this.props.getActiveCircle.activeCircle.id,
+				description: this.state.description,
+				channelType: "group"
+			}
 		});
+		console.log(res);
+
+		this.props.history.push(
+			`/app/circle/${
+				this.props.getActiveCircle.activeCircle.id
+			}/channel/${res.data.createChannel.id}`
+		);
 	};
 	render() {
+		const { error, loading, activeCircle } = this.props.getActiveCircle;
+		if (this.state.loading || loading) {
+			return (
+				<div
+					id="dashboard-wrapper"
+					style={{
+						justifyContent: "center"
+					}}
+					className="pa2"
+				>
+					<Loader />
+					{this.state.loading && (
+						<h1 className="mb3 mt0 lh-title mt4 f3 f2-ns">
+							Creating Channel
+						</h1>
+					)}
+				</div>
+			);
+		}
 		return (
 			<div id="dashboard-wrapper">
 				<form
@@ -61,7 +101,7 @@ class createChannel extends React.Component {
 					<article className="cf">
 						<h1 className="mb3 mt0 lh-title">Create Channel</h1>
 						<time className="f7 ttu tracked white-80">
-							Create a new channel within this Circle
+							Create a new channel within {activeCircle.name}
 						</time>
 						<div className="fn mt4">
 							<div className="measure mb4">
@@ -78,7 +118,11 @@ class createChannel extends React.Component {
 									onChange={this.updateName}
 								/>
 								<ErrorSwap
-									condition={!this.state.isTaken}
+									condition={
+										!this.state.isTaken ||
+										this.props.checkIfNameUnique.Circle
+											.channels.length !== 0
+									}
 									normal={
 										<small
 											id="name-desc"
@@ -123,14 +167,14 @@ class createChannel extends React.Component {
 									id="comment-desc"
 									className="f6 white-80"
 								>
-									Describe channel in a few sentences.
+									Describe this channel.
 								</small>
 							</div>
 						</div>
 					</article>
 					<div id="comment-desc" className="f6 white-80">
 						By pressing "Create Channel" you will create a new
-						government with a the above nameand description. After
+						government with a the above name and description. After
 						this point, all changes must be made through the
 						democratic revision process.
 					</div>
@@ -147,4 +191,13 @@ class createChannel extends React.Component {
 	}
 }
 
-export default createChannel;
+export default compose(
+	graphql(createChannel, { name: "createChannel" }),
+	graphql(getActiveCircle, { name: "getActiveCircle" }),
+	graphql(checkIfNameUnique, {
+		name: "checkIfNameUnique",
+		options: ({ id, name }) => ({
+			variables: { id: id || "", name: name || "" }
+		})
+	})
+)(CreateChannel);

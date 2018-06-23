@@ -1,59 +1,63 @@
-import React from "react";
+import React, { Component } from "react";
 import Circle from "./Circle";
+import Loader from "../Loader";
+import { graphql, compose } from "react-apollo";
+import { getUserCircles, getActiveCircle } from "../../graphql/queries";
+import { setActiveCircle } from "../../graphql/mutations";
+import { withRouter } from "react-router-dom";
 
-const OtherCircles = ({ usersCircles = [] }) => {
-	return (
-		<div id="other-circles">
-			{circles.map(circle => (
-				<Circle key={circle.id} {...circle} activeCircle="ssdcsc" />
-			))}
-		</div>
-	);
-};
+class OtherCircles extends Component {
+    setActive = id => {
+        this.props.setActiveCircle({ variables: { id } });
+        this.props.history.push("/app/circle/" + id);
+    };
+    render() {
+        const { loading, allCircles, error } = this.props.getUserCircles;
+        if (loading) {
+            return (
+                <div id="other-circles">
+                    <Loader />
+                </div>
+            );
+        } else if (error) {
+            return (
+                <div id="other-circles">
+                    <div>Error</div>
+                </div>
+            );
+        } else if (allCircles.length !== 0) {
+            return (
+                <div id="other-circles">
+                    {allCircles.map(circle => (
+                        <Circle
+                            key={circle.id}
+                            {...circle}
+                            isActive={
+                                circle.id ===
+                                this.props.getActiveCircle.activeCircle.id
+                            }
+                            selectCircle={this.setActive}
+                        />
+                    ))}
+                </div>
+            );
+        } else {
+            return <div id="other-circles" />;
+        }
+    }
+}
 
-export default OtherCircles;
+const OtherCirclesWithRouter = withRouter(OtherCircles);
 
-const circles = [
-	{
-		id: "ds78g6d97gs",
-		name: "Free People of Mars",
-		icon:
-			"https://s3.us-east-2.amazonaws.com/athares-images/Athares-logo-small-white.png"
-	},
-	{
-		id: "sd87fg69s87df",
-		name: "Free People of Mars",
-		icon:
-			"https://s3.us-east-2.amazonaws.com/athares-images/Athares-logo-small-white.png"
-	},
-	{
-		id: "s47d6f5g",
-		name: "Free People of Mars",
-		icon:
-			"https://s3.us-east-2.amazonaws.com/athares-images/Athares-logo-small-white.png"
-	},
-	{
-		id: "09s8df0h9",
-		name: "Free People of Mars",
-		icon:
-			"https://s3.us-east-2.amazonaws.com/athares-images/Athares-logo-small-white.png"
-	},
-	{
-		id: "8sd76f5gs786df",
-		name: "Free People of Mars",
-		icon:
-			"https://s3.us-east-2.amazonaws.com/athares-images/Athares-logo-small-white.png"
-	},
-	{
-		id: "9s8df7g98d7f98g",
-		name: "Free People of Mars",
-		icon:
-			"https://s3.us-east-2.amazonaws.com/athares-images/Athares-logo-small-white.png"
-	},
-	{
-		id: "987df9g89d8",
-		name: "Free People of Mars",
-		icon:
-			"https://s3.us-east-2.amazonaws.com/athares-images/Athares-logo-small-white.png"
-	}
-];
+export default compose(
+    graphql(setActiveCircle, { name: "setActiveCircle" }),
+    graphql(getActiveCircle, { name: "getActiveCircle" }),
+    graphql(getUserCircles, {
+        name: "getUserCircles",
+        options: ({ userId }) => ({
+            variables: {
+                id: userId
+            }
+        })
+    })
+)(OtherCirclesWithRouter);

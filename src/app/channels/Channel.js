@@ -1,5 +1,5 @@
-import React from 'react';
-import ChannelLabel from './ChannelLabel';
+import React from "react";
+import ChannelLabel from "./ChannelLabel";
 
 /*
     Component representing a single channel or group of subchannels in a circle
@@ -21,10 +21,12 @@ import ChannelLabel from './ChannelLabel';
 */
 const Channel = ({ click, channel, activeChannel }) => {
     return (
-        <div className="channel-wrapper" data-channel-id={channel._id} onClick={click}>
-            <ChannelLabel {...channel} isTop={false} activeChannel={activeChannel} />
-        </div>
-    )
+        <ChannelLabel
+            {...channel}
+            isTop={false}
+            activeChannel={activeChannel}
+        />
+    );
 };
 
 export default Channel;

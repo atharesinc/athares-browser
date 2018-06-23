@@ -2,12 +2,7 @@ import React from "react";
 import FeatherIcon from "feather-icons-react";
 import { Link } from "react-router-dom";
 
-const BottomNav = props => {
-	const navigate = screen => {
-		console.log(screen);
-	};
-	const { show, activeTab } = props;
-
+const BottomNav = ({ show, activeTab, toggleMenu }) => {
 	return (
 		<div id="bottom-nav" style={{ display: show ? "none" : "flex" }}>
 			<Link className="bottom-nav-wrapper" to={"/app/circles"}>
@@ -28,7 +23,7 @@ const BottomNav = props => {
 					className={activeTab === "app" ? "black" : "black-60"}
 				/>
 			</Link>
-			<div className="bottom-nav-wrapper" onClick={props.toggleMenu}>
+			<div className="bottom-nav-wrapper" onClick={toggleMenu}>
 				<FeatherIcon
 					icon="user"
 					className={activeTab === "user" ? "black" : "black-60"}

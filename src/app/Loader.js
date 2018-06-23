@@ -5,7 +5,7 @@ const Loader = props => {
 		<div className="loader-wrapper">
 			<img
 				className="loader-img"
-				src="https://s3.us-east-2.amazonaws.com/athares-images/Athares-logo-small-white-no-circle.png"
+				src="/img/Athares-logo-small-white-no-circle.png"
 				alt="Loading"
 			/>
 			<div className="loader" />

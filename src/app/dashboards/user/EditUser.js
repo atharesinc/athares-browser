@@ -1,27 +1,30 @@
-import React from "react";
+import React, { Component } from "react";
 import ImageUpload from "../createCircle/imageUpload";
 import ErrorSwap from "../../../utils/ErrorSwap";
 import Phone from "react-phone-number-input";
 import "react-phone-number-input/rrui.css";
 import "react-phone-number-input/style.css";
 import { Link } from "react-router-dom";
+import { updateUser } from "../../../graphql/mutations";
+import { compose, graphql } from "react-apollo";
+import Loader from "../../Loader";
+import S3 from "aws-sdk/clients/s3";
+import keys from "../../../utils/aws-restricted-key";
+import swal from "sweetalert";
 
-export default class EditUser extends React.Component {
+class EditUser extends Component {
 	constructor(props) {
 		super(props);
-
 		this.state = {
-			// icon: "/img/user-default.png",
-			icon:
-				"https://s3.us-east-2.amazonaws.com/athares-images/erlich.jpg",
-			firstName: "Erlich",
-			lastName: "Bachman",
-			username: "erhlich.bachman.1",
-			phone: "+15551234567",
-			email: "erlich@avia.to",
+			id: this.props.user.id || "",
+			icon: this.props.user.icon || "",
+			phone: this.props.user.phone || "",
+			firstName: this.props.user.firstName || "",
+			lastName: this.props.user.lastName || "",
+			uname: this.props.user.uname || "",
 			phoneTaken: false,
-			emailTaken: false,
-			usernameTaken: false
+			unameTaken: false,
+			loading: false
 		};
 	}
 	changeImage = imageUrl => {
@@ -41,50 +44,100 @@ export default class EditUser extends React.Component {
 	};
 	updateUsername = e => {
 		this.setState({
-			username: e.target.value.substring(0, 100)
+			uname: e.target.value.substring(0, 100),
+			unameTaken: false
 		});
 	};
 	updatePhone = number => {
-		/* do we trim + off of beginning? */
 		this.setState({
-			phone: number
+			phone: number,
+			phoneTaken: false
 		});
 	};
-	updateEmail = e => {
-		this.setState({
-			email: e.target.value.substring(0, 100)
-		});
-	};
-	onSubmit = e => {
+	// updateEmail = e => {
+	// 	this.setState({
+	// 		email: e.target.value.substring(0, 100)
+	// 	});
+	// };
+	onSubmit = async e => {
 		e.preventDefault();
-		console.log(this.state);
-		// validate & trim fields
+		await this.setState({ loading: true });
 
-		// make sure name isnt taken
-		// const isTaken = circleNameTakenMutation({variables: {name: this.state.name}});
-		// if (isTaken) {
-		// 	this.setState({
-		// 		isTaken: true
-		// 	});
-		// 	return false;
-		// }
-		//upload image to AWS (propbably)
-		// const awsURL = uploadImage(this.icon);
-		// create circle
-		// const circle = {
-		// 	variables: {name: this.state.name, description: this.state.description, icon: awsURL}
-		// };
-		// const res = createCircleMutation(circle);
-		// redirect to new circle dashboard
+		try {
+			await this.uploadFile(this.state.id);
+		} catch (err) {
+			console.log(err.message);
+		}
+		this.setState({ loading: false, unameTaken: false });
+	};
+	uploadFile = async id => {
+		// Set credentials and region
+		var s3 = new S3({
+			apiVersion: "2006-03-01",
+			region: "us-east-2",
+			credentials: {
+				accessKeyId: keys.AccessKey,
+				secretAccessKey: keys.SecretAccessKey
+			},
+			logger: console
+		});
+
+		var params = {
+			Body: this.state.icon,
+			Bucket: "athares-images",
+			Key: id + ".jpg",
+			ACL: "public-read"
+		};
+
+		try {
+			await s3.upload(params, async (err, data) => {
+				if (err) {
+					console.log("An error occurred", err);
+					return false;
+				}
+				// updateUser with aws icon url
+				await this.props.updateUser({
+					variables: {
+						id: id,
+						icon: data.Location,
+						// email: this.state.email,
+						phone:
+							this.state.phone !== "" ? this.state.phone : null,
+						firstName: this.state.firstName,
+						lastName: this.state.lastName,
+						uname: this.state.uname
+					}
+				});
+				this.props.history.push(`/app/user`);
+				swal("User Updated", "Your changes have been saved", "success");
+			});
+		} catch (err) {
+			console.log(err);
+		}
 	};
 	clearError = () => {
 		this.setState({
 			phoneTaken: false,
-			emailTaken: false,
-			usernameTaken: false
+			unameTaken: false
 		});
 	};
 	render() {
+		if (this.state.loading) {
+			return (
+				<div
+					id="dashboard-wrapper"
+					style={{
+						justifyContent: "center"
+					}}
+					className="pa2"
+				>
+					<Loader />
+					<h1 className="mb3 mt0 lh-title mt4 f3 f2-ns">
+						Saving User Information
+					</h1>
+				</div>
+			);
+		}
 		return (
 			<div id="dashboard-wrapper">
 				<form
@@ -104,7 +157,7 @@ export default class EditUser extends React.Component {
 							}}
 						>
 							<Link
-								className="f6 link dim br-pill ba bw1 ph3 pv2 mh4-ns mh2 dib white"
+								className="f6 link dim br-pill ba bw1 ph3 pv2 ml4-ns ml2 dib white"
 								to="/app/user"
 							>
 								BACK
@@ -153,7 +206,7 @@ export default class EditUser extends React.Component {
 									</label>
 									<input
 										id="lastName"
-										className="input-reset ba pa2 mb2 db ghost w-90"
+										className="input-reset ba pa2 mb2 db ghost w-100"
 										type="text"
 										aria-describedby="edit-last-name"
 										required
@@ -167,12 +220,12 @@ export default class EditUser extends React.Component {
 									Phone Number
 								</label>
 								<Phone
-									placeholder="Please enter a phone number"
+									placeholder="+1 123 456 7890"
 									value={this.state.phone}
 									country="US"
 									inputClassName="db w-100 ghost pa2"
 									aria-describedby="name-desc"
-									required
+									displayInitialValueAsLocalNumber={true}
 									onChange={this.updatePhone}
 									nativeCountrySelect
 									className="mv2"
@@ -199,7 +252,7 @@ export default class EditUser extends React.Component {
 									}
 								/>
 							</div>
-							<div className="measure mb4">
+							{/*<div className="measure mb4">
 								<label htmlFor="email" className="f6 b db mb2">
 									Email Address
 								</label>
@@ -233,25 +286,22 @@ export default class EditUser extends React.Component {
 										</small>
 									}
 								/>
-							</div>
+							</div>*/}
 							<div className="measure mb4">
-								<label
-									htmlFor="username"
-									className="f6 b db mb2"
-								>
+								<label htmlFor="uname" className="f6 b db mb2">
 									Unique Name
 								</label>
 								<input
-									id="username"
+									id="uname"
 									className="input-reset ba pa2 mb2 db w-100 ghost"
 									type="text"
 									aria-describedby="name-desc"
-									required
-									value={this.state.username}
+									placeholder="firstname.lastname"
+									value={this.state.uname}
 									onChange={this.updateUsername}
 								/>
 								<ErrorSwap
-									condition={!this.state.usernameTaken}
+									condition={!this.state.unameTaken}
 									normal={
 										<small
 											id="name-desc"
@@ -288,3 +338,5 @@ export default class EditUser extends React.Component {
 		);
 	}
 }
+
+export default compose(graphql(updateUser, { name: "updateUser" }))(EditUser);

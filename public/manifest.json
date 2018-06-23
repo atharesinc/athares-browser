@@ -16,5 +16,10 @@
   "start_url": "./index.html",
   "display": "standalone",
   "theme_color": "#00DFFC",
-  "background_color": "#ffffff"
+  "background_color": "#00DFFC",
+  "lang": "en-US",
+  "start_url": "/login",
+  "orientation": "portrait",
+  "description":
+    "Athares lets you create and maintain organizations with equality."
 }

@@ -1,12 +1,11 @@
 import React from "react";
 import FeatherIcon from "feather-icons-react";
-import { Link } from "react-router-dom";
 
 const ViewUser = props => {
 	return (
 		<div id="dashboard-wrapper" style={{ overflowY: "scroll" }}>
 			<div className="particles-bg w-100 vignette shaded">
-				<header className="tc pv4" style={{ height: "12em" }}>
+				<header className="tc pv2 pv4-ns" style={{ height: "12em" }}>
 					<div
 						className="w-100 row-center"
 						style={{ justifyContent: "space-between" }}

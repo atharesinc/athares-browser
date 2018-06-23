@@ -45,8 +45,55 @@ Each version outlines features that the platform must have to meet this version
 
 #### 0.0.1
 
-*   Completed & Responsive UI Flow
+*   Complete & Responsive UI Flow
+
+#### 0.0.1.3 - IN PROGRESS
+
+*   Connected to GraphCool backend
+*   Added Login/Registration/Logout
+*   Click-around functional
+*   Fixed orientation issue on image upload for mobile
+*   PrivateRoute for /app
+*   Added 404 page
+*   Updated Login and Register page to use email
+*   Added validation to login/register portal
+*   Update User
+*   Create Circle
+*   Create Channel
+
+#### ToDo
+
+*   Update User
+*   Create Circle Validation
+*   Create Channel Validation
+*   Create DM
+    *   Pre-wrap text box
+*   Added Help page
+*   Dumbed down index
+*   Sign up for newsleter
+*   CSS transitions for routes & everything else
+*   Validate all input fields
+*   XSS sanitize all fields
+*   jslint (tabs -> spaces and such)
+*   Components -> PureComponents if necessary
+*   Pure Components -> Stateless if possible
+*   Error Components
+*   Style Loading Components
+*   Emoji support
+*   Reduce Mobile and DesktopLayout to 1 component?
+*   Server-side rendering
+*   Webworkers and PWA stuff
+    *   caching images
+    *   Request to be added to homescreen
+*   Subtle device rotation parallax
+*   404 page look good
+*   Code splitting (react-loadable etc.)
+*   Site news
+
+#### 0.1
+
+*   Basic functionality (MVP on Heroku)
 
 ## License
 
-This project is licensed under the Apache 2.0 License - see the [LICENSE.md](LICENSE.md) file for details
+This project is licensed under the Apache 2.0 License - see the [LICENSE](LICENSE) file for details

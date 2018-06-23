@@ -1,64 +1,85 @@
 import React, { Component } from "react";
 import ChannelGroup from "./ChannelGroup";
 import GovernanceChannelGroup from "./GovernanceChannelGroup";
+import { graphql, compose } from "react-apollo";
+import {
+    getActiveCircle,
+    getOneCircle,
+    getActiveChannel
+} from "../../graphql/queries";
+import Loader from "../Loader";
 
-// import Loader from "../Loader";
-
-// import { graphql, compose } from "react-apollo";
-// import gql from "graphql-tag";
-/*
-    Wrapper component for Channels and ChannelGroup.
-    Takes as props one activeCircleObject
-    {
-    _id: <String>,
-    name: <String>
-    }
-    Gets all channels belonging to this circle from graphql and renders them in respective groups
-    */
-export default class Channels extends Component {
+class Channels extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            channels: [],
-            showUserSelectModal: false
+            channels: []
         };
     }
+    componentDidMount() {
+        this.props.getOneCircle.refetch({
+            id: this.props.getActiveCircle.activeCircle.id
+        });
+    }
+    componentDidUpdate() {
+        this.props.getOneCircle.refetch({
+            id: this.props.getActiveCircle.activeCircle.id
+        });
+    }
     render() {
-        const channels = [];
+        const { error, loading, activeCircle } = this.props.getActiveCircle;
+        const { Circle } = this.props.getOneCircle;
+        const { activeChannel } = this.props.getActiveChannel;
 
-        return (
-            <div id="channels-wrapper">
-                <div id="circle-name">
-                    {"Mars"}
-                    <i className="mdi mdi-plus" id="circle-options" />
+        if (loading) {
+            return (
+                <div id="other-circles">
+                    <Loader />
                 </div>
-                <div id="channels-list">
-                    <GovernanceChannelGroup
-                        style={style.docs}
-                        name={"Governance"}
-                    />
-                    <ChannelGroup
-                        style={style.channels}
-                        channelType={"group"}
-                        activeChannel={this.props.activeChannel}
-                        name={"Channels"}
-                        channels={channels.filter(channel => {
-                            return channel.channelType !== "gov";
-                        })}
-                    />
-                    <ChannelGroup
-                        style={style.dm}
-                        channelType={"dm"}
-                        activeChannel={this.props.activeChannel}
-                        name={"Direct Messages"}
-                        channels={channels.filter(channel => {
-                            return channel.channelType === "dm";
-                        })}
-                    />
+            );
+        } else if (error) {
+            return (
+                <div id="other-circles">
+                    <div>Error</div>
                 </div>
-            </div>
-        );
+            );
+        } else if (Circle) {
+            return (
+                <div id="channels-wrapper">
+                    <div id="circle-name">
+                        {Circle.name}
+                        <i className="mdi mdi-plus" id="circle-options" />
+                    </div>
+                    <div id="channels-list">
+                        <GovernanceChannelGroup
+                            style={style.docs}
+                            name={"Governance"}
+                        />
+                        <ChannelGroup
+                            style={style.channels}
+                            channelType={"group"}
+                            activeChannel={activeChannel}
+                            name={"Channels"}
+                            channels={Circle.channels.filter(channel => {
+                                return channel.channelType === "group";
+                            })}
+                        />
+                        <ChannelGroup
+                            style={style.dm}
+                            channelType={"dm"}
+                            activeChannel={activeChannel}
+                            name={"Direct Messages"}
+                            channels={Circle.channels.filter(channel => {
+                                return channel.channelType === "dm";
+                            })}
+                        />
+                    </div>
+                </div>
+            );
+        } else {
+            return <div id="channels-wrapper" />;
+        }
     }
 }
 
@@ -74,77 +95,12 @@ const style = {
     }
 };
 
-// const getChannelsQuery = gql`
-//     query getChannelsQuery($circle_id: ID!) {
-//         getChannels(circle_id: $circle_id) {
-//             circle_id
-//             _id
-//             name
-//             description
-//             channelType
-//         }
-//     }
-// `;
+export default compose(
+    graphql(getActiveChannel, { name: "getActiveChannel" }),
 
-// const getChannelByNameMutation = gql`
-//     mutation getChannelByMutation($name: String!, $circle_id: ID!) {
-//         getChannelByName(name: $name, circle_id: $circle_id) {
-//             _id
-//         }
-//     }
-// `;
-// const getUsersByNameMutation = gql`
-//     mutation getUserByMutation($name: String!) {
-//         getUsersByName(name: $name) {
-//             _id
-//             firstName
-//             lastName
-//             icon
-//             usersCircles {
-//                 _id
-//                 name
-//                 description
-//             }
-//         }
-//     }
-// `;
-
-// const createChannelMutation = gql`
-//     mutation createChannelMutation(
-//         $circle_id: ID!
-//         $name: String!
-//         $channelType: String!
-//         $description: String
-//     ) {
-//         createChannel(
-//             circle_id: $circle_id
-//             name: $name
-//             channelType: $channelType
-//             description: $description
-//         ) {
-//             name
-//             circle_id
-//             channelType
-//         }
-//     }
-// `;
-
-// export default compose(
-//     graphql(getChannelsQuery, {
-//         name: "getChannelsQuery",
-//         options: props => ({
-//             variables: { circle_id: props.activeCircle._id }
-//         }),
-//         refetchQueries: [
-//             {
-//                 query: getChannelsQuery,
-//                 options: props => ({
-//                     variables: { circle_id: props.activeCircle._id }
-//                 })
-//             }
-//         ]
-//     }),
-//     graphql(createChannelMutation, { name: "createChannelMutation" }),
-//     graphql(getChannelByNameMutation, { name: "getChannelByNameMutation" }),
-//     graphql(getUsersByNameMutation, { name: "getUsersByNameMutation" })
-// )(Channels);
+    graphql(getActiveCircle, { name: "getActiveCircle" }),
+    graphql(getOneCircle, {
+        name: "getOneCircle",
+        options: ({ id }) => ({ variables: { id: id || "" } })
+    })
+)(Channels);

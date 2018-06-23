@@ -1,13 +1,19 @@
 import React from "react";
-import Channel from "./Channel";
-import GovernanceChannelLabel from "./ChannelLabel";
 import { Link } from "react-router-dom";
+import { getActiveCircle } from "../../graphql/queries";
+import { compose, graphql } from "react-apollo";
 
 /*
     A Group of Governance Channels
     TODO
 */
 const GovernanceChannelGroup = props => {
+	const { error, loading, activeCircle } = props.getActiveCircle;
+	if (error) {
+		return null;
+	} else if (loading) {
+		return null;
+	}
 	return (
 		<div className="channel-group-wrapper">
 			<div className={`channel-group-label`} style={{ color: "#FFFFFF" }}>
@@ -15,21 +21,21 @@ const GovernanceChannelGroup = props => {
 			</div>
 			<div style={{ width: "100%" }}>
 				<Link
-					to="/app/circle/:id/constitution"
+					to={`/app/circle/${activeCircle.id}/constitution`}
 					className={`channel-group-label gov`}
 					style={{ borderBottom: "none", textIndent: "1em" }}
 				>
 					Constitution
 				</Link>
 				<Link
-					to="/app/circle/:id/revisions"
+					to={`/app/circle/${activeCircle.id}/revisions`}
 					className={`channel-group-label gov`}
 					style={{ borderBottom: "none", textIndent: "1em" }}
 				>
 					Polls
 				</Link>
 				<Link
-					to="/app/circle/:id/news"
+					to={`/app/circle/${activeCircle.id}/news`}
 					className={`channel-group-label gov`}
 					style={{ borderBottom: "none", textIndent: "1em" }}
 				>
@@ -40,4 +46,6 @@ const GovernanceChannelGroup = props => {
 	);
 };
 
-export default GovernanceChannelGroup;
+export default compose(graphql(getActiveCircle, { name: "getActiveCircle" }))(
+	GovernanceChannelGroup
+);

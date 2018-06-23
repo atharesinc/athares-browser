@@ -1,19 +1,19 @@
-import React, { Component } from "react";
+import React from "react";
 import MenuButton from "./MenuButton";
 
 import OtherCircles from "./OtherCircles";
 import AddCircle from "./AddCircle";
 
-export default class Circles extends Component {
-	render() {
-		return (
-			<div id="circles-wrapper">
-				<div id="current-circle" onClick={this.props.toggleMenu}>
-					<MenuButton />
-				</div>
-				<OtherCircles />
-				<AddCircle />
+const Circles = props => {
+	return (
+		<div id="circles-wrapper">
+			<div id="current-circle" onClick={props.toggleMenu}>
+				<MenuButton />
 			</div>
-		);
-	}
-}
+			<OtherCircles userId={props.userId} />
+			<AddCircle />
+		</div>
+	);
+};
+
+export default Circles;

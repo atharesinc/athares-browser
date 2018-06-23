@@ -1,8 +1,18 @@
 import React from "react";
 import FeatherIcon from "feather-icons-react";
 import { Link } from "react-router-dom";
+import moment from "moment";
+import { getUserRemote } from "../../../graphql/queries";
+import { compose, graphql } from "react-apollo";
+import Loader from "../../Loader";
 
 const ViewUser = props => {
+	const { loading, error, User } = props.getUserRemote;
+	if (loading) {
+		<div id="dashboard-wrapper" style={{ overflowY: "scroll" }}>
+			<Loader />
+		</div>;
+	}
 	return (
 		<div id="dashboard-wrapper" style={{ overflowY: "scroll" }}>
 			<div className="particles-bg w-100 vignette shaded">
@@ -24,12 +34,13 @@ const ViewUser = props => {
 							EDIT
 						</Link>
 					</div>
-					<h1 className="f4 f3-ns fw6 white">Ehrlich Bachman</h1>
+					<h1 className="f4 f3-ns fw6 white">
+						{User.firstName + " " + User.lastName}
+					</h1>
 					<div
 						className="br-100 pa1 br-pill ba bw2 w4 h4 center"
 						style={{
-							background:
-								"url(https://assets3.thrillist.com/v1/image/1734098/size/tmg-article_default_mobile.jpg) center no-repeat",
+							background: `url(${User.icon}) center no-repeat`,
 							backgroundSize: "cover"
 						}}
 					/>
@@ -57,7 +68,7 @@ const ViewUser = props => {
 					</div>
 					<div>
 						<div className="f6 link white-70">
-							+1 (999) 555-5555
+							{User.phone || "Not set"}
 						</div>
 					</div>
 				</li>
@@ -71,7 +82,7 @@ const ViewUser = props => {
 					</div>
 					<div>
 						<div className="f6 link white-70">
-							ehbachman@avia.to
+							{User.email || "Not set"}
 						</div>
 					</div>
 				</li>
@@ -85,7 +96,7 @@ const ViewUser = props => {
 					</div>
 					<div>
 						<div className="f6 link white-70">
-							ehrlich.bachman.1
+							{User.uname || "Not set"}
 						</div>
 					</div>
 				</li>
@@ -116,7 +127,7 @@ const ViewUser = props => {
 				<dl className="dib mr5">
 					<dd className="f6 f5-ns b ml0 white-70">User Since</dd>
 					<dd className="f4 f3-ns b ml0">
-						{new Date().toLocaleString()}
+						{moment(User.createdAt).format("M/D/YY")}
 					</dd>
 				</dl>
 			</article>
@@ -124,4 +135,9 @@ const ViewUser = props => {
 	);
 };
 
-export default ViewUser;
+export default compose(
+	graphql(getUserRemote, {
+		name: "getUserRemote",
+		options: ({ user: { id } }) => ({ variables: { id } })
+	})
+)(ViewUser);
