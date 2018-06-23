@@ -1,7 +1,7 @@
 import React from "react";
 import FeatherIcon from "feather-icons-react";
 
-const VoteButtons = ({ accept, reject }) => {
+const VoteButtons = ({ vote }) => {
     return (
         <div
             style={{
@@ -12,14 +12,18 @@ const VoteButtons = ({ accept, reject }) => {
             }}
         >
             <div
-                onClick={accept}
+                onClick={() => {
+                    vote(true);
+                }}
                 className="bg-green light-green w-50 f3 tc dim pv2 vote-btn"
             >
                 <FeatherIcon icon="check-circle" />
                 ACCEPT
             </div>
             <div
-                onClick={reject}
+                onClick={() => {
+                    vote(false);
+                }}
                 className="bg-red light-pink w-50 f3 tc dim pv2 vote-btn"
             >
                 <FeatherIcon icon="x-circle" />

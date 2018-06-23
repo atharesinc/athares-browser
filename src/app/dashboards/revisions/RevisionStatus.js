@@ -9,8 +9,10 @@ const RevisionStatus = ({ amendment, support, votes, match }) => {
 	const circleID = match.url.match(/\/app\/circle\/(.+)\/revisions/)[1];
 	if (amendment === null) {
 		return (
-			<div style={styles} className="f6 bg-theme-light white-70 mv0 pa2">
-				<div className={`f7 white pa1 br-pill ph2 lh-solid bg-green`}>
+			<div style={styles} className="f6 bg-theme-light white-80 mv0 pa2">
+				<div
+					className={`f7 green pa1 br-pill b--green ph2 bw1 ba lh-solid bg-none`}
+				>
 					NEW
 				</div>
 				<small>
@@ -21,9 +23,9 @@ const RevisionStatus = ({ amendment, support, votes, match }) => {
 		);
 	} else {
 		return (
-			<div style={styles} className="f6 bg-theme-light white-70 mv0 pa2">
+			<div style={styles} className="f6 bg-theme-light white-80 mv0 pa2">
 				<div
-					className={`f7 white pa1 br-pill ph2 lh-solid bg-theme-blue`}
+					className={`f7 black-80 pa1 br-pill ph2 lh-solid bg-theme-blue`}
 				>
 					REVISION
 				</div>

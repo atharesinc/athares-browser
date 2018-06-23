@@ -20,7 +20,7 @@ export default class ChatInput extends PureComponent {
         if (e.key === "Enter" && !e.shiftKey) {
             e.preventDefault();
             if (this.state.input.trim() !== "") {
-                this.props.isSubmit(this.state.input);
+                this.props.submit(this.state.input);
                 this.setState({ input: "" });
             }
         }
@@ -36,6 +36,7 @@ export default class ChatInput extends PureComponent {
                     placeholder="Enter Message"
                     onKeyDown={this.submit}
                     onChange={this.changeText}
+                    tabIndex="1"
                 />
 
                 <div id="chat-util-icons">

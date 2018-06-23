@@ -9,9 +9,9 @@ const ChatWindow = ({...props, messages = []}) => {
 					?
 					messages.map((msg) =>
 						<Message
-							isMine={msg.user_id === props.user._id ? true : false}
+							isMine={msg.user.id === props.user.id ? true : false}
 							{...msg}
-							key={msg._id}
+							key={msg.id}
 							timestamp={msg.createdAt} />
 					)
 					:

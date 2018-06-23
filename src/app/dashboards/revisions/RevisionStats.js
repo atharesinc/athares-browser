@@ -1,5 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import moment from "moment";
 
 const RevisionStats = ({
     createdAt,
@@ -17,7 +18,10 @@ const RevisionStats = ({
                     <dl className="fl fn-l w-50 dib-l w-auto-l lh-title mr5-l">
                         <dd className="f6 fw4 ml0 white-70">Date Proposed</dd>
                         <dd className="f3 fw6 ml0 white">
-                            {new Date(createdAt).toLocaleDateString()}
+                            {moment(
+                                createdAt,
+                                "YYYY-MM-DDTHH:mm:ss.SSSZ"
+                            ).format("M/DD/YYYY")}
                         </dd>
                     </dl>
                     <dl className="fl fn-l w-50 dib-l w-auto-l lh-title mr5-l">
@@ -25,15 +29,18 @@ const RevisionStats = ({
                         <dd className="f3 fw6 ml0 white">
                             {!ratified
                                 ? "N/A"
-                                : new Date(updatedAt).toLocaleDateString()}
+                                : moment(
+                                      updatedAt,
+                                      "YYYY-MM-DDTHH:mm:ss.SSSZ"
+                                  ).format("M/DD/YYYY")}
                         </dd>
                     </dl>
                     <dl className="fl fn-l w-50 dib-l w-auto-l lh-title">
                         <dd className="f6 fw4 ml0 white-70">Expires</dd>
                         <dd className="f3 fw6 ml0 white">
-                            {new Date(
-                                updatedAt + 60 * 60 * 1000 * 24 * 7
-                            ).toLocaleDateString()}
+                            {moment(updatedAt, "YYYY-MM-DDTHH:mm:ss.SSSZ")
+                                .add(7, "days")
+                                .format("M/DD/YYYY")}
                         </dd>
                     </dl>
                 </div>

@@ -4,6 +4,7 @@ import Dropzone from "react-dropzone";
 import Loader from "../../Loader";
 import Slider from "rc-slider/lib/Slider";
 import "rc-slider/assets/index.css";
+import EXIF from "exif-js";
 
 export default class ImageUpload extends React.Component {
 	constructor(props) {
@@ -21,7 +22,8 @@ export default class ImageUpload extends React.Component {
 			editMode: false,
 			finalImage: this.props.defaultImage,
 			loading: false,
-			scale: 1
+			scale: 1,
+			rotate: 0
 		};
 	}
 	componentDidUpdate() {
@@ -36,12 +38,13 @@ export default class ImageUpload extends React.Component {
 	toggleEdit = () => {
 		this.setState({ editMode: !this.state.editMode });
 	};
+	rotate = (angle = 90) => {};
 	onClickSave = async () => {
 		try {
 			if (this.editor) {
 				// This returns a HTMLCanvasElement, it can be made into a data URL or a blob,
 				// drawn on another canvas, or added to the DOM.
-				let canvas = this.editor.getImage().toDataURL();
+				let canvas = this.editor.getImage().toDataURL("image/jpg");
 				// console.log(canvas);
 				let imageURL;
 				await fetch(canvas)
@@ -49,11 +52,12 @@ export default class ImageUpload extends React.Component {
 					.then(
 						blob => (imageURL = window.URL.createObjectURL(blob))
 					);
+				let blob = this.dataURItoBlob(canvas);
 
 				this.setState(
 					{ finalImage: imageURL, editMode: false, loading: false },
 					() => {
-						this.props.onSet(imageURL);
+						this.props.onSet(blob);
 					}
 				);
 				// If you want the image resized to the canvas size (also a HTMLCanvasElement)
@@ -63,6 +67,14 @@ export default class ImageUpload extends React.Component {
 			throw new Error(err);
 		}
 	};
+	dataURItoBlob = dataURI => {
+		var binary = atob(dataURI.split(",")[1]);
+		var array = [];
+		for (var i = 0; i < binary.length; i++) {
+			array.push(binary.charCodeAt(i));
+		}
+		return new Blob([new Uint8Array(array)], { type: "image/jpg" });
+	};
 	onChange = () => {
 		console.log(document.getElementById("imgFile").files);
 		let file = document.getElementById("imgFile").files[0];
@@ -70,7 +82,28 @@ export default class ImageUpload extends React.Component {
 		reader.readAsDataURL(file);
 		this.setState({ loading: true });
 		reader.onloadend = e => {
-			this.setState({ loading: false, image: reader.result });
+			EXIF.getData(file, () => {
+				var orientation = EXIF.getTag(this, "Orientation");
+				let rotatePic = 0;
+				switch (orientation) {
+					case 8:
+						rotatePic = 270;
+						break;
+					case 6:
+						rotatePic = 90;
+						break;
+					case 3:
+						rotatePic = 180;
+						break;
+					default:
+						rotatePic = 0;
+				}
+				this.setState({
+					loading: false,
+					image: reader.result,
+					rotate: rotatePic
+				});
+			});
 		};
 	};
 	sliderChange = pos => {
@@ -169,6 +202,7 @@ export default class ImageUpload extends React.Component {
 							border={10}
 							scale={this.state.scale}
 							crossOrigin={"anonymous"}
+							rotate={this.state.rotate}
 						/>
 					</Dropzone>
 				</div>
@@ -180,7 +214,21 @@ export default class ImageUpload extends React.Component {
 					className="mv3"
 					style={{ width: this.state.width }}
 				/>
-
+				{/*<div
+									className="flex flex-row space-around"
+									style={{ width: this.state.width }}
+								>
+									<FeatherIcon
+										icon="rotate-ccw"
+										className="ghost w-50"
+										onClick={this.rotate(-90)}
+									/>
+									<FeatherIcon
+										icon="rotate-cw"
+										className="ghost w-50"
+										onClick={this.rotate(90)}
+									/>
+								</div>*/}
 				<input
 					type="file"
 					name="file"

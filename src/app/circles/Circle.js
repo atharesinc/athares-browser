@@ -1,15 +1,14 @@
 import React from "react";
 import FeatherIcon from "feather-icons-react";
-
-const Circle = ({ id, name, icon, selectCircle, activeCircle = "" }) => {
+const Circle = ({ id, name, icon, selectCircle, isActive }) => {
 	return (
 		<div
-			className={`circle-img-wrapper ${
-				activeCircle === id ? "active-circle" : ""
-			}`}
+			className={`circle-img-wrapper ${isActive ? "active-circle" : ""}`}
 			data-circle-id={id}
 			data-circle-name={name}
-			onClick={selectCircle}
+			onClick={() => {
+				selectCircle(id);
+			}}
 		>
 			<img src={icon} className="circle-img" alt="" />
 			<div className="circle-name white">

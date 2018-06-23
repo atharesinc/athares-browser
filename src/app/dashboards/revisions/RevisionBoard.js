@@ -1,32 +1,69 @@
 import React, { Component } from "react";
 import SelectCornersDiv from "../../../utils/SelectCornersDiv";
 import { Link, withRouter } from "react-router-dom";
+import { getAllRevisions } from "../../../graphql/queries";
+// import { subToCirclesRevisions } from "../../../graphql/subscriptions";
+import { compose, graphql } from "react-apollo";
+import Loader from "../../Loader";
+import moment from "moment";
 
-export default class RevisionBoard extends Component {
+class RevisionBoard extends Component {
+	// componentDidMount() {
+	// 	this.props.getAllRevisions.subscribeToMore({
+	// 		document: subToCirclesRevisions,
+	// 		variables: { id: this.props.id },
+	// 		updateQuery: async (prev, { subscriptionData }) => {
+	// 			await this.props.getAllRevisions.refetch();
+	// 			console.log("updated");
+	// 		}
+	// 	});
+	// }
 	render() {
-		const allRevisons = [
-			revisions.filter(rev => !rev.ratified),
-			revisions.filter(
+		console.log(this.props.getAllRevisions);
+		const { error, loading, allRevisions } = this.props.getAllRevisions;
+		if (error) {
+			return null;
+		}
+		if (loading) {
+			return (
+				<div id="revisions-wrapper">
+					<h1 className="ma3 lh-title white">Revisions</h1>
+					<small className="f6 white-80 db mb2 ml3">
+						Review proposed legislation and changes to existing laws
+					</small>
+					<div id="revision-board-wrapper" className="column-center">
+						<Loader />
+					</div>
+				</div>
+			);
+		}
+		let revisions = [
+			allRevisions.filter(rev => !rev.ratified),
+			allRevisions.filter(
 				rev =>
 					rev.ratified &&
 					rev.updatedAt <
-						new Date(new Date().getTime() - 86400000 * 7)
+						moment(rev.createdAt, "YYYY-MM-DDTHH:mm:ss.SSSZ")
+							.add(7, "days")
+							.format()
 			),
-			revisions.filter(
+			allRevisions.filter(
 				rev =>
 					rev.ratified &&
 					rev.updatedAt >
-						new Date(new Date().getTime() - 86400000 * 7)
+						moment(rev.createdAt, "YYYY-MM-DDTHH:mm:ss.SSSZ")
+							.add(7, "days")
+							.format()
 			),
-			revisions.filter(
+			allRevisions.filter(
 				rev =>
 					rev.ratfiied &&
-					rev.updatedAt > new Date().getTime() &&
+					rev.updatedAt > moment().format() &&
 					rev.votes.filter(v => v.support).length >
 						rev.votes.filter(v => !v.support).length
 			)
 		];
-		console.log(allRevisons);
+		console.log(revisions);
 		return (
 			<div id="revisions-wrapper">
 				<h1 className="ma3 lh-title white">Revisions</h1>
@@ -35,7 +72,7 @@ export default class RevisionBoard extends Component {
 				</small>
 				<div id="revision-board-wrapper">
 					{boards.map((b, i) => (
-						<Board key={i} revisions={allRevisons[i]} title={b} />
+						<Board key={i} revisions={revisions[i]} title={b} />
 					))}
 				</div>
 			</div>
@@ -56,7 +93,7 @@ const Board = ({ title, revisions }) => {
 
 // Denote vote split
 // denote whether it is new or a change to existing amendment
-const Revision = ({
+const RevisionCard = ({
 	amendment,
 	newText,
 	createdAt,
@@ -97,7 +134,10 @@ const Revision = ({
 							</span>
 						</small>
 					</div>
-					<p className="f7 lh-copy measure mv3 white pre-wrap">
+					<p
+						className="f7 lh-copy measure mv3 white pre-wrap h2"
+						style={{ overflow: "hidden" }}
+					>
 						{newText}
 					</p>
 					<div
@@ -123,65 +163,21 @@ const Revision = ({
 		</SelectCornersDiv>
 	);
 };
-const RevisionWithRouter = withRouter(Revision);
+const RevisionWithRouter = withRouter(RevisionCard);
 
 const boards = ["New Revisions", "Ratified", "Ending Soon", "Recently Passed"];
-const revisions = [
-	{
-		id: "1",
-		createdAt: new Date().getTime(),
-		updatedAt: new Date().getTime(),
-		oldText: "",
-		newText:
-			"The government shall make no law prohibiting the use, production, and import of ion thrusters",
-		amendment: null,
-		title: "Deep Space Exploration Act",
-		ratified: false,
-		backer: {
-			firstName: "Erlich",
-			lastname: "Bachmann",
-			icon: "http://mrmrs.github.io/photos/p/2.jpg"
-		},
-		votes: fakeVotes()
-	},
-	...fakeRevsions()
-];
 
-function fakeRevsions() {
-	var users = [
-		"https://assets3.thrillist.com/v1/image/1734098/size/tmg-article_default_mobile.jpg",
-		"http://mrmrs.github.io/photos/p/1.jpg",
-		"http://mrmrs.github.io/photos/p/8.jpg"
-	];
-	const num = Math.floor(Math.random() * 15 + 1);
-	const revisions = [];
-	const isNew = Math.random() > 0.5;
-	for (let i = 0; i < num; ++i) {
-		revisions.push({
-			id: num + i + "-" + revisions.length + "-" + i,
-			createdAt: new Date().getTime() - num * 1000 + num * 100,
-			updatedAt: new Date(
-				new Date().getTime() - 86400000 * Math.floor(Math.random() * 8)
-			),
-			oldText: isNew ? null : " The government shall make no law ...",
-			newText: "The people will not appoint a head of state.",
-			ratified: Math.random() > 0.25,
-			backer: {
-				firstName: "Erlich",
-				lastname: "Bachmann",
-				icon: users[Math.floor(Math.random() * users.length)]
-			},
-			amendment: { title: `Article ${i}` },
-			votes: fakeVotes()
-		});
-	}
-	return revisions;
-}
-function fakeVotes() {
-	const num = Math.floor(Math.random() * 50 + 1);
-	const votes = [];
-	for (let i = 0; i < num; ++i) {
-		votes.push({ id: num + i, support: Math.random() > 0.5 });
-	}
-	return votes;
-}
+export default compose(
+	graphql(getAllRevisions, {
+		name: "getAllRevisions",
+		options: ({ id }) => {
+			return { variables: { circleId: id } };
+		}
+	})
+	// graphql(subToCirclesRevisions, {
+	// 	name: "subToCirclesRevisions",
+	// 	options: ({ id }) => ({
+	// 		variables: { id }
+	// 	})
+	// })
+)(RevisionBoard);

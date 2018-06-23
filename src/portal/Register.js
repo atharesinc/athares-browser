@@ -1,20 +1,18 @@
-import React, { Component } from "react";
-import Phone from "react-phone-number-input";
-import "react-phone-number-input/rrui.css";
-import "react-phone-number-input/style.css";
-
+import React, { PureComponent } from "react";
 import FeatherIcon from "feather-icons-react";
 
-export default class Register extends Component {
+export default class Register extends PureComponent {
     updateInfo = () => {
-        let register = {
-            fullName: document.getElementById("registerFullName").value,
+        let user = {
+            firstName: document.getElementById("registerFirstName").value,
+            lastName: document.getElementById("registerLastName").value,
             password: document.getElementById("registerPassword").value,
-            phone: document.getElementById("registerPhone").value
+            email: document.getElementById("registerEmail").value
         };
-        this.props.updateInfo(register);
+        this.props.updateInfo(user);
     };
     render() {
+        const { firstName, lastName, email, password } = this.props.register;
         return (
             <div className="wrapper" id="portal-register">
                 <p className="portal-text">
@@ -28,26 +26,42 @@ export default class Register extends Component {
                     <input
                         type="text"
                         className="portal-input h2 ghost pa2"
-                        placeholder="Full Name"
-                        id="registerFullName"
+                        placeholder="First Name"
+                        id="registerFirstName"
                         onChange={this.updateInfo}
+                        value={firstName}
+                        tabIndex="1"
                     />
                 </div>
                 <div className="portal-input-wrapper">
                     <FeatherIcon
                         className="portal-input-icon h1 w1"
-                        icon="phone"
+                        icon="user"
                     />
-                    <Phone
-                        placeholder="Phone Number"
-                        country="US"
-                        inputClassName="db w-100 ghost pa2"
-                        aria-describedby="register-phone"
-                        required
+                    <input
+                        type="text"
+                        className="portal-input h2 ghost pa2"
+                        placeholder="Last Name"
+                        id="registerLastName"
                         onChange={this.updateInfo}
-                        nativeCountrySelect
-                        className="portal-input"
-                        id="registerPhone"
+                        value={lastName}
+                        tabIndex="2"
+                    />
+                </div>
+                <div className="portal-input-wrapper">
+                    <FeatherIcon
+                        className="portal-input-icon h1 w1"
+                        icon="at-sign"
+                    />
+                    <input
+                        placeholder="Email"
+                        className="portal-input h2 ghost pa2"
+                        required
+                        type="email"
+                        onChange={this.updateInfo}
+                        value={email}
+                        id="registerEmail"
+                        tabIndex="3"
                     />
                 </div>
                 <div className="portal-input-wrapper">
@@ -61,12 +75,15 @@ export default class Register extends Component {
                         placeholder="Password"
                         id="registerPassword"
                         onChange={this.updateInfo}
+                        value={password}
+                        tabIndex="4"
                     />
                 </div>
                 <button
                     id="register-button"
                     className="f6 link dim br-pill bg-white ba bw1 ph3 pv2 mb2 dib black"
                     onClick={this.props.tryRegister}
+                    tabIndex="4"
                 >
                     REGISTER
                 </button>

@@ -16,8 +16,7 @@ const Nav = props => {
 				<div
 					className="cover bg-left bg-center-l"
 					style={{
-						backgroundImage:
-							"url(https://s3.us-east-2.amazonaws.com/athares-images/pexels-photo-110854.jpeg)"
+						backgroundImage: "url(/img/pexels-photo-110854.jpeg)"
 					}}
 				>
 					<div className="grey-screen pb5 pb6-m pb6-l">
