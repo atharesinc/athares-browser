@@ -5,6 +5,7 @@ import { createRevision } from "../../../graphql/mutations";
 import { compose, graphql } from "react-apollo";
 import Loader from "../../Loader";
 import { withRouter } from "react-router-dom";
+import Scrollbars from "react-custom-scroll";
 
 class CreateAmendment extends Component {
     constructor(props) {
@@ -73,10 +74,8 @@ class CreateAmendment extends Component {
                         className="pa4 white wrapper"
                         onSubmit={this.onSubmit}
                         id="create-circle-form"
-                        style={{
-                            overflowY: "scroll"
-                        }}
                     >
+                    <Scrollbars>
                         <article className="cf">
                             <h1 className="mb3 mt0 lh-title">
                                 Create Amendment
@@ -178,6 +177,7 @@ class CreateAmendment extends Component {
                         >
                             Draft Amendment
                         </button>
+                        </Scrollbars>
                     </form>
                 </div>
             );

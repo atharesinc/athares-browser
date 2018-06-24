@@ -12,6 +12,7 @@ import S3 from "aws-sdk/clients/s3";
 import keys from "../../../utils/aws-restricted-key";
 import Loader from "../../Loader";
 import swal from "sweetalert";
+import Scrollbars from 'react-custom-scroll';
 
 class createCircleBoard extends Component {
     constructor(props) {
@@ -145,10 +146,8 @@ class createCircleBoard extends Component {
                     className="pa4 white wrapper"
                     onSubmit={this.onSubmit}
                     id="create-circle-form"
-                    style={{
-                        overflowY: "scroll"
-                    }}
-                >
+                    >
+                    <Scrollbars>
                     <article className="cf">
                         <h1 className="mb3 mt0 lh-title">Create New Circle</h1>
                         <time className="f7 ttu tracked white-80">
@@ -238,6 +237,7 @@ class createCircleBoard extends Component {
                     >
                         Create Circle
                     </button>
+            </Scrollbars>
                 </form>
             </div>
         );

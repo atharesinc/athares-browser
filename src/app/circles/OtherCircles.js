@@ -5,6 +5,7 @@ import { graphql, compose } from "react-apollo";
 import { getUserCircles, getActiveCircle } from "../../graphql/queries";
 import { setActiveCircle } from "../../graphql/mutations";
 import { withRouter } from "react-router-dom";
+import Scrollbars from 'react-custom-scroll';
 
 class OtherCircles extends Component {
     setActive = id => {
@@ -28,6 +29,7 @@ class OtherCircles extends Component {
         } else if (allCircles.length !== 0) {
             return (
                 <div id="other-circles">
+                <Scrollbars flex="1">
                     {allCircles.map(circle => (
                         <Circle
                             key={circle.id}
@@ -39,6 +41,7 @@ class OtherCircles extends Component {
                             selectCircle={this.setActive}
                         />
                     ))}
+                    </Scrollbars>
                 </div>
             );
         } else {

@@ -9,9 +9,14 @@ import Loader from "../../Loader";
 const ViewUser = props => {
 	const { loading, error, User } = props.getUserRemote;
 	if (loading) {
-		<div id="dashboard-wrapper" style={{ overflowY: "scroll" }}>
+		return (<div id="dashboard-wrapper" style={{ overflowY: "scroll" }}>
 			<Loader />
-		</div>;
+		</div>)
+	}
+	if (error) {
+		return (<div id="dashboard-wrapper" style={{ overflowY: "scroll" }}>
+			Error connecting to network
+		</div>)
 	}
 	return (
 		<div id="dashboard-wrapper" style={{ overflowY: "scroll" }}>

@@ -2,9 +2,7 @@ import React, { Component } from "react";
 import "tachyons";
 import "./styles/App.css";
 import "./styles/swaloverride.css";
-import 'react-perfect-scrollbar/dist/css/styles.css';
-
-import swal from "sweetalert";
+// import "react-custom-scroll/dist/customScroll.css";
 
 import { Switch, Route } from "react-router-dom";
 import SplashPage from "./splash/landing";
@@ -123,8 +121,8 @@ class App extends Component {
                             {this.state.width >= 768 ? (
                                 <DesktopLayout {...props} />
                             ) : (
-                                <MobileLayout {...props} />
-                            )}
+                                    <MobileLayout {...props} />
+                                )}
                         </div>
                     )}
                 />

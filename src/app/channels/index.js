@@ -8,6 +8,7 @@ import {
     getActiveChannel
 } from "../../graphql/queries";
 import Loader from "../Loader";
+import Scrollbars from "react-custom-scroll";
 
 class Channels extends Component {
     constructor(props) {
@@ -28,8 +29,7 @@ class Channels extends Component {
         });
     }
     render() {
-        const { error, loading, activeCircle } = this.props.getActiveCircle;
-        const { Circle } = this.props.getOneCircle;
+        const { error, loading, Circle } = this.props.getOneCircle;
         const { activeChannel } = this.props.getActiveChannel;
 
         if (loading) {
@@ -52,6 +52,7 @@ class Channels extends Component {
                         <i className="mdi mdi-plus" id="circle-options" />
                     </div>
                     <div id="channels-list">
+                    <Scrollbars flex="1">
                         <GovernanceChannelGroup
                             style={style.docs}
                             name={"Governance"}
@@ -74,6 +75,7 @@ class Channels extends Component {
                                 return channel.channelType === "dm";
                             })}
                         />
+                        </Scrollbars>
                     </div>
                 </div>
             );

@@ -9,7 +9,7 @@ import { InMemoryCache } from "apollo-cache-inmemory";
 import { ApolloLink } from "apollo-link";
 import { withClientState } from "apollo-link-state";
 import { createHttpLink } from "apollo-link-http";
-import { onError } from "apollo-link-error";
+// import { onError } from "apollo-link-error";
 import { defaults, resolvers } from "./graphql/resolvers";
 import { persistCache } from "apollo-cache-persist";
 import { split } from "apollo-link";
@@ -43,18 +43,18 @@ const link = split(
     httpLink
 );
 // Create Error Link
-const errorLink = onError(({ graphQLErrors, networkError }) => {
-    if (graphQLErrors) {
-        graphQLErrors.map(({ message, locations, path }) =>
-            console.log(
-                `[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}`
-            )
-        );
-    }
-    if (networkError) {
-        console.log(`[Network error]: ${networkError}`);
-    }
-});
+// const errorLink = onError(({ graphQLErrors, networkError }) => {
+//     if (graphQLErrors) {
+//         graphQLErrors.map(({ message, locations, path }) =>
+//             console.log(
+//                 `[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}`
+//             )
+//         );
+//     }
+//     if (networkError) {
+//         console.log(`[Network error]: ${networkError}`);
+//     }
+// });
 const stateLink = withClientState({ resolvers, cache, defaults });
 
 persistCache({

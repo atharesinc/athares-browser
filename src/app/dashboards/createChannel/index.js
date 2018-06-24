@@ -4,7 +4,7 @@ import { compose, graphql } from "react-apollo";
 import { createChannel } from "../../../graphql/mutations";
 import { getActiveCircle, checkIfNameUnique } from "../../../graphql/queries";
 import Loader from "../../Loader";
-import throttle from "lodash.throttle";
+import Scrollbars from 'react-custom-scroll';
 
 class CreateChannel extends Component {
 	constructor(props) {
@@ -64,12 +64,28 @@ class CreateChannel extends Component {
 
 		this.props.history.push(
 			`/app/circle/${
-				this.props.getActiveCircle.activeCircle.id
+			this.props.getActiveCircle.activeCircle.id
 			}/channel/${res.data.createChannel.id}`
 		);
 	};
 	render() {
 		const { error, loading, activeCircle } = this.props.getActiveCircle;
+		if (error) {
+			return (
+				<div
+					id="dashboard-wrapper"
+					style={{
+						justifyContent: "center"
+					}}
+					className="pa2"
+				>
+
+					<h1 className="mb3 mt0 lh-title mt4 f3 f2-ns">
+						Error connecting to network
+						</h1>
+				</div>
+			);
+		}
 		if (this.state.loading || loading) {
 			return (
 				<div
@@ -94,10 +110,8 @@ class CreateChannel extends Component {
 					className="pa4 white wrapper"
 					onSubmit={this.onSubmit}
 					id="create-circle-form"
-					style={{
-						overflowY: "scroll"
-					}}
 				>
+				<Scrollbars>
 					<article className="cf">
 						<h1 className="mb3 mt0 lh-title">Create Channel</h1>
 						<time className="f7 ttu tracked white-80">
@@ -185,6 +199,7 @@ class CreateChannel extends Component {
 					>
 						Create Channel
 					</button>
+					</Scrollbars>
 				</form>
 			</div>
 		);

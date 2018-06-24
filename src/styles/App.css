@@ -656,7 +656,6 @@ input[type="phone"],
     justify-content: flex-start;
     align-items: center;
     flex: 7;
-    overflow-y: scroll;
     flex-flow: wrap;
 }
 
@@ -756,7 +755,6 @@ input[type="phone"],
     justify-content: flex-start;
     align-items: flex-start;
     flex: 8;
-    overflow-y: scroll;
     width: 100%;
 }
 

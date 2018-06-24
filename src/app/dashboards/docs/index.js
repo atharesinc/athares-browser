@@ -4,6 +4,7 @@ import DocsSearchBar from "./DocsSearchBar";
 import { getActiveCircle, getCircleDocs } from "../../../graphql/queries";
 import { compose, graphql } from "react-apollo";
 import Loader from "../../Loader.js";
+import Scrollbars from "react-custom-scroll";
 
 class Constitution extends Component {
     componentDidMount() {
@@ -23,7 +24,6 @@ class Constitution extends Component {
                 <div
                     id="docs-wrapper"
                     className="column-center"
-                    style={{ overflowY: "scroll" }}
                 >
                     <Loader />
                     <div className="f3 pb2 b mv4 tc">Loading Constitution</div>
@@ -32,7 +32,8 @@ class Constitution extends Component {
         }
         if (Circle) {
             return (
-                <div id="docs-wrapper" style={{ overflowY: "scroll" }}>
+                <div id="docs-wrapper" >
+                <Scrollbars>
                     <DocsSearchBar id={Circle.id} />
                     <div id="docs-inner" className="pa2 pa4-ns">
                         <div className="f2 pb2 b bb b--white-30 mv4 tc">
@@ -49,6 +50,7 @@ class Constitution extends Component {
                             />
                         ))}
                     </div>
+                    </Scrollbars>
                 </div>
             );
         } else {

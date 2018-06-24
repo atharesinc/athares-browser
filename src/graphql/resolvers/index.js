@@ -1,5 +1,5 @@
-import { getCirclesLocal, getActiveCircle } from "../queries";
-import gql from "graphql-tag";
+// import { getCirclesLocal, getActiveCircle } from "../queries";
+// import gql from "graphql-tag";
 
 export const defaults = {
     user: {
@@ -96,14 +96,14 @@ export const resolvers = {
 };
 
 // Based on an id, either appends the object if it's new or modifies the existing object by the same id
-const putObject = (obj, arr) => {
-    const doesExist = arr.findIndex(item => item.id === obj.id);
-    let newArr;
-    if (doesExist === -1) {
-        newArr = [obj, ...arr];
-    } else {
-        newArr = [...arr];
-        newArr[doesExist] = obj;
-    }
-    return newArr;
-};
+// function putObject(obj, arr) {
+//     const doesExist = arr.findIndex(item => item.id === obj.id);
+//     let newArr;
+//     if (doesExist === -1) {
+//         newArr = [obj, ...arr];
+//     } else {
+//         newArr = [...arr];
+//         newArr[doesExist] = obj;
+//     }
+//     return newArr;
+// }
