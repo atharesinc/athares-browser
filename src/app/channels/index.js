@@ -52,29 +52,29 @@ class Channels extends Component {
                         <i className="mdi mdi-plus" id="circle-options" />
                     </div>
                     <div id="channels-list">
-                    <Scrollbars flex="1">
-                        <GovernanceChannelGroup
-                            style={style.docs}
-                            name={"Governance"}
-                        />
-                        <ChannelGroup
-                            style={style.channels}
-                            channelType={"group"}
-                            activeChannel={activeChannel}
-                            name={"Channels"}
-                            channels={Circle.channels.filter(channel => {
-                                return channel.channelType === "group";
-                            })}
-                        />
-                        <ChannelGroup
-                            style={style.dm}
-                            channelType={"dm"}
-                            activeChannel={activeChannel}
-                            name={"Direct Messages"}
-                            channels={Circle.channels.filter(channel => {
-                                return channel.channelType === "dm";
-                            })}
-                        />
+                        <Scrollbars style={{ width: "100%" }}>
+                            <GovernanceChannelGroup
+                                style={style.docs}
+                                name={"Governance"}
+                            />
+                            <ChannelGroup
+                                style={style.channels}
+                                channelType={"group"}
+                                activeChannel={activeChannel}
+                                name={"Channels"}
+                                channels={Circle.channels.filter(channel => {
+                                    return channel.channelType === "group";
+                                })}
+                            />
+                            <ChannelGroup
+                                style={style.dm}
+                                channelType={"dm"}
+                                activeChannel={activeChannel}
+                                name={"Direct Messages"}
+                                channels={Circle.channels.filter(channel => {
+                                    return channel.channelType === "dm";
+                                })}
+                            />
                         </Scrollbars>
                     </div>
                 </div>

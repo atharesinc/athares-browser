@@ -43,6 +43,7 @@
     "react-dom": "^16.3.1",
     "react-dropzone": "^4.2.9",
     "react-particles-js": "^2.1.2",
+    "react-perfect-scrollbar": "^1.1.1",
     "react-phone-number-input": "^1.0.5",
     "react-router-dom": "^4.2.2",
     "react-rte": "^0.16.1",
@@ -59,6 +60,7 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "deploy": "aws s3 sync build/ s3://wonderful-app",
   }
 }
