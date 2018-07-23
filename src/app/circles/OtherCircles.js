@@ -29,7 +29,7 @@ class OtherCircles extends Component {
     } else if (allCircles.length !== 0) {
       return (
         <div id="other-circles">
-          <Scrollbars style={{ height: '100%', width: '100%' }} flex="1">
+          <Scrollbars style={{ width: '100%', height: '100%' }} className="splash" autoHide autoHideTimeout={1000} autoHideDuration={200} universal={true}>
             {allCircles.map((circle) => <Circle key={circle.id} {...circle} isActive={circle.id === this.props.getActiveCircle.activeCircle.id} selectCircle={this.setActive} />)}
           </Scrollbars>
         </div>

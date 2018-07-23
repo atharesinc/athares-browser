@@ -11,12 +11,21 @@ class SplashPage extends React.Component {
   state = {
     top: 0
   };
-  updateScroll = ({ scrollTop }) => {
-    this.setState({ top: scrollTop });
+  handleUpdate = ({ scrollTop }) => {
+    if (scrollTop !== this.state.top) {
+      this.setState({ top: scrollTop });
+    }
   };
   render() {
     return (
-      <Scrollbars style={{ width: '100vw', height: '100vh' }} className="splash">
+      <Scrollbars
+        style={{ width: '100vw', height: '100vh' }}
+        className="splash"
+        onUpdate={this.handleUpdate}
+        autoHide
+        autoHideTimeout={1000}
+        autoHideDuration={200}
+        universal={true}>
         {/*
 				<video autoPlay muted loop preload="true" id="splash-video">
 									<source src="./img/earth.mp4" type="video/mp4" />

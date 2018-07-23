@@ -1035,9 +1035,10 @@ input[type='phone'],
   position: absolute;
   left: 0;
   top: -2.5em;
-  min-width: 100%;
-  height: calc(100% + 2.5em);
+  width: 100%;
   z-index: -1;
+  -webkit-filter: hue-rotate(149deg);
+  filter: hue-rotate(149deg);
 }
 
 #splash-nav {

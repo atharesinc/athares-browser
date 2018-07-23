@@ -1,17 +1,13 @@
 import React from 'react';
-import { particlesConfig } from '../../utils';
-import Particles from 'react-particles-js';
+// import { particlesConfig } from '../../utils';
+// import Particles from 'react-particles-js';
 import Navbar from '../Navbar';
 import { Link } from 'react-router-dom';
 
-const Nav = (props) => {
+const Splash = (props) => {
   return (
     <div>
-      {/* <Particles
-				params={particlesConfig}
-				canvasClassName="particle"
-				className="particle"
-			/> */}
+      {/* <Particles params={particlesConfig} canvasClassName="particle" className="particle" /> */}
       <header id="splash-hero" className="sans-serif">
         <div
           className="cover bg-left bg-center-l"
@@ -41,4 +37,4 @@ const Nav = (props) => {
   );
 };
 
-export default Nav;
+export default Splash;
