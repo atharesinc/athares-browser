@@ -763,7 +763,6 @@ input[type='phone'],
   flex-direction: column;
   justify-content: flex-start;
   align-items: left;
-  overflow-y: scroll;
   width: 100%;
   margin-top: 1em;
 }
@@ -776,6 +775,7 @@ input[type='phone'],
   display: flex;
   justify-content: space-between;
   flex-direction: row;
+  align-items: center;
 }
 
 .add-channel-plus {

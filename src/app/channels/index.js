@@ -30,13 +30,13 @@ class Channels extends Component {
 
     if (loading) {
       return (
-        <div id="other-circles">
+        <div id="channels-wrapper" style={{ justifyContent: 'Center' }}>
           <Loader />
         </div>
       );
     } else if (error) {
       return (
-        <div id="other-circles">
+        <div id="channels-wrapper">
           <div>Error</div>
         </div>
       );
@@ -48,27 +48,25 @@ class Channels extends Component {
             <i className="mdi mdi-plus" id="circle-options" />
           </div>
           <div id="channels-list">
-            <Scrollbars style={{ height: '100%', width: '100%' }}>
-              <GovernanceChannelGroup style={style.docs} name={'Governance'} />
-              <ChannelGroup
-                style={style.channels}
-                channelType={'group'}
-                activeChannel={activeChannel}
-                name={'Channels'}
-                channels={Circle.channels.filter((channel) => {
-                  return channel.channelType === 'group';
-                })}
-              />
-              <ChannelGroup
-                style={style.dm}
-                channelType={'dm'}
-                activeChannel={activeChannel}
-                name={'Direct Messages'}
-                channels={Circle.channels.filter((channel) => {
-                  return channel.channelType === 'dm';
-                })}
-              />
-            </Scrollbars>
+            <GovernanceChannelGroup style={style.docs} name={'Governance'} />
+            <ChannelGroup
+              style={style.channels}
+              channelType={'group'}
+              activeChannel={activeChannel}
+              name={'Channels'}
+              channels={Circle.channels.filter((channel) => {
+                return channel.channelType === 'group';
+              })}
+            />
+            <ChannelGroup
+              style={style.dm}
+              channelType={'dm'}
+              activeChannel={activeChannel}
+              name={'Direct Messages'}
+              channels={Circle.channels.filter((channel) => {
+                return channel.channelType === 'dm';
+              })}
+            />
           </div>
         </div>
       );
