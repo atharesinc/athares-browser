@@ -40,7 +40,7 @@ class CreateChannel extends Component {
     e.preventDefault();
     console.log(this.state, this.props.getActiveCircle);
 
-    if (this.state.trim().length === 0) {
+    if (this.state.name.trim().length === 0) {
       return false;
     }
 

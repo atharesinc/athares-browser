@@ -857,12 +857,11 @@ input[type='phone'],
   flex: auto;
   width: 100%;
   border-bottom: 1px solid rgba(255, 255, 255, 0.8);
-  overflow-y: scroll;
+  /* overflow-y: scroll; */
   max-height: calc(100% / 8 * 6 - 2px);
 }
 
 #chat-window-inner {
-  overflow-y: scroll;
   height: 100%;
   width: 100%;
   margin: 0;

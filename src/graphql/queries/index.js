@@ -95,7 +95,7 @@ export const getChannelMessages = gql`
             name
             description
             channelType
-            messages(limit: 25) {
+            messages {
                 id
                 text
                 createdAt

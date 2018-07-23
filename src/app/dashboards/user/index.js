@@ -6,7 +6,6 @@ import { Switch, Route } from 'react-router-dom';
 import { getUserLocal, getUserRemote } from '../../../graphql/queries';
 import Loader from '../../Loader';
 import { compose, graphql } from 'react-apollo';
-import { Scrollbars } from 'react-custom-scrollbars';
 
 class User extends Component {
   componentDidMount() {
@@ -34,13 +33,11 @@ class User extends Component {
     } else if (User) {
       const { match } = this.props;
       return (
-        <Scrollbars id="dashboard-wrapper" style={{ width: 'inherit' }} autoHide autoHideTimeout={1000} autoHideDuration={200} universal={true}>
-          <Switch>
-            <Route exact path={`${match.path}`} component={(props) => <ViewUser {...props} user={User} />} />
-            <Route exact path={`${match.path}/edit`} component={(props) => <EditUser {...props} user={User} />} />
-            <Route exact path={`${match.path}/:id`} component={(props) => <ViewOtherUser {...props} />} />
-          </Switch>
-        </Scrollbars>
+        <Switch>
+          <Route exact path={`${match.path}`} component={(props) => <ViewUser {...props} user={User} />} />
+          <Route exact path={`${match.path}/edit`} component={(props) => <EditUser {...props} user={User} />} />
+          <Route exact path={`${match.path}/:id`} component={(props) => <ViewOtherUser {...props} />} />
+        </Switch>
       );
     } else {
       return null;
