@@ -1,6 +1,11 @@
 import gql from "graphql-tag";
 
 /* local mutations */
+export const setStateFromUri = gql`
+    mutation setStateFromUri($uri: String!) {
+        setStateFromUri(uri: $uri) @client
+    }
+`;
 export const setUser = gql`
     mutation setUser($id: ID!) {
         setUser(id: $id) @client

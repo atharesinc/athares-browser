@@ -66,6 +66,8 @@ persistCache({
         link: ApolloLink.from([stateLink, link])
     });
 
+    // client.resetStore();
+
     ReactDOM.render(
         <ApolloProvider client={client}>
             <BrowserRouter>

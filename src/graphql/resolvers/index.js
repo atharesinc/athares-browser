@@ -18,6 +18,28 @@ export const defaults = {
 
 export const resolvers = {
     Mutation: {
+        setStateFromUri: async (_, { uri }, { cache }) => {
+            try {
+                let deepLink = {
+                    circle: uri.split("/circle/")[1].replace(/\/.*/, ""),
+                    channel: uri.split("/channel/")[1]
+                };
+                const activeCircle = {
+                    __typename: "ActiveCircle",
+                    id: deepLink.circle || ""
+                };
+                const activeChannel = {
+                    __typename: "ActiveChannel",
+                    id: deepLink.channel || ""
+                };
+                await cache.writeData({
+                    data: { activeCircle, activeChannel }
+                });
+                return true;
+            } catch (err) {
+                return false;
+            }
+        },
         setUser: async (_, { id }, { cache }) => {
             try {
                 const user = {
@@ -65,27 +87,14 @@ export const resolvers = {
         logout: async (_, args, { cache }) => {
             try {
                 // Use cache.reset so we don't weirdly refetch all the queries like client.resetStore
-                // cache.reset();
-                const user = {
-                    __typename: "User",
-                    id: ""
-                };
-                const activeCircle = {
-                    __typename: "ActiveCircle",
-                    id: ""
-                };
-                const activeChannel = {
-                    __typename: "ActiveChannel",
-                    id: ""
-                };
+                await cache.reset();
 
                 await cache.writeData({
-                    data: {
-                        user,
-                        activeCircle,
-                        activeChannel
-                    }
+                    data: defaults
                 });
+
+                // persistor.purge();
+                // persistor.remove();
                 return true;
             } catch (err) {
                 return false;

@@ -82,6 +82,7 @@ export const getCircleDocs = gql`
 export const checkIfNameUnique = gql`
     query checkIfNameUnique($id: ID!, $name: String!) {
         Circle(id: $id) {
+            id
             channels(filter: { name: $name }) {
                 id
             }
@@ -116,6 +117,7 @@ export const getAllRevisions = gql`
             newText
             createdAt
             updatedAt
+            ratified
             amendment {
                 id
                 title

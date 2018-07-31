@@ -63,14 +63,18 @@ Each version outlines features that the platform must have to meet this version
 
 #### ToDo
 
+*   Login/Register, enter to submit
+*   CirclesWrapper, images not showing up
+*   Circle Homepage (for app/:circleID/)
 *   Update User
 *   Create Circle Validation
 *   Create Channel Validation
 *   Create DM
     *   Pre-wrap text box
-*   Added Help page
+*   Add Help page
 *   Dumbed down index
 *   Sign up for newsleter
+    *   MailChimp/CampaignMonitor
 *   CSS transitions for routes & everything else
 *   Validate all input fields
 *   XSS sanitize all fields
@@ -85,14 +89,11 @@ Each version outlines features that the platform must have to meet this version
 *   Webworkers and PWA stuff
     *   caching images
     *   Request to be added to homescreen
+    *   Inputs don't work on android?
 *   Subtle device rotation parallax
 *   404 page look good
 *   Code splitting (react-loadable etc.)
-*   Site news
-
-#### 0.1
-
-*   Basic functionality (MVP on Heroku)
+*   Site/Circle news
 
 ## License
 

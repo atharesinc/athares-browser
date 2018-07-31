@@ -13,14 +13,18 @@ const index = ({
     getUserRemote
 }) => {
     const logout = async () => {
-        logoutMutation();
+        await logoutMutation();
     };
     const { loading, User, error } = getUserRemote;
-    
+
     if (loading) {
         return null;
     }
     if (error) {
+        return null;
+    }
+    if (User === undefined) {
+        history.push("/login");
         return null;
     }
     const user = User;

@@ -4,23 +4,22 @@ import RevisionBoard from "./RevisionBoard";
 import ViewRevision from "./ViewRevision";
 
 export default class Revisions extends Component {
-	render() {
-		const { match } = this.props;
-		console.log(this.props);
+    render() {
+        const { match } = this.props;
 
-		return (
-			<Switch>
-				<Route
-					exact
-					path={`${match.path}/`}
-					component={() => <RevisionBoard id={match.params.id} />}
-				/>
-				<Route
-					exact
-					path={`${match.path}/:id`}
-					component={() => <ViewRevision id={match.params.id} />}
-				/>
-			</Switch>
-		);
-	}
+        return (
+            <Switch>
+                <Route
+                    exact
+                    path={`${match.path}/`}
+                    component={() => <RevisionBoard id={match.params.id} />}
+                />
+                <Route
+                    exact
+                    path={`${match.path}/:id`}
+                    component={() => <ViewRevision id={match.params.id} />}
+                />
+            </Switch>
+        );
+    }
 }

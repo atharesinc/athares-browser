@@ -1083,7 +1083,7 @@ input[type='phone'],
   background: #282a3899;
   height: 100%;
   width: calc(100vw / 13 * 9);
-  overflow-y: scroll;
+  /* overflow-y: scroll; */
 }
 
 #revision-board-wrapper {

@@ -6,6 +6,7 @@ import RevisionStatus from "./RevisionStatus";
 import ToggleDiffBar from "./ToggleDiffBar";
 import DiffSection from "./DiffSection";
 import HasVoted from "./HasVoted";
+import { Scrollbars } from "react-custom-scrollbars";
 
 import { getRevision, getUserLocal } from "../../../graphql/queries";
 import { createVote, updateVote } from "../../../graphql/mutations";
@@ -58,11 +59,7 @@ class ViewRevision extends Component {
         }
         if (loading) {
             return (
-                <div
-                    id="docs-wrapper"
-                    className="column-center"
-                    style={{ overflowY: "scroll" }}
-                >
+                <div id="docs-wrapper" className="column-center">
                     <Loader />
                     <div className="f3 pb2 b mv4 tc">Fetching Revision</div>
                 </div>
@@ -80,34 +77,44 @@ class ViewRevision extends Component {
     */
             return (
                 <div id="revisions-wrapper">
-                    <RevisionHeader title={title} isNew={amendment === null} />
-
-                    {hasVoted && <HasVoted vote={hasVoted} />}
-                    <div className="bg-theme ma2 ma4-ns">
-                        <RevisionStatus {...revision} support={support} />
-                        <DiffSection {...revision} mode={this.state.mode} />
-                        <ToggleDiffBar
-                            mode={this.state.mode}
-                            toggle={this.toggleMode}
+                    <Scrollbars style={{ height: "100%", width: "100%" }}>
+                        <RevisionHeader
+                            title={title}
+                            isNew={amendment === null}
                         />
-                        <RevisionStats {...revision} support={support} />
-                        <VoteButtons vote={this.vote} />
-                    </div>
+
+                        {hasVoted && <HasVoted vote={hasVoted} />}
+                        <div className="bg-theme ma2 ma4-ns">
+                            <RevisionStatus {...revision} support={support} />
+                            <DiffSection {...revision} mode={this.state.mode} />
+                            <ToggleDiffBar
+                                mode={this.state.mode}
+                                toggle={this.toggleMode}
+                            />
+                            <RevisionStats {...revision} support={support} />
+                            <VoteButtons vote={this.vote} />
+                        </div>
+                    </Scrollbars>
                 </div>
             );
         } else {
             /* Represents a new legislation without precedent; Show single panel */
             return (
                 <div id="revisions-wrapper">
-                    <RevisionHeader title={title} isNew={amendment === null} />
-                    {hasVoted && <HasVoted vote={hasVoted} />}
+                    <Scrollbars style={{ height: "100%", width: "100%" }}>
+                        <RevisionHeader
+                            title={title}
+                            isNew={amendment === null}
+                        />
+                        {hasVoted && <HasVoted vote={hasVoted} />}
 
-                    <div className="bg-theme ma4">
-                        <RevisionStatus {...revision} support={support} />
-                        <div className="pa3 white pre-wrap">{newText}</div>
-                        <RevisionStats {...revision} support={support} />
-                        <VoteButtons vote={this.vote} />
-                    </div>
+                        <div className="bg-theme ma4">
+                            <RevisionStatus {...revision} support={support} />
+                            <div className="pa3 white pre-wrap">{newText}</div>
+                            <RevisionStats {...revision} support={support} />
+                            <VoteButtons vote={this.vote} />
+                        </div>
+                    </Scrollbars>
                 </div>
             );
         }
