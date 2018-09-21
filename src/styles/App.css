@@ -29,25 +29,28 @@ body {
   overflow: hidden;
 }*/
 
+/* @font-face {
+  font-family: "Lato";
+  src: url("/fonts/Lato/lato-regular-webfont.woff2") format("woff2"),
+    url("/fonts/Lato/lato-regular-webfont.woff") format("woff");
+  font-weight: normal;
+  font-style: normal;
+} */
+
 body {
   margin: 0;
   padding: 0;
-  font-family: "Avenir Next", "Avenir", sans-serif !important;
+  font-family: -apple-system, BlinkMacSystemFont, avenir next, avenir,
+    helvetica neue, helvetica, ubuntu, roboto, noto, segoe ui, arial, sans-serif;
+
   background: #222222;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
 }
-
 .sans-serif {
-  font-family: "Avenir Next", "Avenir", sans-serif !important;
-}
-
-@font-face {
-  font-family: "Avenir";
-  src: local(Avenir);
-  src: url("/fonts/Avenir/Avenir-Light.otf") format("otf");
+  /* font-family: "Avenir Next", "Avenir", "Lato", sans-serif !important; */
 }
 
 .wrapper {
@@ -57,7 +60,7 @@ body {
 
 .App {
   text-align: center;
-  font-family: "Avenir", sans-serif;
+  /* font-family: "Lato", sans-serif; */
 }
 
 a,
@@ -75,7 +78,7 @@ input[type="submit"]:focus,
 textarea:focus,
 a:focus,
 a:active {
-  font-family: "Avenir", sans-serif;
+  /* font-family: "Avenir", sans-serif; */
   outline: none;
   -webkit-tap-highlight-color: initial;
 }
@@ -113,7 +116,7 @@ input[type="phone"],
 
 ::placeholder {
   color: #ffffffaa;
-  font-family: "Avenir", sans-serif;
+  /* font-family: "Lato", sans-serif; */
 }
 
 /*
@@ -277,7 +280,7 @@ input[type="phone"],
 
 .RichTextEditor__root___2QXK- {
   color: black;
-  font-family: "Avenir", sans-serif !important;
+  font-family: "Lato", sans-serif !important;
   z-index: 100;
   position: relative;
   border-radius: 0;
@@ -286,7 +289,7 @@ input[type="phone"],
 
 .EditorToolbar__root___3_Aqz {
   margin: 0;
-  font-family: "Avenir", sans-serif;
+  font-family: "Lato", sans-serif;
 }
 
 .Button__root___1gz0c {
@@ -1322,9 +1325,15 @@ a:visited {
 .theme-blue {
   color: #00dffc;
 }
-
+.theme-light {
+  color: #3a3e52;
+}
 /* Small screens */
+
 @media screen and (max-width: 992px) {
+  #circle-name {
+    max-height: 3em;
+  }
   #desktop-wrapper,
   #app-wrapper {
     flex-direction: column;
@@ -1333,7 +1342,6 @@ a:visited {
     height: 100vh;
     width: 100vw;
   }
-  #channels-wrapper,
   #circles-wrapper,
   #dashboard-wrapper,
   #revisions-wrapper,
@@ -1343,106 +1351,9 @@ a:visited {
     width: 100vw !important;
     overflow-y: scroll;
   }
-  .revision-board {
-    min-width: 80%;
-  }
-  #revision-board-wrapper {
-    padding: 0;
-  }
-  #circles-wrapper {
-  }
-  .circle-img-wrapper {
-    width: 100vw;
-    border-bottom: 1px solid #ffffff80;
-  }
-  .circle-img-wrapper img {
-    height: 5rem;
-    width: 5rem;
-  }
-  .circle-name {
-    display: -ms-flexbox;
-    display: flex;
-    -ms-flex-direction: row;
-    flex-direction: row;
-    -ms-flex-pack: justify;
-    justify-content: space-between;
-    -ms-flex-align: center;
-    align-items: center;
-    -ms-flex: 1 1;
-    flex: 1 1;
-    text-align: center;
-    width: 100%;
-    padding: 0 1em;
-  }
-  .react-tags {
-  }
-  #bottom-nav {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    display: flex;
-    flex-direction: row;
-    width: 100vw;
-    justify-content: space-around;
-    height: 7vh;
-    align-items: center;
-    background: #ffffff;
-  }
-  .portal-text {
-    font-size: 1em;
-    padding: 1em;
-    text-align: center;
-    color: #ffffff;
-    margin: 0;
-  }
-  #current-circle {
-  }
-  #portal-header {
-    margin-top: 1em;
-  }
-  .dashboard-icon-wrapper {
-  }
-}
-/* active */
-.btn:active {
-  background-color: #ffffff;
-  color: #444;
-  transition: all 0.1s ease;
-}
-#other-circles .circle-img-wrapper:active {
-  transition: all 0.1s ease;
-  background-color: #2f324299;
-  border-left: 0.2em solid #00dffc;
-  padding-right: 0.3em;
-}
-
-#add-circle-button:active {
-  color: #ffffff80;
-  background: #2f324299;
-  transition: all 0.1s ease;
-}
-
-/* Small screens */
-
-@media screen and (max-width: 992px) {
-  #desktop-wrapper,
-  #app-wrapper {
-    flex-direction: column;
-  }
-  #chat-wrapper {
-    height: 100vh;
-    width: 100vw;
-  }
-  #channels-wrapper,
-  #circles-wrapper,
-  #dashboard-wrapper,
-  #revisions-wrapper,
-  #docs-wrapper {
-    height: 93vh;
-    flex: none;
+  #channels-wrapper {
+    height: calc(100vh - 9em);
     width: 100vw !important;
-    overflow-y: scroll;
   }
   .revision-board {
     min-width: 80%;

@@ -19,6 +19,7 @@ import { TweenMax } from "gsap";
 import Gun from "gun";
 import "gun/sea";
 import { GunProvider } from "./utils/react-gun";
+import Test from "./TestMobile";
 
 class App extends Component {
   constructor(props) {
@@ -57,7 +58,7 @@ class App extends Component {
     document.getElementById("root").style.overflow = "hidden";
   };
   parallaxApp = e => {
-    if (this.state.width < 768) {
+    if (this.state.width < 992) {
       return false;
     }
     this.parallaxIt(e, "#desktop-wrapper-outer", 30, "#main-layout");
@@ -108,13 +109,14 @@ class App extends Component {
                 <Route
                   path="/app"
                   component={props =>
-                    this.state.width >= 768 ? (
+                    this.state.width >= 992 ? (
                       <DesktopLayout {...props} />
                     ) : (
                       <MobileLayout {...props} />
                     )
                   }
                 />
+                <Route exact path="/test" component={Test} />
                 <Route component={NoMatch} />
               </Switch>
             </GunProvider>
