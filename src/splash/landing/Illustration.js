@@ -3,7 +3,7 @@ import React from "react";
 const Illustration = props => {
 	return (
 		<div>
-			<article className="cf">
+			<article className="cf grey-screen">
 				<div className="fl w-100 w-50-ns bg-near-white tc pa2">
 					<h1 className="f3 mb2 tc">Nano-Sized</h1>
 					<h2 className="f5 fw4 gray mt0">
@@ -12,7 +12,7 @@ const Illustration = props => {
 						relevant to them. Building a better blockchain.
 					</h2>
 				</div>
-				<div className="fl w-100 w-50-ns tc pa2">
+				<div className="fl w-100 w-50-ns tc pa2 ">
 					<h1 className="f3 mb2 tc white">Direct</h1>
 					<h2 className="f5 fw4 white-70 mt0">
 						Individuals participate directly in debate and vote on
@@ -21,8 +21,8 @@ const Illustration = props => {
 					</h2>
 				</div>
 			</article>
-			<article className="cf">
-				<div className="fl w-100 w-50-ns tc pa2">
+			<article className="cf grey-screen">
+				<div className="fl w-100 w-50-ns tc pa2 ">
 					<h1 className="f3 mb2 tc white">Distributed</h1>
 					<h2 className="f5 fw4 white-70 mt0">
 						Individuals own their data, not companies. Users can

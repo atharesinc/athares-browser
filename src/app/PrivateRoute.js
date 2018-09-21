@@ -4,19 +4,12 @@
 // If they are: they proceed to the page
 // If not: they are redirected to the login page.
 import React from "react";
-import { Redirect, Route } from "react-router-dom";
-import { graphql } from "react-apollo";
-import { getUserLocal } from "../graphql/queries";
+import { Redirect, Route, withRouter } from "react-router-dom";
+import * as stateSelectors from "../store/state/reducers";
+import {connect} from "react-redux";
 
-const PrivateRoute = ({ component: Component, getUserLocal, ...rest }) => {
-    const { error, loading, user } = getUserLocal;
-    if (loading) {
-        return null;
-    }
-    if (error) {
-        return null;
-    }
-    if (user.id !== "") {
+const PrivateRoute = ({ component: Component, user, ...rest }) => {
+    if (user || true) {
         return <Route {...rest} render={props => <Component {...props} />} />;
     }
     return (
@@ -28,4 +21,10 @@ const PrivateRoute = ({ component: Component, getUserLocal, ...rest }) => {
     );
 };
 
-export default graphql(getUserLocal, { name: "getUserLocal" })(PrivateRoute);
+function mapStateToProps(state) {
+    return {
+      user: stateSelectors.pull(state, "user")
+    }
+  }
+
+  export default withRouter(connect(mapStateToProps)(PrivateRoute));

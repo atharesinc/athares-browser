@@ -4,12 +4,10 @@ import { Link } from "react-router-dom";
 const NoMatch = ({ location }) => (
 	<div
 		style={{
-			backgroundImage: "url(/img/pexels-photo-110854.jpeg)",
-			backgroundSize: "cover",
 			height: "100vh",
 			width: "100vw"
 		}}
-		className="bg-theme wrapper"
+		className="wrapper grey-screen"
 	>
 		<header className="tc ph5 lh-copy">
 			<h1 className="f1 f-headline-l code mb3 fw9 dib tracked-tight theme-blue">

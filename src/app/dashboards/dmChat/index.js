@@ -1,103 +1,119 @@
-import React, { PureComponent } from "react";
+import React, { Component } from "react";
 import ChatWindow from "./ChatWindow";
 import ChatInput from "./ChatInput";
-// import Loader from "../../Loader";
+import Loader from "../../Loader";
 import FeatherIcon from "feather-icons-react";
 import { Link } from "react-router-dom";
+import * as stateSelectors from "../../../store/state/reducers";
+import { connect } from "react-redux";
+import { withGun } from "../../../utils/react-gun";
+import Gun from "gun/gun";
 
-export default class Chat extends PureComponent {
-	constructor(props) {
-		super();
-	}
-	isSubmit = async text => {
-		let chatInput = document.getElementById("chat-input");
+class DMChat extends Component {
+  constructor(props) {
+    super(props);
 
-		try {
-			// 	/* create message and send to API */
-			// 	await this.props.createMessageMutation({
-			// 		variables: {
-			// 			text: text.trim(),
-			// 			user_id: this.props.user._id,
-			// 			circle_id: this.props.activeCircle._id,
-			// 			channel_id: this.props.channel._id,
-			// 		}
-			// 	});
+    this.state = {
+      messages: [],
+      channel: null,
+      user: null
+    };
 
-			// 	/* refetch messages */
-			// 	this.props.getMessagesQuery.refetch();
-			/* clear textbox */
-			chatInput.value = "";
-			chatInput.setAttribute("rows", 1);
-			/* scroll to bottom */
-			let chatBox = document.getElementById("chat-window-inner");
-			chatBox.scrollTop = chatBox.scrollHeight;
-		} catch (err) {
-			console.log(err);
-			// swal("Oops", "There was an error connecting to the server", "error");
-		}
-	};
+    this.channel = this.props.gun.get("channels").get(this.props.activeChannel);
+  }
+  submit = async text => {
+    let chatInput = document.getElementById("chat-input");
 
-	render() {
-		return (
-			<div id="chat-wrapper">
-				<div id="current-channel">
-					<Link to="/app">
-						<FeatherIcon
-							icon="chevron-left"
-							className="white db dn-ns"
-						/>
-					</Link>
-					<div>Test</div>
-					<FeatherIcon
-						icon="more-vertical"
-						className="white db dn-ns"
-					/>
-				</div>
-				<ChatWindow />
-				<ChatInput isSubmit={this.isSubmit} />
-			</div>
-		);
-	}
+    let message = {
+      id: Gun.text.random(),
+      text: text.trim(),
+      userId: this.props.user,
+      channelId: this.props.activeChannel
+    };
+
+    // this.channel
+    //   .get("messages")
+    //   .get(Gun.text.random())
+    //   .put(message);
+
+    /* clear textbox */
+    chatInput.value = "";
+    chatInput.setAttribute("rows", 1);
+
+    /* scroll to bottom */
+    let chatBox = document.getElementById("chat-window-inner");
+    chatBox.scrollTop = chatBox.scrollHeight;
+  };
+  componentDidMount() {
+    // get user from gun by user id
+    // get channel details by activeChannel
+    // this.messages = this.gun.get("channels").get(this.props.activeChannel).get("messages");
+    // this.messages.map().on(() => {
+    //     let messages = [];
+    //     this.messages.map().once(message => {
+    //         this.users.get(message.user).once(user => {
+    //             messages.push({...message, user});
+    //         });
+    //     });
+    //     this.setState({
+    //         messages,
+    //         user,
+    //         channel
+    //     });
+    // });
+  }
+  normalizeName = name => {
+    let retval = name.split("-").filter(n => n !== this.state.user.firstName);
+    if (retval.length === 0) {
+      return name;
+    }
+    if (retval.length < 3) {
+      return retval.join(" & ");
+    }
+    if (retval.length < 6) {
+      retval = [
+        ...retval.splice(0, retval.length - 1),
+        ["and", retval[retval.length - 1]].join(" ")
+      ];
+      retval = retval.join(", ");
+      return retval;
+    }
+    retval = [...retval.splice(0, 4), "...and " + retval.length + " more"];
+    retval = retval.join(", ");
+    return retval;
+  };
+
+  render() {
+    const { user, channel, messages } = this.state;
+    if (channel) {
+      return (
+        <div id="chat-wrapper">
+          <div id="current-channel">
+            <Link to="/app">
+              <FeatherIcon icon="chevron-left" className="white db dn-ns" />
+            </Link>
+            <div>{this.normalizeName(channel.name)}</div>
+            <FeatherIcon icon="more-vertical" className="white db dn-ns" />
+          </div>
+          <ChatWindow messages={messages} user={user} />
+          {user && <ChatInput submit={this.submit} />}
+        </div>
+      );
+    } else {
+      return (
+        <div id="chat-wrapper" style={{ justifyContent: "center" }}>
+          <Loader />
+        </div>
+      );
+    }
+  }
 }
 
-// const createMessageMutation = gql`
-// 	mutation createMessageMutation($text: String!, $user_id : ID!,  $circle_id : ID!, $channel_id : ID!){
-// 		createMessage(text: $text, user_id: $user_id, circle_id: $circle_id, channel_id: $channel_id){
-// 			_id
-// 			text
-// 			createdAt
-// 		}
-// 	}
-// `;
-// const getMessagesQuery = gql`
-// 	query getMessagesQuery($channel_id: ID!){
-// 		getMessages(channel_id: $channel_id){
-// 			_id
-// 			text
-// 			createdAt
-// 			user_id
-// 			user {
-// 				firstName
-// 				lastName
-// 				icon
-// 			}
-// 		}
-// 	}
-// `;
+function mapStateToProps(state) {
+  return {
+    user: stateSelectors.pull(state, "user"),
+    activeChannel: stateSelectors.pull(state, "activeChannel")
+  };
+}
 
-// export default compose(
-// 	graphql(getMessagesQuery,
-// 		{
-// 			name: "getMessagesQuery",
-// 			options: (props) => ({ variables: { channel_id: props.channel._id } })
-// 		}
-// 	),
-// 	graphql(createMessageMutation,
-// 		{
-// 			name: "createMessageMutation",
-// 			refetchQueries: [{
-// 				query: getMessagesQuery,
-// 				options: (props) => ({ variables: { channel_id: props.channel._id } })
-// 			}]
-// 		}
-// 	))(Chat)
+export default withGun(connect(mapStateToProps)(DMChat));

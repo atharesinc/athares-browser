@@ -10,10 +10,7 @@ const Splash = (props) => {
       {/* <Particles params={particlesConfig} canvasClassName="particle" className="particle" /> */}
       <header id="splash-hero" className="sans-serif">
         <div
-          className="cover bg-left bg-center-l"
-          style={{
-            backgroundImage: 'url(/img/pexels-photo-110854.jpeg)'
-          }}>
+          className="cover bg-left bg-center-l">
           <div className="grey-screen pb5 pb6-m pb6-l">
             <Navbar {...props} top={props.top} />
             <div className="tc-l pt6 ph3">

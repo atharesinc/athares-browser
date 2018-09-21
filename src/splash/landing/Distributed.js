@@ -45,16 +45,7 @@ class Distributed extends React.PureComponent {
 	render() {
 		return (
 			<header
-				className="sans-serif"
-				style={{
-					backgroundImage:
-						"url(https://s3.us-east-2.amazonaws.com/athares-images/spacio-libre.jpg)",
-					backgroundRepeat: "no-repeat",
-
-					backgroundPosition: "center",
-					backgroundSize: "cover",
-					boxShadow: "inset 0 0 7em #000"
-				}}
+				className="sans-serif grey-screen"
 			>
 				<div className="mw9 center pa4 pt5-ns ph5-l">
 					<h3 className="f1 f1-m lh-title mv0">

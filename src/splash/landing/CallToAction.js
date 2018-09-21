@@ -4,17 +4,9 @@ import { Link } from "react-router-dom";
 const CallToAction = props => {
 	return (
 		<div>
-			<header id="splash-hero" className="sans-serif">
+			<header id="splash-hero" className=" grey-screen">
 				<div
 					className="cover bg-left bg-center-l"
-					style={{
-						backgroundImage:
-							"url(https://s3.us-east-2.amazonaws.com/athares-images/black-galaxy.jpg)",
-						backgroundPosition: "center",
-						backgroundRepeat: "no-repeat",
-						backgroundSize: "cover",
-						boxShadow: "inset 0 0 7em #000"
-					}}
 				>
 					<div className="pb5 pb6-m pb6-l">
 						<div className="tc-l pt6 ph3">

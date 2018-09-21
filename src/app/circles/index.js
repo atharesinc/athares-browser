@@ -10,7 +10,7 @@ const Circles = props => {
 			<div id="current-circle" onClick={props.toggleMenu}>
 				<MenuButton />
 			</div>
-			<OtherCircles userId={props.userId} />
+			<OtherCircles />
 			<AddCircle />
 		</div>
 	);

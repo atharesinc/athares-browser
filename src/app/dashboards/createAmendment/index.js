@@ -1,54 +1,71 @@
-import React, { Component } from 'react';
-import ErrorSwap from '../../../utils/ErrorSwap';
-import { getActiveCircle, getUserLocal } from '../../../graphql/queries';
-import { createRevision } from '../../../graphql/mutations';
-import { compose, graphql } from 'react-apollo';
-import Loader from '../../Loader';
-import { withRouter } from 'react-router-dom';
-import { Scrollbars } from 'react-custom-scrollbars';
+import React, { Component } from "react";
+import ErrorSwap from "../../../utils/ErrorSwap";
+import Loader from "../../Loader";
+import { withRouter } from "react-router-dom";
+import { Scrollbars } from "react-custom-scrollbars";
+import { connect } from "react-redux";
+import { withGun } from "../../../utils/react-gun";
+import * as stateSelectors from "../../../store/state/reducers";
+import Gun from "gun/gun";
 
 class CreateAmendment extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      name: '',
-      amendment: '',
+      name: "",
+      amendment: "",
       isTaken: false,
       loading: false
     };
   }
-  updateName = (e) => {
+  componentDidMount() {
+    // verify this circle is real and that the user is logged in, but for now...
+    if (!this.props.user || !this.props.activeCircle) {
+      this.props.history.push("/app");
+    }
+
+    // get this circle and its amendments
+    this.props.gun
+      .get("circles")
+      .get(this.props.activeCircle)
+      .once(circle => {
+        this.setState({
+          activeCircle: circle
+        });
+      });
+  }
+  updateName = e => {
     this.setState({
       name: e.target.value.substring(0, 51)
     });
   };
-  updateAmend = (e) => {
+  updateAmend = e => {
     this.setState({
       amendment: e.target.innerText
     });
   };
-  onSubmit = async (e) => {
+  onSubmit = async e => {
     e.preventDefault();
     console.log(this.state);
     // validate & trim fields
     await this.setState({ loading: true });
     try {
-      const res = await this.props.createRevision({
-        variables: {
-          circleID: this.props.getActiveCircle.activeCircle.id,
-          backerID: this.props.getUserLocal.user.id,
-          title: this.state.name,
-          newText: this.state.amendment
-        }
-      });
-      const newID = res.data.createRevision.id;
-      const {
-        activeCircle: { id }
-      } = this.props.getActiveCircle;
+      const newRevision = {
+        circleID: this.props.getActiveCircle.activeCircle.id,
+        backerID: this.props.user,
+        title: this.state.name,
+        newText: this.state.amendment,
+        id: Gun.text.random()
+      };
+
+      // this.gun.get("revisions").get(newRevision.id).put(newRevision);
+
       await this.setState({ loading: false });
 
-      this.props.history.push(`/app/circle/${id}/revisions/${newID}`);
+      this.props.history.push(
+        `/app/circle/${this.props.activeCircle}/revisions/${newRevision.id}`
+      );
     } catch (err) {
       console.error(new Error(err));
       this.setState({ loading: false });
@@ -60,10 +77,9 @@ class CreateAmendment extends Component {
     });
   };
   render() {
-    const { error, loading, activeCircle } = this.props.getActiveCircle;
-    if (error) {
-      return <div id="dashboard-wrapper">Error</div>;
-    } else if (loading || this.state.loading) {
+    const { activeCircle } = this.state;
+
+    if (this.state.loading) {
       return (
         <div id="dashboard-wrapper" className="column-center">
           <Loader />
@@ -72,11 +88,17 @@ class CreateAmendment extends Component {
     } else if (activeCircle) {
       return (
         <div id="dashboard-wrapper">
-          <form className="pa4 white wrapper" onSubmit={this.onSubmit} id="create-circle-form">
+          <form
+            className="pa4 white wrapper"
+            onSubmit={this.onSubmit}
+            id="create-circle-form"
+          >
             <Scrollbars>
               <article className="cf">
                 <h1 className="mb3 mt0 lh-title">Create Amendment</h1>
-                <time className="f7 ttu tracked white-80">Draft a new piece of legislation for {activeCircle.name}.</time>
+                <time className="f7 ttu tracked white-80">
+                  Draft a new piece of legislation for {activeCircle.name}
+                </time>
                 <div className="fn mt4">
                   <div className="measure mb4">
                     <label htmlFor="name" className="f6 b db mb2">
@@ -120,7 +142,8 @@ class CreateAmendment extends Component {
                       condition={!this.state.isTaken}
                       normal={
                         <small id="comment-desc" className="f6 white-80">
-                          Draft your amendment. What do you want to add to your government?
+                          Draft your amendment. What do you want to add to your
+                          government?
                         </small>
                       }
                       error={
@@ -133,10 +156,17 @@ class CreateAmendment extends Component {
                 </div>
               </article>
               <div id="comment-desc" className="f6 white-80">
-                Pressing "Draft Amendment" will create a new revision for this amendment. Drafts must first be ratified by a minimum electorate of Circle members, and then must be
-                approved with a majority of votes. Amendment drafts are publicly accessible, but can be removed by the owner at any point before ratification.
+                Pressing "Draft Amendment" will create a new revision for this
+                amendment. Drafts must first be ratified by a minimum electorate
+                of Circle members, and then must be approved with a majority of
+                votes. Amendment drafts are publicly accessible, but can be
+                removed by the owner at any point before ratification.
               </div>
-              <button id="create-circle-button" className="btn mt4" type="submit">
+              <button
+                id="create-circle-button"
+                className="btn mt4"
+                type="submit"
+              >
                 Draft Amendment
               </button>
             </Scrollbars>
@@ -144,12 +174,26 @@ class CreateAmendment extends Component {
         </div>
       );
     } else {
-      return <div id="dashboard-wrapper" />;
+      return (
+        <div
+          id="dashboard-wrapper"
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center"
+          }}
+        >
+          <Loader />
+        </div>
+      );
     }
   }
 }
-const WrappedCreateAmendment = withRouter(CreateAmendment);
 
-export default compose(graphql(getUserLocal, { name: 'getUserLocal' }), graphql(getActiveCircle, { name: 'getActiveCircle' }), graphql(createRevision, { name: 'createRevision' }))(
-  WrappedCreateAmendment
-);
+function mapStateToProps(state) {
+  return {
+    user: stateSelectors.pull(state, "user"),
+    activeCircle: stateSelectors.pull(state, "activeCircle")
+  };
+}
+export default withRouter(withGun(connect(mapStateToProps)(CreateAmendment)));

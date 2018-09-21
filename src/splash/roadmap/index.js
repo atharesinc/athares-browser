@@ -22,7 +22,7 @@ class Roadmap extends React.Component {
         autoHideTimeout={1000}
         autoHideDuration={200}
         universal={true}>
-        <div id="roadmap-wrapper" className="splash">
+        <div id="roadmap-wrapper" className="splash grey-screen">
           <Navbar top={this.state.top} />
           <div className="ph3 ph5-ns pt6 sans-serif white">
             <div className="center mw9">
@@ -58,105 +58,27 @@ class Roadmap extends React.Component {
           </div>
 
           <div className="pt5 white">
-            <article className="cf ph3 ph5-ns">
-              <header className="fn fl-ns w-50-ns pr4-ns">
-                <h1 className="mb3 mt0 lh-title">Athares Core</h1>
-                <time className="f6 ttu tracked gray">The Direct Democracy Platform</time>
-                <dl className="fn-l w-50 w-auto-l lh-title mr5-l">
-                  <dd className="f6 fw4 ml0">Status</dd>
-                  <dd className="f5 fw6 ml0">IN PROGRESS</dd>
-                </dl>
-              </header>
-              <div className="fn fl-ns w-50-ns bl bw3 pl4">
-                <div className="lh-copy measure mt4 mt0-ns timeline-point">
-                  <ul className="list pl0 measure center">
-                    <li className="lh-copy pv3 ba bl-0 bt-0 br-0 b--dotted b--white-50">Create government circles</li>
-                    <li className="lh-copy pv3 ba bl-0 bt-0 br-0 b--dotted b--white-50">Draft amendments</li>
-                    <li className="lh-copy pv3 ba bl-0 bt-0 br-0 b--dotted b--white-50">Vote on revisions</li>
-                    <li className="lh-copy pv3 ba bl-0 bt-0 br-0 b--dotted b--white-50">Participate in public discussion</li>
-                    <li className="lh-copy pv3 ba bl-0 bt-0 br-0 b--dotted b--white-50">Communicate privately in direct messages</li>
-                    <li className="lh-copy pv3 ba bl-0 bt-0 br-0 b--dotted b--white-50">Get public news</li>
-                  </ul>
+            {stages.map((stage, i) =>
+              <article className="cf ph3 ph5-ns" key={i}>
+                <header className="fn fl-ns w-50-ns pr4-ns">
+                  <h1 className="mb3 mt0 lh-title">{stage.product}</h1>
+                  <time className="f6 ttu tracked gray-70">{stage.desc}</time>
+                  <dl className="fn-l w-50 w-auto-l lh-title mr5-l">
+                    <dd className="f6 fw4 ml0">Status</dd>
+                    <dd className="f5 fw6 ml0">{stage.status}</dd>
+                  </dl>
+                </header>
+                <div className="fn fl-ns w-50-ns bl bw3 pl4">
+                  <div className="lh-copy measure mt4 mt0-ns timeline-point">
+                    <ul className="list pl0 measure center">
+                      {stage.objectives.map(o =>
+                        <li className="lh-copy pv3 ba bl-0 bt-0 br-0 b--dotted b--white-50">{o}</li>
+
+                      )}
+                    </ul>
+                  </div>
                 </div>
-              </div>
-            </article>
-            <article className="cf ph3 ph5-ns">
-              <header className="fn fl-ns w-50-ns pr4-ns">
-                <h1 className="mb3 mt0 lh-title">"Silent Cartographer"</h1>
-                <time className="f6 ttu tracked gray">Blockchain Distributed Services</time>
-                <dl className="fn-l w-50 w-auto-l lh-title mr5-l">
-                  <dd className="f6 fw4 ml0">Status</dd>
-                  <dd className="f5 fw6 ml0">PENDING</dd>
-                </dl>
-              </header>
-              <div className="fn fl-ns w-50-ns bl bw3 pl4">
-                <div className="lh-copy measure mt4 mt0-ns timeline-point">
-                  <ul className="list pl0 measure center">
-                    <li className="lh-copy pv3 ba bl-0 bt-0 br-0 b--dotted b--white-50">Athares brand smart-devices</li>
-                    <li className="lh-copy pv3 ba bl-0 bt-0 br-0 b--dotted b--white-50">Server-free real-time communication</li>
-                    <li className="lh-copy pv3 ba bl-0 bt-0 br-0 b--dotted b--white-50">Open-source Athares blockchain</li>
-                    <li className="lh-copy pv3 ba bl-0 bt-0 br-0 b--dotted b--white-50">Athares Initial Coin Offering (ICO)</li>
-                  </ul>
-                </div>
-              </div>
-            </article>
-            <article className="cf ph3 ph5-ns">
-              <header className="fn fl-ns w-50-ns pr4-ns">
-                <h1 className="mb3 mt0 lh-title">"Particular Justice"</h1>
-                <time className="f6 ttu tracked gray">Elected executive management module</time>
-                <dl className="fn-l w-50 w-auto-l lh-title mr5-l">
-                  <dd className="f6 fw4 ml0">Status</dd>
-                  <dd className="f5 fw6 ml0">PENDING</dd>
-                </dl>
-              </header>
-              <div className="fn fl-ns w-50-ns bl bw3 pl4">
-                <div className="lh-copy measure mt4 mt0-ns timeline-point">
-                  <ul className="list pl0 measure center">
-                    <li className="lh-copy pv3 ba bl-0 bt-0 br-0 b--dotted b--white-50">Create custom government services</li>
-                    <li className="lh-copy pv3 ba bl-0 bt-0 br-0 b--dotted b--white-50">Law enforcement command & control</li>
-                    <li className="lh-copy pv3 ba bl-0 bt-0 br-0 b--dotted b--white-50">Manage government employees</li>
-                  </ul>
-                </div>
-              </div>
-            </article>
-            <article className="cf ph3 ph5-ns">
-              <header className="fn fl-ns w-50-ns pr4-ns">
-                <h1 className="mb3 mt0 lh-title">"High Charity"</h1>
-                <time className="f6 ttu tracked gray">Cryptocurrency economy</time>
-                <dl className="fn-l w-50 w-auto-l lh-title mr5-l">
-                  <dd className="f6 fw4 ml0">Status</dd>
-                  <dd className="f5 fw6 ml0">PENDING</dd>
-                </dl>
-              </header>
-              <div className="fn fl-ns w-50-ns bl bw3 pl4">
-                <div className="lh-copy measure mt4 mt0-ns timeline-point">
-                  <ul className="list pl0 measure center">
-                    <li className="lh-copy pv3 ba bl-0 bt-0 br-0 b--dotted b--white-50">Establish Athares Cryptocurrency as default tender</li>
-                    <li className="lh-copy pv3 ba bl-0 bt-0 br-0 b--dotted b--white-50">Taxation module and provision for Circles</li>
-                    <li className="lh-copy pv3 ba bl-0 bt-0 br-0 b--dotted b--white-50">Private enterprise API</li>
-                  </ul>
-                </div>
-              </div>
-            </article>
-            <article className="cf ph3 ph5-ns">
-              <header className="fn fl-ns w-50-ns pr4-ns">
-                <h1 className="mb3 mt0 lh-title">"Unyielding Heirophant"</h1>
-                <time className="f6 ttu tracked gray">Peer-Reviewed Public Broadcasting</time>
-                <dl className="fn-l w-50 w-auto-l lh-title mr5-l">
-                  <dd className="f6 fw4 ml0">Status</dd>
-                  <dd className="f5 fw6 ml0">PENDING</dd>
-                </dl>
-              </header>
-              <div className="fn fl-ns w-50-ns bl bw3 pl4">
-                <div className="lh-copy measure mt4 mt0-ns timeline-point">
-                  <ul className="list pl0 measure center">
-                    <li className="lh-copy pv3 ba bl-0 bt-0 br-0 b--dotted b--white-50">Press and media module</li>
-                    <li className="lh-copy pv3 ba bl-0 bt-0 br-0 b--dotted b--white-50">Non-profit membership media organization</li>
-                    <li className="lh-copy pv3 ba bl-0 bt-0 br-0 b--dotted b--white-50">Crowdsource journalism</li>
-                  </ul>
-                </div>
-              </div>
-            </article>
+              </article>)}
           </div>
           <Footer />
         </div>
@@ -166,3 +88,52 @@ class Roadmap extends React.Component {
 }
 
 export default Roadmap;
+
+let stages = [{
+  product: "Athares Core",
+  desc: "The Direct Democracy Platform",
+  status: "IN PROGRESS",
+  objectives: [
+    "Create government circles", "Draft amendments", "Vote on revisions", "Participate in public discussion", "Communicate privately in direct messages", "Get public news",
+  ]
+},
+{
+  product: "Unyielding Heirophant",
+  desc: "Peer-Reviewed Public Broadcasting",
+  status: "COMING SOON",
+  objectives: [
+    "Press and media module",
+    "Non-profit membership media organization",
+    "Crowdsource journalism"],
+},
+
+{
+  product: "Silent Cartographer",
+  desc: " Blockchain Distributed Services",
+  status: "COMING SOON",
+  objectives: [
+    'Athares brand smart-devices',
+    'Server-free real-time communication',
+    'Open-source Athares blockchain',
+    'Athares Initial Coin Offering (ICO)',]
+
+}, {
+  product: "Particular Justice",
+  desc: "Elected executive management module",
+  status: "COMING SOON",
+  objectives: [
+    'Create custom government services',
+    'Law enforcement command & control',
+    'Manage government employees',]
+
+}, {
+  product: "High Charity",
+  desc: "Cryptocurrency economy",
+  status: "COMING SOON",
+  objectives: [
+    'Establish Athares Cryptocurrency as default tender',
+    'Taxation module and provision for Circles',
+    'Private enterprise API',
+  ]
+}
+];

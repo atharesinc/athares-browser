@@ -1,110 +1,122 @@
 import React, { Component } from "react";
 import ChannelGroup from "./ChannelGroup";
 import GovernanceChannelGroup from "./GovernanceChannelGroup";
-import { graphql, compose } from "react-apollo";
-import {
-    getActiveCircle,
-    getOneCircle,
-    getActiveChannel
-} from "../../graphql/queries";
 import Loader from "../Loader";
 import { Scrollbars } from "react-custom-scrollbars";
+import { Link } from "react-router-dom";
+import { connect } from "react-redux";
+import * as stateSelectors from "../../store/state/reducers";
+import { updateChannel } from "../../store/state/actions";
+import { withGun } from "../../utils/react-gun";
 
 class Channels extends Component {
-    constructor(props) {
-        super(props);
+  constructor(props) {
+    super(props);
 
-        this.state = {
-            channels: []
-        };
-    }
-    componentDidMount() {
-        if (this.props.getActiveCircle.activeCircle !== undefined) {
-            this.props.getOneCircle.refetch({
-                id: this.props.getActiveCircle.activeCircle.id
-            });
-        }
-    }
-    componentDidUpdate() {
-        if (this.props.getActiveCircle.activeCircle !== undefined) {
-            this.props.getOneCircle.refetch({
-                id: this.props.getActiveCircle.activeCircle.id
-            });
-        }
-    }
-    render() {
-        const { error, loading, Circle } = this.props.getOneCircle;
-        const { activeChannel } = this.props.getActiveChannel;
+    this.state = {
+      channels: [],
+      circle: null
+    };
+  }
+  componentDidMount() {
+    if (this.props.circle) {
+      // get this circle's and it's channels
+      let channels = [];
+      let circle = this.props.gun.get(this.props.circle);
 
-        if (loading) {
-            return (
-                <div id="channels-wrapper" style={{ justifyContent: "Center" }}>
-                    <Loader />
-                </div>
-            );
-        } else if (error) {
-            return (
-                <div id="channels-wrapper">
-                    <div>Error</div>
-                </div>
-            );
-        } else if (Circle) {
-            return (
-                <div id="channels-wrapper">
-                    <div id="circle-name">
-                        {Circle.name}
-                        <i className="mdi mdi-plus" id="circle-options" />
-                    </div>
-                    <div id="channels-list">
-                        <GovernanceChannelGroup
-                            style={style.docs}
-                            name={"Governance"}
-                        />
-                        <ChannelGroup
-                            style={style.channels}
-                            channelType={"group"}
-                            activeChannel={activeChannel}
-                            name={"Channels"}
-                            channels={Circle.channels.filter(channel => {
-                                return channel.channelType === "group";
-                            })}
-                        />
-                        <ChannelGroup
-                            style={style.dm}
-                            channelType={"dm"}
-                            activeChannel={activeChannel}
-                            name={"Direct Messages"}
-                            channels={Circle.channels.filter(channel => {
-                                return channel.channelType === "dm";
-                            })}
-                        />
-                    </div>
-                </div>
-            );
-        } else {
-            return <div id="channels-wrapper" />;
-        }
+      circle.get("channels").map(channel => {
+        channels.push(circle);
+      });
+
+      circle.once(c => {
+        this.setState({
+          channels,
+          circle: c
+        });
+      });
     }
+  }
+  componentDidUpdate() {
+    // if (this.props.getActiveCircle.activeCircle !== undefined) {
+    //     this.props.getOneCircle.refetch({
+    //         id: this.props.getActiveCircle.activeCircle.id
+    //     });
+    // }
+  }
+  render() {
+    const { activeChannel, activeCircle, user } = this.props;
+    const { circle, channels } = this.state;
+
+    if (activeCircle) {
+      return (
+        <div id="channels-wrapper">
+          <div id="circle-name">
+            {circle.name}
+            <i className="mdi mdi-plus" id="circle-options" />
+          </div>
+          <div id="channels-list">
+            <GovernanceChannelGroup style={style.docs} name={"Governance"} />
+            <ChannelGroup
+              style={style.channels}
+              channelType={"group"}
+              activeChannel={activeChannel}
+              name={"Channels"}
+              channels={channels.filter(channel => {
+                return channel.channelType === "group";
+              })}
+            />
+            <ChannelGroup
+              style={style.dm}
+              channelType={"dm"}
+              activeChannel={activeChannel}
+              name={"Direct Messages"}
+              channels={channels.filter(channel => {
+                return channel.channelType === "dm";
+              })}
+            />
+          </div>
+        </div>
+      );
+    } else {
+      return (
+        <div id="channels-wrapper">
+          <div id="circle-name">
+            No Circle Selected
+            <i className="mdi mdi-plus" id="circle-options" />
+          </div>
+          <div
+            id="channels-list"
+            style={{ justifyContent: "center", alignItems: "center" }}
+          >
+            <div>
+              Select a circle
+              {user && <Link to={"/app/new/circle"}> or create one </Link>}
+            </div>
+          </div>
+        </div>
+      );
+    }
+  }
 }
 
 const style = {
-    docs: {
-        flex: 1
-    },
-    channels: {
-        flex: 3
-    },
-    dm: {
-        flex: 3
-    }
+  docs: {
+    flex: 1
+  },
+  channels: {
+    flex: 3
+  },
+  dm: {
+    flex: 3
+  }
 };
 
-export default compose(
-    graphql(getActiveChannel, { name: "getActiveChannel" }),
+function mapStateToProps(state) {
+  return {
+    user: stateSelectors.pull(state, "user"),
+    activeCircle: stateSelectors.pull(state, "activeCircle"),
+    activeChannel: stateSelectors.pull(state, "activeChannel")
+  };
+}
 
-    graphql(getActiveCircle, { name: "getActiveCircle" }),
-    graphql(getOneCircle, {
-        name: "getOneCircle",
-        options: ({ id }) => ({ variables: { id: id || "" } })
-    })
-)(Channels);
+export default withGun(connect(mapStateToProps)(Channels));

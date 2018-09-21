@@ -1,55 +1,62 @@
-import React, { Component } from 'react';
-import ImageUpload from '../createCircle/imageUpload';
-import ErrorSwap from '../../../utils/ErrorSwap';
-import Phone from 'react-phone-number-input';
-import 'react-phone-number-input/rrui.css';
-import 'react-phone-number-input/style.css';
-import { Link } from 'react-router-dom';
-import { updateUser } from '../../../graphql/mutations';
-import { compose, graphql } from 'react-apollo';
-import Loader from '../../Loader';
-import S3 from 'aws-sdk/clients/s3';
-import keys from '../../../utils/aws-restricted-key';
-import swal from 'sweetalert';
-import { Scrollbars } from 'react-custom-scrollbars';
+import React, { Component } from "react";
+import ImageUpload from "../createCircle/imageUpload";
+import ErrorSwap from "../../../utils/ErrorSwap";
+import Phone from "react-phone-number-input";
+import "react-phone-number-input/rrui.css";
+import "react-phone-number-input/style.css";
+import { Link, withRouter } from "react-router-dom";
+import Loader from "../../Loader";
+import S3 from "aws-sdk/clients/s3";
+import keys from "../../../utils/aws-restricted-key";
+import swal from "sweetalert";
+import { Scrollbars } from "react-custom-scrollbars";
+import { withGun } from "../../../utils/react-gun";
+import { connect } from "react-redux";
+import { pull } from "../../../store/state/reducers";
 
 class EditUser extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      id: this.props.user.id || '',
-      icon: this.props.user.icon || '',
-      phone: this.props.user.phone || '',
-      firstName: this.props.user.firstName || '',
-      lastName: this.props.user.lastName || '',
-      uname: this.props.user.uname || '',
+      id: this.props.userId || "",
+      icon: this.props.user.icon || "",
+      phone: this.props.user.phone || "",
+      firstName: this.props.user.firstName || "",
+      lastName: this.props.user.lastName || "",
+      uname: this.props.user.uname || "",
       phoneTaken: false,
       unameTaken: false,
       loading: false
     };
   }
-  changeImage = (imageUrl) => {
+  componentDidMount() {
+    if (!this.props.userId) {
+      this.props.history.push("/app");
+    }
+  }
+
+  changeImage = imageUrl => {
     this.setState({
       icon: imageUrl
     });
   };
-  updateFirstName = (e) => {
+  updateFirstName = e => {
     this.setState({
       firstName: e.target.value.substring(0, 51)
     });
   };
-  updateLastName = (e) => {
+  updateLastName = e => {
     this.setState({
       lastName: e.target.value.substring(0, 51)
     });
   };
-  updateUsername = (e) => {
+  updateUsername = e => {
     this.setState({
       uname: e.target.value.substring(0, 100),
       unameTaken: false
     });
   };
-  updatePhone = (number) => {
+  updatePhone = number => {
     this.setState({
       phone: number,
       phoneTaken: false
@@ -60,7 +67,7 @@ class EditUser extends Component {
   // 		email: e.target.value.substring(0, 100)
   // 	});
   // };
-  onSubmit = async (e) => {
+  onSubmit = async e => {
     e.preventDefault();
     await this.setState({ loading: true });
 
@@ -71,11 +78,11 @@ class EditUser extends Component {
     }
     this.setState({ loading: false, unameTaken: false });
   };
-  uploadFile = async (id) => {
+  uploadFile = async id => {
     // Set credentials and region
     var s3 = new S3({
-      apiVersion: '2006-03-01',
-      region: 'us-east-2',
+      apiVersion: "2006-03-01",
+      region: "us-east-2",
       credentials: {
         accessKeyId: keys.AccessKey,
         secretAccessKey: keys.SecretAccessKey
@@ -85,31 +92,31 @@ class EditUser extends Component {
 
     var params = {
       Body: this.state.icon,
-      Bucket: 'athares-images',
-      Key: id + '.jpg',
-      ACL: 'public-read'
+      Bucket: "athares-images",
+      Key: id + ".jpg",
+      ACL: "public-read"
     };
 
     try {
       await s3.upload(params, async (err, data) => {
         if (err) {
-          console.log('An error occurred', err);
+          console.log("An error occurred", err);
           return false;
         }
         // updateUser with aws icon url
-        await this.props.updateUser({
-          variables: {
-            id: id,
-            icon: data.Location,
-            // email: this.state.email,
-            phone: this.state.phone !== '' ? this.state.phone : null,
-            firstName: this.state.firstName,
-            lastName: this.state.lastName,
-            uname: this.state.uname
-          }
-        });
+
+        // let user = {
+        //     id: id,
+        //     icon: data.Location,
+        //     // email: this.state.email,
+        //     phone: this.state.phone !== '' ? this.state.phone : null,
+        //     firstName: this.state.firstName,
+        //     lastName: this.state.lastName,
+        //     uname: this.state.uname
+        //   }
+        // this.gun.get("users").get(this.props.user).put(user);
         this.props.history.push(`/app/user`);
-        swal('User Updated', 'Your changes have been saved', 'success');
+        swal("User Updated", "Your changes have been saved", "success");
       });
     } catch (err) {
       console.log(err);
@@ -127,18 +134,26 @@ class EditUser extends Component {
         <div
           id="dashboard-wrapper"
           style={{
-            justifyContent: 'center'
+            justifyContent: "center"
           }}
-          className="pa2">
+          className="pa2"
+        >
           <Loader />
-          <h1 className="mb3 mt0 lh-title mt4 f3 f2-ns">Saving User Information</h1>
+          <h1 className="mb3 mt0 lh-title mt4 f3 f2-ns">
+            Saving User Information
+          </h1>
         </div>
       );
     }
     return (
       <div id="dashboard-wrapper">
-        <Scrollbars style={{ width: '100%', height: '100%' }} autoHide autoHideTimeout={1000} autoHideDuration={200} universal={true}>
-
+        <Scrollbars
+          style={{ width: "100%", height: "100%" }}
+          autoHide
+          autoHideTimeout={1000}
+          autoHideDuration={200}
+          universal={true}
+        >
           <form
             className="pa4 white wrapper"
             onSubmit={this.onSubmit}
@@ -148,26 +163,35 @@ class EditUser extends Component {
               <div
                 className="w-100 row-center"
                 style={{
-                  justifyContent: 'space-between',
-                  flexDirection: 'row-reverse'
-                }}>
-                <Link className="f6 link dim br-pill ba bw1 ph3 pv2 ml4-ns ml2 dib white" to="/app/user">
+                  justifyContent: "space-between",
+                  flexDirection: "row-reverse"
+                }}
+              >
+                <Link
+                  className="f6 link dim br-pill ba bw1 ph3 pv2 ml4-ns ml2 dib white"
+                  to="/app/user"
+                >
                   BACK
-              </Link>
+                </Link>
                 <h1 className="mv0 lh-title">Edit Info</h1>
               </div>
               <header className="fn fl-ns w-50-ns pr4-ns">
-                <ImageUpload onSet={this.changeImage} defaultImage={this.state.icon} />
+                <ImageUpload
+                  onSet={this.changeImage}
+                  defaultImage={this.state.icon}
+                />
                 <small id="name-desc" className="f6 white-80 db mb2">
-                  Your profile picture will be cropped as a circle. It is recommended you upload a square photo with dimensions around 250x250 pixels.
-              </small>
+                  Your profile picture will be cropped as a circle. It is
+                  recommended you upload a square photo with dimensions around
+                  250x250 pixels.
+                </small>
               </header>
               <div className="fn fl-ns w-50-ns mt4">
                 <div className="row-center">
                   <div className="w-50 mb4">
                     <label htmlFor="firstName" className="f6 b db mb2">
                       First Name
-                  </label>
+                    </label>
                     <input
                       id="firstName"
                       className="input-reset ba pa2 mb2 db ghost w-90"
@@ -181,7 +205,7 @@ class EditUser extends Component {
                   <div className="w-50 mb4">
                     <label htmlFor="lastName" className="f6 b db mb2">
                       Last Name
-                  </label>
+                    </label>
                     <input
                       id="lastName"
                       className="input-reset ba pa2 mb2 db ghost w-100"
@@ -196,7 +220,7 @@ class EditUser extends Component {
                 <div className="measure mb4">
                   <label htmlFor="name" className="f6 b db mb2">
                     Phone Number
-                </label>
+                  </label>
                   <Phone
                     placeholder="+1 123 456 7890"
                     value={this.state.phone}
@@ -212,13 +236,14 @@ class EditUser extends Component {
                     condition={!this.state.phoneTaken}
                     normal={
                       <small id="name-desc" className="f6 white-80 db mb2">
-                        Your phone number is used for multi-factor authentication. This number must be unique.
-                    </small>
+                        Your phone number is used for multi-factor
+                        authentication. This number must be unique.
+                      </small>
                     }
                     error={
                       <small id="name-desc" className="f6 red db mb2">
                         This number has already been taken.
-                    </small>
+                      </small>
                     }
                   />
                 </div>
@@ -260,7 +285,7 @@ class EditUser extends Component {
                 <div className="measure mb4">
                   <label htmlFor="uname" className="f6 b db mb2">
                     Unique Name
-                </label>
+                  </label>
                   <input
                     id="uname"
                     className="input-reset ba pa2 mb2 db w-100 ghost"
@@ -274,13 +299,14 @@ class EditUser extends Component {
                     condition={!this.state.unameTaken}
                     normal={
                       <small id="name-desc" className="f6 white-80 db mb2">
-                        This is a human-readable way to uniquely identify each user. This name must be unique.
-                    </small>
+                        This is a human-readable way to uniquely identify each
+                        user. This name must be unique.
+                      </small>
                     }
                     error={
                       <small id="name-desc" className="f6 red db mb2">
                         Sorry! This name has already been taken.
-                    </small>
+                      </small>
                     }
                   />
                 </div>
@@ -289,7 +315,7 @@ class EditUser extends Component {
 
             <button id="create-circle-button" className="btn" type="submit">
               SAVE
-          </button>
+            </button>
           </form>
         </Scrollbars>
       </div>
@@ -297,4 +323,9 @@ class EditUser extends Component {
   }
 }
 
-export default compose(graphql(updateUser, { name: 'updateUser' }))(EditUser);
+function mapStateToProps(state) {
+  return {
+    userId: pull(state, "user")
+  };
+}
+export default withRouter(withGun(connect(mapStateToProps)(EditUser)));

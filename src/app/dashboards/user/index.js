@@ -1,53 +1,115 @@
-import React, { Component } from 'react';
-import ViewUser from './ViewUser';
-import EditUser from './EditUser';
-import ViewOtherUser from './ViewOtherUser'; // same as view user w/o btns to toggle
-import { Switch, Route } from 'react-router-dom';
-import { getUserLocal, getUserRemote } from '../../../graphql/queries';
-import Loader from '../../Loader';
-import { compose, graphql } from 'react-apollo';
+import React, { Component } from "react";
+import ViewUser from "./ViewUser";
+import EditUser from "./EditUser";
+import ViewOtherUser from "./ViewOtherUser"; // same as view user w/o btns to toggle
+import { Switch, Route } from "react-router-dom";
+import Loader from "../../Loader";
+import { connect } from "react-redux";
+import { withGun } from "../../../utils/react-gun";
+import * as stateSelectors from "../../../store/state/reducers";
 
 class User extends Component {
+  state = {
+    loading: false,
+    user: null,
+    voteCount: 0,
+    revisionCount: 0,
+    circleCount: 0,
+    passedRevisionCount: 0
+  };
   componentDidMount() {
-    this.props.getUserRemote.refetch({
-      id: this.props.getUserLocal.user.id
-    });
+    if (!this.props.user && this.props.location.pathname === "/app/user") {
+      this.props.history.push("/app");
+    }
+    // get this user from this.props.match :id
+    // let userRef = this.props.gun.get("users").get(this.props.match.params.id);
+    // let newState = {
+    //   user: null,
+    //   voteCount: 0,
+    //   revisionCount: 0,
+    //   circleCount: 0,
+    //   passedRevisionCount: 0
+    // };
+    // userRef.once(user => {
+    //   newState.user = user;
+    //   // now get their votes
+    //   userRef.get("votes").once(votes => {
+    //     newState.voteCount++;
+    //   });
+    //   // now get their revisions
+    //   userRef.get("revisions").map(revision => {
+    //     newState.revisionCount++;
+    //     if (revision.passed) {
+    //       newState.passedRevisionsCount++;
+    //     }
+    //   });
+    //   // get their circles
+    //   userRef.get("circles").once(circle => {
+    //     newState.circleCount++;
+    //   });
+    // });
+    // this.setState({
+    //   ...newState
+    // });
   }
   render() {
-    console.log(this.props.getUserRemote);
-    const { loading, error, User } = this.props.getUserRemote;
+    const { user, loading, ...stats } = this.state;
+    const { match } = this.props;
+
     if (loading) {
       return (
         <div
           id="dashboard-wrapper"
           style={{
-            justifyContent: 'center'
+            justifyContent: "center"
           }}
-          className="pa2">
+          className="pa2"
+        >
           <Loader />
-          <h1 className="mb3 mt0 lh-title mt4 f3 f2-ns">Getting User Information</h1>
+          <h1 className="mb3 mt0 lh-title mt4 f3 f2-ns">
+            Getting User Information
+          </h1>
         </div>
       );
-    } else if (error) {
-      return <div>Loading</div>;
-    } else if (User) {
-      const { match } = this.props;
-      return (
-        <Switch>
-          <Route exact path={`${match.path}`} component={(props) => <ViewUser {...props} user={User} />} />
-          <Route exact path={`${match.path}/edit`} component={(props) => <EditUser {...props} user={User} />} />
-          <Route exact path={`${match.path}/:id`} component={(props) => <ViewOtherUser {...props} />} />
-        </Switch>
-      );
-    } else {
-      return null;
     }
+    return (
+      <Switch>
+        {user && (
+          <Route
+            exact
+            path={`${match.path}`}
+            component={props => (
+              <ViewUser {...props} stats={stats} user={user} />
+            )}
+          />
+        )}
+        {user && (
+          <Route
+            exact
+            path={`${match.path}/edit`}
+            component={props => <EditUser {...props} user={user} />}
+          />
+        )}
+        <Route
+          exact
+          path={`${match.path}/:id`}
+          component={props => <ViewOtherUser {...props} />}
+        />
+        <Route
+          component={props => {
+            props.history.push(`/app`);
+            return null;
+          }}
+        />
+      </Switch>
+    );
   }
 }
-export default compose(
-  graphql(getUserLocal, { name: 'getUserLocal' }),
-  graphql(getUserRemote, {
-    name: 'getUserRemote',
-    options: ({ id }) => ({ variables: { id: id || '' } })
-  })
-)(User);
+
+function mapStateToProps(state) {
+  return {
+    user: stateSelectors.pull(state, "user")
+  };
+}
+
+export default connect(mapStateToProps)(User);
