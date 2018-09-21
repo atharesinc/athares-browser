@@ -1,11 +1,13 @@
-import React, { Component } from "react";
-import Circles from "./circles";
+import React, { Component, Fragment } from "react";
+import Loader from "./Loader";
+
+import TopNav from "./mobile/TopNav";
+import Circles from "./mobile/Circles";
+import BottomNav from "./mobile/BottomNav";
 import Channels from "./channels";
 import Dashboards from "./dashboards";
 import PushingMenu from "./menu";
 import { Switch, Route } from "react-router-dom";
-import Loader from "./Loader";
-import BottomNav from "./navs/BottomNav";
 
 class MobileLayout extends Component {
   constructor(props) {
@@ -72,7 +74,16 @@ class MobileLayout extends Component {
           }}
           id="app-wrapper"
         >
+          <TopNav toggleMenu={this.toggleMenu} />
           <Switch>
+            <Route
+              exact
+              component={props => <CirclesAndChannels />}
+              path="/app"
+            />
+            <Route component={props => <Dashboards {...props} />} />
+          </Switch>
+          {/* <Switch>
             <Route
               exact
               path="/app/circles"
@@ -86,12 +97,12 @@ class MobileLayout extends Component {
               component={props => <Channels {...props} />}
             />
             <Route path="/app" component={props => <Dashboards {...props} />} />
-          </Switch>
-          <BottomNav
+          </Switch> */}
+          {/* <BottomNav
             toggleMenu={this.toggleMenu}
             show={atChatWindow}
             activeTab={activeTab}
-          />
+          /> */}
         </div>
       </div>
     );
@@ -99,3 +110,11 @@ class MobileLayout extends Component {
 }
 
 export default MobileLayout;
+
+const CirclesAndChannels = () => (
+  <Fragment>
+    <Circles activeCircle={"87a6sd9f87"} />
+    <Channels />
+    <BottomNav />
+  </Fragment>
+);

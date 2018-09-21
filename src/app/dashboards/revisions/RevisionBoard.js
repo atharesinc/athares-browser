@@ -57,34 +57,35 @@ class RevisionBoard extends Component {
         </div>
       );
     }
-    let revisions = [
-      // non-ratified revisions
-      allRevisions.filter(rev => rev.ratified),
-      // ratified and not older than 7 days
-      allRevisions.filter(
-        rev =>
-          rev.ratified &&
-          rev.updatedAt <
-            moment(rev.createdAt, "YYYY-MM-DDTHH:mm:ss.SSSZ")
-              .add(7, "days")
-              .format()
-      ),
-      allRevisions.filter(
-        rev =>
-          rev.ratified &&
-          rev.updatedAt >
-            moment(rev.createdAt, "YYYY-MM-DDTHH:mm:ss.SSSZ")
-              .add(7, "days")
-              .format()
-      ),
-      allRevisions.filter(
-        rev =>
-          rev.ratified &&
-          rev.updatedAt > moment().format() &&
-          rev.votes.filter(v => v.support).length >
-            rev.votes.filter(v => !v.support).length
-      )
-    ];
+    // let revisions = [
+    //   // non-ratified revisions
+    //   allRevisions.filter(rev => rev.ratified),
+    //   // ratified and not older than 7 days
+    //   allRevisions.filter(
+    //     rev =>
+    //       rev.ratified &&
+    //       rev.updatedAt <
+    //         moment(rev.createdAt, "YYYY-MM-DDTHH:mm:ss.SSSZ")
+    //           .add(7, "days")
+    //           .format()
+    //   ),
+    //   allRevisions.filter(
+    //     rev =>
+    //       rev.ratified &&
+    //       rev.updatedAt >
+    //         moment(rev.createdAt, "YYYY-MM-DDTHH:mm:ss.SSSZ")
+    //           .add(7, "days")
+    //           .format()
+    //   ),
+    //   allRevisions.filter(
+    //     rev =>
+    //       rev.ratified &&
+    //       rev.updatedAt > moment().format() &&
+    //       rev.votes.filter(v => v.support).length >
+    //         rev.votes.filter(v => !v.support).length
+    //   )
+    // ];
+    let revisions = [[fakeRevision, fakeRevision], [], [], []];
     console.log(revisions);
     return (
       <div id="revisions-wrapper">
@@ -108,7 +109,16 @@ const Board = ({ title, revisions }) => {
       <div className="bb b--white pa2 mb2">
         <div className="white">{title}</div>
       </div>
-      <Scrollbars style={{ height: "100%", width: "100%" }}>
+      <Scrollbars
+        style={{
+          height: revisions.length * 11.5 + "em",
+          width: "100%",
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "flex-start",
+          alignItems: "center"
+        }}
+      >
         {revisions.map((rev, i) => <RevisionWithRouter key={i} {...rev} />)}
       </Scrollbars>
     </div>
@@ -129,56 +139,54 @@ const RevisionCard = ({
 }) => {
   const support = votes.filter(({ support }) => support).length;
   return (
-    <SelectCornersDiv className="mw5 mw6-ns hidden mb3">
-      <Link to={`${props.match.url}/${id}`}>
-        <h1 className="f6 bg-theme-light white-80 mv0 ph3 pv2">
-          {amendment !== null ? amendment.title : title}
-        </h1>
-        <div className="pa3 bg-theme">
+    <Link to={`${props.match.url}/${id}`}>
+      <h1 className="f6 bg-theme-light white-80 mv0 ph3 pv2">
+        {amendment !== null ? amendment.title : title}
+      </h1>
+      <div className="pa3 bg-theme">
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "row",
+            justifyContent: "space-between",
+            alignItems: "center"
+          }}
+          className="mb2"
+        >
           <div
-            style={{
-              display: "flex",
-              flexDirection: "row",
-              justifyContent: "space-between",
-              alignItems: "center"
-            }}
-            className="mb2"
+            className={`f7 white pa1 br-pill ph2 lh-solid bg-${
+              amendment !== null ? "theme-blue" : "green"
+            }`}
           >
-            <div
-              className={`f7 white pa1 br-pill ph2 lh-solid bg-${
-                amendment !== null ? "theme-blue" : "green"
-              }`}
-            >
-              {amendment !== null ? "REVISION" : "NEW"}
-            </div>
-            <small>
-              <span className="light-green">+{support}</span> /{" "}
-              <span className="red">-{votes.length - support}</span>
-            </small>
+            {amendment !== null ? "REVISION" : "NEW"}
           </div>
-          <p
-            className="f7 lh-copy measure mv3 white pre-wrap h2"
-            style={{ overflow: "hidden" }}
-          >
-            {newText}
-          </p>
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "row",
-              justifyContent: "flex-start",
-              alignItems: "center"
-            }}
-            className="mt2"
-          >
-            <img src={backer.icon} className="db br-100 w2 h2 mr2" alt="" />
-            <small className="f6 white-70 db ml2">
-              {new Date(createdAt).toLocaleDateString()}
-            </small>
-          </div>
+          <small>
+            <span className="light-green">+{support}</span> /{" "}
+            <span className="red">-{votes.length - support}</span>
+          </small>
         </div>
-      </Link>
-    </SelectCornersDiv>
+        <p
+          className="f7 lh-copy measure mv3 white pre-wrap h2"
+          style={{ overflow: "hidden" }}
+        >
+          {newText}
+        </p>
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "row",
+            justifyContent: "flex-start",
+            alignItems: "center"
+          }}
+          className="mt2"
+        >
+          <img src={backer.icon} className="db br-100 w2 h2 mr2" alt="" />
+          <small className="f6 white-70 db ml2">
+            {new Date(createdAt).toLocaleDateString()}
+          </small>
+        </div>
+      </div>
+    </Link>
   );
 };
 const RevisionWithRouter = withRouter(RevisionCard);
@@ -198,3 +206,36 @@ function mapStateToProps(state) {
 }
 
 export default withGun(withRouter(connect(mapStateToProps)(RevisionBoard)));
+
+const fakeRevision = {
+  id: "1",
+  createdAt: new Date().getTime() - 37 * 1000 + 37 * 100,
+  updatedAt: new Date(
+    new Date().getTime() - 86400000 * Math.floor(Math.random() * 8)
+  ),
+  oldText:
+    "All legislative Powers herein granted shall be vested in a Congress of the United States, which shall consist of a Senate and House of Representatives.",
+  newText: `All legislative Pwers. Herein granted shall be vested in a Congress of the United States, which shall consist of a Senate and House of Representatives.
+
+kjsndfkjsndkfjn  sdf sadf sdf sdf
+
+sdfsdfsdf`,
+  amendment: { id: 4 },
+  title: "Deep Space Exploration Act",
+  ratified: true,
+  backer: {
+    firstName: "Erlich",
+    lastName: "Bachmann",
+    icon: "http://mrmrs.github.io/photos/p/2.jpg",
+    id: "s9d87f6g9"
+  },
+  votes: fakeVotes()
+};
+function fakeVotes() {
+  const num = Math.floor(Math.random() * 50 + 1);
+  const votes = [];
+  for (let i = 0; i < num; ++i) {
+    votes.push({ id: num + i, support: Math.random() > 0.5 });
+  }
+  return votes;
+}

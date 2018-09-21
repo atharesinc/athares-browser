@@ -1084,7 +1084,6 @@ input[type="phone"],
   background: #282a3899;
   height: 100%;
   width: calc(100vw - 10vh - 30vw);
-  /* overflow-y: scroll; */
 }
 
 #revision-board-wrapper {
@@ -1349,7 +1348,7 @@ a:visited {
     height: 93vh;
     flex: none;
     width: 100vw !important;
-    overflow-y: scroll;
+    /* overflow-y: scroll; */
   }
   #channels-wrapper {
     height: calc(100vh - 9em);
@@ -1360,8 +1359,6 @@ a:visited {
   }
   #revision-board-wrapper {
     padding: 0;
-  }
-  #circles-wrapper {
   }
   .circle-img-wrapper {
     width: 100vw;

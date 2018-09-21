@@ -19,7 +19,7 @@ import { TweenMax } from "gsap";
 import Gun from "gun";
 import "gun/sea";
 import { GunProvider } from "./utils/react-gun";
-import Test from "./TestMobile";
+// import Test from "./TestMobile";
 
 class App extends Component {
   constructor(props) {
@@ -116,7 +116,7 @@ class App extends Component {
                     )
                   }
                 />
-                <Route exact path="/test" component={Test} />
+                {/* <Route exact path="/test" component={Test} /> */}
                 <Route component={NoMatch} />
               </Switch>
             </GunProvider>

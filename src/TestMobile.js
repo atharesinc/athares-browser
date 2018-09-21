@@ -1,101 +1,113 @@
-import React from "react";
+import React, { Component, Fragment } from "react";
 import Channels from "./app/channels";
 import FeatherIcon from "feather-icons-react";
 import { Scrollbars } from "react-custom-scrollbars";
+import { Switch, Route } from "react-router-dom";
+import TopNav from "./app/mobile/TopNav";
+import Circles from "./app/mobile/Circles";
+import BottomNav from "./app/mobile/BottomNav";
 
 const MobileTest = props => {
   return (
     <div>
       <TopNav />
-      <Circles activeCircle={"87a6sd9f87"} />
-      <Channels />
-      <BottomNav />
+      <Switch>
+        <Route component={CirclesAndChannels} />
+      </Switch>
     </div>
   );
 };
 
 export default MobileTest;
 
-const TopNav = props => (
-  <div
-    className="w-100 v-mid bg-theme-dark flex flex-row justify-between items-center pv2 ph3"
-    style={{ height: "3em" }}
-  >
-    <img
-      src={window.location.origin + "/img/user-default.png"}
-      className="ba b--white br-100 w2 h2 bw1"
-      alt="Menu"
-    />
-
-    <FeatherIcon
-      icon="search"
-      className="white w2 h2"
-      style={{ height: "1.5em", width: "1.5em" }}
-    />
-  </div>
+const CirclesAndChannels = () => (
+  <Fragment>
+    <Circles circles={circles} activeCircle={"87a6sd9f87"} />
+    <Channels />
+    <BottomNav />
+  </Fragment>
 );
 
-const Circles = props => {
-  const setActive = () => {};
-  return (
-    <div
-      className="w-100 v-mid bg-theme-dark flex flex-row justify-between items-center pv2 ph3"
-      style={{ height: "3em" }}
-    >
-      <FeatherIcon
-        icon="plus-circle"
-        className="white w2 h2 mr2"
-        style={{ height: "1.5em", width: "1.5em" }}
-      />
-      <Scrollbars
-        style={{ width: "80vw", height: "100%" }}
-        autoHide
-        autoHideTimeout={1000}
-        autoHideDuration={200}
-        universal={true}
-      >
-        <div className="flex flex-row justify-between items-center">
-          {circles.map(circle => (
-            <Circle
-              key={circle.id}
-              {...circle}
-              isActive={circle.id === props.activeCircle}
-              selectCircle={setActive}
-            />
-          ))}
-        </div>
-      </Scrollbars>
-    </div>
-  );
-};
-const Circle = ({ id, name, icon, selectCircle, isActive }) => {
-  return (
-    <img
-      src={icon}
-      className="br-100 w2 h2 bw1 mh1"
-      alt=""
-      data-circle-id={id}
-      data-circle-name={name}
-      onClick={() => {
-        selectCircle(id);
-      }}
-    />
-  );
-};
+// const TopNav = props => (
+//   <div
+//     className="w-100 v-mid bg-theme-dark flex flex-row justify-between items-center pv2 ph3"
+//     style={{ height: "3em" }}
+//   >
+//     <img
+//       src={window.location.origin + "/img/user-default.png"}
+//       className="ba b--white br-100 w2 h2 bw1"
+//       alt="Menu"
+//     />
 
-const BottomNav = props => (
-  <div
-    className="w-100 v-mid bg-theme-dark flex flex-row justify-start items-center pv2 ph3"
-    style={{ height: "3em" }}
-  >
-    <FeatherIcon
-      icon="plus"
-      className="white w2 h2 mr3"
-      style={{ height: "1.5em", width: "1.5em" }}
-    />
-    <div className="white">Invite User</div>
-  </div>
-);
+//     <FeatherIcon
+//       icon="search"
+//       className="white w2 h2"
+//       style={{ height: "1.5em", width: "1.5em" }}
+//     />
+//   </div>
+// );
+
+// const Circles = props => {
+//   const setActive = () => {};
+//   return (
+//     <div
+//       className="w-100 v-mid bg-theme-dark flex flex-row justify-between items-center pv2 ph3"
+//       style={{ height: "3em" }}
+//     >
+//       <FeatherIcon
+//         icon="plus-circle"
+//         className="white w2 h2 mr2"
+//         style={{ height: "1.5em", width: "1.5em" }}
+//       />
+//       <Scrollbars
+//         style={{ width: "80vw", height: "100%" }}
+//         autoHide
+//         autoHideTimeout={1000}
+//         autoHideDuration={200}
+//         universal={true}
+//       >
+//         <div className="flex flex-row justify-between items-center">
+//           {circles.map(circle => (
+//             <Circle
+//               key={circle.id}
+//               {...circle}
+//               isActive={circle.id === props.activeCircle}
+//               selectCircle={setActive}
+//             />
+//           ))}
+//         </div>
+//       </Scrollbars>
+//     </div>
+//   );
+// };
+// const Circle = ({ id, name, icon, selectCircle, isActive }) => {
+//   return (
+//     <img
+//       src={icon}
+//       className="br-100 w2 h2 bw1 mh1"
+//       alt=""
+//       data-circle-id={id}
+//       data-circle-name={name}
+//       onClick={() => {
+//         selectCircle(id);
+//       }}
+//     />
+//   );
+// };
+
+// const BottomNav = props => (
+//   <div
+//     className="w-100 v-mid bg-theme-dark flex flex-row justify-start items-center pv2 ph3"
+//     style={{ height: "3em" }}
+//   >
+//     <FeatherIcon
+//       icon="plus"
+//       className="white w2 h2 mr3"
+//       style={{ height: "1.5em", width: "1.5em" }}
+//     />
+//     <div className="white">Invite User</div>
+//   </div>
+// );
 
 let circles = [
   {
