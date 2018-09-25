@@ -2,14 +2,15 @@ import React from "react";
 import { pushRotate as Menu } from "react-burger-menu";
 import { Link } from "react-router-dom";
 import FeatherIcon from "feather-icons-react";
-
-import * as stateSelectors from "../../store/state/reducers";
-import { updateUser } from "../../store/state/actions";
+import { updateUser, updatePub } from "../../store/state/actions";
 import { connect } from "react-redux";
 
 const MenuWrapper = ({ isOpen, history, isMenuOpen, user, ...props }) => {
   const logout = async () => {
     props.dispatch(updateUser(null));
+    props.dispatch(updatePub(null));
+    sessionStorage.clear();
+
     history.push("/login");
   };
 
@@ -123,8 +124,6 @@ const MenuWrapper = ({ isOpen, history, isMenuOpen, user, ...props }) => {
 };
 
 function mapStateToProps(state) {
-  return {
-    user: stateSelectors.pull(state, "user")
-  };
+  return {};
 }
 export default connect(mapStateToProps)(MenuWrapper);

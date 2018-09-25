@@ -28,8 +28,9 @@ class App extends Component {
     this.state = {
       width: window.innerWidth
     };
-    window.Gun = Gun;
+    // window.Gun = Gun;
     this.gun = Gun();
+    window.gun = this.gun;
   }
   updateWidth() {
     this.setState({
@@ -75,7 +76,6 @@ class App extends Component {
     });
   }
   parallaxIt = (e, target, movement, rootElement) => {
-    console.log();
     var $this = document.querySelector(rootElement);
     var relX = e.pageX - $this.offsetLeft;
     var relY = e.pageY - $this.offsetTop;

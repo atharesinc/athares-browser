@@ -4,6 +4,12 @@ export function updateUser(user) {
   };
 }
 
+export function updatePub(pub) {
+  return async dispatch => {
+    dispatch({ type: "UPDATE_PUB", pub });
+  };
+}
+
 export function updateCircle(circle) {
   return async dispatch => {
     dispatch({ type: "UPDATE_CIRCLE", circle });

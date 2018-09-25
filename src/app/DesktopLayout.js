@@ -6,6 +6,7 @@ import PushingMenu from "./menu";
 // import { Redirect } from "react-router-dom";
 import { withGun } from "../utils/react-gun";
 import { connect } from "react-redux";
+import * as stateSelectors from "../store/state/reducers";
 
 import Loader from "./Loader";
 
@@ -13,8 +14,19 @@ class DesktopLayout extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      isOpen: false
+      isOpen: false,
+      user: null
     };
+  }
+  componentDidMount() {
+    // get this user's circles
+    let userRef = this.props.gun.user(this.props.pub);
+
+    userRef.get("profile").once(user => {
+      this.setState({
+        user
+      });
+    });
   }
   toggleMenu = () => {
     this.setState({
@@ -33,6 +45,7 @@ class DesktopLayout extends Component {
           isOpen={this.state.isOpen}
           isMenuOpen={this.isMenuOpen}
           history={this.props.history}
+          user={this.state.user}
         />
         <div
           className="wrapper"
@@ -50,4 +63,11 @@ class DesktopLayout extends Component {
   }
 }
 
-export default DesktopLayout;
+function mapStateToProps(state) {
+  return {
+    user: stateSelectors.pull(state, "user"),
+    pub: stateSelectors.pull(state, "pub")
+  };
+}
+
+export default connect(mapStateToProps)(withGun(DesktopLayout));

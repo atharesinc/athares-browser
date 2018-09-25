@@ -11,6 +11,8 @@ export default function reduce(state = initialState, action = {}) {
       return { ...state, user: action.user };
     case "UPDATE_CIRCLE":
       return { ...state, activeCircle: action.circle };
+    case "UPDATE_PUB":
+      return { ...state, pub: action.pub };
     case "UPDATE_CHANNEL":
       return { ...state, activeChannel: action.channel };
     case "UPDATE_REVISION":

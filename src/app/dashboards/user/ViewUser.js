@@ -24,9 +24,9 @@ class ViewUser extends React.Component {
     };
   }
   componentDidMount() {
-    if (!this.props.userId) {
-      this.props.history.push("/app");
-    }
+    // if (!this.props.userId) {
+    //   this.props.history.push("/app");
+    // }
     this.setState({
       loading: false
     });

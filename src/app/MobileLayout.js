@@ -8,13 +8,18 @@ import Channels from "./channels";
 import Dashboards from "./dashboards";
 import PushingMenu from "./menu";
 import { Switch, Route } from "react-router-dom";
+import { withGun } from "../utils/react-gun";
+import { connect } from "react-redux";
+import { pull } from "../store/state/reducers";
 
 class MobileLayout extends Component {
   constructor(props) {
     super(props);
     this.state = {
       index: 0,
-      isOpen: false
+      isOpen: false,
+      user: null,
+      circles: []
     };
   }
   /*Triggered when swiping between views (mobile only) */
@@ -26,6 +31,26 @@ class MobileLayout extends Component {
       });
     }
   };
+  componentDidMount() {
+    // get this user's circles
+    let userRef = this.props.gun.user(this.props.pub);
+
+    userRef.get("profile").once(user => {
+      let circles = [];
+
+      userRef
+        .get("profile")
+        .get("circles")
+        .map(circle => {
+          circles.push(circle);
+        });
+
+      this.setState({
+        user,
+        circles
+      });
+    });
+  }
   /* Triggered when manually switching views (with button) */
   changeIndex = e => {
     const switcher = {
@@ -48,22 +73,24 @@ class MobileLayout extends Component {
     });
   };
   render() {
-    const atChatWindow =
-      /\/app\/channel\/.+/.test(window.location.pathname) ||
-      /\/app\/new\/message/.test(window.location.pathname);
-    const activeTab = /\/app\/circle/.test(window.location.pathname)
-      ? "circles"
-      : /\/channel/.test(window.location.pathname)
-        ? "channels"
-        : /\/app\/user/.test(window.location.pathname)
-          ? "user"
-          : "app";
+    // const atChatWindow =
+    //   /\/app\/channel\/.+/.test(window.location.pathname) ||
+    //   /\/app\/new\/message/.test(window.location.pathname);
+    // const activeTab = /\/app\/circle/.test(window.location.pathname)
+    //   ? "circles"
+    //   : /\/channel/.test(window.location.pathname)
+    //     ? "channels"
+    //     : /\/app\/user/.test(window.location.pathname)
+    //       ? "user"
+    //       : "app";
+    const { user, circles } = this.state;
     return (
       <div id="app-wrapper-outer" className="wrapper">
         <PushingMenu
           isOpen={this.state.isOpen}
           isMenuOpen={this.isMenuOpen}
           history={this.props.history}
+          user={user}
         />
         <div
           index={this.state.index}
@@ -78,42 +105,34 @@ class MobileLayout extends Component {
           <Switch>
             <Route
               exact
-              component={props => <CirclesAndChannels />}
+              component={props => (
+                <CirclesAndChannels
+                  activeCircle={this.props.activeCircle}
+                  circles={circles}
+                />
+              )}
               path="/app"
             />
             <Route component={props => <Dashboards {...props} />} />
           </Switch>
-          {/* <Switch>
-            <Route
-              exact
-              path="/app/circles"
-              component={props => (
-                <Circles {...props} toggleMenu={this.toggleMenu} />
-              )}
-            />
-            <Route
-              exact
-              path="/app/channels"
-              component={props => <Channels {...props} />}
-            />
-            <Route path="/app" component={props => <Dashboards {...props} />} />
-          </Switch> */}
-          {/* <BottomNav
-            toggleMenu={this.toggleMenu}
-            show={atChatWindow}
-            activeTab={activeTab}
-          /> */}
         </div>
       </div>
     );
   }
 }
+function mapStateToProps(state) {
+  return {
+    user: pull(state, "user"),
+    pub: pull(state, "pub"),
+    activeCircle: pull(state, "activeCircle")
+  };
+}
 
-export default MobileLayout;
+export default withGun(connect(mapStateToProps)(MobileLayout));
 
-const CirclesAndChannels = () => (
+const CirclesAndChannels = ({ circles, activeCircle }) => (
   <Fragment>
-    <Circles activeCircle={"87a6sd9f87"} />
+    <Circles activeCircle={activeCircle} circles={circles} />
     <Channels />
     <BottomNav />
   </Fragment>

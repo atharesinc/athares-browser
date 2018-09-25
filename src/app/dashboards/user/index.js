@@ -18,39 +18,41 @@ class User extends Component {
     passedRevisionCount: 0
   };
   componentDidMount() {
-    if (!this.props.user && this.props.location.pathname === "/app/user") {
+    if (!this.props.user) {
       this.props.history.push("/app");
     }
-    // get this user from this.props.match :id
-    // let userRef = this.props.gun.get("users").get(this.props.match.params.id);
-    // let newState = {
-    //   user: null,
-    //   voteCount: 0,
-    //   revisionCount: 0,
-    //   circleCount: 0,
-    //   passedRevisionCount: 0
-    // };
-    // userRef.once(user => {
-    //   newState.user = user;
-    //   // now get their votes
-    //   userRef.get("votes").once(votes => {
-    //     newState.voteCount++;
-    //   });
-    //   // now get their revisions
-    //   userRef.get("revisions").map(revision => {
-    //     newState.revisionCount++;
-    //     if (revision.passed) {
-    //       newState.passedRevisionsCount++;
-    //     }
-    //   });
-    //   // get their circles
-    //   userRef.get("circles").once(circle => {
-    //     newState.circleCount++;
-    //   });
-    // });
-    // this.setState({
-    //   ...newState
-    // });
+
+    let userRef = this.props.gun.user(this.props.pub);
+
+    let newState = {
+      user: null,
+      voteCount: 0,
+      revisionCount: 0,
+      circleCount: 0,
+      passedRevisionCount: 0
+    };
+
+    userRef.get("profile").once(user => {
+      newState.user = user;
+      // now get their votes
+      userRef.get("votes").once(votes => {
+        newState.voteCount++;
+      });
+      // now get their revisions
+      userRef.get("revisions").map(revision => {
+        newState.revisionCount++;
+        if (revision.passed) {
+          newState.passedRevisionsCount++;
+        }
+      });
+      // get their circles
+      userRef.get("circles").once(circle => {
+        newState.circleCount++;
+      });
+    });
+    this.setState({
+      ...newState
+    });
   }
   render() {
     const { user, loading, ...stats } = this.state;
@@ -108,8 +110,9 @@ class User extends Component {
 
 function mapStateToProps(state) {
   return {
-    user: stateSelectors.pull(state, "user")
+    user: stateSelectors.pull(state, "user"),
+    pub: stateSelectors.pull(state, "pub")
   };
 }
 
-export default connect(mapStateToProps)(User);
+export default withGun(connect(mapStateToProps)(User));
