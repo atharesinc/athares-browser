@@ -19,7 +19,15 @@ import { TweenMax } from "gsap";
 import Gun from "gun";
 import "gun/sea";
 import { GunProvider } from "./utils/react-gun";
+import { connect } from "react-redux";
+import { updateUser, updatePub } from "./store/state/actions";
 // import Test from "./TestMobile";
+
+// IndexedDb stuff for later
+// import "gun/lib/radix.js";
+// import "gun/lib/radisk.js";
+// import "gun/lib/store.js";
+// import "gun/lib/rindexed.js";
 
 class App extends Component {
   constructor(props) {
@@ -29,6 +37,10 @@ class App extends Component {
       width: window.innerWidth
     };
     // window.Gun = Gun;
+    // For indexeddb support later
+    //     var opt = {};
+    // opt.store = RindexedDB(opt);
+    // var gun = Gun(opt);
     this.gun = Gun();
     window.gun = this.gun;
   }
@@ -41,21 +53,26 @@ class App extends Component {
     this.routeFix();
   }
   async componentDidMount() {
-    let uri = this.props.location.pathname;
-    // await this.props.setStateFromUri({ variables: { uri } });
-
-    window.addEventListener(
-      "resize",
-      throttle(this.updateWidth.bind(this), 1000)
-    );
+    // check if user could log in
+    if (sessionStorage.alias && sessionStorage.tmp) {
+      this.gun.user().recall({ sessionStorage: true });
+      let user = this.gun.user();
+      await user.auth(sessionStorage.alias, sessionStorage.tmp, ack => {
+        user.get("profile").once(profile => {
+          this.props.dispatch(updateUser(profile.id));
+          this.props.dispatch(updatePub(ack.pub));
+        });
+      });
+    }
+    // let uri = this.props.location.pathname;
+    // // await this.props.setStateFromUri({ variables: { uri } });
+    window.addEventListener("resize", throttle(this.updateWidth.bind(this), 1000));
     this.routeFix();
   }
   routeFix = () => {
     let uri = this.props.location.pathname;
 
-    document
-      .getElementById("root")
-      .addEventListener("mousemove", this.parallaxApp, true);
+    document.getElementById("root").addEventListener("mousemove", this.parallaxApp, true);
     document.getElementById("root").style.overflow = "hidden";
   };
   parallaxApp = e => {
@@ -66,10 +83,7 @@ class App extends Component {
     this.parallaxIt(e, "#main-layout", -30, "#main-layout");
   };
   componentWillUnmount() {
-    window.addEventListener(
-      "resize",
-      throttle(this.updateWidth.bind(this), 1000)
-    );
+    window.addEventListener("resize", throttle(this.updateWidth.bind(this), 1000));
     document.getElementById("root").addEventListener("mousemove", e => {
       e.stopPropogation();
       e.preventDefault();
@@ -92,30 +106,15 @@ class App extends Component {
     return (
       <div className="wrapper high-img" id="main-layout">
         <div id="desktop-wrapper-outer" className="wrapper">
-          <div className="wrapper" id="desktop-wrapper">
+          <div className="wrapper grey-screen" id="desktop-wrapper">
             <GunProvider gun={this.gun}>
               <Switch>
-                <Route
-                  path="/login"
-                  component={props => <Login {...props} />}
-                />
-                <Route
-                  path="/register"
-                  component={props => <Register {...props} />}
-                />
+                <Route exact path="/login" component={props => <Login {...props} />} />
+                <Route exact path="/register" component={props => <Register {...props} />} />
                 <Route exact path="/" component={SplashPage} />
                 <Route exact path="/roadmap" component={Roadmap} />
                 <Route exact path="/about" component={About} />
-                <Route
-                  path="/app"
-                  component={props =>
-                    this.state.width >= 992 ? (
-                      <DesktopLayout {...props} />
-                    ) : (
-                      <MobileLayout {...props} />
-                    )
-                  }
-                />
+                <Route path="/app" component={props => (this.state.width >= 992 ? <DesktopLayout {...props} /> : <MobileLayout {...props} />)} />
                 {/* <Route exact path="/test" component={Test} /> */}
                 <Route component={NoMatch} />
               </Switch>
@@ -127,4 +126,7 @@ class App extends Component {
   }
 }
 
-export default withRouter(App);
+function mapStateToProps(state) {
+  return {};
+}
+export default withRouter(connect(mapStateToProps)(App));

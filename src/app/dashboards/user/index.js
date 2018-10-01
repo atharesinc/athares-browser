@@ -10,7 +10,7 @@ import * as stateSelectors from "../../../store/state/reducers";
 
 class User extends Component {
   state = {
-    loading: false,
+    loading: true,
     user: null,
     voteCount: 0,
     revisionCount: 0,
@@ -21,8 +21,9 @@ class User extends Component {
     if (!this.props.user) {
       this.props.history.push("/app");
     }
-
-    let userRef = this.props.gun.user(this.props.pub);
+    // get the logged-in user ref
+    let userRef = this.props.gun.user();
+    let revisionsRef = this.props.gun.get("revisions");
 
     let newState = {
       user: null,
@@ -33,26 +34,29 @@ class User extends Component {
     };
 
     userRef.get("profile").once(user => {
-      newState.user = user;
+      newState.user = { ...user };
       // now get their votes
-      userRef.get("votes").once(votes => {
+      userRef.get("votes").map(vote => {
         newState.voteCount++;
       });
       // now get their revisions
       userRef.get("revisions").map(revision => {
         newState.revisionCount++;
-        if (revision.passed) {
-          newState.passedRevisionsCount++;
-        }
+        // We have to get the whole revision to see anything about it besides the id
+        revisionsRef.get(revision).once(data => {
+          if (data.passed) {
+            newState.passedRevisionsCount++;
+          }
+        });
       });
       // get their circles
-      userRef.get("circles").once(circle => {
+      userRef.get("circles").map(circle => {
         newState.circleCount++;
       });
     });
-    this.setState({
-      ...newState
-    });
+
+    // For some reason I'm setting state with a function here ... ?
+    this.setState(() => ({ ...newState, loading: false }));
   }
   render() {
     const { user, loading, ...stats } = this.state;
@@ -68,41 +72,22 @@ class User extends Component {
           className="pa2"
         >
           <Loader />
-          <h1 className="mb3 mt0 lh-title mt4 f3 f2-ns">
-            Getting User Information
-          </h1>
+          <h1 className="mb3 mt0 lh-title mt4 f3 f2-ns">Getting User Information</h1>
         </div>
       );
     }
     return (
       <Switch>
-        {user && (
-          <Route
-            exact
-            path={`${match.path}`}
-            component={props => (
-              <ViewUser {...props} stats={stats} user={user} />
-            )}
-          />
-        )}
-        {user && (
-          <Route
-            exact
-            path={`${match.path}/edit`}
-            component={props => <EditUser {...props} user={user} />}
-          />
-        )}
-        <Route
-          exact
-          path={`${match.path}/:id`}
-          component={props => <ViewOtherUser {...props} />}
-        />
-        <Route
+        <Route exact path={`${match.path}`} component={props => <ViewUser {...props} stats={stats} user={user} />} />
+        )
+        <Route exact path={`${match.path}/edit`} component={props => <EditUser {...props} user={user} />} />
+        <Route exact path={`${match.path}/:id`} component={props => <ViewOtherUser {...props} />} />
+        {/* <Route
           component={props => {
             props.history.push(`/app`);
             return null;
           }}
-        />
+        /> */}
       </Switch>
     );
   }

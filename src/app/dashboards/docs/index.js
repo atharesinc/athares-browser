@@ -14,18 +14,29 @@ class Constitution extends Component {
   };
 
   componentDidMount() {
-    // get this circle and amendments from activeCircle
-    // this.circle = this.props.gun.get("circles").get(this.props.activeCircle);
-    // this.circle.once(circle => {
-    //   let amendments = [];
-    //   this.circle.get("amendments").map(amendment => {
-    //     amendments.push(amendment);
-    //   });
-    //   this.setState({
-    //     circle,
-    //     amendments
-    //   });
-    // });
+    // get this circle's id from activeCircle if possible or whatever is in the url bar
+    let circleID = this.props.activeCircle
+      ? this.props.activeCircle
+      : this.props.match.params.id;
+
+    let circleRef = this.props.gun.get("circles").get(circleID);
+    let amendmentsRef = this.props.gun.get("amendments");
+
+    // Get the circle's info and its amendments from Gun
+    circleRef.once(circle => {
+      let amendments = [];
+      circleRef.get("amendments").map(amendmentID => {
+        amendmentsRef.get(amendmentID).once(amendment => {
+          amendments.push(amendment);
+        });
+      });
+
+      // Update state
+      this.setState({
+        circle,
+        amendments
+      });
+    });
   }
   render() {
     const { amendments, circle } = this.state;
@@ -69,10 +80,12 @@ class Constitution extends Component {
           style={{
             justifyContent: "center",
             alignItems: "center",
-            display: "flex"
+            display: "flex",
+            flexDirection: "column"
           }}
         >
           <Loader />
+          <div className="f3 pb2 b mv4 tc">Loading Constitution</div>
         </div>
       );
     }
@@ -81,7 +94,8 @@ class Constitution extends Component {
 
 function mapStateToProps(state) {
   return {
-    user: stateSelectors.pull(state, "user")
+    user: stateSelectors.pull(state, "user"),
+    activeCircle: stateSelectors.pull(state, "activeCircle")
   };
 }
 

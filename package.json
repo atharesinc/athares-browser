@@ -31,7 +31,7 @@
     "graphql": "^0.13.2",
     "graphql-tag": "^2.9.2",
     "gsap": "^1.20.4",
-    "gun": "^0.9.99994",
+    "gun": "^0.9.99995",
     "localforage": "^1.7.1",
     "lodash.debounce": "^4.0.8",
     "lodash.throttle": "^4.1.1",

@@ -4,18 +4,20 @@ import ErrorSwap from "../../../utils/ErrorSwap";
 import { withGun } from "../../../utils/react-gun";
 import { connect } from "react-redux";
 import * as stateSelectors from "../../../store/state/reducers";
-
-import S3 from "aws-sdk/clients/s3";
-import keys from "../../../utils/aws-restricted-key";
+import { updateCircle } from "../../../store/state/actions";
+import Gun from "gun/gun";
 import Loader from "../../Loader";
 import swal from "sweetalert";
 import { Scrollbars } from "react-custom-scrollbars";
+import moment from "moment";
+import { resizeBase64 } from "resize-base64";
 
 class createCircleBoard extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
+      // this should be whatever fits into an img src value or a css url(), either a filepath or bas64 encoded image string
       icon: "/img/Athares-logo-large-white.png",
       name: "",
       preamble: "",
@@ -28,6 +30,18 @@ class createCircleBoard extends Component {
     if (!this.props.user) {
       this.props.history.push("/app");
     }
+
+    let that = this;
+    fetch(this.state.icon)
+      .then(function(response) {
+        return response.blob();
+      })
+      .then(function(blob) {
+        // here the image is a blob
+        that.setState({
+          icon: blob
+        });
+      });
   }
   changeImage = imageUrl => {
     this.setState({
@@ -45,78 +59,83 @@ class createCircleBoard extends Component {
       preamble: e.target.value
     });
   };
+  convertBlobToBase64 = blob => {
+    return new Promise(resolve => {
+      let reader = new FileReader();
+      reader.readAsDataURL(blob);
+      reader.onloadend = function() {
+        resolve(reader.result);
+      };
+    });
+  };
   onSubmit = async e => {
     e.preventDefault();
-    // validate & trim fields
-    console.log(this.state);
+    let { name, preamble, icon } = this.state;
+    let base64Large = await this.convertBlobToBase64(icon);
+
+    let base64Small = await this.shrinkBase64(base64Large);
+
+    // console.log("Shrunk to " + base64Small.length / base64Large.length + "% of original file size");
+
+    (preamble = preamble.trim()), (name = name.trim());
+    if (preamble === "" || name === "") {
+      swal("Sorry", "Circles must have a name and preamble.", "error");
+      return false;
+    }
     await this.setState({ loading: true });
 
-    // try {
-    //   // create circle and get the id
-    //   const res = await this.props.createCircle({
-    //     variables: {
-    //       name: this.state.name,
-    //       preamble: this.state.preamble,
-    //       icon: 'https://s3.us-east-2.amazonaws.com/athares-images/Athares-logo-large-white.png',
-    //       usersIds: [this.props.getUserLocal.user.id]
-    //     }
-    //   });
-    //   console.log(res);
-
-    //   //upload image to AWS (propbably)
-    //   await this.uploadFile(res.data.createCircle.id);
-    // } catch (err) {
-    //   // poor Error handling
-    //   if (err.message.includes('A unique constraint')) {
-    //     this.setState({ loading: false, isTaken: true });
-    //   }
-    //   console.log(new Error(err));
-    //   this.setState({ loading: false }, () => {
-    //     swal('Sorry', 'Failed to create Circle. Please try again later', 'error');
-    //   });
-    // }
-  };
-  uploadFile = async id => {
-    // Set credentials and region
-    var s3 = new S3({
-      apiVersion: "2006-03-01",
-      region: "us-east-2",
-      credentials: {
-        accessKeyId: keys.AccessKey,
-        secretAccessKey: keys.SecretAccessKey
-      },
-      logger: console
-    });
-
-    var params = {
-      Body: this.state.icon,
-      Bucket: "athares-images",
-      Key: id + ".jpg",
-      ACL: "public-read"
+    // create circle
+    let newCircle = {
+      id: Gun.text.random(),
+      name: name,
+      preamble: preamble,
+      icon: base64Small,
+      createdAt: moment().format(),
+      updatedAt: moment().format(),
+      users: {}
     };
 
-    try {
-      await s3.upload(params, async (err, data) => {
-        if (err) {
-          console.log("An error occurred", err);
-          return false;
-        }
-        // updateCircle with aws icon url
-        // const newCircle = await this.props.updateCircleIcon({
-        //   variables: {
-        //     id: id,
-        //     icon: data.Location
-        //   }
-        // });
-        // console.log(newCircle);
-        // this.props.setActiveCircle({
-        //   variables: { id: newCircle.data.updateCircle.id }
-        // });
-        // this.props.history.push(`/app/circle/${newCircle.data.updateCircle.id}/constitution`);
-      });
-    } catch (err) {
-      console.log(err);
-    }
+    newCircle.users[Gun.text.random()] = this.props.user;
+    // get the new circle's reference
+    let newCircRef = this.props.gun.get("circles").get(newCircle.id);
+    // create the new circle in circles
+    newCircRef.put(newCircle);
+    // add the user as the first user in this circle
+    // newCircRef.get("users").set(this.props.user, () => {
+    // add this circle to the current users circles
+    // this is for the purpose of two way many-to-many lookup (graph stuff)
+    let user = this.props.gun.user(this.props.pub);
+    user
+      .get("circles")
+      .get(Gun.text.random())
+      .put(newCircle.id);
+
+    // set activeCircle as this one
+    this.props.dispatch(updateCircle(newCircle.id));
+    user.get("profile").once(profile => {
+      console.log(profile);
+    });
+    await this.setState({ loading: false });
+
+    this.props.history.push("/app/circle/" + newCircle.id + "/constitution");
+  };
+
+  shrinkBase64 = base64String => {
+    return new Promise(resolve => {
+      let maxWidth = 200;
+      let maxHeight = 200;
+
+      // let successCallback = function(resizedImage) {
+      //   console.log(resizedImage.length);
+      // };
+
+      let errorCallback = function(errorMessage) {
+        console.log(errorMessage);
+        alert(errorMessage);
+      };
+
+      resizeBase64(base64String, maxWidth, maxHeight, resolve, errorCallback);
+    });
   };
   clearError = () => {
     this.setState({
@@ -134,30 +153,19 @@ class createCircleBoard extends Component {
           className="pa2"
         >
           <Loader />
-          <h1 className="mb3 mt0 lh-title mt4 f3 f2-ns">
-            Creating Your Circle
-          </h1>
+          <h1 className="mb3 mt0 lh-title mt4 f3 f2-ns">Creating Your Circle</h1>
         </div>
       );
     }
     return (
       <div id="dashboard-wrapper">
-        <form
-          className="pa4 white wrapper"
-          onSubmit={this.onSubmit}
-          id="create-circle-form"
-        >
+        <form className="pa4 white wrapper" onSubmit={this.onSubmit} id="create-circle-form">
           <Scrollbars style={{ height: "100%", width: "100%" }}>
             <article className="cf">
               <h1 className="mb3 mt0 lh-title">Create New Circle</h1>
-              <time className="f7 ttu tracked white-80">
-                Circles represent the digital repository for your government.
-              </time>
+              <time className="f7 ttu tracked white-80">Circles represent the digital repository for your government.</time>
               <header className="fn fl-ns w-50-ns pr4-ns">
-                <ImageUpload
-                  onSet={this.changeImage}
-                  defaultImage={this.state.icon}
-                />
+                <ImageUpload onSet={this.changeImage} defaultImage={this.state.icon} />
               </header>
               <div className="fn fl-ns w-50-ns mt4">
                 <div className="measure mb4">
@@ -202,18 +210,15 @@ class createCircleBoard extends Component {
                     onChange={this.updatePreamble}
                   />
                   <small id="comment-desc" className="f6 white-80">
-                    Describe your government in a few sentences. This will be
-                    visible at the top of the Constitution and outlines the
-                    basic vision of this government.
+                    Describe your government in a few sentences. This will be visible at the top of the Constitution and outlines the basic vision of
+                    this government.
                   </small>
                 </div>
               </div>
             </article>
             <div id="comment-desc" className="f6 white-80">
-              By pressing "Create Circle" you will create a new government with
-              a the above name, preamble, and the selected image. After this
-              point, all changes must be made through the democratic revision
-              process.
+              By pressing "Create Circle" you will create a new government with a the above name, preamble, and the selected image. After this point,
+              all changes must be made through the democratic revision process.
             </div>
             <button id="create-circle-button" className="btn mt4" type="submit">
               Create Circle
@@ -227,7 +232,8 @@ class createCircleBoard extends Component {
 
 function mapStateToProps(state) {
   return {
-    user: stateSelectors.pull(state, "user")
+    user: stateSelectors.pull(state, "user"),
+    pub: stateSelectors.pull(state, "pub")
   };
 }
 

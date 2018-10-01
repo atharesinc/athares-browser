@@ -5,7 +5,6 @@ import Loader from "../../Loader";
 import Slider from "rc-slider/lib/Slider";
 import "rc-slider/assets/index.css";
 import EXIF from "exif-js";
-import { resizeBase64 } from "resize-base64";
 
 export default class ImageUpload extends React.Component {
   constructor(props) {
@@ -63,26 +62,6 @@ export default class ImageUpload extends React.Component {
     } catch (err) {
       throw new Error(err);
     }
-  };
-  convertBase64 = base64String => {
-    let maxWidth = 200;
-    let maxHeight = 200;
-
-    let successCallback = function(resizedImage) {
-      console.log(resizedImage.length);
-    };
-
-    let errorCallback = function(errorMessage) {
-      alert(errorMessage);
-    };
-
-    resizeBase64(
-      base64String,
-      maxWidth,
-      maxHeight,
-      successCallback,
-      errorCallback
-    );
   };
   dataURItoBlob = dataURI => {
     var binary = atob(dataURI.split(",")[1]);

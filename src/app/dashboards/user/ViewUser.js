@@ -12,28 +12,23 @@ class ViewUser extends React.Component {
     super(props);
     this.state = {
       loading: true,
-      user: {
-        id: this.props.userId || "",
-        icon: this.props.user.icon || "",
-        phone: this.props.user.phone || "",
-        firstName: this.props.user.firstName || "",
-        lastName: this.props.user.lastName || "",
-        uname: this.props.user.uname || ""
-      },
+      user: this.props.user,
       stats: this.props.stats
     };
   }
   componentDidMount() {
-    // if (!this.props.userId) {
-    //   this.props.history.push("/app");
-    // }
+    if (!this.props.userId) {
+      this.props.history.push("/app");
+    }
+
     this.setState({
       loading: false
     });
   }
 
   render() {
-    const { user, stats, loading } = this.state;
+    const { loading, user, stats } = this.state;
+    console.log(user);
     if (loading) {
       <div id="dashboard-wrapper">
         <Loader />
@@ -146,7 +141,9 @@ class ViewUser extends React.Component {
             </dl>
             <dl className="dib mr5">
               <dd className="f6 f5-ns b ml0 white-70">User Since</dd>
-              <dd className="f4 f3-ns b ml0">{user.createdAt}</dd>
+              <dd className="f4 f3-ns b ml0">
+                {moment(user.createdAt).format("MM/DD/YY")}
+              </dd>
             </dl>
           </article>
         </Scrollbars>

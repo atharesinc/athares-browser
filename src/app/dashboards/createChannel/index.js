@@ -6,6 +6,7 @@ import * as stateSelectors from "../../../store/state/reducers";
 import Loader from "../../Loader";
 import { Scrollbars } from "react-custom-scrollbars";
 import Gun from "gun/gun";
+import { updateChannel } from "../../../store/state/actions";
 
 class CreateChannel extends Component {
   constructor(props) {
@@ -30,7 +31,8 @@ class CreateChannel extends Component {
       .get(this.props.activeCircle)
       .once(circle => {
         this.setState({
-          activeCircle: circle
+          activeCircle: circle,
+          loading: false
         });
       });
   }
@@ -48,56 +50,45 @@ class CreateChannel extends Component {
   };
   onSubmit = async e => {
     e.preventDefault();
-    try {
-      if (this.state.name.trim().length === 0) {
-        return false;
-      }
-
-      // /* Check if doesn't exist */
-      // if (this.props.checkIfNameUnique.Circle.channels.length !== 0) {
-      //     return false;
-      // }
-
-      // validate & trim fields
-
-      /* create channel */
-      const newChannel = {
-        name: this.state.name,
-        circleId: this.props.activeCircle,
-        description: this.state.description,
-        channelType: "group",
-        id: Gun.text.random()
-      };
-
-      this.props.gun
-        .get("channels")
-        .get(newChannel.id)
-        .put(newChannel);
-
-      this.props.history.push(
-        `/app/circle/${this.props.activeCircle}/channel/${newChannel.id}`
-      );
-    } catch (err) {
-      console.error(new Error(err));
+    if (this.state.name.trim().length === 0) {
+      return false;
     }
+
+    // /* Check if doesn't exist */
+    // if (this.props.checkIfNameUnique.Circle.channels.length !== 0) {
+    //     return false;
+    // }
+
+    // validate & trim fields
+
+    /* create channel */
+    const newChannel = {
+      name: this.state.name,
+      circle: this.props.activeCircle,
+      description: this.state.description,
+      channelType: "group",
+      id: Gun.text.random()
+    };
+
+    this.props.gun
+      .get("channels")
+      .get(newChannel.id)
+      .put(newChannel, data => {
+        console.log(data);
+        // add this channel's reference to the parent circle
+        this.props.gun
+          .get("circles")
+          .get(this.props.activeCircle)
+          .get("channels")
+          .set(newChannel.id);
+
+        this.props.dispatch(updateChannel(newChannel.id));
+        this.props.history.push(`/app/circle/${this.props.activeCircle}/channel/${newChannel.id}`);
+      });
   };
   render() {
     const { loading, activeCircle } = this.state;
-    // if (error) {
-    //     return (
-    //         <div
-    //             id="dashboard-wrapper"
-    //             style={{
-    //                 justifyContent: "center"
-    //             }}
-    //             className="pa2"
-    //         >
-    //             <h1 className="mb3 mt0 lh-title mt4 f3 f2-ns">
-    //                 Error connecting to network
-    //             </h1>
-    //         </div>
-    //     );
-    // }
+
     if (this.state.loading || loading) {
       return (
         <div
@@ -108,25 +99,17 @@ class CreateChannel extends Component {
           className="pa2"
         >
           <Loader />
-          {this.state.loading && (
-            <h1 className="mb3 mt0 lh-title mt4 f3 f2-ns">Creating Channel</h1>
-          )}
+          {this.state.loading && <h1 className="mb3 mt0 lh-title mt4 f3 f2-ns">Creating Channel</h1>}
         </div>
       );
     }
     return (
       <div id="dashboard-wrapper">
-        <form
-          className="pa4 white wrapper"
-          onSubmit={this.onSubmit}
-          id="create-circle-form"
-        >
+        <form className="pa4 white wrapper" onSubmit={this.onSubmit} id="create-circle-form">
           <Scrollbars style={{ height: "100%", width: "100%" }}>
             <article className="cf">
               <h1 className="mb3 mt0 lh-title">Create Channel</h1>
-              <time className="f7 ttu tracked white-80">
-                Create a new channel within {activeCircle.name}
-              </time>
+              <time className="f7 ttu tracked white-80">Create a new channel within {activeCircle.name}</time>
               <div className="fn mt4">
                 <div className="measure mb4">
                   <label htmlFor="name" className="f6 b db mb2">
@@ -142,10 +125,7 @@ class CreateChannel extends Component {
                     onChange={this.updateName}
                   />
                   <ErrorSwap
-                    condition={
-                      !this.state.isTaken ||
-                      this.props.checkIfNameUnique.Circle.channels.length !== 0
-                    }
+                    condition={!this.state.isTaken || this.props.checkIfNameUnique.Circle.channels.length !== 0}
                     normal={
                       <small id="name-desc" className="f6 white-80 db mb2">
                         This name must be unique to this Circle.
@@ -160,8 +140,7 @@ class CreateChannel extends Component {
                 </div>
                 <div className="mv4">
                   <label htmlFor="comment" className="f6 b db mb2">
-                    Description{" "}
-                    <span className="normal white-80">(optional)</span>
+                    Description <span className="normal white-80">(optional)</span>
                   </label>
                   <textarea
                     id="comment"
@@ -180,9 +159,8 @@ class CreateChannel extends Component {
               </div>
             </article>
             <div id="comment-desc" className="f6 white-80">
-              By pressing "Create Channel" you will create a new government with
-              a the above name and description. After this point, all changes
-              must be made through the democratic revision process.
+              By pressing "Create Channel" you will create a new government with a the above name and description. After this point, all changes must
+              be made through the democratic revision process.
             </div>
             <button id="create-circle-button" className="btn mt4" type="submit">
               Create Channel

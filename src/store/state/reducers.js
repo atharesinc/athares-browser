@@ -2,7 +2,8 @@ const initialState = {
   user: null,
   activeCircle: null,
   activeChannel: null,
-  activeRevision: null
+  activeRevision: null,
+  pub: null
 };
 
 export default function reduce(state = initialState, action = {}) {

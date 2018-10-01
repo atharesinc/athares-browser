@@ -7,6 +7,25 @@ import { withGun } from "../../../utils/react-gun";
 import * as stateSelectors from "../../../store/state/reducers";
 
 class Dashboard extends Component {
+  state = {
+    news: []
+  };
+
+  componentDidMount() {
+    // fetch("https:github.com/repos/atharesinc/athares-browser/commits")
+    // .then(data => data.json)
+    // .then(data => {
+    //   let news = [];
+    //   data.map(({base_commit:{ commit : {message}}}) => {
+    //     let newsItem = {
+    //       message: message.replace(/.+:\s(.*)/ig, "$1")
+    //     }
+    //     news.push(newsItem);
+    //   })
+    // }).catch(err => {
+    //   // console.log("Couldn't connect to Github API")
+    // })
+  }
   render() {
     return (
       <div

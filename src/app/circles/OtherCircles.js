@@ -14,32 +14,31 @@ class OtherCircles extends Component {
     circles: []
   };
 
-  componentDidMount() {
+  async componentDidMount() {
     if (this.props.user) {
-      // get this user's circles
-      console.log(this.props);
-      let user = this.props.gun.user(this.props.pub);
+      let user = this.props.gun.user();
       let circleRef = this.props.gun.get("circles");
 
-      let circles = [];
+      let circles = [],
+        refsToCircles = [];
+      // get this user's circles
+      let res = await user.get("circles").map(circle => {
+        refsToCircles.push(circle);
+        return circle;
+      });
 
-      user
-        .get("profile")
-        .get("circles")
-        .map(circle => {
-          circleRef.get(circle).once(data => {
-            circles.push(data);
+      // get each circle's data from the array of references
+      let results = await refsToCircles.map(async c => {
+        let res = await circleRef.get(c).once(data => {
+          this.setState({
+            circles: [...this.state.circles, data]
           });
         });
-
-      this.setState({
-        circles
       });
     }
   }
   setActive = id => {
     this.props.dispatch(updateCircle(id));
-    this.props.history.push("/app/circle/" + id);
   };
   render() {
     const { circles, user } = this.state;
@@ -55,12 +54,7 @@ class OtherCircles extends Component {
           universal={true}
         >
           {circles.map(circle => (
-            <Circle
-              key={circle.id}
-              {...circle}
-              isActive={circle.id === this.props.activeCircle}
-              selectCircle={this.setActive}
-            />
+            <Circle key={circle.id} {...circle} isActive={circle.id === this.props.activeCircle} selectCircle={this.setActive} />
           ))}
         </Scrollbars>
       </div>

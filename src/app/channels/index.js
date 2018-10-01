@@ -6,7 +6,7 @@ import { Scrollbars } from "react-custom-scrollbars";
 import { Link } from "react-router-dom";
 import { connect } from "react-redux";
 import * as stateSelectors from "../../store/state/reducers";
-import { updateChannel } from "../../store/state/actions";
+import { updateChannel, updateCircle } from "../../store/state/actions";
 import { withGun } from "../../utils/react-gun";
 
 class Channels extends Component {
@@ -19,35 +19,47 @@ class Channels extends Component {
     };
   }
   componentDidMount() {
-    if (this.props.circle) {
-      // get this circle's and it's channels
-      let channels = [];
-      let circle = this.props.gun.get(this.props.circle);
-
-      circle.get("channels").map(channel => {
-        channels.push(circle);
-      });
-
-      circle.once(c => {
-        this.setState({
-          channels,
-          circle: c
-        });
-      });
+    this.getChannels();
+  }
+  componentDidUpdate(prevProps) {
+    console.log(prevProps, this.props);
+    if (prevProps.activeCircle !== this.props.activeCircle) {
+      this.getChannels();
     }
   }
-  componentDidUpdate() {
-    // if (this.props.getActiveCircle.activeCircle !== undefined) {
-    //     this.props.getOneCircle.refetch({
-    //         id: this.props.getActiveCircle.activeCircle.id
-    //     });
-    // }
-  }
+  getChannels = () => {
+    let circleID;
+    if (this.props.activeCircle) {
+      circleID = this.props.activeCircle;
+    } else if (/circle\/(\w+)/.test(this.props.location.pathname)) {
+      circleID = /circle\/(\w+)/.exec(this.props.location.pathname)[1];
+      this.props.dispatch(updateCircle(circleID));
+      return false;
+    }
+    // get this circle's and it's channels
+    let channels = [];
+    let circleRef = this.props.gun.get("circles").get(circleID);
+    let channelRef = this.props.gun.get("channels");
+
+    circleRef.get("channels").map(channelId => {
+      channelRef.get(channelId).once(channel => {
+        channels.push(channel);
+      });
+    });
+
+    // console.log(channels);
+    circleRef.once(c => {
+      this.setState({
+        channels,
+        circle: c
+      });
+    });
+  };
   render() {
     const { activeChannel, activeCircle, user } = this.props;
     const { circle, channels } = this.state;
 
-    if (activeCircle) {
+    if (circle) {
       return (
         <div id="channels-wrapper">
           <div id="circle-name">
@@ -84,10 +96,7 @@ class Channels extends Component {
             No Circle Selected
             <i className="mdi mdi-plus" id="circle-options" />
           </div>
-          <div
-            id="channels-list"
-            style={{ justifyContent: "center", alignItems: "center" }}
-          >
+          <div id="channels-list" style={{ justifyContent: "center", alignItems: "center" }}>
             <div>
               Select a circle
               {user && <Link to={"/app/new/circle"}> or create one </Link>}

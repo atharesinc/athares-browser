@@ -33,17 +33,31 @@ class MobileLayout extends Component {
   };
   componentDidMount() {
     // get this user's circles
-    let userRef = this.props.gun.user(this.props.pub);
+    let userRef = this.props.gun.user();
 
-    userRef.get("profile").once(user => {
+    userRef.get("profile").once(async user => {
       let circles = [];
 
-      userRef
-        .get("profile")
-        .get("circles")
-        .map(circle => {
-          circles.push(circle);
+      if (this.props.user) {
+        let user = this.props.gun.user();
+        let circleRef = this.props.gun.get("circles");
+
+        let refsToCircles = [];
+        // get this user's circles
+        let res = await user.get("circles").map(circle => {
+          refsToCircles.push(circle);
+          return circle;
         });
+
+        // get each circle's data from the array of references
+        let results = await refsToCircles.map(async c => {
+          let res = await circleRef.get(c).once(data => {
+            this.setState({
+              circles: [...this.state.circles, data]
+            });
+          });
+        });
+      }
 
       this.setState({
         user,
@@ -62,7 +76,6 @@ class MobileLayout extends Component {
     });
   };
   toggleMenu = () => {
-    console.log("trigger");
     this.setState({
       isOpen: !this.state.isOpen
     });
@@ -73,25 +86,11 @@ class MobileLayout extends Component {
     });
   };
   render() {
-    // const atChatWindow =
-    //   /\/app\/channel\/.+/.test(window.location.pathname) ||
-    //   /\/app\/new\/message/.test(window.location.pathname);
-    // const activeTab = /\/app\/circle/.test(window.location.pathname)
-    //   ? "circles"
-    //   : /\/channel/.test(window.location.pathname)
-    //     ? "channels"
-    //     : /\/app\/user/.test(window.location.pathname)
-    //       ? "user"
-    //       : "app";
     const { user, circles } = this.state;
+    console.log(circles);
     return (
       <div id="app-wrapper-outer" className="wrapper">
-        <PushingMenu
-          isOpen={this.state.isOpen}
-          isMenuOpen={this.isMenuOpen}
-          history={this.props.history}
-          user={user}
-        />
+        <PushingMenu isOpen={this.state.isOpen} isMenuOpen={this.isMenuOpen} history={this.props.history} user={user} />
         <div
           index={this.state.index}
           className="wrapper"
@@ -105,12 +104,7 @@ class MobileLayout extends Component {
           <Switch>
             <Route
               exact
-              component={props => (
-                <CirclesAndChannels
-                  activeCircle={this.props.activeCircle}
-                  circles={circles}
-                />
-              )}
+              component={props => <CirclesAndChannels activeCircle={this.props.activeCircle} circles={circles} {...props} />}
               path="/app"
             />
             <Route component={props => <Dashboards {...props} />} />
@@ -130,10 +124,10 @@ function mapStateToProps(state) {
 
 export default withGun(connect(mapStateToProps)(MobileLayout));
 
-const CirclesAndChannels = ({ circles, activeCircle }) => (
+const CirclesAndChannels = props => (
   <Fragment>
-    <Circles activeCircle={activeCircle} circles={circles} />
-    <Channels />
-    <BottomNav />
+    <Circles activeCircle={props.activeCircle} circles={props.circles} />
+    <Channels {...props} />
+    <BottomNav show={props.user} />
   </Fragment>
 );

@@ -50,10 +50,10 @@ class Register extends PureComponent {
         phone: "",
         icon: defaultUser,
         uname: "",
-        messages: null,
-        revisions: null,
-        circles: null,
-        votes: null,
+        // messages: null,
+        // revisions: null,
+        // circles: null,
+        // votes: null,
         createdAt: moment().format(),
         updatedAt: moment().format()
       };
@@ -64,8 +64,22 @@ class Register extends PureComponent {
           swal("Error", "User already exists with that email.", "error");
           return false;
         }
+        this.props.gun
+          .get("users")
+          .get(user.id)
+          .put(ack.pub);
         newUser.auth(email, password, otherAck => {
-          console.log("two", otherAck, newUser);
+          // setup user's other information (since apparently it can't live inside of profile)
+          // Before i tried to set circles as an object inside of profile so that the user's circles could be attained with:
+          // user.get("profile").get("circles").map(circle=>...)
+          // but I was unable to set or get/put anything to circles for some reason.
+          // Since it makes more sense for user's graph references to be outside the user's profile that's where they'll live
+          newUser.get("circles");
+          newUser.get("messages");
+          newUser.get("revisions");
+          newUser.get("votes");
+
+          // Actually set the user's information
           newUser.get("profile").put(user);
           newUser.get("profile").once(profile => {
             console.log("fourth", profile, newUser);
@@ -94,21 +108,11 @@ class Register extends PureComponent {
     return (
       <Fragment>
         <div id="portal-header">
-          <img
-            src="/img/Athares-logo-small-white.png"
-            id="portal-logo"
-            alt="logo"
-          />
-          <img
-            src="/img/Athares-full-small-white.png"
-            id="portal-brand"
-            alt="brand"
-          />
+          <img src="/img/Athares-logo-small-white.png" id="portal-logo" alt="logo" />
+          <img src="/img/Athares-full-small-white.png" id="portal-brand" alt="brand" />
         </div>
         <div className="wrapper" id="portal-register">
-          <p className="portal-text">
-            Create an account by completing the following fields
-          </p>
+          <p className="portal-text">Create an account by completing the following fields</p>
           <div className="portal-input-wrapper">
             <FeatherIcon className="portal-input-icon h1 w1" icon="user" />
             <input
@@ -158,12 +162,7 @@ class Register extends PureComponent {
               tabIndex="4"
             />
           </div>
-          <button
-            id="register-button"
-            className="f6 link dim br-pill bg-white ba bw1 ph3 pv2 mb2 dib black"
-            onClick={this.tryRegister}
-            tabIndex="4"
-          >
+          <button id="register-button" className="f6 link dim br-pill bg-white ba bw1 ph3 pv2 mb2 dib black" onClick={this.tryRegister} tabIndex="4">
             REGISTER
           </button>
           <Link to="/login">
