@@ -16,6 +16,7 @@
         "graphql-tag": "^2.9.2",
         "gsap": "^1.20.4",
         "gun": "^0.9.99995",
+        "gun-synclist": "^1.0.2",
         "localforage": "^1.7.1",
         "lodash.debounce": "^4.0.8",
         "lodash.throttle": "^4.1.1",

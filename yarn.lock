@@ -3290,6 +3290,10 @@ gsap@^1.20.4:
   version "1.20.4"
   resolved "https://registry.yarnpkg.com/gsap/-/gsap-1.20.4.tgz#005fba2a7bfbb3b9d27bd77e1634d2bad365a86a"
 
+gun-synclist@^1.0.2:
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/gun-synclist/-/gun-synclist-1.0.2.tgz#a42dc8009df36b2cc12c050344af34d46306ce69"
+
 gun@^0.9.99995:
   version "0.9.99995"
   resolved "https://registry.yarnpkg.com/gun/-/gun-0.9.99995.tgz#2eb085e6ef0236df8dc912aa79fac55fa6f9b4f3"

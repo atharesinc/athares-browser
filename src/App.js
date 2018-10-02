@@ -18,6 +18,7 @@ import throttle from "lodash.throttle";
 import { TweenMax } from "gsap";
 import Gun from "gun";
 import "gun/sea";
+import "gun-synclist";
 import { GunProvider } from "react-gun";
 import { connect } from "react-redux";
 import { updateUser, updatePub } from "./store/state/actions";
@@ -105,8 +106,8 @@ class App extends Component {
         const height = window.innerHeight * 0.9,
             width = window.innerWidth * 0.9;
         TweenMax.to(target, 1.25, {
-            x: (relX - width / 2) / width * movement,
-            y: (relY - height / 2) / height * movement
+            x: ((relX - width / 2) / width) * movement,
+            y: ((relY - height / 2) / height) * movement
         });
     };
 
