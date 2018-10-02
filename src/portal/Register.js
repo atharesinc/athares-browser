@@ -83,6 +83,7 @@ class Register extends PureComponent {
                     newUser.get("messages");
                     newUser.get("revisions");
                     newUser.get("votes");
+                    newUser.get("channels");
 
                     // Actually set the user's information
                     newUser.get("profile").put(user);

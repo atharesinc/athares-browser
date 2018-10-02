@@ -3,7 +3,9 @@ import "tachyons";
 import "./styles/App.css";
 import "./styles/swaloverride.css";
 
-import { Switch, Route, withRouter, Redirect } from "react-router-dom";
+import { Route, withRouter, Redirect } from "react-router-dom";
+import { AnimatedSwitch } from "react-router-transition";
+
 import SplashPage from "./splash/landing";
 import Roadmap from "./splash/roadmap";
 import Login from "./portal/Login";
@@ -117,7 +119,12 @@ class App extends Component {
                 <div id="desktop-wrapper-outer" className="wrapper">
                     <div className="wrapper grey-screen" id="desktop-wrapper">
                         <GunProvider gun={this.gun}>
-                            <Switch>
+                            <AnimatedSwitch
+                                atEnter={{ opacity: 0 }}
+                                atLeave={{ opacity: 0 }}
+                                atActive={{ opacity: 1 }}
+                                className="wrapper switch-wrapper"
+                            >
                                 <Route
                                     exact
                                     path="/login"
@@ -147,7 +154,7 @@ class App extends Component {
                                 />
                                 {/* <Route exact path="/test" component={Test} /> */}
                                 <Route component={NoMatch} />
-                            </Switch>
+                            </AnimatedSwitch>
                         </GunProvider>
                     </div>
                 </div>
