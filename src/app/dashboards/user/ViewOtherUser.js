@@ -1,7 +1,7 @@
 import React from "react";
 import FeatherIcon from "feather-icons-react";
 import { Scrollbars } from "react-custom-scrollbars";
-import { withGun } from "../../../utils/react-gun";
+import { withGun } from "react-gun";
 
 class ViewUser extends React.Component {
   state = {

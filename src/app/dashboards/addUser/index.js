@@ -2,7 +2,7 @@ import React from "react";
 import CircleInviteList from "./CircleInviteList";
 import { connect } from "react-redux";
 import * as stateSelectors from "../../../store/state/reducers";
-import { withGun } from "../../../utils/react-gun";
+import { withGun } from "react-gun";
 
 class addUser extends React.Component {
   constructor(props) {

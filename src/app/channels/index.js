@@ -7,7 +7,7 @@ import { Link } from "react-router-dom";
 import { connect } from "react-redux";
 import * as stateSelectors from "../../store/state/reducers";
 import { updateChannel, updateCircle } from "../../store/state/actions";
-import { withGun } from "../../utils/react-gun";
+import { withGun } from "react-gun";
 
 class Channels extends Component {
   constructor(props) {

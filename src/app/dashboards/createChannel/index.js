@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import ErrorSwap from "../../../utils/ErrorSwap";
-import { withGun } from "../../../utils/react-gun";
+import { withGun } from "react-gun";
 import { connect } from "react-redux";
 import * as stateSelectors from "../../../store/state/reducers";
 import Loader from "../../Loader";

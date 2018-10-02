@@ -6,7 +6,7 @@ import FeatherIcon from "feather-icons-react";
 import { Link } from "react-router-dom";
 import * as stateSelectors from "../../../store/state/reducers";
 import { connect } from "react-redux";
-import { withGun } from "../../../utils/react-gun";
+import { withGun } from "react-gun";
 import Gun from "gun/gun";
 
 class DMChat extends Component {

@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import ImageUpload from "./imageUpload";
 import ErrorSwap from "../../../utils/ErrorSwap";
-import { withGun } from "../../../utils/react-gun";
+import { withGun } from "react-gun";
 import { connect } from "react-redux";
 import * as stateSelectors from "../../../store/state/reducers";
 import { updateCircle } from "../../../store/state/actions";

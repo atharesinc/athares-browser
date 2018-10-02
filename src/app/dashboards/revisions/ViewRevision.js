@@ -7,7 +7,7 @@ import ToggleDiffBar from "./ToggleDiffBar";
 import DiffSection from "./DiffSection";
 import HasVoted from "./HasVoted";
 import { Scrollbars } from "react-custom-scrollbars";
-import { withGun } from "../../../utils/react-gun";
+import { withGun } from "react-gun";
 import { pull } from "../../../store/state/reducers";
 import { connect } from "react-redux";
 

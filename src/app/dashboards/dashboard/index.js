@@ -3,7 +3,7 @@ import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import SelectCornersDiv from "../../../utils/SelectCornersDiv";
 import { connect } from "react-redux";
-import { withGun } from "../../../utils/react-gun";
+import { withGun } from "react-gun";
 import * as stateSelectors from "../../../store/state/reducers";
 
 class Dashboard extends Component {

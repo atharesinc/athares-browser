@@ -2,7 +2,7 @@ import React, { Fragment, PureComponent } from "react";
 import FeatherIcon from "feather-icons-react";
 import swal from "sweetalert";
 import { Link, withRouter } from "react-router-dom";
-import { withGun } from "../utils/react-gun";
+import { withGun } from "react-gun";
 import { updateUser, updatePub } from "../store/state/actions";
 import { validateLogin } from "../utils/validators";
 import { pull } from "../store/state/reducers";

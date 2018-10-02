@@ -4,7 +4,7 @@ import { Link, withRouter } from "react-router-dom";
 import Loader from "../../Loader";
 import moment from "moment";
 import { Scrollbars } from "react-custom-scrollbars";
-import { withGun } from "../../../utils/react-gun";
+import { withGun } from "react-gun";
 import { pull } from "../../../store/state/reducers";
 import { connect } from "react-redux";
 

@@ -4,7 +4,7 @@ import DocsSearchBar from "./DocsSearchBar";
 import Loader from "../../Loader.js";
 import { Scrollbars } from "react-custom-scrollbars";
 import { connect } from "react-redux";
-import { withGun } from "../../../utils/react-gun";
+import { withGun } from "react-gun";
 import * as stateSelectors from "../../../store/state/reducers";
 
 class Constitution extends Component {

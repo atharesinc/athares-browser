@@ -4,7 +4,7 @@ import Channels from "./channels";
 import Dashboards from "./dashboards";
 import PushingMenu from "./menu";
 // import { Redirect } from "react-router-dom";
-import { withGun } from "../utils/react-gun";
+import { withGun } from "react-gun";
 import { connect } from "react-redux";
 import * as stateSelectors from "../store/state/reducers";
 

@@ -4,7 +4,7 @@ import { validateRegister } from "../utils/validators";
 import { Link, withRouter } from "react-router-dom";
 import swal from "sweetalert";
 import Gun from "gun/gun";
-import { withGun } from "../utils/react-gun";
+import { withGun } from "react-gun";
 import moment from "moment";
 import { updateUser, updatePub } from "../store/state/actions";
 import { connect } from "react-redux";

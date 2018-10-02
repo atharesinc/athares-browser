@@ -5,7 +5,7 @@ import { withRouter } from "react-router-dom";
 import { Scrollbars } from "react-custom-scrollbars";
 import * as stateSelectors from "../../store/state/reducers";
 import { updateCircle } from "../../store/state/actions";
-import { withGun } from "../../utils/react-gun";
+import { withGun } from "react-gun";
 import { connect } from "react-redux";
 
 class OtherCircles extends Component {

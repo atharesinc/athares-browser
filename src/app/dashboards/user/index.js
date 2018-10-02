@@ -5,7 +5,7 @@ import ViewOtherUser from "./ViewOtherUser"; // same as view user w/o btns to to
 import { Switch, Route } from "react-router-dom";
 import Loader from "../../Loader";
 import { connect } from "react-redux";
-import { withGun } from "../../../utils/react-gun";
+import { withGun } from "react-gun";
 import * as stateSelectors from "../../../store/state/reducers";
 
 class User extends Component {
