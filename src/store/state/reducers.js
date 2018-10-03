@@ -9,7 +9,8 @@ const initialState = {
     revisions: [],
     votes: [],
     users: [],
-    amendments: []
+    amendments: [],
+    messages: []
 };
 
 export default function reduce(state = initialState, action = {}) {
@@ -27,15 +28,19 @@ export default function reduce(state = initialState, action = {}) {
         case "SYNC_CIRCLES":
             return { ...state, circles: action.circles };
         case "SYNC_CHANNELS":
-            return { ...state, circles: action.channels };
+            return { ...state, channels: action.channels };
         case "SYNC_USERS":
-            return { ...state, circles: action.users };
+            return { ...state, users: action.users };
         case "SYNC_AMENDMENTS":
-            return { ...state, circles: action.amendments };
+            return { ...state, amendments: action.amendments };
         case "SYNC_VOTES":
-            return { ...state, circles: action.votes };
+            return { ...state, votes: action.votes };
         case "SYNC_REVISIONS":
-            return { ...state, circles: action.circles };
+            return { ...state, revisions: action.revisions };
+        case "SYNC_MESSAGES":
+            return { ...state, messages: action.messages };
+        case "LOGOUT":
+            return { ...initialState };
         default:
             return state;
     }

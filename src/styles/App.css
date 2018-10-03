@@ -934,7 +934,6 @@ input[type="phone"],
     width: 100%;
     flex-direction: column;
     justify-content: flex-start;
-    margin-bottom: 1em;
     padding: 0 0.5em;
 }
 
@@ -961,11 +960,14 @@ input[type="phone"],
 .my-msg {
     background: #00dffcdd;
 }
-
+#chat-window > div > div {
+    padding: 0.5em;
+}
 .message-timestamp {
     margin: 0 1em;
     font-size: 0.7em;
     color: rgba(255, 255, 255, 0.8);
+    transition: all ease 0.25s;
 }
 
 #no-messages {

@@ -1,12 +1,10 @@
 import React, { Component } from "react";
 import ChannelGroup from "./ChannelGroup";
 import GovernanceChannelGroup from "./GovernanceChannelGroup";
-import Loader from "../Loader";
-import { Scrollbars } from "react-custom-scrollbars";
 import { Link } from "react-router-dom";
 import { connect } from "react-redux";
-import * as stateSelectors from "../../store/state/reducers";
-import { updateChannel, updateCircle } from "../../store/state/actions";
+import { pull } from "../../store/state/reducers";
+import { updateCircle } from "../../store/state/actions";
 import { withGun } from "react-gun";
 
 class Channels extends Component {
@@ -35,30 +33,30 @@ class Channels extends Component {
             this.props.dispatch(updateCircle(circleID));
             return false;
         }
-        // get this circle's and it's channels
-        let channels = [];
-        let circleRef = this.props.gun.get("circles").get(circleID);
-        let channelRef = this.props.gun.get("channels");
 
-        circleRef.get("channels").map(channelId => {
-            channelRef.get(channelId).once(channel => {
-                channels.push(channel);
-            });
-        });
-
-        // console.log(channels);
-        circleRef.once(c => {
-            this.setState({
-                channels,
-                circle: c
-            });
+        // faster to filter redux channels that have this circle as parent or just get the channels
+        let circle = this.props.circles.find(c => c.id && c.id === circleID);
+        let channels = this.props.channels.filter(
+            channel => channel.circle === circleID
+        );
+        this.setState({
+            channels,
+            circle
         });
     };
     render() {
-        const { activeChannel, activeCircle, user } = this.props;
-        const { circle, channels } = this.state;
+        let {
+            activeChannel,
+            user,
+            channels,
+            activeCircle,
+            circles
+        } = this.props;
+        // const { circle } = this.state;
+        const circle = circles.find(c => c.id === activeCircle);
 
         if (circle) {
+            channels = channels.filter(c => c.circle === circle.id);
             return (
                 <div id="channels-wrapper">
                     <div id="circle-name">
@@ -135,9 +133,11 @@ const style = {
 
 function mapStateToProps(state) {
     return {
-        user: stateSelectors.pull(state, "user"),
-        activeCircle: stateSelectors.pull(state, "activeCircle"),
-        activeChannel: stateSelectors.pull(state, "activeChannel")
+        user: pull(state, "user"),
+        activeCircle: pull(state, "activeCircle"),
+        activeChannel: pull(state, "activeChannel"),
+        circles: pull(state, "circles"),
+        channels: pull(state, "channels")
     };
 }
 

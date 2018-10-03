@@ -3,7 +3,7 @@ import "tachyons";
 import "./styles/App.css";
 import "./styles/swaloverride.css";
 
-import { Route, withRouter, Redirect } from "react-router-dom";
+import { Route, withRouter } from "react-router-dom";
 import { AnimatedSwitch } from "react-router-transition";
 
 import SplashPage from "./splash/landing";
@@ -11,7 +11,6 @@ import Roadmap from "./splash/roadmap";
 import Login from "./portal/Login";
 import Register from "./portal/Register";
 import About from "./splash/about";
-import PrivateRoute from "./app/PrivateRoute.js";
 import NoMatch from "./404";
 import DesktopLayout from "./app/DesktopLayout";
 import MobileLayout from "./app/MobileLayout";
@@ -23,7 +22,8 @@ import "gun/sea";
 import "gun-synclist";
 import { GunProvider } from "react-gun";
 import { connect } from "react-redux";
-import { updateUser, updatePub } from "./store/state/actions";
+import { pull } from "./store/state/reducers";
+import * as sync from "./store/state/actions";
 // import Test from "./TestMobile";
 
 // IndexedDb stuff for later
@@ -62,8 +62,10 @@ class App extends Component {
             let user = this.gun.user();
             await user.auth(sessionStorage.alias, sessionStorage.tmp, ack => {
                 user.get("profile").once(profile => {
-                    this.props.dispatch(updateUser(profile.id));
-                    this.props.dispatch(updatePub(ack.pub));
+                    this.props.dispatch(sync.updateUser(profile.id));
+                    this.props.dispatch(sync.updatePub(ack.pub));
+                    // now that we're logged in, start listening to changes in nodes we care about
+                    this.allListeners();
                 });
             });
         }
@@ -75,9 +77,65 @@ class App extends Component {
         );
         this.routeFix();
     }
-    routeFix = () => {
-        let uri = this.props.location.pathname;
+    allListeners = () => {
+        let user = this.gun.user();
 
+        user.get("circles").synclist(obj => {
+            console.log("user circles changed!", obj);
+            this.props.dispatch(sync.circlesSync(obj));
+            let channels = [];
+            let messages = [];
+
+            if (obj.list) {
+                // get all data from this circle
+                obj.list.forEach(circle => {
+                    // get the channels and messages
+                    if (circle.channels) {
+                        let theseChannels = Object.values(circle.channels);
+                        // channels = [...channels, ...theseChannels];
+                        theseChannels.forEach(chan => {
+                            if (chan.messages) {
+                                // strip out messages from channel data
+                                let {
+                                    messages: theseMessages,
+                                    ...thisChan
+                                } = chan;
+                                channels.push(thisChan);
+
+                                theseMessages = Object.values(theseMessages);
+                                console.log(theseMessages);
+                                messages = [...messages, ...theseMessages];
+                            } else {
+                                channels.push(chan);
+                            }
+                        });
+                    }
+                    // get other stuff like amendments and revisions
+                });
+                this.props.dispatch(sync.setMessages(messages));
+                this.props.dispatch(sync.setChannels(channels));
+            }
+        });
+        // user.get("channels").synclist(obj => {
+        //     this.props.dispatch(sync.channelsSync(obj));
+        // });
+        user.get("revisions").synclist(obj => {
+            this.props.dispatch(sync.revisionsSync(obj));
+        });
+        user.get("votes").synclist(obj => {
+            this.props.dispatch(sync.votesSync(obj));
+        });
+        user.get("users").synclist(obj => {
+            this.props.dispatch(sync.usersSync(obj));
+        });
+        user.get("amendments").synclist(obj => {
+            this.props.dispatch(sync.amendmentsSync(obj));
+        });
+        user.get("messages").synclist(obj => {
+            this.props.dispatch(sync.messagesSync(obj));
+        });
+    };
+    routeFix = () => {
         document
             .getElementById("root")
             .addEventListener("mousemove", this.parallaxApp, true);
@@ -128,12 +186,22 @@ class App extends Component {
                                 <Route
                                     exact
                                     path="/login"
-                                    component={props => <Login {...props} />}
+                                    component={props => (
+                                        <Login
+                                            {...props}
+                                            listen={this.allListeners}
+                                        />
+                                    )}
                                 />
                                 <Route
                                     exact
                                     path="/register"
-                                    component={props => <Register {...props} />}
+                                    component={props => (
+                                        <Register
+                                            {...props}
+                                            listen={this.allListeners}
+                                        />
+                                    )}
                                 />
                                 <Route exact path="/" component={SplashPage} />
                                 <Route
@@ -164,6 +232,8 @@ class App extends Component {
 }
 
 function mapStateToProps(state) {
-    return {};
+    return {
+        user: pull(state, "user")
+    };
 }
 export default withRouter(connect(mapStateToProps)(App));

@@ -44,7 +44,7 @@ class Register extends PureComponent {
             let newUser = this.props.gun.user();
 
             let user = {
-                id: Gun.text.random(),
+                id: "US" + Gun.text.random(),
                 firstName,
                 lastName,
                 email,
@@ -60,7 +60,6 @@ class Register extends PureComponent {
             };
 
             newUser.create(email, password, ack => {
-                console.log("one", ack, newUser);
                 if (ack.err) {
                     swal(
                         "Error",
@@ -88,10 +87,11 @@ class Register extends PureComponent {
                     // Actually set the user's information
                     newUser.get("profile").put(user);
                     newUser.get("profile").once(profile => {
-                        console.log("fourth", profile, newUser);
                         // set the public key and id in redux to log in
                         this.props.dispatch(updateUser(user.id));
                         this.props.dispatch(updatePub(otherAck.pub));
+                        // start listening to changes on our user
+                        this.props.listen();
                         this.props.history.push("/app");
                     });
                 });

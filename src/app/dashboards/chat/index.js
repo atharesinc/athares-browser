@@ -4,7 +4,7 @@ import ChatInput from "./ChatInput";
 import Loader from "../../Loader";
 import FeatherIcon from "feather-icons-react";
 import { Link } from "react-router-dom";
-import * as stateSelectors from "../../../store/state/reducers";
+import { pull } from "../../../store/state/reducers";
 import { connect } from "react-redux";
 import { withGun } from "react-gun";
 import Gun from "gun/gun";
@@ -13,64 +13,13 @@ import moment from "moment";
 class Chat extends Component {
     state = {
         messages: [],
-        channel: "",
         user: null
     };
     componentDidMount() {
         this.getUser();
-        this.getChannel();
     }
     componentDidUpdate = prevProps => {
-        if (
-            prevProps.activeChannel !== this.props.activeChannel ||
-            prevProps.activeCircle !== this.props.activeCircle
-        ) {
-            this.getChannel();
-            this.getMessages();
-        }
-    };
-    getMessages = () => {
-        let channelID = this.props.activeChannel
-            ? this.props.activeChannel
-            : this.props.match.params.id;
-        let channelRef = this.props.gun.get("channels").get(channelID);
-        let messagesRef = this.props.gun.get("messages");
-        // get a reference to see other users readonly data
-        let privUserRef = this.props.gun.user;
-        let pubUserRef = this.props.gun.get("users");
-
-        /// TEST
-        channelRef.get("messages").synclist(obj => {
-            if (obj.list) {
-                // initial only!
-                // items = obj.list;
-                console.log("list!", obj);
-            }
-            if (obj.node) {
-                // on every change.
-                // items.splice(obj.idx, 1, obj.node);
-                console.log("item!", obj);
-            }
-        });
-        ////////
-
-        return;
-        channelRef.get("messages").on(msg => {
-            // get each message
-            messagesRef.get(msg).once(message => {
-                console.log(message);
-                pubUserRef.get(message.user).once(pub => {
-                    console.log(pub);
-                    let thisUser = this.props.gun.user(pub);
-                    thisUser.get("profile").once(userInfo => {
-                        message.user = userInfo;
-                        this.setState({
-                            messages: [...this.state.messages, message]
-                        });
-                    });
-                });
-            });
-        });
+        console.log(this.props.messages.length);
     };
     getUser = async () => {
         let user = null;
@@ -84,98 +33,59 @@ class Chat extends Component {
         }
         this.setState({ user });
     };
-    getMessagesFromListener = async () => {
-        // reset state
-        await this.setState({
-            messages: []
-        });
-
-        let channelID = this.props.activeChannel
-            ? this.props.activeChannel
-            : this.props.match.params.id;
-        let channelRef = this.props.gun.get("channels").get(channelID);
-        let messagesRef = this.props.gun.get("messages");
-
-        // get a reference to see other users readonly data
-        let privUserRef = this.props.gun.user;
-        let pubUserRef = this.props.gun.get("users");
-        let channel = null,
-            messages = [];
-
-        // get the channel's info
-        channelRef.once(channelInfo => {
-            // get the message references from this channel
-            channelRef.get("messages").map(msg => {
-                // get each message
-                messagesRef.get(msg).once(message => {
-                    console.log(message);
-                    pubUserRef.get(message.user).once(pub => {
-                        console.log(pub);
-                        let thisUser = this.props.gun.user(pub);
-                        thisUser.get("profile").once(userInfo => {
-                            message.user = userInfo;
-                            this.setState({
-                                messages: [...this.state.messages, message]
-                            });
-                        });
-                    });
-                });
-            });
-        });
-    };
-    getChannel = () => {
-        let channelID = this.props.activeChannel
-            ? this.props.activeChannel
-            : this.props.match.params.id;
-        let channelRef = this.props.gun.get("channels").get(channelID);
-
-        channelRef.once(channelInfo => {
-            this.setState({
-                channel: channelInfo
-            });
-        });
-    };
     submit = async text => {
         let chatInput = document.getElementById("chat-input");
 
-        let message = {
-            id: Gun.text.random(),
+        let newMessage = {
+            id: "MS" + Gun.text.random(),
             text: text.trim(),
-            user: this.props.user,
+            user: this.state.user,
             channel: this.props.activeChannel,
             circle: this.props.activeCircle,
             createdAt: moment().format(),
             updatedAt: moment().format()
         };
 
-        // set the message
-        this.props.gun
-            .get("messages")
-            .get(message.id)
-            .put(message);
+        let gunRef = this.props.gun;
 
-        // set the message reference in the channel
-        this.props.gun
-            .get("channels")
-            .get(this.props.activeChannel)
-            .get("messages")
-            .set(message.id);
+        let message = gunRef.get(newMessage.id);
+        message.put(newMessage);
+
+        gunRef.get("messages").set(message);
+        // gunRef
+        //     .get(this.props.activeChannel)
+        //     .get("messages")
+        //     .set(message);
 
         // and the reference in this user
         let user = this.props.gun.user();
-        user.get("messages").set(message.id);
+        user.get("circles")
+            .get(this.props.activeCircle)
+            .get("channels")
+            .get(this.props.activeChannel)
+            .get("messages")
+            .set(message);
 
         /* clear textbox */
         chatInput.value = "";
         chatInput.setAttribute("rows", 1);
 
-        // /* scroll to bottom */
-        // let chatBox = document.getElementById("chat-window-inner");
+        /* scroll to bottom */
+        // let chatBox = document
+        //     .getElementById("chat-window")
+        //     .firstChild()
+        //     .firstChild();
         // chatBox.scrollTop = chatBox.scrollHeight;
     };
     render() {
-        let { user, channel, messages } = this.state;
-        messages = messages.sort((a, b) => a.createdAt > b.createdAt);
+        let { user } = this.state;
+        let { messages, channels } = this.props;
+
+        let channel = channels.find(c => c.id === this.props.activeChannel);
+
+        messages = messages
+            .filter(m => m.channel === channel.id)
+            .sort((a, b) => a.createdAt > b.createdAt);
         if (channel) {
             return (
                 <div id="chat-wrapper">
@@ -211,9 +121,11 @@ class Chat extends Component {
 
 function mapStateToProps(state) {
     return {
-        user: stateSelectors.pull(state, "user"),
-        activeChannel: stateSelectors.pull(state, "activeChannel"),
-        activeCircle: stateSelectors.pull(state, "activeCircle")
+        user: pull(state, "user"),
+        activeChannel: pull(state, "activeChannel"),
+        activeCircle: pull(state, "activeCircle"),
+        messages: pull(state, "messages"),
+        channels: pull(state, "channels")
     };
 }
 

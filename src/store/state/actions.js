@@ -29,10 +29,16 @@ export function updateRevision(revision) {
 
 export function circlesSync(obj) {
     return async (dispatch, getState) => {
-        let { circles: items } = getState();
+        let {
+            stateReducers: { circles: items }
+        } = getState();
+        console.log("incoming obj");
+        console.log(obj);
         if (obj.list) {
             // initial only!
+            console.log("setting initial circles");
             items = obj.list;
+            dispatch({ type: "SYNC_CIRCLES", circles: items });
         }
         if (obj.node) {
             // on every change.
@@ -109,5 +115,36 @@ export function amendmentsSync(obj) {
             items.splice(obj.idx, 1, obj.node);
             dispatch({ type: "SYNC_AMENDMENTS", amendments: items });
         }
+    };
+}
+export function messagesSync(obj) {
+    return async (dispatch, getState) => {
+        let { messages: items } = getState();
+        if (obj.list) {
+            // initial only!
+            items = obj.list;
+        }
+        if (obj.node) {
+            // on every change.
+            items.splice(obj.idx, 1, obj.node);
+            dispatch({ type: "SYNC_MESSAGES", messages: items });
+        }
+    };
+}
+export function logout() {
+    return async dispatch => {
+        dispatch({ type: "LOGOUT" });
+        sessionStorage.clear();
+    };
+}
+
+export function setChannels(channels) {
+    return async dispatch => {
+        dispatch({ type: "SYNC_CHANNELS", channels });
+    };
+}
+export function setMessages(messages) {
+    return async dispatch => {
+        dispatch({ type: "SYNC_MESSAGES", messages });
     };
 }

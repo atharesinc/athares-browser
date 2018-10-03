@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React from "react";
 import GroupChat from "./chat";
 import DM from "./dmChat";
 import createCircle from "./createCircle";
@@ -11,7 +11,6 @@ import createAmendment from "./createAmendment";
 import User from "./user";
 import Revisions from "./revisions";
 import { Switch, Route } from "react-router-dom";
-import NoMatch from "../../404";
 
 const Dashboards = props => {
     const { match } = props;
