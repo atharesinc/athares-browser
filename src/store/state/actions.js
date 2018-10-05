@@ -32,11 +32,9 @@ export function circlesSync(obj) {
         let {
             stateReducers: { circles: items }
         } = getState();
-        console.log("incoming obj");
-        console.log(obj);
+
         if (obj.list) {
             // initial only!
-            console.log("setting initial circles");
             items = obj.list;
             dispatch({ type: "SYNC_CIRCLES", circles: items });
         }
@@ -146,5 +144,20 @@ export function setChannels(channels) {
 export function setMessages(messages) {
     return async dispatch => {
         dispatch({ type: "SYNC_MESSAGES", messages });
+    };
+}
+export function setAmendments(amendments) {
+    return async dispatch => {
+        dispatch({ type: "SYNC_AMENDMENTS", amendments });
+    };
+}
+export function setRevisions(revisions) {
+    return async dispatch => {
+        dispatch({ type: "SYNC_REVISIONS", revisions });
+    };
+}
+export function setVotes(votes) {
+    return async dispatch => {
+        dispatch({ type: "SYNC_VOTES", votes });
     };
 }

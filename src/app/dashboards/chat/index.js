@@ -83,10 +83,10 @@ class Chat extends Component {
 
         let channel = channels.find(c => c.id === this.props.activeChannel);
 
-        messages = messages
-            .filter(m => m.channel === channel.id)
-            .sort((a, b) => a.createdAt > b.createdAt);
         if (channel) {
+            messages = messages
+                .filter(m => m.channel === channel.id)
+                .sort((a, b) => a.createdAt > b.createdAt);
             return (
                 <div id="chat-wrapper">
                     <div id="current-channel">

@@ -26,12 +26,12 @@ class DesktopLayout extends Component {
         }
     }
     checkUser = () => {
-        console.log("updating user", this.props);
+        // console.log("updating user", this.props);
         if (this.props.pub) {
             let userRef = this.props.gun.user(this.props.pub);
 
             userRef.get("profile").once(user => {
-                console.log(user);
+                // console.log(user);
                 this.setState({
                     user
                 });

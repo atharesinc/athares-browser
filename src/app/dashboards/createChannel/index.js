@@ -86,12 +86,14 @@ class CreateChannel extends Component {
         user.get("circles")
             .get(this.props.activeCircle)
             .get("channels")
-            .set(channel);
-
-        this.props.dispatch(updateChannel(newChannel.id));
-        this.props.history.push(
-            `/app/circle/${this.props.activeCircle}/channel/${newChannel.id}`
-        );
+            .set(channel, () => {
+                this.props.dispatch(updateChannel(newChannel.id));
+                this.props.history.push(
+                    `/app/circle/${this.props.activeCircle}/channel/${
+                        newChannel.id
+                    }`
+                );
+            });
     };
     render() {
         const { loading, activeCircle } = this.state;

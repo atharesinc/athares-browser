@@ -5,7 +5,9 @@ import { withRouter } from "react-router-dom";
 import { Scrollbars } from "react-custom-scrollbars";
 import { connect } from "react-redux";
 import { withGun } from "react-gun";
-import * as stateSelectors from "../../../store/state/reducers";
+import { pull } from "../../../store/state/reducers";
+import { updateRevision } from "../../../store/state/actions";
+
 import Gun from "gun/gun";
 import moment from "moment";
 
@@ -25,16 +27,6 @@ class CreateAmendment extends Component {
         if (!this.props.user || !this.props.activeCircle) {
             this.props.history.push("/app");
         }
-
-        // get this circle and its amendments
-        this.props.gun
-            .get("circles")
-            .get(this.props.activeCircle)
-            .once(circle => {
-                this.setState({
-                    activeCircle: circle
-                });
-            });
     }
     updateName = e => {
         this.setState({
@@ -53,45 +45,88 @@ class CreateAmendment extends Component {
     };
     onSubmit = async e => {
         e.preventDefault();
-        console.log(this.state);
         // validate & trim fields
+        // ???
         await this.setState({ loading: true });
-        try {
+        let user = this.props.gun.user();
+        let circle = this.props.circles.find(
+            c => c.id === this.props.activeCircle
+        );
+        let numUsers = Object.keys(circle.users).length;
+
+        user.get("profile").once(async profile => {
             const newRevision = {
-                circle: this.props.getActiveCircle.activeCircle.id,
-                backer: this.props.user,
+                id: "RV" + Gun.text.random(),
+                circle: this.props.activeCircle,
+                backer: profile,
                 title: this.state.name,
                 newText: this.state.amendment,
-                id: Gun.text.random(),
                 createdAt: moment().format(),
                 updatedAt: moment().format(),
                 expires: moment()
-                    .add(
-                        this.customSigm(this.state.activeCircle.users.length),
-                        "s"
-                    )
+                    .add(this.customSigm(numUsers), "s")
                     .format(),
                 passed: false,
-                // voterThreshold: Math.round(this.state.activeCircle.users.length / 2)
-                voterThreshold: 1
+                voterThreshold: Math.round(numUsers / 2)
             };
 
-            this.props.gun
+            const newVote = {
+                id: "VO" + Gun.text.random(),
+                circle: this.props.activeCircle,
+                revision: newRevision.id,
+                user: this.props.user,
+                support: true
+            };
+
+            let gunRef = this.props.gun;
+
+            let revision = gunRef.get(newRevision.id);
+            revision.put(newRevision);
+
+            let vote = gunRef.get(newVote.id);
+            vote.put(newVote);
+
+            // set this node as a revision in the parent circle
+            gunRef
+                .get(this.props.activeCircle)
+                .get("revisions")
+                .set(revision);
+
+            gunRef
+                .get(newRevision.id)
+                .get("votes")
+                .set(vote);
+
+            //add it to ambiguous "list" of revisions
+            gunRef.get("revisions").set(revision);
+            gunRef.get("votes").set(vote);
+
+            // set it to this user's reference of the circle ??
+            let user = this.props.gun.user();
+
+            user.get("circles")
+                .get(this.props.activeCircle)
+                .get("revisions")
+                .set(revision);
+
+            user.get("circles")
+                .get(this.props.activeCircle)
                 .get("revisions")
                 .get(newRevision.id)
-                .put(newRevision);
+                .get("votes")
+                .set(vote);
 
-            await this.setState({ loading: false });
+            user.get("votes").set(vote);
+            this.props.dispatch(updateRevision(newRevision.id));
 
+            console.log(this.props.activeRevision);
+            // it def exists
             this.props.history.push(
                 `/app/circle/${this.props.activeCircle}/revisions/${
                     newRevision.id
                 }`
             );
-        } catch (err) {
-            console.error(new Error(err));
-            this.setState({ loading: false });
-        }
+        });
     };
     clearError = () => {
         this.setState({
@@ -99,7 +134,9 @@ class CreateAmendment extends Component {
         });
     };
     render() {
-        const { activeCircle } = this.state;
+        let { activeCircle, circles } = this.props;
+
+        activeCircle = circles.find(c => c.id === this.props.activeCircle);
 
         if (this.state.loading) {
             return (
@@ -115,7 +152,7 @@ class CreateAmendment extends Component {
                         onSubmit={this.onSubmit}
                         id="create-circle-form"
                     >
-                        <Scrollbars>
+                        <Scrollbars style={{ height: "100%", width: "100%" }}>
                             <article className="cf">
                                 <h1 className="mb3 mt0 lh-title">
                                     Create Amendment
@@ -240,8 +277,10 @@ class CreateAmendment extends Component {
 
 function mapStateToProps(state) {
     return {
-        user: stateSelectors.pull(state, "user"),
-        activeCircle: stateSelectors.pull(state, "activeCircle")
+        user: pull(state, "user"),
+        activeCircle: pull(state, "activeCircle"),
+        circles: pull(state, "circles"),
+        activeRevision: pull(state, "activeRevision")
     };
 }
 export default withRouter(withGun(connect(mapStateToProps)(CreateAmendment)));

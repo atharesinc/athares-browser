@@ -17,78 +17,61 @@ class RevisionBoard extends Component {
             revisions: []
         };
     }
-    componentDidMount() {
-        let revisions = [];
-        let thisCircle = {};
-        let circleRef = this.props.gun
-            .get("circles")
-            .get(this.props.activeCircle);
-        let amendmentsRef = circleRef.get("amendments");
-        circleRef.once(circle => {
-            thisCircle = circle;
-            circleRef.get("revisions").forEach(revision => {
-                // if this is a revision to an existing amendment, replace the amendment ID with the actual amendment
-                if (revision.amendment) {
-                    amendmentsRef.get(revision.amendment).once(amendment => {
-                        revision.amendment = amendment;
-                        revisions.push(revision);
-                    });
-                } else {
-                    revisions.push(revision);
-                }
-            });
-        });
-
-        this.setState({
-            revisions,
-            circle: thisCircle
-        });
-    }
+    componentDidMount() {}
     render() {
-        const { revisions: allRevisions, circle } = this.state;
+        let {
+            revisions: allRevisions,
+            circles,
+            activeCircle,
+            votes
+        } = this.props;
+        let circle = circles.find(c => c.id === activeCircle);
         if (!circle) {
             return (
-                <div id="revisions-wrapper">
+                <div
+                    id="revisions-wrapper"
+                    style={{
+                        display: "flex",
+                        flexDirection: "column",
+                        justifyContent: "center",
+                        alignItems: "center"
+                    }}
+                >
                     <h1 className="ma3 lh-title white">Revisions</h1>
-                    <small className="f6 white-80 db mb2 ml3">
+                    <small className="f6 white-80 db mb4 ml3">
                         Review proposed legislation and changes to existing laws
                     </small>
-                    <div id="revision-board-wrapper" className="column-center">
-                        <Loader />
-                    </div>
+
+                    <Loader />
                 </div>
             );
         }
-        let revisions = [
-            // non-ratified revisions
-            allRevisions.filter(rev => rev.ratified),
-            // ratified and not older than 7 days
-            allRevisions.filter(
-                rev =>
-                    rev.ratified &&
-                    rev.updatedAt <
-                        moment(rev.createdAt, "YYYY-MM-DDTHH:mm:ss.SSSZ")
-                            .add(7, "days")
-                            .format()
-            ),
-            allRevisions.filter(
-                rev =>
-                    rev.ratified &&
-                    rev.updatedAt >
-                        moment(rev.createdAt, "YYYY-MM-DDTHH:mm:ss.SSSZ")
-                            .add(7, "days")
-                            .format()
-            ),
-            allRevisions.filter(
-                rev =>
-                    rev.ratified &&
-                    rev.updatedAt > moment().format() &&
-                    rev.votes.filter(v => v.support).length >
-                        rev.votes.filter(v => !v.support).length
-            )
-        ];
-        // let revisions = [[fakeRevision, fakeRevision], [], [], []];
-        console.log(revisions);
+        votes = votes.filter(v => v.circle === activeCircle);
+        allRevisions = allRevisions.filter(r => r.circle === activeCircle);
+        allRevisions = allRevisions.map(r => {
+            return {
+                ...r,
+                votes: this.props.votes.filter(v => v.revision === r.id)
+            };
+        });
+        // all non-expired revisions
+        let newRevisions = allRevisions.filter(
+            r => !r.passed && moment().valueOf() < moment(r.expires).valueOf()
+        );
+        // passed in the last week
+        let recentlyPassed = allRevisions.filter(
+            r =>
+                r.passed &&
+                moment().valueOf() - moment(r.expires).valueOf() <= 604800000
+        );
+        // rejected in the last week
+        let recentlyRejected = allRevisions.filter(
+            r =>
+                !r.passed &&
+                moment().valueOf() - moment(r.expires).valueOf() <= 604800000
+        );
+        // let revisions = [newRevisions, recentlyPassed, recentlyRejected];
+        // console.log(revisions);
         return (
             <div id="revisions-wrapper">
                 <h1 className="ma3 lh-title white">Revisions</h1>
@@ -96,9 +79,25 @@ class RevisionBoard extends Component {
                     Review proposed legislation and changes to existing laws
                 </small>
                 <div id="revision-board-wrapper">
-                    {boards.map((b, i) => (
-                        <Board key={i} revisions={revisions[i]} title={b} />
-                    ))}
+                    <Scrollbars
+                        style={{
+                            height: "80vh",
+                            width: "100%"
+                        }}
+                    >
+                        <Board
+                            revisions={newRevisions}
+                            title={"New Revisions"}
+                        />
+                        <Board
+                            revisions={recentlyPassed}
+                            title={"Recently Passed"}
+                        />
+                        <Board
+                            revisions={recentlyRejected}
+                            title={"Recently Rejected"}
+                        />
+                    </Scrollbars>
                 </div>
             </div>
         );
@@ -132,7 +131,7 @@ const Board = ({ title, revisions }) => {
 // Denote vote split
 // denote whether it is new or a change to existing amendment
 const RevisionCard = ({
-    amendment,
+    amendment = null,
     newText,
     createdAt,
     backer,
@@ -190,7 +189,7 @@ const RevisionCard = ({
                         alt=""
                     />
                     <small className="f6 white-70 db ml2">
-                        {new Date(createdAt).toLocaleDateString()}
+                        {moment(createdAt).format("MM/DD/YY hh:mma")}
                     </small>
                 </div>
             </div>
@@ -199,51 +198,14 @@ const RevisionCard = ({
 };
 const RevisionWithRouter = withRouter(RevisionCard);
 
-const boards = [
-    "New Revisions",
-    "Ratified",
-    "Recently Passed",
-    "Recently Rejected"
-];
-
 function mapStateToProps(state) {
     return {
         user: pull(state, "user"),
-        activeCircle: pull(state, "activeCircle")
+        activeCircle: pull(state, "activeCircle"),
+        revisions: pull(state, "revisions"),
+        circles: pull(state, "circles"),
+        votes: pull(state, "votes")
     };
 }
 
 export default withGun(withRouter(connect(mapStateToProps)(RevisionBoard)));
-
-// const fakeRevision = {
-//     id: "1",
-//     createdAt: new Date().getTime() - 37 * 1000 + 37 * 100,
-//     updatedAt: new Date(
-//         new Date().getTime() - 86400000 * Math.floor(Math.random() * 8)
-//     ),
-//     oldText:
-//         "All legislative Powers herein granted shall be vested in a Congress of the United States, which shall consist of a Senate and House of Representatives.",
-//     newText: `All legislative Pwers. Herein granted shall be vested in a Congress of the United States, which shall consist of a Senate and House of Representatives.
-
-// kjsndfkjsndkfjn  sdf sadf sdf sdf
-
-// sdfsdfsdf`,
-//     amendment: { id: 4 },
-//     title: "Deep Space Exploration Act",
-//     ratified: true,
-//     backer: {
-//         firstName: "Erlich",
-//         lastName: "Bachmann",
-//         icon: "http://mrmrs.github.io/photos/p/2.jpg",
-//         id: "s9d87f6g9"
-//     },
-//     votes: fakeVotes()
-// };
-// function fakeVotes() {
-//     const num = Math.floor(Math.random() * 50 + 1);
-//     const votes = [];
-//     for (let i = 0; i < num; ++i) {
-//         votes.push({ id: num + i, support: Math.random() > 0.5 });
-//     }
-//     return votes;
-// }

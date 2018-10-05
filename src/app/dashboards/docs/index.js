@@ -5,7 +5,7 @@ import Loader from "../../Loader.js";
 import { Scrollbars } from "react-custom-scrollbars";
 import { connect } from "react-redux";
 import { withGun } from "react-gun";
-import * as stateSelectors from "../../../store/state/reducers";
+import { pull } from "../../../store/state/reducers";
 
 class Constitution extends Component {
     state = {
@@ -13,44 +13,12 @@ class Constitution extends Component {
         amendments: []
     };
 
-    componentDidMount() {
-        // get this circle's id from activeCircle if possible or whatever is in the url bar
-        let circleID = this.props.activeCircle
-            ? this.props.activeCircle
-            : this.props.match.params.id;
-
-        let circleRef = this.props.gun.get("circles").get(circleID);
-        let amendmentsRef = this.props.gun.get("amendments");
-
-        // Get the circle's info and its amendments from Gun
-        circleRef.once(circle => {
-            let amendments = [];
-            circleRef.get("amendments").forEach(amendmentID => {
-                amendmentsRef.get(amendmentID).once(amendment => {
-                    amendments.push(amendment);
-                    return null;
-                });
-            });
-
-            // Update state
-            this.setState({
-                circle,
-                amendments
-            });
-        });
-    }
+    componentDidMount() {}
     render() {
-        const { amendments, circle } = this.state;
-
-        // if (loading) {
-        //   return (
-        //     <div id="docs-wrapper" className="column-center">
-        //       <Loader />
-        //       <div className="f3 pb2 b mv4 tc">Loading Constitution</div>
-        //     </div>
-        //   );
-        // }
+        let { amendments, circles, activeCircle } = this.props;
+        let circle = circles.find(c => c.id === activeCircle);
         if (circle) {
+            amendments = amendments.filter(a => a.circle === activeCircle);
             return (
                 <div id="docs-wrapper">
                     {this.props.user && <DocsSearchBar id={circle.id} />}
@@ -95,8 +63,10 @@ class Constitution extends Component {
 
 function mapStateToProps(state) {
     return {
-        user: stateSelectors.pull(state, "user"),
-        activeCircle: stateSelectors.pull(state, "activeCircle")
+        user: pull(state, "user"),
+        activeCircle: pull(state, "activeCircle"),
+        circles: pull(state, "circles"),
+        amendments: pull(state, "amendments")
     };
 }
 

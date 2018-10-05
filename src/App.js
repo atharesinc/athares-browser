@@ -20,17 +20,21 @@ import { TweenMax } from "gsap";
 import Gun from "gun";
 import "gun/sea";
 import "gun-synclist";
+import "gun/lib/open";
+
 import { GunProvider } from "react-gun";
 import { connect } from "react-redux";
 import { pull } from "./store/state/reducers";
 import * as sync from "./store/state/actions";
-// import Test from "./TestMobile";
+import moment from "moment";
 
 // IndexedDb stuff for later
 // import "gun/lib/radix.js";
 // import "gun/lib/radisk.js";
 // import "gun/lib/store.js";
 // import "gun/lib/rindexed.js";
+
+let checkItemsTimer = null;
 
 class App extends Component {
     constructor(props) {
@@ -46,12 +50,13 @@ class App extends Component {
         // var gun = Gun(opt);
         this.gun = Gun();
         window.gun = this.gun;
+        this.checkItemsTimer = checkItemsTimer;
     }
-    updateWidth() {
+    updateWidth = () => {
         this.setState({
             width: window.innerWidth
         });
-    }
+    };
     componentDidUpdate() {
         this.routeFix();
     }
@@ -69,22 +74,125 @@ class App extends Component {
                 });
             });
         }
-        // let uri = this.props.location.pathname;
-        // // await this.props.setStateFromUri({ variables: { uri } });
-        window.addEventListener(
-            "resize",
-            throttle(this.updateWidth.bind(this), 1000)
-        );
+        window.addEventListener("resize", throttle(this.updateWidth, 1000));
         this.routeFix();
     }
+    getNext = () => {
+        clearTimeout(this.checkItemsTimer);
+        let now = moment().valueOf();
+        let items = this.props.revisions
+            .filter(i => !i.passed && moment(i.expires).valueOf() <= now)
+            .sort(
+                (a, b) =>
+                    moment(a.expires).valueOf() < moment(b.expires).valueOf()
+            );
+
+        // find first occuring item, see if it has expired
+        for (let i = 0, j = items.length; i < j; i++) {
+            if (moment(items[i].expires).valueOf() <= now) {
+                if (
+                    this.props.amendments.findIndex(
+                        a => a.revision === items[i].id
+                    ) === -1
+                ) {
+                    // process this item
+                    this.checkIfPass({
+                        circleId: items[i].circle,
+                        revisionId: items[i].id
+                    });
+                }
+            } else if (moment(items[i].expires).valueOf() > now) {
+                let time = moment(items[i].expires).valueOf() - now;
+                this.checkItemsTimer = setTimeout(this.getNext, time);
+                break;
+            }
+        }
+        return;
+    };
+    // a revision has expired or crossed the voter threshold
+    // see if it has passed and becomes an amendment
+    checkIfPass = ({ circleId, revisionId }) => {
+        let { votes, circles, revisions } = this.props;
+        let thisCircle = circles.find(c => c.id === circleId);
+        let thisRevision = revisions.find(r => r.id === revisionId);
+        // just get the votes for this revision in this circle
+
+        console.log(thisRevision);
+        votes = votes.filter(
+            v => v.circle === circleId && v.revision === revisionId
+        );
+
+        let supportVotes = votes.filter(v => v.support === true);
+        // later filter out users who were created after this revision was created
+
+        if (
+            supportVotes > votes.length / 2 &&
+            moment().valueOf() >= moment(thisRevision.expires).valueOf()
+        ) {
+            // it passes because the majority of votes has been reached after the expiry period
+            this.createAmendment({
+                id: thisRevision.id.replace("RV", "AM"),
+                title: thisRevision.title,
+                text: thisRevision.newText,
+                revision: revisionId,
+                circle: thisCircle.id
+            });
+        } else if (supportVotes.length >= thisRevision.voterThreshold) {
+            // it passes because a sufficient number of people have voted yes such that the remaining eligble voters are unlikely to overturn the vote within the remaining time
+
+            this.createAmendment({
+                id: thisRevision.id.replace("RV", "AM"),
+                title: thisRevision.title,
+                text: thisRevision.text,
+                revision: revisionId,
+                circle: thisCircle.id
+            });
+        }
+    };
+    createAmendment = async pendingAmendment => {
+        if (
+            this.props.amendments.indexOf(
+                a => a.circle === pendingAmendment.circle
+            ) !== -1
+        ) {
+            alert(
+                "Amendment already exists in this circle, I don't know how you did this."
+            );
+            return false;
+        }
+        // update the revision so that it can't continue to be voted on
+        let gunRef = this.gun;
+        let revision = gunRef.get(pendingAmendment.revision);
+        revision.put({ passed: true, passedDate: moment().format() });
+        revision.once(console.log, pendingAmendment.revision);
+        let amendment = gunRef.get(pendingAmendment.id);
+        amendment.put(pendingAmendment);
+
+        gunRef.get("amendments").set(amendment);
+        gunRef
+            .get(pendingAmendment.circle)
+            .get("amendments")
+            .set(amendment);
+
+        let user = gunRef.user();
+
+        user.get("circles")
+            .get(pendingAmendment.circle)
+            .get("amendments")
+            .set(amendment);
+        user.get("amendments").set(amendment);
+    };
+
     allListeners = () => {
         let user = this.gun.user();
 
         user.get("circles").synclist(obj => {
-            console.log("user circles changed!", obj);
             this.props.dispatch(sync.circlesSync(obj));
             let channels = [];
             let messages = [];
+            let amendments = [];
+            let revisions = [];
+            let votes = [];
 
             if (obj.list) {
                 // get all data from this circle
@@ -103,7 +211,6 @@ class App extends Component {
                                 channels.push(thisChan);
 
                                 theseMessages = Object.values(theseMessages);
-                                console.log(theseMessages);
                                 messages = [...messages, ...theseMessages];
                             } else {
                                 channels.push(chan);
@@ -111,29 +218,40 @@ class App extends Component {
                         });
                     }
                     // get other stuff like amendments and revisions
+                    if (circle.amendments) {
+                        amendments = [
+                            ...amendments,
+                            ...Object.values(circle.amendments)
+                        ];
+                    }
+                    if (circle.revisions) {
+                        let theseRevisions = Object.values(circle.revisions);
+                        theseRevisions.forEach(rev => {
+                            if (rev.votes) {
+                                // strip out votes from revision data
+                                let { votes: theseVotes, ...thisRev } = rev;
+                                revisions.push(thisRev);
+
+                                theseVotes = Object.values(theseVotes);
+                                votes = [...messages, ...theseVotes];
+                            } else {
+                                revisions.push(rev);
+                            }
+                        });
+                    }
                 });
                 this.props.dispatch(sync.setMessages(messages));
                 this.props.dispatch(sync.setChannels(channels));
+                this.props.dispatch(sync.setAmendments(amendments));
+                this.props.dispatch(sync.setRevisions(revisions));
+                this.props.dispatch(sync.setVotes(votes));
+                this.getNext();
             }
         });
+        // also find a way to get private channels
         // user.get("channels").synclist(obj => {
         //     this.props.dispatch(sync.channelsSync(obj));
         // });
-        user.get("revisions").synclist(obj => {
-            this.props.dispatch(sync.revisionsSync(obj));
-        });
-        user.get("votes").synclist(obj => {
-            this.props.dispatch(sync.votesSync(obj));
-        });
-        user.get("users").synclist(obj => {
-            this.props.dispatch(sync.usersSync(obj));
-        });
-        user.get("amendments").synclist(obj => {
-            this.props.dispatch(sync.amendmentsSync(obj));
-        });
-        user.get("messages").synclist(obj => {
-            this.props.dispatch(sync.messagesSync(obj));
-        });
     };
     routeFix = () => {
         document
@@ -149,10 +267,7 @@ class App extends Component {
         this.parallaxIt(e, "#main-layout", -30, "#main-layout");
     };
     componentWillUnmount() {
-        window.addEventListener(
-            "resize",
-            throttle(this.updateWidth.bind(this), 1000)
-        );
+        window.addEventListener("resize", throttle(this.updateWidth, 1000));
         document.getElementById("root").addEventListener("mousemove", e => {
             e.stopPropogation();
             e.preventDefault();
@@ -212,7 +327,7 @@ class App extends Component {
                                 <Route exact path="/about" component={About} />
                                 <Route
                                     path="/app"
-                                    component={props =>
+                                    render={props =>
                                         this.state.width >= 992 ? (
                                             <DesktopLayout {...props} />
                                         ) : (
@@ -233,7 +348,11 @@ class App extends Component {
 
 function mapStateToProps(state) {
     return {
-        user: pull(state, "user")
+        user: pull(state, "user"),
+        revisions: pull(state, "revisions"),
+        votes: pull(state, "votes"),
+        amendments: pull(state, "amendments"),
+        circles: pull(state, "circles")
     };
 }
 export default withRouter(connect(mapStateToProps)(App));
