@@ -13,37 +13,6 @@ class OtherCircles extends Component {
         // circles: []
     };
 
-    async componentDidMount() {
-        // if (this.props.user) {
-        //   let user = this.props.gun.user();
-        //   let circleRef = this.props.gun.get("circles");
-        //   let circles = [],
-        //     refsToCircles = [];
-        //   // get this user's circles
-        //   let res = await user.get("circles").map(circle => {
-        //     refsToCircles.push(circle);
-        //     return circle;
-        //   });
-        //   // get each circle's data from the array of references
-        //   let results = await refsToCircles.map(async c => {
-        //     let res = await circleRef.get(c).once(data => {
-        //       this.setState({
-        //         circles: [...this.state.circles, data]
-        //       });
-        //     });
-        //   });
-        // }
-        // console.log(this.props.circles);
-        // this.setState({
-        //     circles: this.props.circles
-        // });
-    }
-    // componentDidUpdate(prevProps){
-    //   // deep equals?
-    //   if (prevProps.circle){
-
-    //   }
-    // }
     setActive = id => {
         this.props.dispatch(updateCircle(id));
     };

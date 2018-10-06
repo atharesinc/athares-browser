@@ -1,7 +1,7 @@
 import React, { PureComponent } from "react";
 import TextareaAutosize from "react-autosize-textarea";
 import FeatherIcon from "feather-icons-react";
-
+// import emojer from "emojer";
 export default class ChatInput extends PureComponent {
     constructor() {
         super();
@@ -16,15 +16,17 @@ export default class ChatInput extends PureComponent {
         let chatInput = document.getElementById("chat-input");
         this.setState({ input: chatInput.value });
     }
-    submit(e) {
+    submit = e => {
         if (e.key === "Enter" && !e.shiftKey) {
             e.preventDefault();
             if (this.state.input.trim() !== "") {
                 this.props.submit(this.state.input);
                 this.setState({ input: "" });
+                let chatInput = document.getElementById("chat-input");
+                chatInput.focus();
             }
         }
-    }
+    };
     render() {
         return (
             <div id="chat-input-wrapper">

@@ -61,7 +61,7 @@ Each version outlines features that the platform must have to meet this version
 -   Create Circle
 -   Create Channel
 
-#### 0.0.2 - IN PROGRESS
+#### 0.0.2
 
 -   Replaced GraphCool with GunJS DB
 -   Auth works everywhere consistently
@@ -73,37 +73,41 @@ Each version outlines features that the platform must have to meet this version
 -   Vote casting
 -   Revision creation
 
-#### 0.0.3
+#### 0.0.3 - IN PROGRESS
 
 -   Live update circles and channel creation
 -   Live updates for messages
+-   Live updates for revisions and amendments
 -   Revision checker and timer (see codesandbox example)
 
 #### 0.0.4
 
--   Direct Messages
-    -   Pre-wrap text box
--   Group PM's (limit group size)
--   Live updates for messages
+-   Add user to circle
+-   Encrypted Group Messages (limit group size)
+-   Live updates for group messages
 -   Add Help page
 -   Dumbed down index
 
 #### 0.0.5
+
+-   Ensure public as possible use (not logged in, infer state from url)
+
+#### 0.1.0
+
+-   Express Server to serve data to peers and clients
+-   Search (??? Elastic search?)
+
+#### 0.1.1
 
 -   Sign up for newsleter
     -   MailChimp
 -   404 page look good
     -   onHover links
 
-#### 0.0.6
+#### 0.1.2
 
 -   Site/Circle news
     -   News items for each circle (created on amendment being passed or rejected, a revision deadline nearing, etc.)
-
-#### 0.1.0
-
--   Express Server to serve data to peers and clients
--   Search (??? Elastic search?)
 
 #### 0.2.0
 
@@ -119,14 +123,23 @@ Each version outlines features that the platform must have to meet this version
 -   Validate all input fields (createCircle, createChannel, createRevision)
 -   XSS sanitize all fields
 
+#### 0.4.0 (Essential Nice-to-haves)
+
+-   Emoji support
+-   Support images and links in messages
+
 #### 0.8.0
 
 -   CSS transitions for routes & everything else
+    -   Micro-interactions
 -   Server-side rendering
 -   Error Components
+-   Microoptimizing
 -   Webworkers and PWA stuff
     -   caching images
     -   Request to be added to homescreen
+    -   Push notifictions?
+        -   Is this even possible
     -   Inputs don't work on android?
         -   Possibly due to screen resizing?
 
@@ -143,17 +156,15 @@ Each version outlines features that the platform must have to meet this version
 -   Deployed to AWS (Somehow)
 -   Capable of dealing with region-specific load-provisioning
 -   Review AXE module of Gun progress
--
 
 #### 1.0.1
 
 -   App in alpha-review process
--   Emoji support
--   Support images and links in messages
 
 #### 1.0.1
 
 -   Invitation Links/emails
+    -   Probably a separate server
 
 ## License
 

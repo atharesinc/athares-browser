@@ -4,13 +4,8 @@ import FeatherIcon from "feather-icons-react";
 import { Scrollbars } from "react-custom-scrollbars";
 import Circle from "./Circle";
 import { Link } from "react-router-dom";
-import { updateCircle } from "../../store/state/actions";
-import { connect } from "react-redux";
 
-const Circles = ({ circles = [], ...props }) => {
-    const setActive = id => {
-        this.props.dispatch(updateCircle(id));
-    };
+const Circles = ({ circles, setActive, ...props }) => {
     return (
         <div
             className="w-100 v-mid bg-theme-dark flex flex-row justify-between items-center pv2 ph3"
@@ -45,7 +40,4 @@ const Circles = ({ circles = [], ...props }) => {
     );
 };
 
-function mapStateToProps(state) {
-    return {};
-}
-export default connect(mapStateToProps)(Circles);
+export default Circles;

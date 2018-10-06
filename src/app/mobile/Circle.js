@@ -5,7 +5,8 @@ const Circle = ({ id, name, icon, selectCircle, isActive }) => {
         <img
             src={icon}
             className={
-                `br-100 w2 h2 bw1 mh1 ` + isActive ? "active-circle-mobile" : ""
+                `br-100 w2 h2 bw1 mh1 circle-mobile ` +
+                (isActive ? "active-circle-mobile" : "")
             }
             alt=""
             data-circle-id={id}

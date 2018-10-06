@@ -5,11 +5,11 @@ import Loader from "../../Loader";
 import FeatherIcon from "feather-icons-react";
 import { Link } from "react-router-dom";
 import { pull } from "../../../store/state/reducers";
+import { updateChannel } from "../../../store/state/actions";
 import { connect } from "react-redux";
 import { withGun } from "react-gun";
 import Gun from "gun/gun";
 import moment from "moment";
-
 class Chat extends Component {
     state = {
         messages: [],
@@ -45,6 +45,9 @@ class Chat extends Component {
             });
         }
         this.setState({ user });
+    };
+    updateChannel = () => {
+        this.props.dispatch(updateChannel(null));
     };
     submit = async text => {
         let chatInput = document.getElementById("chat-input");
@@ -105,6 +108,7 @@ class Chat extends Component {
                             <FeatherIcon
                                 icon="chevron-left"
                                 className="white db dn-ns"
+                                onClick={this.updateChannel}
                             />
                         </Link>
                         <div>{channel.name}</div>

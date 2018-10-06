@@ -11,6 +11,7 @@ import { Switch, Route } from "react-router-dom";
 import { withGun } from "react-gun";
 import { connect } from "react-redux";
 import { pull } from "../store/state/reducers";
+import { updateCircle } from "../store/state/actions";
 
 class MobileLayout extends Component {
     constructor(props) {
@@ -32,38 +33,18 @@ class MobileLayout extends Component {
         }
     };
     componentDidMount() {
-        // get this user's circles
-        let userRef = this.props.gun.user();
+        if (this.props.user) {
+            // get this user's circles
+            let userRef = this.props.gun.user();
 
-        userRef.get("profile").once(async user => {
-            let circles = [];
+            userRef.get("profile").once(async user => {
+                let circles = [];
 
-            if (this.props.user) {
-                let user = this.props.gun.user();
-                let circleRef = this.props.gun.get("circles");
-
-                let refsToCircles = [];
-                // get this user's circles
-                await user.get("circles").map(circle => {
-                    refsToCircles.push(circle);
-                    return circle;
+                this.setState({
+                    user
                 });
-
-                // get each circle's data from the array of references
-                await refsToCircles.map(async c => {
-                    await circleRef.get(c).once(data => {
-                        this.setState({
-                            circles: [...this.state.circles, data]
-                        });
-                    });
-                });
-            }
-
-            this.setState({
-                user,
-                circles
             });
-        });
+        }
     }
     /* Triggered when manually switching views (with button) */
     changeIndex = e => {
@@ -85,9 +66,12 @@ class MobileLayout extends Component {
             isOpen: state.isOpen
         });
     };
+    setActive = id => {
+        this.props.dispatch(updateCircle(id));
+    };
     render() {
-        const { user, circles } = this.state;
-        console.log(circles);
+        const { user } = this.state;
+        const { circles, activeCircle, activeChannel } = this.props;
         return (
             <div id="app-wrapper-outer" className="wrapper">
                 <PushingMenu
@@ -105,14 +89,19 @@ class MobileLayout extends Component {
                     }}
                     id="app-wrapper"
                 >
-                    <TopNav toggleMenu={this.toggleMenu} />
+                    <TopNav
+                        toggleMenu={this.toggleMenu}
+                        hide={!!activeChannel}
+                    />
                     <Switch>
                         <Route
                             exact
                             component={props => (
                                 <CirclesAndChannels
-                                    activeCircle={this.props.activeCircle}
+                                    activeCircle={activeCircle}
                                     circles={circles}
+                                    setActive={this.setActive}
+                                    user={user}
                                     {...props}
                                 />
                             )}
@@ -129,7 +118,9 @@ function mapStateToProps(state) {
     return {
         user: pull(state, "user"),
         pub: pull(state, "pub"),
-        activeCircle: pull(state, "activeCircle")
+        activeCircle: pull(state, "activeCircle"),
+        circles: pull(state, "circles"),
+        activeChannel: pull(state, "activeChannel")
     };
 }
 
@@ -137,8 +128,12 @@ export default withGun(connect(mapStateToProps)(MobileLayout));
 
 const CirclesAndChannels = props => (
     <Fragment>
-        <Circles activeCircle={props.activeCircle} circles={props.circles} />
+        <Circles
+            activeCircle={props.activeCircle}
+            circles={props.circles}
+            setActive={props.setActive}
+        />
         <Channels {...props} />
-        <BottomNav show={props.user} />
+        <BottomNav show={!!props.user} activeCircle={props.activeCircle} />
     </Fragment>
 );

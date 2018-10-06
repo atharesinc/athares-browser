@@ -1385,6 +1385,13 @@ a:visited {
     #revision-board-wrapper {
         padding: 0;
     }
+    .circle-mobile {
+        height: 100%;
+        transition: all ease 0.25s;
+    }
+    .active-circle-mobile {
+            border: 2px solid #00DFFC;
+    }
     .circle-img-wrapper {
         width: 100vw;
         border-bottom: 1px solid #3a3e52;
