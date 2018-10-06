@@ -17,9 +17,22 @@ class Chat extends Component {
     };
     componentDidMount() {
         this.getUser();
+        /* scroll to bottom */
+        let chatBox = document.getElementById("chat-window");
+        if (chatBox) {
+            chatBox = chatBox.firstElementChild.firstElementChild;
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
     }
     componentDidUpdate = prevProps => {
-        console.log(this.props.messages.length);
+        if (prevProps.messages.length !== this.props.messages.length) {
+            let chatBox = document.getElementById("chat-window");
+            if (chatBox) {
+                /* scroll to bottom */
+                chatBox = chatBox.firstElementChild.firstElementChild;
+                chatBox.scrollTop = chatBox.scrollHeight;
+            }
+        }
     };
     getUser = async () => {
         let user = null;
@@ -71,11 +84,9 @@ class Chat extends Component {
         chatInput.setAttribute("rows", 1);
 
         /* scroll to bottom */
-        // let chatBox = document
-        //     .getElementById("chat-window")
-        //     .firstChild()
-        //     .firstChild();
-        // chatBox.scrollTop = chatBox.scrollHeight;
+        let chatBox = document.getElementById("chat-window").firstElementChild
+            .firstElementChild;
+        chatBox.scrollTop = chatBox.scrollHeight;
     };
     render() {
         let { user } = this.state;

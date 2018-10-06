@@ -19,19 +19,27 @@ const Dashboards = props => {
             <Route
                 exact
                 path={`${match.path}/circle/:id/channel/:id`}
-                render={() => <GroupChat />}
+                render={() => <GroupChat {...props} />}
             />
-            <Route exact path={`/app/channel/:id`} render={() => <DM />} />
-            <Route exact path={`${match.path}/`} render={() => <Dashboard />} />
+            <Route
+                exact
+                path={`/app/channel/:id`}
+                render={() => <DM {...props} />}
+            />
+            <Route
+                exact
+                path={`${match.path}/`}
+                render={() => <Dashboard {...props} />}
+            />
             <Route
                 exact
                 path={`${match.path}/new/circle`}
-                render={() => <CreateCircle />}
+                render={() => <CreateCircle {...props} />}
             />
             <Route
                 exact
                 path={`${match.path}/circle/:id/new/channel`}
-                render={() => <CreateChannel />}
+                render={props => <CreateChannel {...props} />}
             />
             <Route
                 exact
@@ -41,12 +49,12 @@ const Dashboards = props => {
             <Route
                 exact
                 path={`${match.path}/circle/:id/add/user`}
-                render={() => <AddUser />}
+                render={() => <AddUser {...props} />}
             />
             <Route
                 exact
                 path={`${match.path}/circle/:id/constitution/`}
-                render={() => <Docs />}
+                render={() => <Docs {...props} />}
             />
             <Route
                 exact

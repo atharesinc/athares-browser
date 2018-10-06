@@ -939,8 +939,9 @@ input[type="phone"],
 .message-content-wrapper {
     display: flex;
     flex-direction: row;
-    align-items: flex-start;
+    align-items: center;
     white-space: pre-wrap;
+    width: 100%;
 }
 
 .message-icon {
@@ -951,13 +952,13 @@ input[type="phone"],
 .message-content {
     background: #e9e9e920;
     padding: 1em;
-    max-width: 85%;
+    width: 100%;
     margin: 0.5em;
     box-shadow: 0 0 0.5em #282a38;
 }
 
 .my-msg {
-    background: #00dffcdd;
+    background: #7782bb50;
 }
 #chat-window > div > div {
     padding: 0.5em;
@@ -1087,7 +1088,7 @@ input[type="phone"],
     width: calc(100vw - 10vh - 30vw);
 }
 #revision-board-wrapper > div > div {
-    width: 100%; 
+    width: 100%;
     height: 100%;
     margin: 0;
     /* overflow-x: scroll; */
