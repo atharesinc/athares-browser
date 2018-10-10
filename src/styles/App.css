@@ -274,11 +274,12 @@ input[type="phone"],
 }
 
 .amendment-title {
-    width: calc(100% - 1em);
+    width: 100%
 }
 
 .amendment-text {
     /*width: calc(100% - 1em);*/
+    white-space: pre-wrap;
     display: block;
     width: 100%;
 }
@@ -351,7 +352,6 @@ input[type="phone"],
     resize: none;
     width: 100%;
     white-space: pre-wrap;
-    background: #2f3242;
     color: #ffffff;
 }
 

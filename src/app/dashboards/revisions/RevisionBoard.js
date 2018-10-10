@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-// import SelectCornersDiv from "../../../utils/SelectCornersDiv";
+import SelectCornersDiv from "../../../utils/SelectCornersDiv";
 import { Link, withRouter } from "react-router-dom";
 import Loader from "../../Loader";
 import moment from "moment";
@@ -22,8 +22,7 @@ class RevisionBoard extends Component {
         let {
             revisions: allRevisions,
             circles,
-            activeCircle,
-            votes
+            activeCircle
         } = this.props;
         let circle = circles.find(c => c.id === activeCircle);
         if (!circle) {
@@ -46,7 +45,7 @@ class RevisionBoard extends Component {
                 </div>
             );
         }
-        votes = votes.filter(v => v.circle === activeCircle);
+        // votes = votes.filter(v => v.circle === activeCircle);
         allRevisions = allRevisions.filter(r => r.circle === activeCircle);
         allRevisions = allRevisions.map(r => {
             return {
@@ -54,21 +53,21 @@ class RevisionBoard extends Component {
                 votes: this.props.votes.filter(v => v.revision === r.id)
             };
         });
+        let now = moment().valueOf();
+
         // all non-expired revisions
-        let newRevisions = allRevisions.filter(
-            r => !r.passed && moment().valueOf() < moment(r.expires).valueOf()
-        );
+        let newRevisions = allRevisions.filter(r => r.passed === undefined);
         // passed in the last week
         let recentlyPassed = allRevisions.filter(
             r =>
-                r.passed &&
-                moment().valueOf() - moment(r.expires).valueOf() <= 604800000
+                r.passed === true &&
+                now - moment(r.expires).valueOf() <= 604800000
         );
         // rejected in the last week
         let recentlyRejected = allRevisions.filter(
             r =>
-                !r.passed &&
-                moment().valueOf() - moment(r.expires).valueOf() <= 604800000
+                r.passed === false &&
+                now - moment(r.expires).valueOf() <= 604800000
         );
         // let revisions = [newRevisions, recentlyPassed, recentlyRejected];
         // console.log(revisions);
@@ -78,10 +77,12 @@ class RevisionBoard extends Component {
                 <small className="f6 white-80 db mb2 ml3">
                     Review proposed legislation and changes to existing laws
                 </small>
-                <div id="revision-board-wrapper">
+                <div id="revision-board-wrapper" style={{
+                            height: "100%"
+}}>
                     <Scrollbars
                         style={{
-                            height: "80vh",
+                            height: "100%",
                             width: "100%"
                         }}
                     >
@@ -110,20 +111,25 @@ const Board = ({ title, revisions }) => {
             <div className="bb b--white pa2 mb2">
                 <div className="white">{title}</div>
             </div>
-            <Scrollbars
-                style={{
-                    height: revisions.length * 11.5 + "em",
-                    width: "100%",
-                    display: "flex",
+            <div style={{
+                display: "flex",
                     flexDirection: "column",
                     justifyContent: "flex-start",
-                    alignItems: "center"
+                    alignItems: "center",
+                    width: "100%",
+                    height: "28em"
+                }}>
+            <Scrollbars
+                style={{
+                    height: "28em",
+                    minHeight: "11.5em"
                 }}
             >
                 {revisions.map((rev, i) => (
                     <RevisionWithRouter key={i} {...rev} />
                 ))}
             </Scrollbars>
+            </div>
         </div>
     );
 };
@@ -143,8 +149,9 @@ const RevisionCard = ({
     const support = votes.filter(({ support }) => support).length;
     return (
         <Link to={`${props.match.url}/${id}`}>
+        <div style={{marginBottom: "0.5em", color: "#FFF"}}>
             <h1 className="f6 bg-theme-light white-80 mv0 ph3 pv2">
-                {amendment !== null ? amendment.title : title}
+                {title}
             </h1>
             <div className="pa3 bg-theme">
                 <div
@@ -192,6 +199,7 @@ const RevisionCard = ({
                         {moment(createdAt).format("MM/DD/YY hh:mma")}
                     </small>
                 </div>
+            </div>
             </div>
         </Link>
     );

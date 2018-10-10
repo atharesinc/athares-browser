@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { PureComponent } from "react";
 import Circles from "./circles";
 import Channels from "./channels";
 import Dashboards from "./dashboards";
@@ -9,7 +9,7 @@ import * as stateSelectors from "../store/state/reducers";
 
 // import Loader from "./Loader";
 
-class DesktopLayout extends Component {
+class DesktopLayout extends PureComponent {
     constructor(props) {
         super(props);
         this.state = {

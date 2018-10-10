@@ -1,8 +1,14 @@
 import React from "react";
 import AmendmentEdit from "./AmendmentEdit";
 import AmendmentView from "./AmendmentView";
+import Gun from "gun/gun";
+import { withGun } from "react-gun";
+import moment from "moment";
+import { updateRevision } from "../../../store/state/actions";
+import { connect } from "react-redux";
+import { withRouter } from "react-router-dom";
 
-export default class Amendment extends React.Component {
+class Amendment extends React.Component {
   constructor(props) {
     super(props);
 
@@ -34,14 +40,97 @@ export default class Amendment extends React.Component {
     this.props.addSub(this.props.id);
     this.cancel();
   };
+  customSigm = x => {
+    return 604800 / (1 + Math.pow(Math.E, -1 * (x - 10))) / 2;
+  };
   save = () => {
-    // can be undefined if no changes ?
-    console.log(this.state.text);
+    // can be undefined if no changes
+    if (this.props.amendment.text.trim() === this.state.text) {
+      return;
+    }
+    let gunRef = this.props.gun;
 
-    // this.props.updateItem(this.props.id, this.state.text);
-    // this.setState({
-    // 	editMode: !this.state.editMode
-    // });
+    const {
+      title,
+      circle: circleID,
+      text,
+      id: amendmentID
+    } = this.props.amendment;
+    let { circle } = this.props;
+    let numUsers = circle.users.length;
+    const user = this.props.gun.user();
+    let amendmentRef = gunRef.get(amendmentID);
+    user.get("profile").once(async profile => {
+      const newRevision = {
+        id: "RV" + Gun.text.random(),
+        circle: circleID,
+        backer: profile,
+        title,
+        oldText: text,
+        newText: this.state.text.trim(),
+        createdAt: moment().format(),
+        updatedAt: moment().format(),
+        amendment: amendmentRef,
+        expires: moment()
+          .add(Math.max(this.customSigm(numUsers), 61), "s")
+          .format(),
+        voterThreshold: Math.round(numUsers / 2)
+      };
+
+      const newVote = {
+        id: "VO" + Gun.text.random(),
+        circle: circleID,
+        revision: newRevision.id,
+        user: this.props.user,
+        support: true
+      };
+
+      let revision = gunRef.get(newRevision.id);
+      revision.put(newRevision);
+
+      let vote = gunRef.get(newVote.id);
+      vote.put(newVote);
+
+      // set this node as a revision in the parent circle
+      gunRef
+        .get(circleID)
+        .get("revisions")
+        .set(revision);
+
+      gunRef
+        .get(newRevision.id)
+        .get("votes")
+        .set(vote);
+
+      //add it to ambiguous "list" of revisions
+      gunRef.get("revisions").set(revision);
+      gunRef.get("votes").set(vote);
+
+      // set it to this user's reference of the circle ??
+      let user = this.props.gun.user();
+
+      user
+        .get("circles")
+        .get(circleID)
+        .get("revisions")
+        .set(revision);
+
+      user
+        .get("circles")
+        .get(circleID)
+        .get("revisions")
+        .get(newRevision.id)
+        .get("votes")
+        .set(vote);
+
+      user.get("revisions").set(revision);
+      user.get("votes").set(vote);
+      this.props.dispatch(updateRevision(newRevision.id));
+
+      this.props.history.push(
+        `/app/circle/${circleID}/revisions/${newRevision.id}`
+      );
+    });
   };
   shouldComponentUpdate(nextProps, nextState) {
     return (
@@ -73,3 +162,7 @@ export default class Amendment extends React.Component {
     );
   }
 }
+function mapStateToProps(state) {
+  return {};
+}
+export default withRouter(connect(mapStateToProps)(withGun(Amendment)));

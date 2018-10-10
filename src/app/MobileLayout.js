@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from "react";
+import React, { PureComponent, Fragment } from "react";
 // import Loader from "./Loader";
 
 import TopNav from "./mobile/TopNav";
@@ -13,14 +13,13 @@ import { connect } from "react-redux";
 import { pull } from "../store/state/reducers";
 import { updateCircle } from "../store/state/actions";
 
-class MobileLayout extends Component {
+class MobileLayout extends PureComponent {
     constructor(props) {
         super(props);
         this.state = {
             index: 0,
             isOpen: false,
-            user: null,
-            circles: []
+            user: null
         };
     }
     /*Triggered when swiping between views (mobile only) */
@@ -34,12 +33,10 @@ class MobileLayout extends Component {
     };
     componentDidMount() {
         if (this.props.user) {
-            // get this user's circles
+            // get this user
             let userRef = this.props.gun.user();
 
             userRef.get("profile").once(async user => {
-                let circles = [];
-
                 this.setState({
                     user
                 });

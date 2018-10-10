@@ -52,7 +52,7 @@ class CreateAmendment extends Component {
         let circle = this.props.circles.find(
             c => c.id === this.props.activeCircle
         );
-        let numUsers = Object.keys(circle.users).length;
+        let numUsers = circle.users.length;
 
         user.get("profile").once(async profile => {
             const newRevision = {
@@ -64,9 +64,8 @@ class CreateAmendment extends Component {
                 createdAt: moment().format(),
                 updatedAt: moment().format(),
                 expires: moment()
-                    .add(this.customSigm(numUsers), "s")
+                    .add(Math.max(this.customSigm(numUsers), 61), "s")
                     .format(),
-                passed: false,
                 voterThreshold: Math.round(numUsers / 2)
             };
 
@@ -116,11 +115,10 @@ class CreateAmendment extends Component {
                 .get("votes")
                 .set(vote);
 
+            user.get("revisions").set(revision);
             user.get("votes").set(vote);
             this.props.dispatch(updateRevision(newRevision.id));
 
-            console.log(this.props.activeRevision);
-            // it def exists
             this.props.history.push(
                 `/app/circle/${this.props.activeCircle}/revisions/${
                     newRevision.id
@@ -206,13 +204,15 @@ class CreateAmendment extends Component {
                                         >
                                             Amendment
                                         </label>
+                                                <Scrollbars style={{ maxHeight: "11.5rem", width: "100%" }} autoHeight className="ghost">
                                         <div
                                             contentEditable={true}
-                                            className={`f6 amendment-text editableText ghost`}
+                                            className={`f6 amendment-text editableText`}
                                             onInput={this.updateAmend}
                                             value={this.state.amendment}
                                             suppressContentEditableWarning
                                         />
+                                        </Scrollbars>
                                         <ErrorSwap
                                             condition={!this.state.isTaken}
                                             normal={

@@ -6,25 +6,25 @@ export default class Navbar extends Component {
     window.addEventListener('scroll', this.animateBackground, true);
   }
   animateBackground = () => {
-    const h = this.props.top;
-    document.getElementById('splash-nav').style.background = h > 100 ? '#FFFFFF' : 'transparent';
+    const h = this.props.scrolled;
+    document.getElementById('splash-nav').style.background = h  ? '#FFFFFF' : 'transparent';
   };
   componentWillUnmount() {
     window.removeEventListener('scroll', this.animateBackground, true);
   }
   render() {
-    const { top } = this.props;
+    const { scrolled } = this.props;
 
     const logo =
-        top > 100
-          ? 'https://s3.us-east-2.amazonaws.com/athares-images/Athares-logo-small-black.png'
-          : 'https://s3.us-east-2.amazonaws.com/athares-images/Athares-logo-small-white.png',
+    scrolled
+          ? './img/Athares-logo-small-black.png'
+          : './img/Athares-logo-small-white.png',
       brand =
-        top <= 100
-          ? 'https://s3.us-east-2.amazonaws.com/athares-images/Athares-full-small-white.png'
-          : 'https://s3.us-east-2.amazonaws.com/athares-images/Athares-full-small-black.png';
+      !scrolled
+          ? './img/Athares-full-small-white.png'
+          : './img/Athares-full-small-black.png';
 
-    const textStyle = top > 100 ? whiteStyle : normalStyle;
+    const textStyle = scrolled ? whiteStyle : normalStyle;
 
     return (
       <nav className="dt w-100 center tracked" id="splash-nav" style={textStyle}>

@@ -52,7 +52,7 @@ const MenuWrapper = ({ isOpen, history, isMenuOpen, user, ...props }) => {
                     <div className="dtc w3 h3 v-mid">
                         <img
                             src={
-                                window.location.origin + "/img/user-default.png"
+                                "/img/user-default.png"
                             }
                             className="ba b--white db br-100 w3 h3 bw1"
                             alt="Menu"

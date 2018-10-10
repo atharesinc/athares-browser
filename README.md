@@ -78,7 +78,15 @@ Each version outlines features that the platform must have to meet this version
 -   Live update circles and channel creation
 -   Live updates for messages
 -   Live updates for revisions and amendments
+-   RevisionBoard needs to be 100% accurate
+    -   Live vote changes works
+    -   Revision cards display proper vote splits
 -   Revision checker and timer (see codesandbox example)
+    -   Works for normally expired new revisions
+    -   NEEDS
+        -   Threshold reached (on vote, check?)
+        -   From amendment revision
+-   User changes and other users work
 
 #### 0.0.4
 
@@ -122,6 +130,13 @@ Each version outlines features that the platform must have to meet this version
 -   Front-end data-management finalized
 -   Validate all input fields (createCircle, createChannel, createRevision)
 -   XSS sanitize all fields
+
+#### 0.3.6 (5 minute fixes)
+
+-   Correct scrolling in RevisionBoard
+-   Correct spacing between revision cards
+-   (Mobile) ViewRevision should be full-height
+-   Governance channels should be lit up when selected
 
 #### 0.4.0 (Essential Nice-to-haves)
 

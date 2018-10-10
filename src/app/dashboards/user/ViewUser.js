@@ -10,8 +10,8 @@ import { pull } from "../../../store/state/reducers";
 class ViewUser extends React.Component {
     constructor(props) {
         super(props);
+
         this.state = {
-            loading: true,
             user: this.props.user,
             stats: this.props.stats
         };
@@ -20,15 +20,11 @@ class ViewUser extends React.Component {
         if (!this.props.userId) {
             this.props.history.push("/app");
         }
-
-        this.setState({
-            loading: false
-        });
     }
 
     render() {
-        const { loading, user, stats } = this.state;
-        console.log(user);
+        const { user, stats } = this.state;
+        const { loading } = this.props;
         if (loading) {
             return (
                 <div id="dashboard-wrapper">

@@ -28,7 +28,7 @@ class ViewRevision extends Component {
     }
     componentDidMount() {
         this._isMounted = true;
-        if (this.props.activeRevision) {
+        if (this.props.activeRevision && this.props.activeRevision === this.props.match.params.id) {
             this.getRevision();
         } else {
             this.props.dispatch(updateRevision(this.props.match.params.id));
@@ -41,32 +41,10 @@ class ViewRevision extends Component {
         }
     }
     getRevision = () => {
-        console.log("Getting that sick revision", this._isMounted);
-
         let revisionID = this.props.activeRevision;
         let gunRef = this.props.gun;
-        // gunRef.get(revisionID).once(revision => {
-        //     console.log(revision, revision.backer);
-        //     let votes = [];
-        //     gunRef.get(revision.backer["#"]).once(backer => {
-        //         console.log(backer);
-        //         gunRef
-        //             .get(revisionID)
-        //             .get("votes")
-        //             .map(vote => {
-        //                 console.log(vote);
-        //                 votes.push(vote);
-        //             });
-        //         console.log("Getting that sick revision soon", this._isMounted);
-
-        //         // this._isMounted &&
-        //         this.setState({ revision: { ...revision, votes, backer } });
-        //     });
-        // });
 
         gunRef.get(revisionID).open(revision => {
-            console.log(revision);
-
             this._isMounted &&
                 this.setState({
                     revision: {
@@ -88,7 +66,8 @@ class ViewRevision extends Component {
 
         let user = this.props.gun.user();
 
-        let myVote = this.props.votes.find(
+        // check this revision's votes
+        let myVote = this.state.revision.votes.find(
             v => v.user === this.props.user && activeRevision === v.revision
         );
 
@@ -216,7 +195,9 @@ class ViewRevision extends Component {
                                     support={support}
                                 />
                                 <div className="pa3 white pre-wrap">
+                                <Scrollbars style={{height: "11em", width: "100%"}}>
                                     {newText}
+                                    </Scrollbars>
                                 </div>
                                 <RevisionStats
                                     {...revision}
@@ -251,35 +232,4 @@ function mapStateToProps(state) {
 }
 
 export default withGun(withRouter(connect(mapStateToProps)(ViewRevision)));
-// const revision = {
-//   id: "1",
-//   createdAt: new Date().getTime() - 37 * 1000 + 37 * 100,
-//   updatedAt: new Date(
-//     new Date().getTime() - 86400000 * Math.floor(Math.random() * 8)
-//   ),
-//   oldText:
-//     "All legislative Powers herein granted shall be vested in a Congress of the United States, which shall consist of a Senate and House of Representatives.",
-//   newText: `All legislative Pwers. Herein granted shall be vested in a Congress of the United States, which shall consist of a Senate and House of Representatives.
 
-// kjsndfkjsndkfjn  sdf sadf sdf sdf
-
-// sdfsdfsdf`,
-//   amendment: { id: 4 },
-//   title: "Deep Space Exploration Act",
-//   ratified: true,
-//   backer: {
-//     firstName: "Erlich",
-//     lastName: "Bachmann",
-//     icon: "http://mrmrs.github.io/photos/p/2.jpg",
-//     id: "s9d87f6g9"
-//   },
-//   votes: fakeVotes()
-// };
-// function fakeVotes() {
-//   const num = Math.floor(Math.random() * 50 + 1);
-//   const votes = [];
-//   for (let i = 0; i < num; ++i) {
-//     votes.push({ id: num + i, support: Math.random() > 0.5 });
-//   }
-//   return votes;
-// }

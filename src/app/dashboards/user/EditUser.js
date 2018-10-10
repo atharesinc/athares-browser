@@ -6,33 +6,38 @@ import "react-phone-number-input/rrui.css";
 import "react-phone-number-input/style.css";
 import { Link, withRouter } from "react-router-dom";
 import Loader from "../../Loader";
-// import swal from "sweetalert";
+import swal from "sweetalert";
 import { Scrollbars } from "react-custom-scrollbars";
 import { withGun } from "react-gun";
 import { connect } from "react-redux";
 import { pull } from "../../../store/state/reducers";
 import moment from "moment";
-import { resizeBase64 } from "resize-base64";
+import { resizeBase64ForMaxWidthAndMaxHeight } from "resize-base64";
 
+const resizeBase64 = resizeBase64ForMaxWidthAndMaxHeight;
 class EditUser extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            id: this.props.userId || "",
-            icon: this.props.user.icon || "",
-            phone: this.props.user.phone || "",
-            firstName: this.props.user.firstName || "",
-            lastName: this.props.user.lastName || "",
-            uname: this.props.user.uname || "",
+            id: null,
+            icon: "",
+            phone: "",
+            firstName: "",
+            lastName: "",
+            uname: "",
             phoneTaken: false,
             unameTaken: false,
-            loading: false
+            loading: true
         };
     }
     componentDidMount() {
         if (!this.props.userId) {
             this.props.history.push("/app");
         }
+        this.setState({
+            ...this.props.user,
+            loading: false
+        });
     }
 
     changeImage = imageUrl => {
@@ -78,7 +83,12 @@ class EditUser extends Component {
         // validate user data
         // ???
 
-        let base64Large = await this.convertBlobToBase64(this.state.icon);
+        let base64Large = this.state.icon;
+
+        // Depending on whether or not the user updates their image, the photo can be either base64 or a Blob
+        if (this.state.icon instanceof Blob) {
+            base64Large = await this.convertBlobToBase64(base64Large);
+        }
 
         // create a reasonable image from whatever was uploaded
         let base64Small = await this.shrinkBase64(base64Large);
@@ -118,7 +128,11 @@ class EditUser extends Component {
 
             let errorCallback = function(errorMessage) {
                 console.log(errorMessage);
-                alert(errorMessage);
+                swal(
+                    "Sorry",
+                    "There was an error updating your profile.",
+                    "error"
+                );
             };
 
             resizeBase64(
@@ -137,7 +151,7 @@ class EditUser extends Component {
         });
     };
     render() {
-        if (this.state.loading) {
+        if (this.state.loading || this.state.id === null) {
             return (
                 <div
                     id="dashboard-wrapper"
@@ -148,7 +162,7 @@ class EditUser extends Component {
                 >
                     <Loader />
                     <h1 className="mb3 mt0 lh-title mt4 f3 f2-ns">
-                        Saving User Information
+                        Loading...
                     </h1>
                 </div>
             );

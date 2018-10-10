@@ -1,4 +1,4 @@
-import React, { Fragment, PureComponent } from "react";
+import React, { Fragment, Component } from "react";
 import FeatherIcon from "feather-icons-react";
 import swal from "sweetalert";
 import { Link, withRouter } from "react-router-dom";
@@ -8,7 +8,7 @@ import { validateLogin } from "../utils/validators";
 import { pull } from "../store/state/reducers";
 import { connect } from "react-redux";
 
-class Login extends PureComponent {
+class Login extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -67,6 +67,9 @@ class Login extends PureComponent {
             email: document.getElementById("loginEmail").value
         });
     };
+    shouldComponentUpdate(nextProps, nextState){
+        return nextState !== this.state;
+    }
     render() {
         const { email, password } = this.state;
         return (

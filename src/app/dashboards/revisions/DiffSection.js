@@ -1,22 +1,23 @@
 import React from "react";
 import Diff from "react-stylable-diff-common";
-// import Diff from "react-stylable-diff/dist/react-diff.js";
 import { Scrollbars } from "react-custom-scrollbars";
 
 const DiffSection = ({ oldText, newText, mode }) => {
   switch (mode) {
     case 1:
       return (
-        <Diff
-          className="pa3 pre-wrap diff lh-copy"
-          inputA={oldText}
-          inputB={newText}
-          type="words"
-        />
+        <Scrollbars style={{ maxHeight: "11.5rem", width: "100%" }} autoHeight>
+          <Diff
+            className="pa3 pre-wrap diff lh-copy"
+            inputA={oldText}
+            inputB={newText}
+            type="words"
+          />
+        </Scrollbars>
       );
     case 2:
       return (
-        <Scrollbars style={{ height: "15rem", width: "100%" }}>
+        <Scrollbars style={{ maxHeight: "11.5rem", width: "100%" }} autoHeight>
           <div className="pa3 flex flex-row h5">
             <div className="w-50 h-100 mr1">
               <Diff
@@ -38,7 +39,11 @@ const DiffSection = ({ oldText, newText, mode }) => {
         </Scrollbars>
       );
     default:
-      return <div className="pa3 white pre-wrap lh-copy">{newText}</div>;
+      return (
+        <Scrollbars style={{ maxHeight: "11.5rem", width: "100%" }} autoHeight>
+          <div className="pa3 white pre-wrap lh-copy">{newText}</div>
+        </Scrollbars>
+      );
   }
 };
 

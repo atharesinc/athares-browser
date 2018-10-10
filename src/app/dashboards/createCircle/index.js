@@ -10,14 +10,15 @@ import Loader from "../../Loader";
 import swal from "sweetalert";
 import { Scrollbars } from "react-custom-scrollbars";
 import moment from "moment";
-import { resizeBase64 } from "resize-base64";
+import { resizeBase64ForMaxWidthAndMaxHeight } from "resize-base64";
+const resizeBase64 = resizeBase64ForMaxWidthAndMaxHeight;
 
 class createCircleBoard extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            // this should be whatever fits into an img src value or a css url(), either a filepath or bas64 encoded image string
+            // this should be whatever fits into an img src value or a css url(), either a filepath or base64 encoded image string
             icon: "/img/Athares-logo-large-white.png",
             name: "",
             preamble: "",
@@ -70,8 +71,13 @@ class createCircleBoard extends Component {
     };
     onSubmit = async e => {
         e.preventDefault();
-        let { name, preamble, icon } = this.state;
-        let base64Large = await this.convertBlobToBase64(icon);
+        let { name, preamble } = this.state;
+
+        let base64Large = this.state.icon;
+        // Depending on whether or not the user updates their image, the photo can be either base64 or a Blob
+        if (base64Large instanceof Blob) {
+            base64Large = await this.convertBlobToBase64(base64Large);
+        }
 
         let base64Small = await this.shrinkBase64(base64Large);
 

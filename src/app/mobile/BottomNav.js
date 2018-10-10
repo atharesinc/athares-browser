@@ -4,7 +4,6 @@ import FeatherIcon from "feather-icons-react";
 
 const BottomNav = ({ show, activeCircle }) => {
     // ask the user to log in
-    console.log(show, activeCircle);
     if (!show) {
         return (
             <Link className="w-100" to={"/login"}>

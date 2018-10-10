@@ -3,10 +3,10 @@ import ViewUser from "./ViewUser";
 import EditUser from "./EditUser";
 import ViewOtherUser from "./ViewOtherUser"; // same as view user w/o btns to toggle
 import { Switch, Route } from "react-router-dom";
-import Loader from "../../Loader";
 import { connect } from "react-redux";
 import { withGun } from "react-gun";
-import * as stateSelectors from "../../../store/state/reducers";
+import { pull } from "../../../store/state/reducers";
+import Loader from "../../Loader";
 
 class User extends Component {
     state = {
@@ -18,50 +18,38 @@ class User extends Component {
         passedRevisionCount: 0
     };
     componentDidMount() {
-        if (!this.props.user) {
-            this.props.history.push("/app");
-        }
-        // get the logged-in user ref
-        let userRef = this.props.gun.user();
-        let revisionsRef = this.props.gun.get("revisions");
+        // if a user is logged in OR location params exist to see another user
 
-        let newState = {
-            user: null,
-            voteCount: 0,
-            revisionCount: 0,
-            circleCount: 0,
-            passedRevisionCount: 0
-        };
-
-        userRef.get("profile").once(user => {
-            newState.user = { ...user };
-            // now get their votes
-            userRef.get("votes").forEach(vote => {
-                newState.voteCount++;
+        if (/user\/US.+/.test(this.props.location.pathname)) {
+            this.setState({
+                loading: false
             });
-            // now get their revisions
-            userRef.get("revisions").forEach(revision => {
-                newState.revisionCount++;
-                // We have to get the whole revision to see anything about it besides the id
-                revisionsRef.get(revision).once(data => {
-                    if (data.passed) {
-                        newState.passedRevisionsCount++;
-                    }
+        } else if (!!this.props.user) {
+            const { votes, circles, revisions, user: id } = this.props;
+            // get the logged-in user ref
+            let userRef = this.props.gun.user();
+
+            userRef.get("profile").once(user => {
+                let myRevisions = revisions.filter(r => r.backer.id === id);
+
+                this.setState({
+                    user,
+                    voteCount: votes.filter(v => v.user === id).length,
+                    revisionCount: myRevisions.length,
+                    circleCount: circles.length,
+                    passedRevisionCount: myRevisions.filter(
+                        r => r.passed === true
+                    ).length,
+                    loading: false
                 });
             });
-            // get their circles
-            userRef.get("circles").forEach(circle => {
-                newState.circleCount++;
-            });
-        });
-
-        // For some reason I'm setting state with a function here ... ?
-        this.setState(() => ({ ...newState, loading: false }));
+        } else {
+            this.props.history.push("/app");
+        }
     }
     render() {
         const { user, loading, ...stats } = this.state;
         const { match } = this.props;
-
         if (loading) {
             return (
                 <div
@@ -84,7 +72,12 @@ class User extends Component {
                     exact
                     path={`${match.path}`}
                     component={props => (
-                        <ViewUser {...props} stats={stats} user={user} />
+                        <ViewUser
+                            {...props}
+                            stats={stats}
+                            user={user}
+                            loading={loading}
+                        />
                     )}
                 />
                 )
@@ -98,12 +91,6 @@ class User extends Component {
                     path={`${match.path}/:id`}
                     component={props => <ViewOtherUser {...props} />}
                 />
-                {/* <Route
-          component={props => {
-            props.history.push(`/app`);
-            return null;
-          }}
-        /> */}
             </Switch>
         );
     }
@@ -111,8 +98,11 @@ class User extends Component {
 
 function mapStateToProps(state) {
     return {
-        user: stateSelectors.pull(state, "user"),
-        pub: stateSelectors.pull(state, "pub")
+        user: pull(state, "user"),
+        pub: pull(state, "pub"),
+        circles: pull(state, "circles"),
+        votes: pull(state, "votes"),
+        revisions: pull(state, "revisions")
     };
 }
 
