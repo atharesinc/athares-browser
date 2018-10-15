@@ -2,7 +2,6 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { pull } from "../../store/state/reducers";
 import { connect } from "react-redux";
-import { Scrollbars } from "react-custom-scrollbars";
 import {withRouter} from "react-router-dom";
 /*
     A Group of Governance Channels

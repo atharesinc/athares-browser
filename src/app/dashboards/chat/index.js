@@ -10,6 +10,7 @@ import { connect } from "react-redux";
 import { withGun } from "react-gun";
 import Gun from "gun/gun";
 import moment from "moment";
+
 class Chat extends Component {
     state = {
         messages: [],

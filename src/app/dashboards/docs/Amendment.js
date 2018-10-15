@@ -61,21 +61,24 @@ class Amendment extends React.Component {
     const user = this.props.gun.user();
     let amendmentRef = gunRef.get(amendmentID);
     user.get("profile").once(async profile => {
+      let {id, firstName, lastName, icon} = profile
       const newRevision = {
         id: "RV" + Gun.text.random(),
         circle: circleID,
-        backer: profile,
+        backer: {id, firstName, lastName, icon},
         title,
         oldText: text,
         newText: this.state.text.trim(),
         createdAt: moment().format(),
         updatedAt: moment().format(),
-        amendment: amendmentRef,
+        amendment: amendmentID,
         expires: moment()
           .add(Math.max(this.customSigm(numUsers), 61), "s")
           .format(),
         voterThreshold: Math.round(numUsers / 2)
       };
+
+      console.log(newRevision);
 
       const newVote = {
         id: "VO" + Gun.text.random(),
@@ -87,6 +90,8 @@ class Amendment extends React.Component {
 
       let revision = gunRef.get(newRevision.id);
       revision.put(newRevision);
+      
+      console.log(revision);
 
       let vote = gunRef.get(newVote.id);
       vote.put(newVote);
@@ -123,13 +128,14 @@ class Amendment extends React.Component {
         .get("votes")
         .set(vote);
 
-      user.get("revisions").set(revision);
       user.get("votes").set(vote);
-      this.props.dispatch(updateRevision(newRevision.id));
+      user.get("revisions").set(revision, () => {
+        this.props.dispatch(updateRevision(newRevision.id));
 
-      this.props.history.push(
-        `/app/circle/${circleID}/revisions/${newRevision.id}`
-      );
+        this.props.history.push(
+          `/app/circle/${circleID}/revisions/${newRevision.id}`
+        );
+      });
     });
   };
   shouldComponentUpdate(nextProps, nextState) {

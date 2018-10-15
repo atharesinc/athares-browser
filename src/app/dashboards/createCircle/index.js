@@ -10,8 +10,6 @@ import Loader from "../../Loader";
 import swal from "sweetalert";
 import { Scrollbars } from "react-custom-scrollbars";
 import moment from "moment";
-import { resizeBase64ForMaxWidthAndMaxHeight } from "resize-base64";
-const resizeBase64 = resizeBase64ForMaxWidthAndMaxHeight;
 
 class createCircleBoard extends Component {
     constructor(props) {
@@ -132,26 +130,28 @@ class createCircleBoard extends Component {
 
     shrinkBase64 = base64String => {
         return new Promise(resolve => {
-            let maxWidth = 200;
-            let maxHeight = 200;
 
-            // let successCallback = function(resizedImage) {
-            //   console.log(resizedImage.length);
-            // };
+        // We create an image to receive the Data URI
+        var img = document.createElement('img');
 
-            let errorCallback = function(errorMessage) {
-                console.log(errorMessage);
-                alert(errorMessage);
+        // When the event "onload" is triggered we can resize the image.
+        img.onload = function(){        
+                // We create a canvas and get its context.
+                var canvas = document.createElement('canvas');
+                var ctx = canvas.getContext('2d');
+
+                // We set the dimensions at the wanted size.
+                canvas.width = 200;
+                canvas.height = 200;
+
+                // We resize the image with the canvas method drawImage();
+                ctx.drawImage(this, 0, 0, 200, 200);
+                resolve(canvas.toDataURL('image/png'));
+
             };
 
-            resizeBase64(
-                base64String,
-                maxWidth,
-                maxHeight,
-                resolve,
-                errorCallback
-            );
-        });
+        img.src = base64String;
+    });
     };
     clearError = () => {
         this.setState({

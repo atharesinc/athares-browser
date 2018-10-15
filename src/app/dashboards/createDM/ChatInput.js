@@ -3,26 +3,13 @@ import TextareaAutosize from "react-autosize-textarea";
 import FeatherIcon from "feather-icons-react";
 
 export default class ChatInput extends PureComponent {
-    constructor() {
-        super();
-
-        this.state = {
-            input: ""
-        };
-        this.submit = this.submit.bind(this);
-        this.changeText = this.changeText.bind(this);
-    }
-    changeText() {
-        let chatInput = document.getElementById("chat-input");
-        this.setState({ input: chatInput.value });
-    }
-    submit(e) {
+    changeText = (e) => {
+        this.props.updateText(e.currentTarget.value);
+    };
+    submit = (e) => {
         if (e.key === "Enter" && !e.shiftKey) {
             e.preventDefault();
-            if (this.state.input.trim() !== "") {
-                this.props.isSubmit(this.state.input);
-                this.setState({ input: "" });
-            }
+                this.props.submit();
         }
     }
     render() {
@@ -32,7 +19,7 @@ export default class ChatInput extends PureComponent {
                     rows={1}
                     maxRows={5}
                     id="chat-input"
-                    value={this.state.input}
+                    value={this.props.text}
                     placeholder="Enter Message"
                     onKeyDown={this.submit}
                     onChange={this.changeText}

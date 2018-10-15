@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import SelectCornersDiv from "../../../utils/SelectCornersDiv";
 import { Link, withRouter } from "react-router-dom";
 import Loader from "../../Loader";
 import moment from "moment";

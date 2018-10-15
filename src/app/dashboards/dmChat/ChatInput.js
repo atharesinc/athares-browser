@@ -9,18 +9,18 @@ export default class ChatInput extends PureComponent {
         this.state = {
             input: ""
         };
-        this.submit = this.submit.bind(this);
-        this.changeText = this.changeText.bind(this);
+        this.submit = this.submit;
+        this.changeText = this.changeText;
     }
-    changeText() {
+    changeText = () => {
         let chatInput = document.getElementById("chat-input");
         this.setState({ input: chatInput.value });
     }
-    submit(e) {
+    submit = (e) => {
         if (e.key === "Enter" && !e.shiftKey) {
             e.preventDefault();
             if (this.state.input.trim() !== "") {
-                this.props.isSubmit(this.state.input);
+                this.props.submit(this.state.input);
                 this.setState({ input: "" });
             }
         }

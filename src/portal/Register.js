@@ -9,6 +9,7 @@ import moment from "moment";
 import { updateUser, updatePub } from "../store/state/actions";
 import { connect } from "react-redux";
 import { pull } from "../store/state/reducers";
+import {pair} from "simple-asym-crypto";
 
 class Register extends PureComponent {
     constructor(props) {
@@ -51,10 +52,7 @@ class Register extends PureComponent {
                 phone: "",
                 icon: defaultUser,
                 uname: "",
-                // messages: null,
-                // revisions: null,
-                // circles: null,
-                // votes: null,
+                keychain: "KC"+ Gun.text.random(),
                 createdAt: moment().format(),
                 updatedAt: moment().format()
             };
@@ -72,7 +70,7 @@ class Register extends PureComponent {
                     .get("users")
                     .get(user.id)
                     .put(ack.pub);
-                newUser.auth(email, password, otherAck => {
+                newUser.auth(email, password, async otherAck => {
                     // setup user's other information (since apparently it can't live inside of profile)
                     // Before i tried to set circles as an object inside of profile so that the user's circles could be attained with:
                     // user.get("profile").get("circles").map(circle=>...)
@@ -83,9 +81,22 @@ class Register extends PureComponent {
                     newUser.get("revisions");
                     newUser.get("votes");
                     newUser.get("channels");
+                    newUser.get("keys");
+                    // create the "global" keychain for this user's DM's
+                    this.props.gun.get(user.keychain);
+
+                    // HERE'S SOMETHING STUPID
+                    // I can't figure out how to do public key crypto with Gun/SEA
+                    // so I rolled my own wrapper to create a separate pub priv key pair 
+                    // these should be used to pass symmetric keys to other users publicly
+                    // OBSERVE
+                    let keys = await pair();
+                    // this is publicly viewable (but not editable) so we can symmetrically encrypt it with the user's keys
+                    // This can be decrypted by the user when necessary
+                    let encryptedPriv = await this.props.SEA.encrypt(keys.priv, newUser.pair());
 
                     // Actually set the user's information
-                    newUser.get("profile").put(user);
+                    newUser.get("profile").put({...user, apub: keys.pub, apriv: encryptedPriv});
                     newUser.get("profile").once(profile => {
                         // set the public key and id in redux to log in
                         this.props.dispatch(updateUser(user.id));

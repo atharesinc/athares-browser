@@ -6,6 +6,7 @@ import { connect } from "react-redux";
 import { pull } from "../../store/state/reducers";
 import { updateCircle } from "../../store/state/actions";
 import { withGun } from "react-gun";
+import BottomNav from "./BottomNav";
 
 class Channels extends Component {
     constructor(props) {
@@ -50,7 +51,8 @@ class Channels extends Component {
             user,
             channels,
             activeCircle,
-            circles
+            circles,
+            dms
         } = this.props;
         // const { circle } = this.state;
         const circle = circles.find(c => c.id === activeCircle);
@@ -77,16 +79,15 @@ class Channels extends Component {
                                 return channel.channelType === "group";
                             })}
                         />
-                        <ChannelGroup
-                            style={style.dm}
-                            channelType={"dm"}
-                            activeChannel={activeChannel}
-                            name={"Direct Messages"}
-                            channels={channels.filter(channel => {
-                                return channel.channelType === "dm";
-                            })}
-                        />
+                        {false && <ChannelGroup
+                                                    style={style.dm}
+                                                    channelType={"dm"}
+                                                    activeChannel={activeChannel}
+                                                    name={"Direct Messages"}
+                                                    channels={dms}
+                                                />}
                     </div>
+                    <BottomNav show={!!user} activeCircle={activeCircle} />
                 </div>
             );
         } else {
@@ -99,20 +100,34 @@ class Channels extends Component {
                     <div
                         id="channels-list"
                         style={{
-                            justifyContent: "center",
+                            justifyContent: "space-around",
                             alignItems: "center"
                         }}
                     >
                         <div>
-                            Select a circle
-                            {user && (
+                            
+                            {user ? 
                                 <Link to={"/app/new/circle"}>
-                                    {" "}
-                                    or create one{" "}
+                                   Select a circle or create one
                                 </Link>
-                            )}
+                             :
+                             <Link to={"/login"}>
+                                   Welcome to Athares
+                                   <br/>
+                                   <br/>
+                                   Login or Register to get started.
+                                </Link>
+                         }
                         </div>
+                        {false && <ChannelGroup
+                                                    style={style.dm}
+                                                    channelType={"dm"}
+                                                    activeChannel={activeChannel}
+                                                    name={"Direct Messages"}
+                                                    channels={dms}
+                                                />}
                     </div>
+                    <BottomNav show={!!user} activeCircle={activeCircle} />
                 </div>
             );
         }
@@ -137,7 +152,8 @@ function mapStateToProps(state) {
         activeCircle: pull(state, "activeCircle"),
         activeChannel: pull(state, "activeChannel"),
         circles: pull(state, "circles"),
-        channels: pull(state, "channels")
+        channels: pull(state, "channels"),
+        dms: pull(state, "dms")
     };
 }
 

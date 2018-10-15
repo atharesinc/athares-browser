@@ -102,7 +102,7 @@ class ViewUser extends React.Component {
                             user.firstName
                         } ${user.lastName}`}</h1>
                         <div
-                            className="br-100 pa1 br-pill ba bw2 w4 h4 center"
+                            className="br-100 pa1 br-pill ba bw2 w4 h4 center user-profile-icon"
                             style={{
                                 backgroundSize: "contain !important",
                                 background: `url(${user.icon}) center no-repeat`
@@ -127,7 +127,7 @@ class ViewUser extends React.Component {
                     autoHideDuration={200}
                     universal={true}
                 >
-                    <ul className="list ph4 pv2 ma2 w-100 center">
+                    <ul className="list ph2 ph4-ns pv2 ma2 w-100 center">
                         <h1>Info</h1>
                         <li className="flex items-center lh-copy pa3 ph0-l bb b--white-30">
                             <FeatherIcon

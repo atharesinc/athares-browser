@@ -12,18 +12,18 @@ class Dashboard extends Component {
   };
 
   componentDidMount() {
-    // fetch("https:github.com/repos/atharesinc/athares-browser/commits")
+    // fetch("https://github.com/repos/atharesinc/athares-browser/commits")
     // .then(data => data.json)
     // .then(data => {
-    //   let news = [];
-    //   data.map(({base_commit:{ commit : {message}}}) => {
+    //   let news = data.map(({base_commit:{ commit : {message}}}) => {
     //     let newsItem = {
     //       message: message.replace(/.+:\s(.*)/ig, "$1")
     //     }
-    //     news.push(newsItem);
-    //   })
+    //     return newsItem;
+    //   });
+    //   console.log(news);
     // }).catch(err => {
-    //   // console.log("Couldn't connect to Github API")
+    //   console.error("Couldn't connect to Github API")
     // })
   }
   render() {
@@ -48,29 +48,23 @@ class Dashboard extends Component {
           {this.props.user ? (
             <div className="cf mb3">
               <Link className="fl w-100 w-50-ns pv2" to={"/app/new/circle"}>
-                <SelectCornersDiv>
                   <div className="bg-white-10 tc dashboard-item">
                     <div className="dashboard-title white">
                       Create New Circle
                     </div>
                   </div>
-                </SelectCornersDiv>
               </Link>
               <Link className="fl w-100 w-50-ns pv2" to={"/app/new/message"}>
-                <SelectCornersDiv>
                   <div className="bg-white-20 tc dashboard-item">
                     <div className="dashboard-title white">Message User</div>
                   </div>
-                </SelectCornersDiv>
               </Link>
             </div>
           ) : (
             <Link className="pv3 w-100 ph4" to={"/login"}>
-              <SelectCornersDiv>
-                <div className="bg-white-10 pv3 w-100 ph4 tracked tc">
+                <div className="bg-white-10 pv3 w-100 ph4 tracked tc transparent-hover-white">
                   You are not signed in
                 </div>
-              </SelectCornersDiv>
             </Link>
           )}
           <div className="bg-white-20 mt2 pv3 w-100 ph4 ttu tracked">

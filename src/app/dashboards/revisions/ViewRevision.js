@@ -45,6 +45,7 @@ class ViewRevision extends Component {
         let gunRef = this.props.gun;
 
         gunRef.get(revisionID).open(revision => {
+            console.log(revision);
             this._isMounted &&
                 this.setState({
                     revision: {
@@ -189,7 +190,7 @@ class ViewRevision extends Component {
                             <RevisionHeader title={title} isNew={true} />
                             {hasVoted && <HasVoted vote={hasVoted} />}
 
-                            <div className="bg-theme ma4">
+                            <div className="bg-theme ma2 ma4-ns">
                                 <RevisionStatus
                                     {...revision}
                                     support={support}

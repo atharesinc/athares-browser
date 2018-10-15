@@ -45,6 +45,24 @@ export function circlesSync(obj) {
         }
     };
 }
+export function syncDM(obj){
+    return async (dispatch, getState) => {
+        let {
+            stateReducers: { dms: items }
+        } = getState();
+
+        if (obj.list) {
+            // initial only!
+            items = obj.list;
+            dispatch({ type: "SYNC_DMS", dms: items });
+        }
+        if (obj.node) {
+            // on every change.
+            items.splice(obj.idx, 1, obj.node);
+            dispatch({ type: "SYNC_DMS", dms: items });
+        }
+    };
+}
 export function channelsSync(obj) {
     return async (dispatch, getState) => {
         let { channels: items } = getState();
@@ -159,5 +177,47 @@ export function setRevisions(revisions) {
 export function setVotes(votes) {
     return async dispatch => {
         dispatch({ type: "SYNC_VOTES", votes });
+    };
+}
+export function setDMMessages(dmsgs){
+    return async dispatch => {
+        dispatch({ type: "SYNC_DMMESSAGES", dmsgs });
+    };
+}
+export function addDMMessages(dmsgs){
+    return async dispatch => {
+        dispatch({ type: "ADD_DMMESSAGES", dmsgs });
+    };
+}
+
+/* in this case and this case only, DM Messages is an object of arrays with channel name as the key and the channel's message array as the values */
+export function syncDMMessages(obj){
+    return async (dispatch, getState) => {
+        let {
+            stateReducers: { dmsgs: items }
+        } = getState();
+            console.log(items);
+
+            if (obj.list) {
+                // initial only!
+                items = obj.list;
+                dispatch({ type: "SYNC_DMMESSAGES", dmsgs: items });
+            }
+            if (obj.node) {
+                // on every change.
+                // items.splice(obj.idx, 1, obj.node);
+                if(items.findIndex(i => i.id === obj.node.id) === -1){
+                    dispatch({ type: "SYNC_DMMESSAGES", dmsgs: [...items, obj.node] });
+                }
+            }
+        // if (obj.list) {
+        //     let channelID = obj.list[0].channel;
+        //     dmsgs[channelID] = Object.values(obj.list).filter(m => m.id);
+        // } 
+        // else if (obj.node) {
+        //     // on every change.
+        //     let channelID = obj.node.channel;
+        //     dmsgs[channelID].splice(obj.idx, 1, obj.node);
+        // }
     };
 }

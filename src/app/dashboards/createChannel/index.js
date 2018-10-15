@@ -55,7 +55,7 @@ class CreateChannel extends Component {
         // }
 
         // validate & trim fields
-
+        // TODO: ???
         /* create channel */
         const newChannel = {
             name: this.state.name,

@@ -68,7 +68,7 @@ class MobileLayout extends PureComponent {
     };
     render() {
         const { user } = this.state;
-        const { circles, activeCircle, activeChannel } = this.props;
+        const { circles, activeCircle, activeChannel, location } = this.props;
         return (
             <div id="app-wrapper-outer" className="wrapper">
                 <PushingMenu
@@ -88,7 +88,7 @@ class MobileLayout extends PureComponent {
                 >
                     <TopNav
                         toggleMenu={this.toggleMenu}
-                        hide={!!activeChannel}
+                        hide={location.pathname !== "/app"}
                     />
                     <Switch>
                         <Route
@@ -129,8 +129,8 @@ const CirclesAndChannels = props => (
             activeCircle={props.activeCircle}
             circles={props.circles}
             setActive={props.setActive}
+            user={props.user}
         />
         <Channels {...props} />
-        <BottomNav show={!!props.user} activeCircle={props.activeCircle} />
     </Fragment>
 );

@@ -453,8 +453,7 @@ input[type="phone"],
 
 .react-tags__selected-tag {
     margin: 0 0.5em 0 0;
-    /*background-color: #0cb1ff50;*/
-    background-color: #00dffc;
+    background-color: transparent;
     border: none;
     color: #ffffff;
     padding: 0.25em 0.5em;
@@ -462,6 +461,8 @@ input[type="phone"],
     flex-direction: row;
     justify-content: start;
     align-items: center;
+    border: 1px solid #00dffc;
+    border-radius: 999px;
 }
 
 .react-tags__search {
@@ -491,18 +492,20 @@ input[type="phone"],
     position: absolute;
     padding: 0;
     list-style: none;
-    background: white;
+    background: transparent;
 }
 
 .react-tags__suggestions li {
-    border-bottom: 1px solid #ddd;
+    border: 1px solid #FFFFFF;
     padding: 0.5em;
+    background: transparent;
+    color: #FFFFFF;
 }
 
 .react-tags__suggestions li mark {
     background: none;
     font-weight: 600;
-    color: #222222;
+    color: #EEEEEE;
 }
 
 .react-tags__suggestions li:hover mark,
@@ -512,9 +515,8 @@ input[type="phone"],
 
 .react-tags__suggestions li:hover {
     cursor: pointer;
-    background: #ffffff;
+    background: transparent;
     color: #00dffc;
-    background-color: #282a38;
     border: 1px solid #00dffc;
 }
 
@@ -529,7 +531,7 @@ input[type="phone"],
     cursor: pointer;
     background: #ffffff;
     color: #00dffc;
-    background-color: #282a38;
+    background-color: transparent;
     border: 1px solid #00dffc;
 }
 
@@ -540,13 +542,15 @@ input[type="phone"],
 
 .react-tags__selected-tag:after {
     content: "\2715";
-    color: #ffffff;
+    color: #00dffc;
     margin-left: 0.5em;
+    cursor: pointer;
 }
 
 .react-tags__selected-tag:hover,
 .react-tags__selected-tag:focus {
-    border-color: #b1b1b1;
+    border-color: #00dffc;
+    background: transparent;
 }
 
 /* react phone input */
@@ -750,6 +754,11 @@ input[type="phone"],
     background-color: #2f324299;
     color: #ffffff;
 }
+#bottom-nav {
+        height: 10vh;
+        background: transparent;
+        border-top: 1px solid #FFFFFF80;
+    }
 #circle-name {
     display: flex;
     flex-direction: row;
@@ -955,6 +964,7 @@ input[type="phone"],
     width: 100%;
     margin: 0.5em;
     box-shadow: 0 0 0.5em #282a38;
+    word-break: break-all;
 }
 
 .my-msg {
@@ -1205,7 +1215,9 @@ a:visited {
     box-sizing: border-box;
     margin: -0.4em 0;
 }
-
+.user-profile-icon {
+    background-size: contain !important;
+}
 .top-borders,
 .bottom-borders {
     display: flex;
@@ -1339,6 +1351,9 @@ a:visited {
     border-color: #00dffc;
 }
 
+.theme-dark {
+    color: #282a38;
+}
 .theme-blue {
     color: #00dffc;
 }
@@ -1366,17 +1381,32 @@ a:visited {
         height: 100vh;
         width: 100vw;
     }
+    #doc-toolbar {
+        width: 100%;
+        padding: 0 0.5em;
+        justify-content: space-between;
+        position: relative;
+    }
+    #doc-toolbar .icon-wrapper {
+        background: transparent;
+    }
     #circles-wrapper,
     #dashboard-wrapper,
     #revisions-wrapper,
     #docs-wrapper {
-        height: 93vh;
+        height: 100vh;
         flex: none;
         width: 100vw !important;
-        /* overflow-y: scroll; */
+    }
+    #bottom-nav {
+        height: 3em;
+        background: #2f3242;
+    }
+    #bottom-nav:active {
+        background: #2f324299;
     }
     #channels-wrapper {
-        height: calc(100vh - 9em);
+        height: 100vh;
         width: 100vw !important;
     }
     .revision-board {
@@ -1386,7 +1416,7 @@ a:visited {
         padding: 0;
     }
     .circle-mobile {
-        height: 100%;
+        /*height: 100%;*/
         transition: all ease 0.25s;
     }
     .active-circle-mobile {
@@ -1414,19 +1444,6 @@ a:visited {
         text-align: center;
         width: 100%;
         padding: 0 1em;
-    }
-    #bottom-nav {
-        position: fixed;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        display: flex;
-        flex-direction: row;
-        width: 100vw;
-        justify-content: space-around;
-        height: 7vh;
-        align-items: center;
-        background: #ffffff;
     }
     .portal-text {
         font-size: 1em;
@@ -1479,6 +1496,22 @@ a:visited {
         background-color: #ffffff75;
         transition: all ease 0.25s;
     }
+        #bottom-nav:active {
+        background: #2f324299;
+        transition: all 0.2s ease;
+    }
+    .transparent-hover-white:active {
+        background: #FFFFFF90;
+        transition: all 0.2s ease;
+    }
+    .transparent-hover-theme:active {
+        background: #2f324299;
+        transition: all 0.2s ease;
+    }
+    .transparent-hover-text:active {
+        color: #FFFFFF40;
+        transition: all 0.2s ease;
+    }
 }
 
 /* for phones that are weirdly tall like the iphone X or pixel2 XL*/
@@ -1501,6 +1534,22 @@ a:visited {
         flex-direction: row;
         justify-content: space-around;
         align-items: center;
+    }
+    #bottom-nav:hover {
+        background: #2f324299;
+        transition: all 0.2s ease;
+    }
+    .transparent-hover-white:hover {
+        background: #FFFFFF90;
+        transition: all 0.2s ease;
+    }
+    .transparent-hover-theme:hover {
+        background: #2f324299;
+        transition: all 0.2s ease;
+    }
+    .transparent-hover-text:hover {
+        color: #FFFFFF40;
+        transition: all 0.2s ease;
     }
     #portal-header {
         width: 50%;
@@ -1628,6 +1677,23 @@ a:visited {
 }
 
 /* aniamtion */
+.fade-enter {
+  opacity: 0.01;
+}
+
+.fade-enter.fade-enter-active {
+  opacity: 1;
+  transition: opacity 500ms ease-in;
+}
+
+.fade-leave {
+  opacity: 1;
+}
+
+.fade-leave.fade-leave-active {
+  opacity: 0.01;
+  transition: opacity 300ms ease-in;
+}
 
 @-webkit-keyframes load8 {
     0% {

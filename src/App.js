@@ -29,6 +29,9 @@ import { pull } from "./store/state/reducers";
 import * as sync from "./store/state/actions";
 import moment from "moment";
 
+// web worker stuff
+import worker from "./workers/listener-worker";
+import WebWorker from "./workers/WebWorker";
 // IndexedDb stuff for later
 // import "gun/lib/radix.js";
 // import "gun/lib/radisk.js";
@@ -49,12 +52,14 @@ class App extends PureComponent {
         //     var opt = {};
         // opt.store = RindexedDB(opt);
         // var gun = Gun(opt);
+        // this.gun = Gun("https://gun-vvpgfvmjir.now.sh/gun");
         this.gun = Gun();
-        if(process.env.NODE_ENV !== 'production' ){
+        if (process.env.NODE_ENV !== "production") {
             window.gun = this.gun;
         }
         this.checkItemsTimer = checkItemsTimer;
-        this.gun.user().recall({ sessionStorage: true });
+        let user =  this.gun.user();
+        user.recall({ sessionStorage: true });
     }
     updateWidth = () => {
         this.setState({
@@ -65,6 +70,20 @@ class App extends PureComponent {
         this.routeFix();
     }
     async componentDidMount() {
+        // experimental web worker stuff
+        this.worker = new WebWorker(worker);
+
+        this.worker.addEventListener("message", event => {
+        // update redux
+            this.props.dispatch(sync.circlesSync(event.data.circles));
+            this.props.dispatch(sync.setMessages(event.data.messages));
+            this.props.dispatch(sync.setChannels(event.data.channels));
+            this.props.dispatch(sync.setAmendments(event.data.amendments));
+            this.props.dispatch(sync.setRevisions(event.data.revisions));
+            this.props.dispatch(sync.setVotes(event.data.votes));
+            this.getNext();
+        });
+
         // check if user could log in
         if (sessionStorage.alias && sessionStorage.tmp) {
             this.gun.user().recall({ sessionStorage: true });
@@ -272,150 +291,25 @@ class App extends PureComponent {
 
     allListeners = () => {
         let user = this.gun.user();
-
         user.get("circles").synclist(obj => {
-            let channels = [];
-            let messages = [];
-            let amendments = [];
-            let revisions = [];
-            let votes = [];
-
-            if (obj.list) {
-                // strip out the other data from these circles
-                let otherObj = {
-                    list: []
-                };
-
-                otherObj.list = obj.list.map(c => ({
-                    id: c.id,
-                    icon: c.icon,
-                    name: c.name,
-                    preamble: c.preamble,
-                    createdAt: c.createdAt,
-                    updatedAt: c.updatedAt,
-                    users: Object.keys(c.users)
-                }));
-
-                // console.log(otherObj);
-                this.props.dispatch(sync.circlesSync(otherObj));
-                // get all data from this circle
-                obj.list.forEach(circle => {
-                    // get the channels and messages
-                    if (circle.channels) {
-                        let theseChannels = Object.values(circle.channels);
-                        // channels = [...channels, ...theseChannels];
-                        theseChannels.forEach(chan => {
-                            if (chan.messages) {
-                                // strip out messages from channel data
-                                let {
-                                    messages: theseMessages,
-                                    ...thisChan
-                                } = chan;
-                                channels.push(thisChan);
-
-                                theseMessages = Object.values(theseMessages);
-                                messages = [...messages, ...theseMessages];
-                            } else {
-                                channels.push(chan);
-                            }
-                        });
-                    }
-                    // get other stuff like amendments and revisions
-                    if (circle.amendments) {
-                        amendments = [
-                            ...amendments,
-                            ...Object.values(circle.amendments)
-                        ].filter(a => a !== null);
-                    }
-                    if (circle.revisions) {
-                        let theseRevisions = Object.values(circle.revisions);
-                        theseRevisions.forEach(rev => {
-                            if (rev.votes) {
-                                // strip out votes from revision data
-                                let { votes: theseVotes, ...thisRev } = rev;
-                                revisions.push(thisRev);
-
-                                theseVotes = Object.values(theseVotes);
-                                votes = [...votes, ...theseVotes];
-                            } else {
-                                revisions.push(rev);
-                            }
-                        });
-                    }
-                });
-                this.props.dispatch(sync.setMessages(messages));
-                this.props.dispatch(sync.setChannels(channels));
-                this.props.dispatch(sync.setAmendments(amendments));
-                this.props.dispatch(sync.setRevisions(revisions));
-                this.props.dispatch(sync.setVotes(votes));
-                this.getNext();
-            } else {
-                // a single node has changed
-                // this captures some updates that obj.list doesn't capture
-                let otherObj = {
-                    node: {
-                        id: obj.node.id,
-                        icon: obj.node.icon,
-                        name: obj.node.name,
-                        premable: obj.node.preamble,
-                        createdAt: obj.node.createdAt,
-                        updatedAt: obj.node.updatedAt,
-                        users: Object.keys(obj.node.users)
-                    }
-                };
-
-                this.props.dispatch(sync.circlesSync(otherObj));
-                let circle = obj.node;
-                // get the channels and messages
-                if (circle.channels) {
-                    let theseChannels = Object.values(circle.channels);
-                    // channels = [...channels, ...theseChannels];
-                    theseChannels.forEach(chan => {
-                        if (chan.messages) {
-                            // strip out messages from channel data
-                            let { messages: theseMessages, ...thisChan } = chan;
-                            channels.push(thisChan);
-
-                            theseMessages = Object.values(theseMessages);
-                            messages = [...messages, ...theseMessages];
-                        } else {
-                            channels.push(chan);
-                        }
-                    });
-                }
-                // get other stuff like amendments and revisions
-                if (circle.amendments) {
-                    amendments = [
-                        ...amendments,
-                        ...Object.values(circle.amendments)
-                    ].filter(a => a !== null);
-                }
-                if (circle.revisions) {
-                    let theseRevisions = Object.values(circle.revisions);
-                    theseRevisions.forEach(rev => {
-                        if (rev.votes) {
-                            // strip out votes from revision data
-                            let { votes: theseVotes, ...thisRev } = rev;
-                            revisions.push(thisRev);
-
-                            theseVotes = Object.values(theseVotes);
-                            votes = [...votes, ...theseVotes];
-                        } else {
-                            revisions.push(rev);
-                        }
-                    });
-                }
-                this.props.dispatch(sync.setMessages(messages));
-                this.props.dispatch(sync.setChannels(channels));
-                this.props.dispatch(sync.setAmendments(amendments));
-                this.props.dispatch(sync.setRevisions(revisions));
-                this.props.dispatch(sync.setVotes(votes));
-                this.getNext();
-            }
+            this.worker.postMessage(obj);
         });
-        // also find a way to get private channels
-        // user.get("channels").synclist(obj => {
-        //     this.props.dispatch(sync.channelsSync(obj));
+        // user.get("profile").once(profile =>{
+        //     // get this users list of DMs and subcribe to each one
+        //     this.gun.get(profile.keychain).synclist(obj => {
+        //         if(obj.list){
+        //             let values = Object.values(obj.list);
+        //             obj.list = values.filter(c => c !== null)
+
+        //             // attach listener to each channel's messages
+        //             obj.list.forEach(dm => {
+        //                 this.gun.get(dm.id).get("messages").synclist(obj => {
+        //                     this.props.dispatch(sync.syncDMMessages(obj))
+        //                 });
+        //             });
+        //         }
+        //         this.props.dispatch(sync.syncDM(obj));
+        //     });
         // });
     };
     routeFix = () => {
@@ -456,7 +350,7 @@ class App extends PureComponent {
             <div className="wrapper high-img" id="main-layout">
                 <div id="desktop-wrapper-outer" className="wrapper">
                     <div className="wrapper grey-screen" id="desktop-wrapper">
-                        <GunProvider gun={this.gun}>
+                        <GunProvider gun={this.gun} SEA={Gun.SEA}>
                             <AnimatedSwitch
                                 atEnter={{ opacity: 0 }}
                                 atLeave={{ opacity: 0 }}

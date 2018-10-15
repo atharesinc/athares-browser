@@ -23,8 +23,8 @@ const Dashboards = props => {
             />
             <Route
                 exact
-                path={`/app/channel/:id`}
-                render={() => <DM {...props} />}
+                path={`${match.path}/channel/:id`}
+                render={props => <DM {...props} />}
             />
             <Route
                 exact

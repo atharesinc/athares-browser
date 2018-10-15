@@ -6,15 +6,12 @@ import "react-phone-number-input/rrui.css";
 import "react-phone-number-input/style.css";
 import { Link, withRouter } from "react-router-dom";
 import Loader from "../../Loader";
-import swal from "sweetalert";
 import { Scrollbars } from "react-custom-scrollbars";
 import { withGun } from "react-gun";
 import { connect } from "react-redux";
 import { pull } from "../../../store/state/reducers";
 import moment from "moment";
-import { resizeBase64ForMaxWidthAndMaxHeight } from "resize-base64";
 
-const resizeBase64 = resizeBase64ForMaxWidthAndMaxHeight;
 class EditUser extends Component {
     constructor(props) {
         super(props);
@@ -123,26 +120,27 @@ class EditUser extends Component {
     };
     shrinkBase64 = base64String => {
         return new Promise(resolve => {
-            let maxWidth = 200;
-            let maxHeight = 200;
 
-            let errorCallback = function(errorMessage) {
-                console.log(errorMessage);
-                swal(
-                    "Sorry",
-                    "There was an error updating your profile.",
-                    "error"
-                );
+        var img = document.createElement('img');
+
+        img.onload = function()
+            {        
+                var canvas = document.createElement('canvas');
+                var ctx = canvas.getContext('2d');
+
+                canvas.width = 200;
+                canvas.height = 200;
+
+                ctx.drawImage(this, 0, 0, 200, 200);
+
+                resolve(canvas.toDataURL('image/png'));
+
+              
             };
 
-            resizeBase64(
-                base64String,
-                maxWidth,
-                maxHeight,
-                resolve,
-                errorCallback
-            );
-        });
+        img.src = base64String;
+    });
+     
     };
     clearError = () => {
         this.setState({

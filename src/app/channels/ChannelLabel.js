@@ -46,7 +46,13 @@ const ChannelLabel = props => {
     }
 
     props.dispatch(updateChannel(props.id));
-    props.history.push(`/app/circle/${props.activeCircle}/channel/${props.id}`);
+    if (props.id.substring(0, 2) !== "DM") {
+      props.history.push(
+        `/app/circle/${props.activeCircle}/channel/${props.id}`
+      );
+    } else {
+      props.history.push(`/app/channel/${props.id}`);
+    }
   };
 
   const active =

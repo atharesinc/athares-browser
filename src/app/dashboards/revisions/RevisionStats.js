@@ -12,7 +12,7 @@ const RevisionStats = ({
     passed
 }) => {
     return (
-        <div className="pa3 bg-theme-dark">
+        <div className="pa3 bg-theme-dark" style={{height: "-webkit-fill-available"}}>
             <article data-name="slab-stat-small">
                 <div className="cf">
                     <dl className="fl fn-l w-50 dib-l w-auto-l lh-title mr5-l">

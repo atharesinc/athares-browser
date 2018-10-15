@@ -43,7 +43,7 @@ export default class CircleInviteList extends Component {
 			}
 		]
 	};
-	handleDelete(i) {
+	handleDelete = (i) => {
 		const tags = this.state.tags.slice(0);
 		const removed = tags.splice(i, 1);
 		const suggestions = [].concat(this.state.suggestions, removed);
@@ -51,7 +51,7 @@ export default class CircleInviteList extends Component {
 		this.props.updateList(tags);
 	}
 
-	handleAddition(tag) {
+	handleAddition = (tag) => {
 		const tags = [].concat(this.state.tags, tag);
 		const suggestions = this.state.suggestions.filter(s => tag.id !== s.id);
 		this.setState({ tags, suggestions });
@@ -63,8 +63,8 @@ export default class CircleInviteList extends Component {
 				<ReactTags
 					tags={this.state.tags}
 					suggestions={this.state.suggestions}
-					handleDelete={this.handleDelete.bind(this)}
-					handleAddition={this.handleAddition.bind(this)}
+					handleDelete={this.handleDelete}
+					handleAddition={this.handleAddition}
 					placeholder={
 						this.props.shouldPlaceholder
 							? "Type the name of a person"

@@ -25,8 +25,7 @@ At this time there are no additional requirements to develop on athares-browser
 -   [React](https://reactjs.org/) - The web framework used
 -   [Yarn](https://yarnpkg.com/en/) - Dependency Management
 -   [Tachyons](http://tachyons.io/) - For better and more beautiful UIs
--   [Apollo Client](https://www.apollographql.com/docs/react/) - GraphQL Interface for remote data
--   [Yarn](https://yarnpkg.com/en/) - Dependency Management
+-   [gunDB](https://github.com/amark/gun) - Realtime Distributed Graph database
 -   [Tachyons](http://tachyons.io/) - For better and beautiful markup
 -   [Feather Icons](https://feathericons.com/) Beautiful SVG Icons
 -   [feather-icons-react](https://github.com/ianmiller347/feather-icons-react) For stellar react bindings
@@ -47,7 +46,7 @@ Each version outlines features that the platform must have to meet this version
 
 -   Complete & Responsive UI Flow
 
-#### 0.0.1
+#### 0.0.1 - COMPLETE
 
 -   Connected to GraphCool backend
 -   Added Login/Registration/Logout
@@ -59,9 +58,9 @@ Each version outlines features that the platform must have to meet this version
 -   Added validation to login/register portal
 -   Update User
 -   Create Circle
--   Create Channel
+-   Create Public Channel
 
-#### 0.0.2
+#### 0.0.2 - COMPLETE
 
 -   Replaced GraphCool with GunJS DB
 -   Auth works everywhere consistently
@@ -73,37 +72,44 @@ Each version outlines features that the platform must have to meet this version
 -   Vote casting
 -   Revision creation
 
-#### 0.0.3 - IN PROGRESS
+#### 0.0.3 - COMPLETE
 
 -   Live update circles and channel creation
--   Live updates for messages
+-   Live updates for public messages
 -   Live updates for revisions and amendments
--   RevisionBoard needs to be 100% accurate
+-   RevisionBoard
     -   Live vote changes works
     -   Revision cards display proper vote splits
 -   Revision checker and timer (see codesandbox example)
     -   Works for normally expired new revisions
-    -   NEEDS
-        -   Threshold reached (on vote, check?)
-        -   From amendment revision
--   User changes and other users work
+    -   From amendment revision
+-   User edits and view other users work
 
-#### 0.0.4
-
--   Add user to circle
+#### 0.0.4 - IN PROGRESS
+##### Finished
 -   Encrypted Group Messages (limit group size)
 -   Live updates for group messages
+
+##### Todo
+-   Add user to circle
+
+#### 0.0.5 
+-   Remove User from DM
+-   Remove User from Circle
+
+#### 0.0.6
+
 -   Add Help page
 -   Dumbed down index
 
-#### 0.0.5
+#### 0.0.7
 
 -   Ensure public as possible use (not logged in, infer state from url)
 
 #### 0.1.0
 
 -   Express Server to serve data to peers and clients
--   Search (??? Elastic search?)
+-   Search (see that one debounce throttle article)(??? Elastic search?)
 
 #### 0.1.1
 

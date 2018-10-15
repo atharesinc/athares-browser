@@ -2,6 +2,7 @@ import React, { PureComponent } from "react";
 import Amendment from "./Amendment";
 import DocsSearchBar from "./DocsSearchBar";
 import Loader from "../../Loader.js";
+import {Link} from "react-router-dom";
 import { Scrollbars } from "react-custom-scrollbars";
 import { connect } from "react-redux";
 import { withGun } from "react-gun";
@@ -37,8 +38,6 @@ class Constitution extends PureComponent {
         let gunRef = this.props.gun;
 
         gunRef.get(this.props.activeCircle).open(circle => {
-            console.log(circle);
-
             let {id, name, preamble, amendments, createdAt} = circle;
             let thisCircle = { 
                 id,
@@ -47,9 +46,12 @@ class Constitution extends PureComponent {
                 createdAt
             };
 
+            if(amendments){
+                amendments = Object.values(amendments).filter(a => a !== null);
+            }
             this._isMounted && this.setState({
                 circle: thisCircle,
-                amendments: Object.values(amendments).filter(a => a !== null)
+                amendments
             });
 
         });
@@ -80,13 +82,13 @@ class Constitution extends PureComponent {
                 <div id="docs-wrapper">
                 {user && <DocsSearchBar id={circle.id} />}
                 <div id="docs-inner" className="pa2 pa4-ns">
-                <div className="f2 pb2 b bb b--white-30 mv4 tc">
+                <div className="f2 pb2 b bb b--white-30 mv2 mv4-ns tc">
                 The Bill of Rights & All Amendments
                 </div>
                 <div className="f3 b mv4">Preamble</div>
                 <div className="f6 mt3 mb4">{circle.preamble}</div>
                 <Scrollbars style={{ width: "100%", height: "70vh" }}>
-                {amendments.map((section, i) => (
+                {amendments && amendments.map((section, i) => (
                     <Amendment
                     key={i}
                     editable={user !== null}
