@@ -126,7 +126,6 @@ super(props);
   };
   render() {
     const { suggestions, selectedUsers } = this.state;
-    console.log(suggestions, selectedUsers);
     return (
       <div id="chat-wrapper">
         <div id="current-channel">

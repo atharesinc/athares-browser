@@ -16,7 +16,7 @@ const AmendmentEdit = ({
 				toggleEdit(e);
 			}}
 		>
-			<div id={amendment.id} className="editable mb3">
+			<div id={amendment.id} className="editable mb3 bg-theme">
 				<div className="f5 bb b--white-30 pv2 amendment-title black pl2">
 					{amendment.title}
 				</div>

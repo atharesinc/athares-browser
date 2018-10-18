@@ -41,17 +41,17 @@ export default class ChatInput extends PureComponent {
                     tabIndex="1"
                 />
 
-                <div id="chat-util-icons">
-                    <div className="chat-util-icon">
-                        <FeatherIcon icon="at-sign" />
-                    </div>
-                    <div className="chat-util-icon">
-                        <FeatherIcon icon="video" />
-                    </div>
-                    <div className="chat-util-icon">
-                        <FeatherIcon icon="link" />
-                    </div>
-                </div>
+                {false && <div id="chat-util-icons">
+                                    <div className="chat-util-icon">
+                                        <FeatherIcon icon="at-sign" />
+                                    </div>
+                                    <div className="chat-util-icon">
+                                        <FeatherIcon icon="video" />
+                                    </div>
+                                    <div className="chat-util-icon">
+                                        <FeatherIcon icon="link" />
+                                    </div>
+                                </div>}
             </div>
         );
     }

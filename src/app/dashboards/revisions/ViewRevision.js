@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+        import React, { Component } from "react";
 import RevisionHeader from "./RevisionHeader";
 import RevisionStats from "./RevisionStats";
 import VoteButtons from "./VoteButtons";
@@ -7,7 +7,7 @@ import ToggleDiffBar from "./ToggleDiffBar";
 import DiffSection from "./DiffSection";
 import HasVoted from "./HasVoted";
 import { Scrollbars } from "react-custom-scrollbars";
-import { updateRevision } from "../../../store/state/actions";
+import { updateRevision, updateChannel } from "../../../store/state/actions";
 import Gun from "gun/gun";
 import Loader from "../../Loader.js";
 import moment from "moment";
@@ -32,6 +32,7 @@ class ViewRevision extends Component {
             this.getRevision();
         } else {
             this.props.dispatch(updateRevision(this.props.match.params.id));
+            this.props.dispatch(updateChannel(null));
         }
     }
     componentDidUpdate(prevProps) {
@@ -45,7 +46,6 @@ class ViewRevision extends Component {
         let gunRef = this.props.gun;
 
         gunRef.get(revisionID).open(revision => {
-            console.log(revision);
             this._isMounted &&
                 this.setState({
                     revision: {

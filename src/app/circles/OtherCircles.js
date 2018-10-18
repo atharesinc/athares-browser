@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { PureComponent } from "react";
 import Circle from "./Circle";
 import { withRouter } from "react-router-dom";
 import { Scrollbars } from "react-custom-scrollbars";
@@ -7,7 +7,7 @@ import { updateCircle } from "../../store/state/actions";
 import { withGun } from "react-gun";
 import { connect } from "react-redux";
 
-class OtherCircles extends Component {
+class OtherCircles extends PureComponent {
     state = {
         user: this.props.user
         // circles: []
@@ -18,7 +18,6 @@ class OtherCircles extends Component {
     };
     render() {
         const { circles } = this.props;
-
         return (
             <div id="other-circles">
                 <Scrollbars

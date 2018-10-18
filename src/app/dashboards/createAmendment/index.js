@@ -100,23 +100,23 @@ class CreateAmendment extends Component {
             gunRef.get("revisions").set(revision);
             gunRef.get("votes").set(vote);
 
-            // set it to this user's reference of the circle ??
-            let user = this.props.gun.user();
+            // // set it to this user's reference of the circle ??
+            // let user = this.props.gun.user();
 
-            user.get("circles")
-                .get(this.props.activeCircle)
-                .get("revisions")
-                .set(revision);
+            // user.get("circles")
+            //     .get(this.props.activeCircle)
+            //     .get("revisions")
+            //     .set(revision);
 
-            user.get("circles")
-                .get(this.props.activeCircle)
-                .get("revisions")
-                .get(newRevision.id)
-                .get("votes")
-                .set(vote);
+            // user.get("circles")
+            //     .get(this.props.activeCircle)
+            //     .get("revisions")
+            //     .get(newRevision.id)
+            //     .get("votes")
+            //     .set(vote);
 
-            user.get("revisions").set(revision);
-            user.get("votes").set(vote);
+            // user.get("revisions").set(revision);
+            // user.get("votes").set(vote);
             this.props.dispatch(updateRevision(newRevision.id));
 
             this.props.history.push(

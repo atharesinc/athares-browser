@@ -7,7 +7,7 @@ import { Scrollbars } from "react-custom-scrollbars";
 import { connect } from "react-redux";
 import { withGun } from "react-gun";
 import { pull } from "../../../store/state/reducers";
-import {updateCircle} from "../../../store/state/actions";
+import {updateCircle, updateChannel} from "../../../store/state/actions";
 
 class Constitution extends PureComponent {
     constructor(props) {
@@ -23,27 +23,29 @@ class Constitution extends PureComponent {
         // we should always make sure that the currently navigated-to circle is the activeCircle in redux
         this._isMounted = true;
         if (this.props.activeCircle) {
-            if (this.props.user === null) {
+            // if (this.props.user === null) {
                 this.getAmendments();
-            } else {
-                // we can get amendments and circles from props
-                // don't bother updating state
-            }
+            // } else {
+            //     // we can get amendments and circles from props
+            //     // don't bother updating state
+            // }
         } else {
             let circleID = this.props.location.pathname.match(/circle\/(CI.+)\/co/)[1];
             this.props.dispatch(updateCircle(circleID));
+            this.props.dispatch(updateChannel(null))
         }
     }
     getAmendments = () => {
         let gunRef = this.props.gun;
 
         gunRef.get(this.props.activeCircle).open(circle => {
-            let {id, name, preamble, amendments, createdAt} = circle;
+            let {id, name, preamble, amendments, createdAt, users} = circle;
             let thisCircle = { 
                 id,
                 name,
                 preamble, 
-                createdAt
+                createdAt,
+                users: Object.values(users)
             };
 
             if(amendments){
@@ -69,13 +71,14 @@ class Constitution extends PureComponent {
         let circle = null;
         let amendments = [];
         // if user isn't set we can get this circle and it's amendments the hard way (for public transparency)
-        if(this.props.user !== null && activeCircle !== null){
-            circle = circles.find(c => c.id === activeCircle);
-            amendments = this.props.amendments.filter(a => a.circle === circle.id);
-        } else {
+        // if(this.props.user !== null && activeCircle !== null){
+        //     circle = circles.find(c => c.id === activeCircle);
+        //     console.log(this.props, this.state, circle);
+        //     amendments = this.props.amendments.filter(a => a.circle === circle.id);
+        // } else {
             circle = this.state.circle;
             amendments = this.state.amendments;
-        }
+        // }
 
         if (circle) {
             return (

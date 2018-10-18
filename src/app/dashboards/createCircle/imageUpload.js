@@ -72,7 +72,6 @@ export default class ImageUpload extends React.Component {
     return new Blob([new Uint8Array(array)], { type: "image/jpg" });
   };
   onChange = () => {
-    console.log(document.getElementById("imgFile").files);
     let file = document.getElementById("imgFile").files[0];
     let reader = new FileReader();
     reader.readAsDataURL(file);

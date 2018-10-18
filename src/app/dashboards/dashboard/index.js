@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 // import DashboardLink from "./DashboardLink";
 import { Link } from "react-router-dom";
-import SelectCornersDiv from "../../../utils/SelectCornersDiv";
 import { connect } from "react-redux";
 import { withGun } from "react-gun";
 import * as stateSelectors from "../../../store/state/reducers";
@@ -47,18 +46,18 @@ class Dashboard extends Component {
         <div className="mw9 center">
           {this.props.user ? (
             <div className="cf mb3">
-              <Link className="fl w-100 w-50-ns pv2" to={"/app/new/circle"}>
+              <Link className="fl w-100 pv2" to={"/app/new/circle"}>
                   <div className="bg-white-10 tc dashboard-item">
                     <div className="dashboard-title white">
                       Create New Circle
                     </div>
                   </div>
               </Link>
-              <Link className="fl w-100 w-50-ns pv2" to={"/app/new/message"}>
-                  <div className="bg-white-20 tc dashboard-item">
-                    <div className="dashboard-title white">Message User</div>
-                  </div>
-              </Link>
+              {/*<Link className="fl w-100 w-50-ns pv2" to={"/app/new/message"}>
+                                <div className="bg-white-20 tc dashboard-item">
+                                  <div className="dashboard-title white">Message User</div>
+                                </div>
+                            </Link> */}
             </div>
           ) : (
             <Link className="pv3 w-100 ph4" to={"/login"}>

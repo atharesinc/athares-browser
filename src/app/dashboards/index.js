@@ -1,9 +1,9 @@
 import React from "react";
 import GroupChat from "./chat";
-import DM from "./dmChat";
+// import DM from "./dmChat";
 import CreateCircle from "./createCircle";
 import CreateChannel from "./createChannel";
-import CreateDM from "./createDM";
+// import CreateDM from "./createDM";
 import Dashboard from "./dashboard";
 import AddUser from "./addUser";
 import Docs from "./docs";
@@ -19,12 +19,7 @@ const Dashboards = props => {
             <Route
                 exact
                 path={`${match.path}/circle/:id/channel/:id`}
-                render={() => <GroupChat {...props} />}
-            />
-            <Route
-                exact
-                path={`${match.path}/channel/:id`}
-                render={props => <DM {...props} />}
+                render={(props) => <GroupChat {...props} />}
             />
             <Route
                 exact
@@ -41,15 +36,20 @@ const Dashboards = props => {
                 path={`${match.path}/circle/:id/new/channel`}
                 render={props => <CreateChannel {...props} />}
             />
-            <Route
-                exact
-                path={`${match.path}/new/message`}
-                render={() => <CreateDM />}
-            />
+            {/*<Route
+                            exact
+                            path={`${match.path}/new/message`}
+                            render={() => <CreateDM />}
+                        />
+                        <Route
+                            exact
+                            path={`${match.path}/channel/:id`}
+                            render={props => <DM {...props} />}
+                        />*/}
             <Route
                 exact
                 path={`${match.path}/circle/:id/add/user`}
-                render={() => <AddUser {...props} />}
+                render={(props) => <AddUser {...props} />}
             />
             <Route
                 exact

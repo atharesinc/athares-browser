@@ -3,7 +3,7 @@ import FeatherIcon from "feather-icons-react";
 import swal from "sweetalert";
 import { Link, withRouter } from "react-router-dom";
 import { withGun } from "react-gun";
-import { updateUser, updatePub } from "../store/state/actions";
+import { updateUser, updatePub, updateChannel, updateCircle, updateRevision } from "../store/state/actions";
 import { validateLogin } from "../utils/validators";
 import { pull } from "../store/state/reducers";
 import { connect } from "react-redux";
@@ -19,6 +19,10 @@ class Login extends Component {
     componentDidMount() {
         if (this.props.user) {
             this.props.history.push("/app");
+        } else {
+            this.props.dispatch(updateChannel(null));
+            this.props.dispatch(updateCircle(null));
+            this.props.dispatch(updateRevision(null));
         }
     }
     tryLogin = async e => {

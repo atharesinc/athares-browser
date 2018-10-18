@@ -85,13 +85,15 @@ Each version outlines features that the platform must have to meet this version
     -   From amendment revision
 -   User edits and view other users work
 
-#### 0.0.4 - IN PROGRESS
-##### Finished
+#### 0.0.4 - COMPLETE
 -   Encrypted Group Messages (limit group size)
 -   Live updates for group messages
-
-##### Todo
 -   Add user to circle
+-   Correct scrolling in RevisionBoard
+-   Correct spacing between revision cards
+-   (Mobile) ViewRevision should be full-height
+-   Governance channels should be lit up when selected
+
 
 #### 0.0.5 
 -   Remove User from DM
@@ -139,15 +141,15 @@ Each version outlines features that the platform must have to meet this version
 
 #### 0.3.6 (5 minute fixes)
 
--   Correct scrolling in RevisionBoard
--   Correct spacing between revision cards
--   (Mobile) ViewRevision should be full-height
--   Governance channels should be lit up when selected
+-   Mobile Ellipsis on channel should do something (???)
+-   Correct scrolling on constitution
+
 
 #### 0.4.0 (Essential Nice-to-haves)
 
 -   Emoji support
 -   Support images and links in messages
+-   DM permission issue/not loading the messages correctly?
 
 #### 0.8.0
 

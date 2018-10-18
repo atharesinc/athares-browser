@@ -426,7 +426,8 @@ input[type="phone"],
 
 .react-tags {
     position: relative;
-    padding: 0 1em;
+    /*padding: 0 1em;*/
+    padding: 0.25em;
     line-height: 100%;
     cursor: text;
     height: 100%;
@@ -850,7 +851,7 @@ input[type="phone"],
     flex-direction: column;
     justify-content: space-between;
     align-items: center;
-    background-color: #3a3e5299;
+    background-color: transparent;
     color: #ffffff;
 }
 
@@ -867,23 +868,31 @@ input[type="phone"],
 }
 
 #current-channel {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
-    height: calc(100vh / 10);
-    /* border-bottom: 1px solid #ffffff80; */
-    width: 100%;
-    padding: 0 1em;
+     display: flex;
+        flex-direction: column;
+        justify-content: space-around;
+        align-items: flex-end;
+        height: calc(100vh / 10);
+        width: 100%;
+        padding: 0 1em;
+        background: #3a3e5299;
 }
-
+#current-channel  div:first-of-type {
+    height: 2em;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0.5em 1em;
+    border-radius: 999px;
+    background: #3a3e52;
+}
 #chat-window {
     display: flex;
     flex-direction: column;
     flex: auto;
     width: 100%;
-    border-bottom: 1px solid #ffffff80;
-    max-height: 80vh;
+    max-height: 90vh;
+    background: #3a3e5299;
 }
 
 #chat-window-inner {
@@ -897,11 +906,11 @@ input[type="phone"],
     display: flex;
     flex-direction: column;
     width: 100%;
-    min-height: calc(100% / 9);
+    min-height: 10vh;
 }
 
 #chat-input {
-    background-color: transparent;
+    background-color: #7782bb50;
     border: none;
     resize: none;
     flex: 1;
@@ -928,7 +937,7 @@ input[type="phone"],
     border-radius: 100%;
     height: 1.75em;
     width: 1.75em;
-    border: 1px solid #ffffff99;
+    border: 1.5px solid #ffffff99;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -1097,6 +1106,9 @@ input[type="phone"],
     height: 100%;
     width: calc(100vw - 10vh - 30vw);
 }
+#revision-stats {
+    height: auto;
+}
 #revision-board-wrapper > div > div {
     width: 100%;
     height: 100%;
@@ -1191,7 +1203,17 @@ a:visited {
     text-decoration: inherit;
     /* no underline */
 }
-
+.random-button {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 999px;
+    padding: 0.25em 0.5em;
+    text-align: center;
+    color: rgb(255, 255, 255);
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
 #bordered {
     color: white;
     display: flex;
@@ -1363,6 +1385,18 @@ a:visited {
 /* Small screens */
 
 @media screen and (max-width: 992px) {
+    #current-channel {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        height: calc(100vh / 10);
+        width: 100%;
+        padding: 0 1em;
+    }
+    #revision-stats{
+        height: "-webkit-fill-available";
+    }
     .splash > div {
         overflow-x: hidden !important;
     }

@@ -7,7 +7,7 @@ const RevisionHeader = ({ title, isNew }) => {
 			<small className="f6 white-70 db mb2 ml3-ns">
 				{isNew
 					? "Review the proposed draft"
-					: "Review changes to this law"}
+					: "Review changes to this amendment"}
 			</small>
 		</div>
 	);

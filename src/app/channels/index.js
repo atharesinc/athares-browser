@@ -16,49 +16,53 @@ class Channels extends Component {
             channels: [],
             circle: null
         };
+        this._isMounted = false;
     }
     componentDidMount() {
-        this.getChannels();
+        this._isMounted = true;
+        
+        if(this.props.activeCircle){
+            this._isMounted && this.getChannels();
+        }
     }
     componentDidUpdate(prevProps) {
-        if (prevProps.activeCircle !== this.props.activeCircle) {
-            this.getChannels();
+        if (this.props.activeCircle && prevProps.activeCircle !== this.props.activeCircle) {
+            this._isMounted && this.getChannels();
         }
     }
     getChannels = () => {
-        let circleID;
-        if (this.props.activeCircle) {
-            circleID = this.props.activeCircle;
-        } else if (/circle\/(\w+)/.test(this.props.location.pathname)) {
-            circleID = /circle\/(\w+)/.exec(this.props.location.pathname)[1];
-            this.props.dispatch(updateCircle(circleID));
-            return false;
-        }
-
-        // faster to filter redux channels that have this circle as parent or just get the channels
-        let circle = this.props.circles.find(c => c.id && c.id === circleID);
-        let channels = this.props.channels.filter(
-            channel => channel.circle === circleID
-        );
-        this.setState({
-            channels,
-            circle
+        // faster to filter redux channels that have this circle as parent or just get the channels ?
+        // let circle = this.props.circles.find(c => c.id && c.id === circleID);
+        // console.log(circle);
+        // let channels = this.props.channels.filter(
+        //     channel => channel.circle === circleID
+        // );
+        this.props.gun.get(this.props.activeCircle).open(thisCircle => {
+            let {channels, amendments, revisions, users, ...circle} = thisCircle;
+            this.setState({
+                channels: channels ? Object.values(channels) : [],
+                circle
+            });
         });
     };
+    componentWillUnmount(){
+        this._isMounted = false;
+    }
     render() {
         let {
             activeChannel,
             user,
-            channels,
+            // channels,
             activeCircle,
-            circles,
-            dms
+            // circles,
+            // dms
         } = this.props;
+        let {circle, channels} = this.state;
         // const { circle } = this.state;
-        const circle = circles.find(c => c.id === activeCircle);
+        // const circle = circles.find(c => c.id === activeCircle);
 
         if (circle) {
-            channels = channels.filter(c => c.circle === circle.id);
+            // channels = channels.filter(c => c.circle === circle.id);
             return (
                 <div id="channels-wrapper">
                     <div id="circle-name">
@@ -79,13 +83,13 @@ class Channels extends Component {
                                 return channel.channelType === "group";
                             })}
                         />
-                        {false && <ChannelGroup
-                                                    style={style.dm}
-                                                    channelType={"dm"}
-                                                    activeChannel={activeChannel}
-                                                    name={"Direct Messages"}
-                                                    channels={dms}
-                                                />}
+                        {/* <ChannelGroup
+                            style={style.dm}
+                            channelType={"dm"}
+                            activeChannel={activeChannel}
+                            name={"Direct Messages"}
+                            channels={dms}
+                        /> */}
                     </div>
                     <BottomNav show={!!user} activeCircle={activeCircle} />
                 </div>
@@ -119,13 +123,13 @@ class Channels extends Component {
                                 </Link>
                          }
                         </div>
-                        {false && <ChannelGroup
-                                                    style={style.dm}
-                                                    channelType={"dm"}
-                                                    activeChannel={activeChannel}
-                                                    name={"Direct Messages"}
-                                                    channels={dms}
-                                                />}
+                        {/*<ChannelGroup
+                            style={style.dm}
+                            channelType={"dm"}
+                            activeChannel={activeChannel}
+                            name={"Direct Messages"}
+                            channels={dms}
+                        />*/}
                     </div>
                     <BottomNav show={!!user} activeCircle={activeCircle} />
                 </div>

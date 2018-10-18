@@ -4,8 +4,10 @@ import Loader from "../../Loader";
 import moment from "moment";
 import { Scrollbars } from "react-custom-scrollbars";
 import { withGun } from "react-gun";
+import {updateChannel, updateRevision, updateCircle} from "../../../store/state/actions";
 import { pull } from "../../../store/state/reducers";
 import { connect } from "react-redux";
+import FeatherIcon from "feather-icons-react";
 
 class RevisionBoard extends Component {
     constructor(props) {
@@ -15,15 +17,41 @@ class RevisionBoard extends Component {
             circle: null,
             revisions: []
         };
+        this._isMounted = false;
     }
-    componentDidMount() {}
+    componentDidMount() {
+        this._isMounted = true;
+
+        if(this.props.activeCircle){
+            this._isMounted && this.getRevisions();
+        } else {
+            this.props.dispatch(updateChannel(null));
+            this.props.dispatch(updateRevision(null));
+            this.props.dispatch(updateCircle(this.props.match.params.id));
+        }
+    }
+    componentDidUpdate(prevProps){
+        if(this.props.activeCircle !== prevProps.activeCircle){
+            this.getRevisions();
+        }
+    }
+    componentWillUnmount(){
+        this._isMounted = false;
+    }
+    getRevisions = () => {
+        this.props.gun.get(this.props.activeCircle).open(thisCircle => {
+            let {revisions, channels, amendments, ...circle} = thisCircle;
+
+            this._isMounted && this.setState({
+                revisions: revisions ? Object.values(revisions) : [],
+                circle
+            });
+        });
+    }
     render() {
-        let {
-            revisions: allRevisions,
-            circles,
-            activeCircle
-        } = this.props;
-        let circle = circles.find(c => c.id === activeCircle);
+        let {activeCircle, user} = this.props;
+        // let circle = circles.find(c => c.id === activeCircle);
+        let {circle, revisions: allRevisions} = this.state;
         if (!circle) {
             return (
                 <div
@@ -88,14 +116,20 @@ class RevisionBoard extends Component {
                         <Board
                             revisions={newRevisions}
                             title={"New Revisions"}
+                            circleID={activeCircle}
+                            user={user}
                         />
                         <Board
                             revisions={recentlyPassed}
                             title={"Recently Passed"}
+                            circleID={activeCircle}
+                            user={user}
                         />
                         <Board
                             revisions={recentlyRejected}
                             title={"Recently Rejected"}
+                            circleID={activeCircle}
+                            user={user}
                         />
                     </Scrollbars>
                 </div>
@@ -104,7 +138,7 @@ class RevisionBoard extends Component {
     }
 }
 
-const Board = ({ title, revisions }) => {
+const Board = ({ title, revisions, circleID, user }) => {
     return (
         <div className="w-50 mv2 ml2 pa2 revision-board">
             <div className="bb b--white pa2 mb2">
@@ -124,6 +158,13 @@ const Board = ({ title, revisions }) => {
                     minHeight: "11.5em"
                 }}
             >
+                {title === "New Revisions" && user && 
+                <Link to={`/app/circle/${circleID}/add/amendment`}>
+                    <div className="random-button transparent-hover-white mb2">
+                        <FeatherIcon icon="plus" className="pr2" />
+                        <span>Create Revision</span>
+                    </div>
+                </Link>}
                 {revisions.map((rev, i) => (
                     <RevisionWithRouter key={i} {...rev} />
                 ))}

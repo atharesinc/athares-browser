@@ -61,7 +61,8 @@ class Amendment extends React.Component {
     const user = this.props.gun.user();
     let amendmentRef = gunRef.get(amendmentID);
     user.get("profile").once(async profile => {
-      let {id, firstName, lastName, icon} = profile
+      let {id, firstName, lastName, icon} = profile;
+
       const newRevision = {
         id: "RV" + Gun.text.random(),
         circle: circleID,
@@ -71,14 +72,12 @@ class Amendment extends React.Component {
         newText: this.state.text.trim(),
         createdAt: moment().format(),
         updatedAt: moment().format(),
-        amendment: amendmentID,
+        amendment: this.props.amendment,
         expires: moment()
           .add(Math.max(this.customSigm(numUsers), 61), "s")
           .format(),
         voterThreshold: Math.round(numUsers / 2)
       };
-
-      console.log(newRevision);
 
       const newVote = {
         id: "VO" + Gun.text.random(),
@@ -91,8 +90,6 @@ class Amendment extends React.Component {
       let revision = gunRef.get(newRevision.id);
       revision.put(newRevision);
       
-      console.log(revision);
-
       let vote = gunRef.get(newVote.id);
       vote.put(newVote);
 
@@ -109,27 +106,7 @@ class Amendment extends React.Component {
 
       //add it to ambiguous "list" of revisions
       gunRef.get("revisions").set(revision);
-      gunRef.get("votes").set(vote);
-
-      // set it to this user's reference of the circle ??
-      let user = this.props.gun.user();
-
-      user
-        .get("circles")
-        .get(circleID)
-        .get("revisions")
-        .set(revision);
-
-      user
-        .get("circles")
-        .get(circleID)
-        .get("revisions")
-        .get(newRevision.id)
-        .get("votes")
-        .set(vote);
-
-      user.get("votes").set(vote);
-      user.get("revisions").set(revision, () => {
+      gunRef.get("votes").set(vote, () => {
         this.props.dispatch(updateRevision(newRevision.id));
 
         this.props.history.push(

@@ -54,9 +54,9 @@ class App extends PureComponent {
         // var gun = Gun(opt);
         // this.gun = Gun("https://gun-vvpgfvmjir.now.sh/gun");
         this.gun = Gun();
-        if (process.env.NODE_ENV !== "production") {
-            window.gun = this.gun;
-        }
+        // if (process.env.NODE_ENV !== "production") {
+        //     window.gun = this.gun;
+        // }
         this.checkItemsTimer = checkItemsTimer;
         let user =  this.gun.user();
         user.recall({ sessionStorage: true });
@@ -269,8 +269,9 @@ class App extends PureComponent {
         // if the newly minted amendment is the result of a change to an existing amendment, we need to delete the old amendment
         gunRef.get(pendingAmendment.revision).once(revision => {
             if (revision.amendment) {
-                let oldAmendment = gunRef.get(revision.amendment);
-
+                gunRef.get(revision.amendment).once(oldAmendment => {
+                oldAmendment = gunRef.get(oldAmendment.id);
+                
                 // remove it from the general list of amendments
                 gunRef.get("amendments").unset(oldAmendment);
                 // remove it from it's parent circle
@@ -278,21 +279,35 @@ class App extends PureComponent {
                     .get(pendingAmendment.circle)
                     .get("amendments")
                     .unset(oldAmendment);
-
-                // remove it from the user's circle and amendments to get it out of redux
-                user.get("circles")
-                    .get(pendingAmendment.circle)
-                    .get("amendments")
-                    .unset(oldAmendment);
-                user.get("amendments").unset(oldAmendment);
+                });
             }
         });
     };
 
     allListeners = () => {
-        let user = this.gun.user();
+        let gunRef = this.gun;
+        let user = gunRef.user();
         user.get("circles").synclist(obj => {
             this.worker.postMessage(obj);
+        });
+        // listen for circle requests
+        user.get("profile").once(({circleChain}) => {
+            // console.log(circleChain);
+            gunRef.get(circleChain).synclist(obj =>{
+                // console.log(obj.list);
+                if(!obj.list){
+                    return;
+                }
+                obj.list.forEach(circleId => {
+                    // circleId will be null once accepted
+                    if(circleId){
+                        let thisCircle = gunRef.get(circleId);
+                        // add the circle to this user's reference and remove the request from their keychain
+                        user.get("circles").set(thisCircle);
+                        gunRef.get(circleChain).unset(thisCircle);
+                    }
+                })
+            })
         });
         // user.get("profile").once(profile =>{
         //     // get this users list of DMs and subcribe to each one

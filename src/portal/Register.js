@@ -6,7 +6,7 @@ import swal from "sweetalert";
 import Gun from "gun/gun";
 import { withGun } from "react-gun";
 import moment from "moment";
-import { updateUser, updatePub } from "../store/state/actions";
+import { updateUser, updatePub, updateChannel, updateCircle, updateRevision } from "../store/state/actions";
 import { connect } from "react-redux";
 import { pull } from "../store/state/reducers";
 import {pair} from "simple-asym-crypto";
@@ -26,6 +26,10 @@ class Register extends PureComponent {
     componentDidMount() {
         if (this.props.user) {
             this.props.history.push("/app");
+        } else {
+            this.props.dispatch(updateChannel(null));
+            this.props.dispatch(updateCircle(null));
+            this.props.dispatch(updateRevision(null));
         }
     }
     tryRegister = async e => {
@@ -40,19 +44,20 @@ class Register extends PureComponent {
         }
 
         let { firstName, lastName, password, email } = this.state;
-
+        const {random} = Gun.text; 
         try {
             let newUser = this.props.gun.user();
 
             let user = {
-                id: "US" + Gun.text.random(),
+                id: "US" + random(),
                 firstName,
                 lastName,
                 email,
                 phone: "",
                 icon: defaultUser,
                 uname: "",
-                keychain: "KC"+ Gun.text.random(),
+                keychain: "KC"+ random(),
+                circleChain: "CC" + random(),
                 createdAt: moment().format(),
                 updatedAt: moment().format()
             };

@@ -39,9 +39,11 @@ export function circlesSync(obj) {
             dispatch({ type: "SYNC_CIRCLES", circles: items });
         }
         if (obj.node) {
+            // This has periodically fucked me, I don't know why it previously was necessary and is now not important
+            // Keep an eye on this
             // on every change.
-            items.splice(obj.idx, 1, obj.node);
-            dispatch({ type: "SYNC_CIRCLES", circles: items });
+            // items.splice(obj.idx, 1, obj.node);
+            // dispatch({ type: "SYNC_CIRCLES", circles: items });
         }
     };
 }
@@ -196,28 +198,15 @@ export function syncDMMessages(obj){
         let {
             stateReducers: { dmsgs: items }
         } = getState();
-            console.log(items);
 
             if (obj.list) {
-                // initial only!
                 items = obj.list;
                 dispatch({ type: "SYNC_DMMESSAGES", dmsgs: items });
             }
             if (obj.node) {
-                // on every change.
-                // items.splice(obj.idx, 1, obj.node);
                 if(items.findIndex(i => i.id === obj.node.id) === -1){
                     dispatch({ type: "SYNC_DMMESSAGES", dmsgs: [...items, obj.node] });
                 }
             }
-        // if (obj.list) {
-        //     let channelID = obj.list[0].channel;
-        //     dmsgs[channelID] = Object.values(obj.list).filter(m => m.id);
-        // } 
-        // else if (obj.node) {
-        //     // on every change.
-        //     let channelID = obj.node.channel;
-        //     dmsgs[channelID].splice(obj.idx, 1, obj.node);
-        // }
     };
 }

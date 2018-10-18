@@ -13,7 +13,7 @@ const ChatWindow = ({ messages = [], user, ...props }) => {
         <div id="chat-window">
             {messages.length !== 0 ? (
                 <Scrollbars
-                    style={{ width: "100%", height: "80vh" }}
+                    style={{ width: "100%", height: user ? "90vh" : "80vh" }}
                     autoHide
                     autoHideTimeout={1000}
                     autoHideDuration={200}
