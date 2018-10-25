@@ -20,6 +20,7 @@ const ChannelLabel = props => {
   };
   const shouldRenderAddChannel = id => {
     if (
+      props.user !== null &&
       props.name !== "Governance" &&
       props.channelType !== "gov" &&
       !props.id

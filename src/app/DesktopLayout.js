@@ -58,6 +58,7 @@ class DesktopLayout extends PureComponent {
                     isMenuOpen={this.isMenuOpen}
                     history={this.props.history}
                     user={this.state.user}
+                    toggleMenu={this.toggleMenu}
                 />
                 <div
                     className="wrapper"

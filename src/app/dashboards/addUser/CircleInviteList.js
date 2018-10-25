@@ -26,15 +26,19 @@ export default class CircleInviteList extends Component {
 	};
 	render() {
 		let { suggestions, selectedUsers } = this.props;
-		if (this.state.search.trim().length >= 3 && selectedUsers.length < 7) {
+		if (this.state.search.trim().length >= 1 && selectedUsers.length < 7) {
 			// display some results to the user
 			const input = this.state.search.trim();
 			// filter out names that don't meet criteria and filter out alreadys selected users
 			suggestions = suggestions
-				.filter(s => s.firstName.indexOf(input) !== -1)
 				.filter(
 					s => selectedUsers.findIndex(su => su.id === s.id) === -1
-				);
+				)
+				.filter(s => s.firstName.toLowerCase().indexOf(input.toLowerCase()) !== -1
+					|| s.lastName.toLowerCase().indexOf(input.toLowerCase()) !== -1
+					|| s.email.toLowerCase().indexOf(input.toLowerCase()) !== -1
+					|| s.uname.toLowerCase().indexOf(input.toLowerCase()) !== -1
+					);
 		} else {
 			suggestions = [];
 		}

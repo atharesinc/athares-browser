@@ -42,7 +42,7 @@ class Chat extends Component {
     }
     componentDidUpdate(prevProps) {
         if (prevProps.activeChannel !== this.props.activeChannel) {
-            this.getMessages();
+            this._isMounted && this.getMessages();
         }
         if (prevProps.messages.length !== this.props.messages.length) {
             let chatBox = document.getElementById("chat-window");

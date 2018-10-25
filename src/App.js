@@ -52,13 +52,13 @@ class App extends PureComponent {
         //     var opt = {};
         // opt.store = RindexedDB(opt);
         // var gun = Gun(opt);
-        // this.gun = Gun("https://gun-vvpgfvmjir.now.sh/gun");
-        this.gun = Gun();
+        this.gun = Gun("https://gun-vccrbuhljd.now.sh/gun");
+        // this.gun = Gun();
         // if (process.env.NODE_ENV !== "production") {
         //     window.gun = this.gun;
         // }
         this.checkItemsTimer = checkItemsTimer;
-        let user =  this.gun.user();
+        let user = this.gun.user();
         user.recall({ sessionStorage: true });
     }
     updateWidth = () => {

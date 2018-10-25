@@ -7,6 +7,7 @@ import Loader from "../../Loader";
 import { Scrollbars } from "react-custom-scrollbars";
 import Gun from "gun/gun";
 import { updateChannel } from "../../../store/state/actions";
+import swal from "sweetalert";
 
 class CreateChannel extends Component {
     constructor(props) {
@@ -87,6 +88,7 @@ class CreateChannel extends Component {
             .get(this.props.activeCircle)
             .get("channels")
             .set(channel, () => {
+                swal("Channel Created", `${this.state.name} has been created in ${this.state.activeCircle.name}.`, "success");
                 this.props.dispatch(updateChannel(newChannel.id));
                 this.props.history.push(
                     `/app/circle/${this.props.activeCircle}/channel/${

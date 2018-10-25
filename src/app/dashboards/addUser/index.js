@@ -4,6 +4,7 @@ import { connect } from "react-redux";
 import {pull} from "../../../store/state/reducers";
 import {updateCircle} from "../../../store/state/actions";
 import { withGun } from "react-gun";
+import swal from "sweetalert";
 
 class addUser extends React.Component {
   constructor(props) {
@@ -13,37 +14,37 @@ class addUser extends React.Component {
       selectedUsers: [],
       suggestions: []
     };
+    this._isMounted = false;
   }
+
     componentDidMount() {
     this._isMounted = true;
     if (!this.props.user) {
             this.props.history.push("/app");
           }
-    if(!this.props.activeCircle|| this.props.activeCircle !== this.props.match.params.id){
+    if(!this.props.activeCircle || this.props.activeCircle !== this.props.match.params.id){
       this.props.dispatch(updateCircle(this.props.match.params.id));
     } else {
       this._isMounted && this.getUsers();
     }
   }
-  componentDidUpdate(){
-    this._isMounted && this.getUsers();
-  }
   getUsers = () => {
     let gunRef = this.props.gun;
-    gunRef.get("users").listonce(obj => {
+    gunRef.get("users").synclist(obj => {
       let users = [];
 
       // painstakingly get all the users
       // maybe a task for a webworker?
-      obj.list.forEach(pub => {
-        if(pub === this.props.pub){
-          return;
-        }
-        let thisUser = gunRef.user(pub);
-        thisUser.get("profile").once(user => {
-          users.push({ ...user, name: user.firstName + " " + user.lastName });
-        });
-      });
+      if(obj.list){
+        obj.list.forEach(pub => {
+              if(pub === this.props.pub){
+                return;
+              }
+              let thisUser = gunRef.user(pub);
+              thisUser.get("profile").once(user => {
+                users.push({ ...user, name: user.firstName + " " + user.lastName });
+              });
+            });}
 
       this._isMounted && this.setState({
         suggestions: users
@@ -68,6 +69,7 @@ class addUser extends React.Component {
     selectedUsers.map(thisUser => {
       gunRef.get(thisUser.circleChain).set(this.props.activeCircle)
     });
+    swal("User Added", `${selectedUsers.length > 1 ? "These users have" : "This user has"} been added.`, "success");
     this.props.history.push("/app");
     // clear state
     this.setState({

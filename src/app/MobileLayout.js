@@ -76,6 +76,7 @@ class MobileLayout extends PureComponent {
                     isMenuOpen={this.isMenuOpen}
                     history={this.props.history}
                     user={user}
+                    toggleMenu={this.toggleMenu}
                 />
                 <div
                     index={this.state.index}

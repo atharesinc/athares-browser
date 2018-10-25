@@ -122,6 +122,7 @@ class createCircleBoard extends Component {
         this.props.dispatch(updateCircle(newCircle.id));
 
         await this.setState({ loading: false });
+        swal("Circle Created", `${name} has been created successfully.`, "success");
 
         this.props.history.push(
             "/app/circle/" + newCircle.id + "/constitution"

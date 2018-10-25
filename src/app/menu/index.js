@@ -9,10 +9,11 @@ const MenuWrapper = ({ isOpen, history, isMenuOpen, user, ...props }) => {
     const logoutUser = async () => {
         props.dispatch(logout());
         sessionStorage.clear();
-
-        history.push("/login");
+        props.toggleMenu();
     };
-
+    const alsoToggleMenu = () => {
+        props.toggleMenu();
+    }
     return (
         <Menu
             pageWrapId={"app-wrapper"}
@@ -27,6 +28,7 @@ const MenuWrapper = ({ isOpen, history, isMenuOpen, user, ...props }) => {
                 <Link
                     className="dt w-100 pb2-ns pv2 pl2-ns pl3 dim hover-bg-black-05"
                     to="/app/user"
+                    onClick={alsoToggleMenu}
                 >
                     <div className="dtc w3 h3 v-mid">
                         <img
