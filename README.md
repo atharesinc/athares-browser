@@ -94,12 +94,10 @@ Each version outlines features that the platform must have to meet this version
 -   (Mobile) ViewRevision should be full-height
 -   Governance channels should be lit up when selected
 
-
-#### 0.0.5 
--   Remove User from DM
+#### 0.0.5 - COMPLETE
 -   Remove User from Circle
 
-#### 0.0.6
+#### 0.0.6 - IN PROGRESS
 
 -   Add Help page
 -   Dumbed down index
@@ -143,13 +141,14 @@ Each version outlines features that the platform must have to meet this version
 
 -   Mobile Ellipsis on channel should do something (???)
 -   Correct scrolling on constitution
-
+-   Remove user from circle after leaving circle
 
 #### 0.4.0 (Essential Nice-to-haves)
 
 -   Emoji support
 -   Support images and links in messages
 -   DM permission issue/not loading the messages correctly?
+-   Remove User from DM
 
 #### 0.8.0
 
@@ -165,6 +164,7 @@ Each version outlines features that the platform must have to meet this version
         -   Is this even possible
     -   Inputs don't work on android?
         -   Possibly due to screen resizing?
+        -   This might work now
 
 #### 0.9.0
 
