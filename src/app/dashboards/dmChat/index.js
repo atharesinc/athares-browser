@@ -40,7 +40,7 @@ class DMChat extends Component {
         if (this.props.user === null) {
             this.props.history.push("/app");
         }
-        await this.getUser();
+        this._isMounted && await this.getUser();
 
         // Make sure activeChannel is set
         if (
@@ -49,7 +49,7 @@ class DMChat extends Component {
         ) {
             this.props.dispatch(updateChannel(this.props.match.params.id));
         } else {
-            await this.decryptMessages();
+            this._isMounted && await this.decryptMessages();
             let chatBox = document.getElementById("chat-window");
             if (chatBox) {
                 chatBox = chatBox.firstElementChild.firstElementChild;

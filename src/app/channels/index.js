@@ -7,6 +7,7 @@ import { pull } from "../../store/state/reducers";
 import { updateCircle } from "../../store/state/actions";
 import { withGun } from "react-gun";
 import BottomNav from "./BottomNav";
+import FeatherIcon from "feather-icons-react";
 
 class Channels extends Component {
     constructor(props) {
@@ -26,8 +27,15 @@ class Channels extends Component {
         }
     }
     componentDidUpdate(prevProps) {
-        if (this.props.activeCircle && prevProps.activeCircle !== this.props.activeCircle) {
-            this._isMounted && this.getChannels();
+        if (prevProps.activeCircle !== this.props.activeCircle) {
+            if(this.props.activeCircle){ 
+                this._isMounted && this.getChannels();
+            } else if(this.props.activeCircle === null){
+                this._isMounted && this.setState({
+                    channels: [],
+                    circle: null
+                });
+            }
         }
     }
     getChannels = () => {
@@ -48,6 +56,9 @@ class Channels extends Component {
     componentWillUnmount(){
         this._isMounted = false;
     }
+    goToOptions = () => {
+        this.props.history.push(`/app/circle/${this.props.activeCircle}/leave`);
+    }
     render() {
         let {
             activeChannel,
@@ -67,8 +78,13 @@ class Channels extends Component {
                 <div id="channels-wrapper">
                     <div id="circle-name">
                         {circle.name}
-                        <i className="mdi mdi-plus" id="circle-options" />
-                    </div>
+                            <FeatherIcon
+                                icon="more-vertical"
+                                className="white"
+                                onClick={this.goToOptions}
+                                id="circle-options"
+                            />                  
+                        </div>
                     <div id="channels-list">
                         <GovernanceChannelGroup
                             style={style.docs}
@@ -99,7 +115,6 @@ class Channels extends Component {
                 <div id="channels-wrapper">
                     <div id="circle-name">
                         No Circle Selected
-                        <i className="mdi mdi-plus" id="circle-options" />
                     </div>
                     <div
                         id="channels-list"

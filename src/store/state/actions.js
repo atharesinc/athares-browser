@@ -35,10 +35,14 @@ export function circlesSync(obj) {
 
         if (obj.list) {
             // initial only!
-            items = obj.list;
+            items = obj.list.filter(c => c.ignore === undefined || c.ignore !== true);
             dispatch({ type: "SYNC_CIRCLES", circles: items });
         }
         if (obj.node) {
+            if(obj.node.ignore === true){
+                items = items.filter(i => i.id !== obj.node.id);
+                dispatch({ type: "SYNC_CIRCLES", circles: items });
+            }
             // This has periodically fucked me, I don't know why it previously was necessary and is now not important
             // Keep an eye on this
             // on every change.

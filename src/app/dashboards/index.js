@@ -10,6 +10,8 @@ import Docs from "./docs";
 import CreateAmendment from "./createAmendment";
 import User from "./user";
 import Revisions from "./revisions";
+import LeaveCircle from "./leaveCircle";
+
 import { Switch, Route } from "react-router-dom";
 
 const Dashboards = props => {
@@ -20,6 +22,11 @@ const Dashboards = props => {
                 exact
                 path={`${match.path}/circle/:id/channel/:id`}
                 render={(props) => <GroupChat {...props} />}
+            />
+            <Route
+                exact
+                path={`${match.path}/circle/:id/leave`}
+                render={props => <LeaveCircle {...props} />}
             />
             <Route
                 exact

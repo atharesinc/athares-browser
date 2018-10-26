@@ -27,8 +27,8 @@ function _objectWithoutProperties(obj, keys) { var target = {}; for (var i in ob
             var otherObj = {
                 list: []
             };
-
-            otherObj.list = obj.list.map(function (c) {
+            otherObj.list = obj.list.filter(function(c){ return c.ignore === undefined})
+            .map(function (c) {
                 return {
                     id: c.id,
                     icon: c.icon,
@@ -39,7 +39,6 @@ function _objectWithoutProperties(obj, keys) { var target = {}; for (var i in ob
                     users: Object.keys(c.users)
                 };
             });
-
             // get all data from this circle
             obj.list.forEach(function (circle) {
                 // get the channels and messages
@@ -93,9 +92,28 @@ function _objectWithoutProperties(obj, keys) { var target = {}; for (var i in ob
                 votes: votes
             };
             postMessage(res);
-        } else {
+        } else {            
             // a single node has changed
             // this captures some updates that obj.list doesn't capture
+            // If we're removing an entire circle, we can just return null and splice it out in the actions
+            if(obj.node.ignore === true){
+                let removeRes = {
+                    circles: {soul: obj.soul,
+                     idx: obj.idx,
+                     node: {
+                        id: obj.node.id,
+                        ignore: true
+                }
+            },
+                    messages: [],
+                    revisions: [],
+                    amendments: [],
+                    channels: [],
+                    votes: []
+                };
+                postMessage(removeRes);
+                return;
+            }
             var _otherObj = {
                 node: {
                     id: obj.node.id,

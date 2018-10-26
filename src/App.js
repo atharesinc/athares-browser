@@ -52,8 +52,8 @@ class App extends PureComponent {
         //     var opt = {};
         // opt.store = RindexedDB(opt);
         // var gun = Gun(opt);
-        this.gun = Gun("https://gun-vccrbuhljd.now.sh/gun");
-        // this.gun = Gun();
+        // this.gun = Gun("https://gun-vccrbuhljd.now.sh/gun");
+        this.gun = Gun();
         // if (process.env.NODE_ENV !== "production") {
         //     window.gun = this.gun;
         // }
@@ -154,32 +154,6 @@ class App extends PureComponent {
         // later filter out users who were created after this revision was created
 
         // // it passes because the majority of votes has been reached after the expiry period
-        // console.log("_____________ CONDITION 1 _______________");
-        // console.log("Support votes: " + supportVotes.length);
-        // console.log("Votes needed to get majority: " + votes.length / 2);
-        // console.log(
-        //     "Right now: " +
-        //         moment().valueOf() +
-        //         " needs to be greater than or equal to: "
-        // );
-        // console.log("expiry time: " + moment(thisRevision.expires).valueOf());
-        // console.log(
-        //     supportVotes > votes.length / 2 &&
-        //         moment().valueOf() >= moment(thisRevision.expires).valueOf()
-        // );
-        // console.log("_________ CONDITION 2 ______________");
-        // console.log("Support votes: " + supportVotes);
-        // console.log("voter threshold: " + thisRevision.voterThreshold);
-        // console.log(
-        //     "Right now: " +
-        //         moment().valueOf() +
-        //         " needs to be less than or equal to: "
-        // );
-        // console.log("expiry time: " + moment(thisRevision.expires).valueOf());
-        // console.log(
-        //     supportVotes.length >= thisRevision.voterThreshold &&
-        //         moment().valueOf() <= moment(thisRevision.expires).valueOf()
-        // );
         if (
             supportVotes.length > votes.length / 2 &&
             moment().valueOf() >= moment(thisRevision.expires).valueOf()
@@ -234,8 +208,6 @@ class App extends PureComponent {
             });
     };
     createAmendment = async pendingAmendment => {
-        // console.log("this is the new amendment!", pendingAmendment);
-
         // update the revision so that it can't continue to be voted on
         let gunRef = this.gun;
         let revision = gunRef.get(pendingAmendment.revision);
