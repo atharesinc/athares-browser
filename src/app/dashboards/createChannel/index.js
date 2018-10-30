@@ -8,6 +8,8 @@ import { Scrollbars } from "react-custom-scrollbars";
 import Gun from "gun/gun";
 import { updateChannel } from "../../../store/state/actions";
 import swal from "sweetalert";
+import FeatherIcon from "feather-icons-react";
+import { Link } from "react-router-dom";
 
 class CreateChannel extends Component {
     constructor(props) {
@@ -119,15 +121,24 @@ class CreateChannel extends Component {
             );
         }
         return (
-            <div id="dashboard-wrapper">
+            <div id="revisions-wrapper">
+                <div className="flex db-ns ph2 mobile-nav">
+                    <Link to="/app" className="flex justify-center items-center">
+                        <FeatherIcon
+                            icon="chevron-left"
+                            className="white db dn-ns"
+                            onClick={this.back}
+                        />
+                    </Link>
+                    <h2 className="ma3 lh-title white"> Create Channel </h2>
+                     </div>
                 <form
-                    className="pa4 white wrapper"
+                    className="pa2 pa4-ns white wrapper mobile-body"
                     onSubmit={this.onSubmit}
                     id="create-circle-form"
                 >
-                    <Scrollbars style={{ height: "100%", width: "100%" }}>
+                    <Scrollbars style={{ height: "90vh", width: "100%" }}>
                         <article className="cf">
-                            <h1 className="mb3 mt0 lh-title">Create Channel</h1>
                             <time className="f7 ttu tracked white-80">
                                 Create a new channel within {activeCircle.name}
                             </time>

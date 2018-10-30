@@ -20,7 +20,7 @@ const ToggleDiffBar = ({ toggle, mode }) => {
 				style={styles.wrapper}
 			>
 				<FeatherIcon icon="check" />
-				<div className="f7 ml2">Final</div>
+				<div className="f7 ml2 dn db-ns">Final</div>
 			</div>
 			<div
 				onClick={() => {
@@ -30,7 +30,7 @@ const ToggleDiffBar = ({ toggle, mode }) => {
 				style={styles.wrapper}
 			>
 				<FeatherIcon icon="code" />
-				<div className="f7 ml2">Diff</div>
+				<div className="f7 ml2 dn db-ns">Diff</div>
 			</div>
 			<div
 				onClick={() => {
@@ -40,7 +40,7 @@ const ToggleDiffBar = ({ toggle, mode }) => {
 				style={styles.wrapper}
 			>
 				<FeatherIcon icon="layout" />
-				<div className="f7 ml2">Side-By-Side</div>
+				<div className="f7 ml2 dn db-ns">Side-By-Side</div>
 			</div>
 		</div>
 	);

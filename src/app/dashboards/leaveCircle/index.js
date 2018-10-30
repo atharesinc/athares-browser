@@ -7,6 +7,8 @@ import Loader from "../../Loader";
 import Gun from "gun";
 import swal from "sweetalert";
 import "gun/lib/unset";
+import FeatherIcon from "feather-icons-react";
+import { Link } from "react-router-dom";
 
 class CreateChannel extends Component {
 	constructor(props) {
@@ -31,7 +33,7 @@ class CreateChannel extends Component {
 
 	leaveCircle = e => {
 		e.preventDefault();
-		let {activeCircle} = this.state;
+		let { activeCircle } = this.state;
 
 		swal("Are you sure you'd like to leave this Circle?", {
 			buttons: {
@@ -45,11 +47,10 @@ class CreateChannel extends Component {
 				let user = gunRef.user();
 				let circleRef = gunRef.get(activeCircle.id);
 
-				user
-					.get("circles")
+				user.get("circles")
 					.get(activeCircle.id)
-					.put({ignore: true})
-					
+					.put({ ignore: true });
+
 				swal(
 					"Removed From Circle",
 					`You have willfully left ${
@@ -61,6 +62,9 @@ class CreateChannel extends Component {
 				this.props.history.push(`/app`);
 			}
 		});
+	};
+	back = () => {
+		this.props.history.push(`/app`);
 	};
 	render() {
 		const { loading, activeCircle } = this.state;
@@ -77,34 +81,47 @@ class CreateChannel extends Component {
 			);
 		}
 		return (
-			<div id="dashboard-wrapper" className="pa4 white wrapper">
-			<div id="create-circle-form">
-				<article className="mb3">
-					<h1 className="mb3 mt0 lh-title">Leave Circle</h1>
-					<time className="f7 ttu tracked white-80">
-						Leave the Circle {activeCircle.name}
-					</time>
-				</article>
-				<div id="comment-desc" className="f6 white-80">
-					By pressing "Leave Circle" you are choosing to be removed
-					from participation in all circle communication,
-					notifications, channels, and revisions. You can still view
-					all public information about this circle, but you will not
-					be able to use it's channels, or cast votes in revision
-					polls.
-					<br />
-					<br />
-					If you would like to return to this Circle at a later date,
-					you will need to be re-invited by someone inside the Circle.
+			<div id="revisions-wrapper">
+				<div className="flex db-ns ph2 mobile-nav">
+					<Link
+						to="/app"
+						className="flex justify-center items-center"
+					>
+						<FeatherIcon
+							icon="chevron-left"
+							className="white db dn-ns"
+							onClick={this.back}
+						/>
+					</Link>
+					<h2 className="ma3 lh-title white"> Leave Circle </h2>
 				</div>
+				<div id="create-circle-form" className="pa2 pa4-ns white wrapper mobile-body">
+					<article className="mb3">
+						<time className="f7 ttu tracked white-80">
+							Leave the Circle {activeCircle.name}
+						</time>
+					</article>
+					<div id="comment-desc" className="f6 white-80">
+						By pressing "Leave Circle" you are choosing to be
+						removed from participation in all circle communication,
+						notifications, channels, and revisions. You can still
+						view all public information about this circle, but you
+						will not be able to use it's channels, or cast votes in
+						revision polls.
+						<br />
+						<br />
+						If you would like to return to this Circle at a later
+						date, you will need to be re-invited by someone inside
+						the Circle.
+					</div>
 
-				<button
-					id="create-circle-button"
-					className="btn mt4"
-					onClick={this.leaveCircle}
-				>
-					Leave Circle
-				</button>
+					<button
+						id="create-circle-button"
+						className="btn mt4"
+						onClick={this.leaveCircle}
+					>
+						Leave Circle
+					</button>
 				</div>
 			</div>
 		);

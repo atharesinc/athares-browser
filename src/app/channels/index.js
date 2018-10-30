@@ -78,12 +78,12 @@ class Channels extends Component {
                 <div id="channels-wrapper">
                     <div id="circle-name">
                         {circle.name}
-                            <FeatherIcon
-                                icon="more-vertical"
-                                className="white"
-                                onClick={this.goToOptions}
-                                id="circle-options"
-                            />                  
+                            {user && <FeatherIcon
+                                                                           icon="more-vertical"
+                                                                           className="white"
+                                                                           onClick={this.goToOptions}
+                                                                           id="circle-options"
+                                                                       />   }               
                         </div>
                     <div id="channels-list">
                         <GovernanceChannelGroup

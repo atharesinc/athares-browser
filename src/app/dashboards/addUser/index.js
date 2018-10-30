@@ -1,10 +1,12 @@
-import React from "react";
+import React, {Fragment} from "react";
 import CircleInviteList from "./CircleInviteList";
 import { connect } from "react-redux";
 import {pull} from "../../../store/state/reducers";
 import {updateCircle} from "../../../store/state/actions";
 import { withGun } from "react-gun";
 import swal from "sweetalert";
+import FeatherIcon from "feather-icons-react";
+import { Link } from "react-router-dom";
 
 class addUser extends React.Component {
   constructor(props) {
@@ -79,9 +81,19 @@ class addUser extends React.Component {
   render() {
     const { suggestions, selectedUsers } = this.state;
     return (
-      <div id="dashboard-wrapper">
+      <div id="revisions-wrapper">
+                <div className="flex db-ns ph2 mobile-nav">
+                    <Link to="/app" className="flex justify-center items-center">
+                        <FeatherIcon
+                            icon="chevron-left"
+                            className="white db dn-ns"
+                            onClick={this.back}
+                        />
+                    </Link>
+                    <h2 className="ma3 lh-title white"> Invite Users </h2>
+                     </div>
         <form
-          className="pa4 white wrapper"
+          className="pa4 white wrapper mobile-body"
           onSubmit={this.onSubmit}
           id="create-circle-form"
           style={{
@@ -89,7 +101,6 @@ class addUser extends React.Component {
           }}
         >
           <article className="cf">
-            <h1 className="mb3 mt0 lh-title">Invite Users</h1>
             <time className="f7 ttu tracked white-60">
               Add existing users to participate in this circle
             </time>

@@ -3,13 +3,15 @@ import ImageUpload from "./imageUpload";
 import ErrorSwap from "../../../utils/ErrorSwap";
 import { withGun } from "react-gun";
 import { connect } from "react-redux";
-import * as stateSelectors from "../../../store/state/reducers";
+import {pull} from "../../../store/state/reducers";
 import { updateCircle } from "../../../store/state/actions";
 import Gun from "gun/gun";
 import Loader from "../../Loader";
 import swal from "sweetalert";
 import { Scrollbars } from "react-custom-scrollbars";
 import moment from "moment";
+import FeatherIcon from "feather-icons-react";
+import { Link } from "react-router-dom";
 
 class createCircleBoard extends Component {
     constructor(props) {
@@ -177,17 +179,24 @@ class createCircleBoard extends Component {
             );
         }
         return (
-            <div id="dashboard-wrapper">
+            <div id="revisions-wrapper">
+                <div className="flex db-ns ph2 mobile-nav">
+                    <Link to="/app" className="flex justify-center items-center">
+                        <FeatherIcon
+                            icon="chevron-left"
+                            className="white db dn-ns"
+                            onClick={this.back}
+                        />
+                    </Link>
+                    <h2 className="ma3 lh-title white"> Create Circle </h2>
+                     </div>
                 <form
-                    className="pa4 white wrapper"
+                    className="pa2 pa4-ns white wrapper mobile-body"
                     onSubmit={this.onSubmit}
                     id="create-circle-form"
                 >
                     <Scrollbars style={{ height: "100%", width: "100%" }}>
                         <article className="cf">
-                            <h1 className="mb3 mt0 lh-title">
-                                Create New Circle
-                            </h1>
                             <time className="f7 ttu tracked white-80">
                                 Circles represent the digital repository for
                                 your government.
@@ -287,8 +296,8 @@ class createCircleBoard extends Component {
 
 function mapStateToProps(state) {
     return {
-        user: stateSelectors.pull(state, "user"),
-        pub: stateSelectors.pull(state, "pub")
+        user: pull(state, "user"),
+        pub: pull(state, "pub")
     };
 }
 

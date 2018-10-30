@@ -100,17 +100,25 @@ class RevisionBoard extends Component {
         // console.log(revisions);
         return (
             <div id="revisions-wrapper">
-                <h1 className="ma3 lh-title white">Revisions</h1>
-                <small className="f6 white-80 db mb2 ml3">
+                <div className="flex db-ns ph2 mobile-nav" style={{height: "10vh"}}>
+                    <Link to="/app" className="flex justify-center items-center">
+                        <FeatherIcon
+                            icon="chevron-left"
+                            className="white db dn-ns"
+                            onClick={this.back}
+                        />
+                    </Link>
+                    <h2 className="ma3 lh-title white">Revisions</h2>
+                </div>
+                <small className="f6 white-80 db mb2 ml3 mobile-nav" style={{height: "10vh"}}>
                     Review proposed legislation and changes to existing laws
                 </small>
-                <div id="revision-board-wrapper" style={{
-                            height: "100%"
-}}>
+                <div id="revision-board-wrapper">
                     <Scrollbars
                         style={{
-                            height: "100%",
-                            width: "100%"
+                            height: "80vh",
+                            width: "100%",
+                            // overflowY: "none"
                         }}
                     >
                         <Board

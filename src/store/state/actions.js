@@ -42,7 +42,7 @@ export function circlesSync(obj) {
             if(obj.node.ignore === true){
                 items = items.filter(i => i.id !== obj.node.id);
                 dispatch({ type: "SYNC_CIRCLES", circles: items });
-                dispatch({ type: "UPDATE_CIRCLE", null });
+                dispatch({ type: "UPDATE_CIRCLE", circle: null });
             }
             // This has periodically fucked me, I don't know why it previously was necessary and is now not important
             // Keep an eye on this

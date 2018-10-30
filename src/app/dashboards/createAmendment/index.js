@@ -1,12 +1,13 @@
 import React, { Component } from "react";
 import ErrorSwap from "../../../utils/ErrorSwap";
 import Loader from "../../Loader";
-import { withRouter } from "react-router-dom";
+import { withRouter, Link } from "react-router-dom";
 import { Scrollbars } from "react-custom-scrollbars";
 import { connect } from "react-redux";
 import { withGun } from "react-gun";
 import { pull } from "../../../store/state/reducers";
 import { updateRevision } from "../../../store/state/actions";
+import FeatherIcon from "feather-icons-react";
 
 import Gun from "gun/gun";
 import moment from "moment";
@@ -144,17 +145,24 @@ class CreateAmendment extends Component {
             );
         } else if (activeCircle) {
             return (
-                <div id="dashboard-wrapper">
+                <div id="revisions-wrapper">
+                <div className="flex db-ns ph2">
+                    <Link to="/app" className="flex justify-center items-center">
+                        <FeatherIcon
+                            icon="chevron-left"
+                            className="white db dn-ns"
+                            onClick={this.back}
+                        />
+                    </Link>
+                    <h2 className="ma3 lh-title white"> Create Amendment </h2>
+                     </div>
                     <form
-                        className="pa4 white wrapper"
+                        className="pa2 pa4-ns white wrapper"
                         onSubmit={this.onSubmit}
                         id="create-circle-form"
                     >
                         <Scrollbars style={{ height: "100%", width: "100%" }}>
                             <article className="cf">
-                                <h1 className="mb3 mt0 lh-title">
-                                    Create Amendment
-                                </h1>
                                 <time className="f7 ttu tracked white-80">
                                     Draft a new piece of legislation for{" "}
                                     {activeCircle.name}
@@ -204,14 +212,21 @@ class CreateAmendment extends Component {
                                         >
                                             Amendment
                                         </label>
-                                                <Scrollbars style={{ maxHeight: "11.5rem", width: "100%" }} autoHeight className="ghost">
-                                        <div
-                                            contentEditable={true}
-                                            className={`f6 amendment-text editableText`}
-                                            onInput={this.updateAmend}
-                                            value={this.state.amendment}
-                                            suppressContentEditableWarning
-                                        />
+                                        <Scrollbars
+                                            style={{
+                                                maxHeight: "11.5rem",
+                                                width: "100%"
+                                            }}
+                                            autoHeight
+                                            className="ghost"
+                                        >
+                                            <div
+                                                contentEditable={true}
+                                                className={`f6 amendment-text editableText`}
+                                                onInput={this.updateAmend}
+                                                value={this.state.amendment}
+                                                suppressContentEditableWarning
+                                            />
                                         </Scrollbars>
                                         <ErrorSwap
                                             condition={!this.state.isTaken}

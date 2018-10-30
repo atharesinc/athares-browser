@@ -4,19 +4,19 @@ import { withRouter, Link } from "react-router-dom";
 const RevisionStatus = ({ amendment, support, votes, circle }) => {
     if (amendment) {
         return (
-            <div style={styles} className="f6 bg-theme-light white-80 mv0 pa2">
+            <div className={`f6 bg-theme-light white-80 mv0 pa2 flex flex-column direction-row-ns justify-start justify-between-ns items-start items-center-ns`}>
                 <div
-                    className={`f7 black-80 pa1 br-pill ph2 lh-solid bg-theme-blue`}
+                    className={`f7 black-80 pa1 br-pill ph2 lh-solid bg-theme-blue mb2`}
                 >
                     REVISION
                 </div>
                 <Link
                     to={`/app/circle/${circle}/constitution#${amendment.id}`}
-                    className={`f7 white pa1 br-pill b--theme-blue bw1 ba ph2 lh-solid theme-blue`}
+                    className={`f7 white pa1 br-pill b--theme-blue bw1 ba ph2 lh-solid theme-blue mb2`}
                 >
                     #{amendment.id}
                 </Link>
-                <small>
+                <small className=" mb2">
                     <span className="light-green">+{support}</span> /{" "}
                     <span className="red">-{votes.length - support}</span>
                 </small>
@@ -24,7 +24,7 @@ const RevisionStatus = ({ amendment, support, votes, circle }) => {
         );
     } else {
         return (
-            <div style={styles} className="f6 bg-theme-light white-80 mv0 pa2">
+            <div className={`f6 bg-theme-light white-80 mv0 pa2 flex direction-row justify-between  items-center`}>
                 <div
                     className={`f7 pa1 br-pill ph2 bw1 ba lh-solid bg-none`}
                     style={{ color: "#9eebcf", borderColor: "#9eebcf" }}

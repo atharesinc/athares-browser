@@ -1,4 +1,4 @@
-        import React, { Component } from "react";
+import React, { Component } from "react";
 import RevisionHeader from "./RevisionHeader";
 import RevisionStats from "./RevisionStats";
 import VoteButtons from "./VoteButtons";
@@ -14,7 +14,8 @@ import moment from "moment";
 import { withGun } from "react-gun";
 import { pull } from "../../../store/state/reducers";
 import { connect } from "react-redux";
-import { withRouter } from "react-router-dom";
+import { withRouter, Link } from "react-router-dom";
+import FeatherIcon from "feather-icons-react";
 
 class ViewRevision extends Component {
     constructor(props) {
@@ -149,8 +150,21 @@ class ViewRevision extends Component {
             if (revision.amendment) {
                 /* Represents a change to existing legislation; Show diff panels   */
                 return (
-                    <div id="revisions-wrapper">
-                        <Scrollbars style={{ height: "100%", width: "100%" }}>
+                  <div id="revisions-wrapper">
+                <div className="flex db-ns ph2 mobile-nav">
+                    <Link
+                        to="/app"
+                        className="flex justify-center items-center"
+                    >
+                        <FeatherIcon
+                            icon="chevron-left"
+                            className="white db dn-ns"
+                            onClick={this.back}
+                        />
+                    </Link>
+                    <h2 className="ma3 lh-title white">{title}</h2>
+                </div>
+                        <Scrollbars style={{ height: "90vh", width: "100%" }}>
                             <RevisionHeader title={title} isNew={false} />
 
                             {hasVoted && <HasVoted vote={hasVoted} />}
@@ -185,8 +199,21 @@ class ViewRevision extends Component {
             } else {
                 /* Represents a new legislation without precedent; Show single panel */
                 return (
-                    <div id="revisions-wrapper">
-                        <Scrollbars style={{ height: "100%", width: "100%" }}>
+                   <div id="revisions-wrapper">
+                <div className="flex db-ns ph2 mobile-nav">
+                    <Link
+                        to="/app"
+                        className="flex justify-center items-center"
+                    >
+                        <FeatherIcon
+                            icon="chevron-left"
+                            className="white db dn-ns"
+                            onClick={this.back}
+                        />
+                    </Link>
+                    <h2 className="ma3 lh-title white">{title}</h2>
+                </div>
+                        <Scrollbars style={{ height: "90vh", width: "100%" }}>
                             <RevisionHeader title={title} isNew={true} />
                             {hasVoted && <HasVoted vote={hasVoted} />}
 
