@@ -86,8 +86,8 @@ class MobileLayout extends PureComponent {
                         width: "100vw"
                     }}
                     id="app-wrapper"
-                >
-                    <TopNav
+                    >
+                     <TopNav
                         toggleMenu={this.toggleMenu}
                         hide={location.pathname !== "/app"}
                     />

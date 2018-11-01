@@ -49,3 +49,37 @@ const ChatWindow = ({ messages = [], user, ...props }) => {
 };
 
 export default ChatWindow;
+
+/*
+ <Transition
+                        items={messages}
+                        keys={item => item.id}
+                        from={{ transform: "translate3d(0,40px,0)" }}
+                        enter={{ transform: "translate3d(0,0px,0)" }}
+                        leave={{ transform: "translate3d(0,40px,0)" }}
+                    >
+                        {/*messages.map((msg, i) => 
+                        // if the user sends multiple consecutive messages we don't need to append the username and image to every message
+                            <Message
+                                                            multiMsg={
+                                                                i !== 0 &&
+                                                                messages[i - 1].user.id ===
+                                                                    messages[i].user.id
+                                                            }
+                                                            isMine={msg.user.id === user.id ? true : false}
+                                                            {...msg}
+                                                            key={msg.id}
+                                                            timestamp={msg.createdAt}
+                                                            lastMessage={i}
+                                                        />
+                            <div key={msg.id}>{msg.text}</div>
+                    )}
+                        {item => props => <Message
+                                                            multiMsg={false}
+                                                            isMine={item.user.id === user.id ? true : false}
+                                                            {...item}
+                                                            key={item.id}
+                                                            timestamp={item.createdAt}
+                                                            lastMessage={0}
+                                                        />}
+                    </Transition>*/

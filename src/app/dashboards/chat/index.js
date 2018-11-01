@@ -22,18 +22,22 @@ class Chat extends Component {
         this._isMounted = false;
     }
     componentDidMount() {
+        console.log("mounted!")
         this._isMounted = true;
         
+        if(this.props.user !== null){
+            this._isMounted && this.getUser();
+        }
+
         if(this.props.activeChannel){
             this._isMounted && this.getMessages();
         } else {
             this.props.dispatch(updateChannel(this.props.match.params.id));
             this.props.dispatch(updateRevision(null));
+            return;
         }
-        if(this.props.user !== null){
-            this._isMounted && this.getUser();
-        }
-                /* scroll to bottom */
+
+        /* scroll to bottom */
         let chatBox = document.getElementById("chat-window");
         if (chatBox) {
             chatBox = chatBox.firstElementChild.firstElementChild;
@@ -41,10 +45,22 @@ class Chat extends Component {
         }
     }
     componentDidUpdate(prevProps) {
-        if (prevProps.activeChannel !== this.props.activeChannel) {
-            this._isMounted && this.getMessages();
+        console.log("updated!")
+        // something fucky here
+        // if current url doesn't match internal state, update state to match url
+        if(this.props.match.params.id !== this.props.activeChannel){
+            this.props.dispatch(updateChannel(this.props.match.params.id));
+            return;
         }
+        // Get the messages from the correct channel
+        if (prevProps.activeChannel !== this.props.activeChannel) {
+            console.log(prevProps.activeChannel, this.props.activeChannel)
+            this._isMounted && this.getMessages();
+            return;
+        }
+        // A new message has been added, scroll to bottom
         if (prevProps.messages.length !== this.props.messages.length) {
+            console.log("got a new message")
             let chatBox = document.getElementById("chat-window");
             if (chatBox) {
                 /* scroll to bottom */
@@ -69,6 +85,7 @@ class Chat extends Component {
         this.setState({ user });
     };
     getMessages = async () => {
+        console.log("getting messages");
         this.props.gun.get(this.props.activeChannel).open(thisChannel => {
             let {messages, ...channel} = thisChannel;
             if(messages === undefined) {
@@ -130,17 +147,17 @@ class Chat extends Component {
         // let { messages, channels } = this.props;
         let {user} = this.state;
 
-        let channel, messages;
+        let {channel, messages} = this.state;
 
-        if(this.props.user){
-            channel = this.props.channels.find(c => c.id === this.props.activeChannel);
-            messages = channel ? this.props.messages
-                .filter(m => m.channel === channel.id)
-                .sort((a, b) => a.createdAt > b.createdAt) : [];
-        } else {
-            channel = this.state.channel;
-            messages = this.state.messages;
-        }
+        // if(this.props.user){
+        //     channel = this.props.channels.find(c => c.id === this.props.activeChannel);
+        //     messages = channel ? this.props.messages
+        //         .filter(m => m.channel === channel.id)
+        //         .sort((a, b) => a.createdAt > b.createdAt) : [];
+        // } else {
+        //     channel = this.state.channel;
+        //     messages = this.state.messages;
+        // }
         if (channel) {
 
             return (

@@ -17,7 +17,7 @@ light-alt: #0cb1ff50 (accent when transparent)
 html,
 body {
     height: 100%;
-    overflow: hidden;
+    /*overflow: hidden;*/
 }
 
 /*#root {

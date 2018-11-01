@@ -30,19 +30,24 @@ export function updateRevision(revision) {
 export function circlesSync(obj) {
     return async (dispatch, getState) => {
         let {
-            stateReducers: { circles: items }
+            stateReducers: { circles: items, activeCircle }
         } = getState();
 
         if (obj.list) {
             // initial only!
-            items = obj.list.filter(c => c.ignore === undefined || c.ignore !== true);
+            items = obj.list.filter(
+                c => c.ignore === undefined || c.ignore !== true
+            );
             dispatch({ type: "SYNC_CIRCLES", circles: items });
         }
         if (obj.node) {
-            if(obj.node.ignore === true){
+            if (obj.node.ignore === true) {
                 items = items.filter(i => i.id !== obj.node.id);
                 dispatch({ type: "SYNC_CIRCLES", circles: items });
-                dispatch({ type: "UPDATE_CIRCLE", circle: null });
+                // If we're in the newly ignored circle, unset the circle
+                if (activeCircle === obj.node.id) {
+                    dispatch({ type: "UPDATE_CIRCLE", circle: null });
+                }
             }
             // This has periodically fucked me, I don't know why it previously was necessary and is now not important
             // Keep an eye on this
@@ -52,7 +57,7 @@ export function circlesSync(obj) {
         }
     };
 }
-export function syncDM(obj){
+export function syncDM(obj) {
     return async (dispatch, getState) => {
         let {
             stateReducers: { dms: items }
@@ -186,32 +191,35 @@ export function setVotes(votes) {
         dispatch({ type: "SYNC_VOTES", votes });
     };
 }
-export function setDMMessages(dmsgs){
+export function setDMMessages(dmsgs) {
     return async dispatch => {
         dispatch({ type: "SYNC_DMMESSAGES", dmsgs });
     };
 }
-export function addDMMessages(dmsgs){
+export function addDMMessages(dmsgs) {
     return async dispatch => {
         dispatch({ type: "ADD_DMMESSAGES", dmsgs });
     };
 }
 
 /* in this case and this case only, DM Messages is an object of arrays with channel name as the key and the channel's message array as the values */
-export function syncDMMessages(obj){
+export function syncDMMessages(obj) {
     return async (dispatch, getState) => {
         let {
             stateReducers: { dmsgs: items }
         } = getState();
 
-            if (obj.list) {
-                items = obj.list;
-                dispatch({ type: "SYNC_DMMESSAGES", dmsgs: items });
+        if (obj.list) {
+            items = obj.list;
+            dispatch({ type: "SYNC_DMMESSAGES", dmsgs: items });
+        }
+        if (obj.node) {
+            if (items.findIndex(i => i.id === obj.node.id) === -1) {
+                dispatch({
+                    type: "SYNC_DMMESSAGES",
+                    dmsgs: [...items, obj.node]
+                });
             }
-            if (obj.node) {
-                if(items.findIndex(i => i.id === obj.node.id) === -1){
-                    dispatch({ type: "SYNC_DMMESSAGES", dmsgs: [...items, obj.node] });
-                }
-            }
+        }
     };
 }
