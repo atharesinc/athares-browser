@@ -22,7 +22,6 @@ class Chat extends Component {
         this._isMounted = false;
     }
     componentDidMount() {
-        console.log("mounted!")
         this._isMounted = true;
         
         if(this.props.user !== null){
@@ -45,7 +44,6 @@ class Chat extends Component {
         }
     }
     componentDidUpdate(prevProps) {
-        console.log("updated!")
         // something fucky here
         // if current url doesn't match internal state, update state to match url
         if(this.props.match.params.id !== this.props.activeChannel){
@@ -54,13 +52,12 @@ class Chat extends Component {
         }
         // Get the messages from the correct channel
         if (prevProps.activeChannel !== this.props.activeChannel) {
-            console.log(prevProps.activeChannel, this.props.activeChannel)
             this._isMounted && this.getMessages();
             return;
         }
         // A new message has been added, scroll to bottom
         if (prevProps.messages.length !== this.props.messages.length) {
-            console.log("got a new message")
+            this._isMounted && this.getMessages();
             let chatBox = document.getElementById("chat-window");
             if (chatBox) {
                 /* scroll to bottom */
@@ -71,6 +68,8 @@ class Chat extends Component {
     };
     componentWillUnmount(){
         this._isMounted = false;
+        // unslurbsnib from this channel
+        this.props.gun.get(this.props.activeChannel).off();
     }
     getUser = async () => {
         let user = null;
@@ -85,7 +84,6 @@ class Chat extends Component {
         this.setState({ user });
     };
     getMessages = async () => {
-        console.log("getting messages");
         this.props.gun.get(this.props.activeChannel).open(thisChannel => {
             let {messages, ...channel} = thisChannel;
             if(messages === undefined) {
@@ -93,7 +91,7 @@ class Chat extends Component {
             }
             this.setState({
                 channel, 
-                messages: Object.values(messages)
+                messages: Object.values(messages).filter(m => m.id)
             })
         });
     }

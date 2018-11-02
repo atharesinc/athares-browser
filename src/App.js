@@ -75,12 +75,13 @@ class App extends PureComponent {
 
         this.worker.addEventListener("message", event => {
         // update redux
-            this.props.dispatch(sync.circlesSync(event.data.circles));
-            this.props.dispatch(sync.setMessages(event.data.messages));
-            this.props.dispatch(sync.setChannels(event.data.channels));
-            this.props.dispatch(sync.setAmendments(event.data.amendments));
-            this.props.dispatch(sync.setRevisions(event.data.revisions));
-            this.props.dispatch(sync.setVotes(event.data.votes));
+        let {messages, channels, amendments, revisions, votes, circles} = event.data;
+            this.props.dispatch(sync.circlesSync(circles));
+            messages.length !== 0 && this.props.dispatch(sync.setMessages(messages));
+            channels.length !== 0 && this.props.dispatch(sync.setChannels(channels));
+            amendments.length !== 0 && this.props.dispatch(sync.setAmendments(amendments));
+            revisions.length !== 0 && this.props.dispatch(sync.setRevisions(revisions));
+            votes.length !== 0 && this.props.dispatch(sync.setVotes(votes));
             this.getNext();
         });
 
