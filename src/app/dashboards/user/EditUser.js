@@ -24,7 +24,8 @@ class EditUser extends Component {
             uname: "",
             phoneTaken: false,
             unameTaken: false,
-            loading: true
+            loading: true,
+            editMode: false
         };
     }
     componentDidMount() {
@@ -36,7 +37,12 @@ class EditUser extends Component {
             loading: false
         });
     }
-
+editMode = (bool) => {
+        console.log(bool)
+        this.setState({
+            editMode: bool
+        });
+    };
     changeImage = imageUrl => {
         this.setState({
             icon: imageUrl
@@ -75,6 +81,9 @@ class EditUser extends Component {
     };
     onSubmit = async e => {
         e.preventDefault();
+        if(this.state.editMode){
+            return false;
+        }
         await this.setState({ loading: true });
 
         // validate user data
@@ -199,6 +208,7 @@ class EditUser extends Component {
                                 <ImageUpload
                                     onSet={this.changeImage}
                                     defaultImage={this.state.icon}
+                                    editMode={this.editMode}
                                 />
                                 <small
                                     id="name-desc"
@@ -365,13 +375,13 @@ class EditUser extends Component {
                             </div>
                         </article>
 
-                        <button
-                            id="create-circle-button"
-                            className="btn"
-                            type="submit"
-                        >
-                            SAVE
-                        </button>
+                        {!this.state.editMode && <button
+                                                    id="create-circle-button"
+                                                    className="btn"
+                                                    type="submit"
+                                                >
+                                                    SAVE
+                                                </button>}
                     </form>
                 </Scrollbars>
             </div>

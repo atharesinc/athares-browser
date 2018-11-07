@@ -139,16 +139,19 @@ Each version outlines features that the platform must have to meet this version
 
 #### 0.3.6 (5 minute fixes)
 
--   Mobile Ellipsis on channel should do something (???)
--   Correct scrolling on constitution
+-   Mobile Ellipsis on channel should do something (???) or be hidden
 -   Remove user from circle after leaving circle
+-   Make sure channel and revision are not both active
+-   Find all the places where we're getting users from the circle and then fitler out those who are null (might be tricky)
 
 #### 0.4.0 (Essential Nice-to-haves)
 
--   Emoji support
+-   Emoji conversion support
 -   Support images and links in messages
 -   DM permission issue/not loading the messages correctly?
 -   Remove User from DM
+-   Realtime countdown on View Revision 
+-   React Virtualize chat messages
 
 #### 0.8.0
 
@@ -162,9 +165,6 @@ Each version outlines features that the platform must have to meet this version
     -   Request to be added to homescreen
     -   Push notifictions?
         -   Is this even possible
-    -   Inputs don't work on android?
-        -   Possibly due to screen resizing?
-        -   This might work now
 
 #### 0.9.0
 

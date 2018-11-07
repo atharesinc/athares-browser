@@ -274,7 +274,8 @@ input[type="phone"],
 }
 
 .amendment-title {
-    width: 100%
+    width: 100%;
+    font-weight: bold;
 }
 
 .amendment-text {
@@ -1414,7 +1415,7 @@ a:visited {
         padding: 0 1em;
     }
     #revision-stats{
-        height: "-webkit-fill-available";
+        height: -webkit-fill-available;
     }
     .splash > div {
         overflow-x: hidden !important;

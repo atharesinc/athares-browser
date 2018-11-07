@@ -7,7 +7,7 @@ import ToggleDiffBar from "./ToggleDiffBar";
 import DiffSection from "./DiffSection";
 import HasVoted from "./HasVoted";
 import { Scrollbars } from "react-custom-scrollbars";
-import { updateRevision, updateChannel } from "../../../store/state/actions";
+import { updateRevision, updateChannel, updateCircle } from "../../../store/state/actions";
 import Gun from "gun/gun";
 import Loader from "../../Loader.js";
 import moment from "moment";
@@ -32,7 +32,9 @@ class ViewRevision extends Component {
         if (this.props.activeRevision && this.props.activeRevision === this.props.match.params.id) {
             this.getRevision();
         } else {
+            console.log(this.props)
             this.props.dispatch(updateRevision(this.props.match.params.id));
+            this.props.dispatch(updateCircle(this.props.match.url.match(/circle\/(CI.+)\/rev/)[1]))
             this.props.dispatch(updateChannel(null));
         }
     }

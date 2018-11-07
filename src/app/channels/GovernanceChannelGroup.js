@@ -35,7 +35,7 @@ import {withRouter} from "react-router-dom";
         className={`channel-group-label gov ${newsActive ? "active-bg" : ""}`}
         style={{ borderBottom: "none" }}
         >
-        News
+        <span>News</span> <span className="bg-theme-light br-pill pv1 ph2">Coming Soon</span>
         </Link>
         </div>
         );

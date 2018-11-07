@@ -51,6 +51,9 @@ class CreateChannel extends Component {
 					.get(activeCircle.id)
 					.put({ ignore: true });
 
+					// remove the user from this circle (node wise)
+					gunRef.get(activeCircle.id).get("users").get(gunRef.user(this.props.pub))
+
 				swal(
 					"Removed From Circle",
 					`You have willfully left ${

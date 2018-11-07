@@ -4,14 +4,15 @@ import Footer from '../Footer';
 import { Scrollbars } from 'react-custom-scrollbars';
 
 class Roadmap extends React.Component {
-  state = {
-    top: 0
-  };
-  handleUpdate = ({ scrollTop }) => {
-    if (scrollTop !== this.state.top) {
-      this.setState({ top: scrollTop });
-    }
-  };
+      state = {
+        scrolled: false,
+        top: 0
+    };
+    handleUpdate = ({ scrollTop }) => {
+      if(this.state.top !== scrollTop){
+        this.setState({ scrolled: scrollTop > 100, top: scrollTop });
+      }
+    };
   render() {
     return (
       <Scrollbars
@@ -23,7 +24,7 @@ class Roadmap extends React.Component {
         autoHideDuration={200}
         universal={true}>
         <div id="roadmap-wrapper" className="splash grey-screen">
-          <Navbar top={this.state.top} />
+          <Navbar {...this.state} top={this.state.top} />
           <div className="ph3 ph5-ns pt6 sans-serif white">
             <div className="center mw9">
               <h3 className="f5 fw6 ttu tracke">Athares Distributed Democracy Platform</h3>
@@ -59,7 +60,7 @@ class Roadmap extends React.Component {
 
           <div className="pt5 white">
             {stages.map((stage, i) =>
-              <article className="cf ph3 ph5-ns" key={i}>
+              <article className="cf ph3 ph5-ns" key={stage.product}>
                 <header className="fn fl-ns w-50-ns pr4-ns">
                   <h1 className="mb3 mt0 lh-title">{stage.product}</h1>
                   <time className="f6 ttu tracked gray-70">{stage.desc}</time>
@@ -72,7 +73,7 @@ class Roadmap extends React.Component {
                   <div className="lh-copy measure mt4 mt0-ns timeline-point">
                     <ul className="list pl0 measure center">
                       {stage.objectives.map(o =>
-                        <li className="lh-copy pv3 ba bl-0 bt-0 br-0 b--dotted b--white-50">{o}</li>
+                        <li className="lh-copy pv3 ba bl-0 bt-0 br-0 b--dotted b--white-50" key={o}>{o}</li>
 
                       )}
                     </ul>

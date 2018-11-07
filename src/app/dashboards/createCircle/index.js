@@ -23,7 +23,8 @@ class createCircleBoard extends Component {
             name: "",
             preamble: "",
             isTaken: false,
-            loading: false
+            loading: false,
+            editMode: false
         };
     }
     componentDidMount() {
@@ -49,6 +50,12 @@ class createCircleBoard extends Component {
             icon: imageUrl
         });
     };
+    editMode = (bool) => {
+        console.log(bool)
+        this.setState({
+            editMode: bool
+        });
+    }
     updateName = e => {
         this.setState({
             name: e.target.value.substring(0, 51),
@@ -71,6 +78,9 @@ class createCircleBoard extends Component {
     };
     onSubmit = async e => {
         e.preventDefault();
+        if(this.state.editMode){
+            return false;
+        }
         let { name, preamble } = this.state;
 
         let base64Large = this.state.icon;
@@ -205,6 +215,7 @@ class createCircleBoard extends Component {
                                 <ImageUpload
                                     onSet={this.changeImage}
                                     defaultImage={this.state.icon}
+                                    editMode={this.editMode}
                                 />
                             </header>
                             <div className="fn fl-ns w-50-ns mt4">
@@ -280,13 +291,14 @@ class createCircleBoard extends Component {
                             selected image. After this point, all changes must
                             be made through the democratic revision process.
                         </div>
-                        <button
-                            id="create-circle-button"
-                            className="btn mt4"
-                            type="submit"
-                        >
-                            Create Circle
-                        </button>
+                        {!this.state.editMode &&
+                         <button
+                                                    id="create-circle-button"
+                                                    className="btn mt4"
+                                                    type="submit"
+                                                >
+                                                    Create Circle
+                                                </button>}
                     </Scrollbars>
                 </form>
             </div>

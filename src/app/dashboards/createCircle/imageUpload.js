@@ -5,6 +5,7 @@ import Loader from "../../Loader";
 import Slider from "rc-slider/lib/Slider";
 import "rc-slider/assets/index.css";
 import EXIF from "exif-js";
+import swal from "sweetalert";
 
 export default class ImageUpload extends React.Component {
   constructor(props) {
@@ -26,14 +27,17 @@ export default class ImageUpload extends React.Component {
   }
   componentDidUpdate() {
     // if (this.state.editMode) {
-    // 	console.log(document.getElementById("create-circle-editor"));
-    // 	this.draw();
+    //  console.log(document.getElementById("create-circle-editor"));
+    //  this.draw();
     // }
   }
   handleDrop = dropped => {
     this.setState({ image: dropped[0] });
   };
   toggleEdit = () => {
+    if(this.props.editMode){
+      this.props.editMode(!this.state.editMode);
+    }
     this.setState({ editMode: !this.state.editMode });
   };
   rotate = (angle = 90) => {};
@@ -71,8 +75,30 @@ export default class ImageUpload extends React.Component {
     }
     return new Blob([new Uint8Array(array)], { type: "image/jpg" });
   };
+  isValidFile = fileType => {
+    console.log(fileType);
+    const type = /\/(.+)$/.exec(fileType)[1];
+
+    const switcher = {
+      jpeg: true,
+      png: true,
+      gif: true
+    };
+
+    return switcher[type] === true;
+  };
+
   onChange = () => {
     let file = document.getElementById("imgFile").files[0];
+    if (!this.isValidFile(file.type)) {
+      swal(
+        "Error",
+        "Please use a valid file type such as .jpeg or .png",
+        "error"
+      );
+      return false;
+    }
+
     let reader = new FileReader();
     reader.readAsDataURL(file);
     this.setState({ loading: true });
@@ -123,14 +149,14 @@ export default class ImageUpload extends React.Component {
             className="row-center"
           >
             {/*<img
-													src={this.state.finalImage}
-													style={{
-														height: "100%"
-														// width: "100%"
-													}}
-													alt="icon"
-													crossOrigin="Anonymous"
-												/> */}
+                          src={this.state.finalImage}
+                          style={{
+                            height: "100%"
+                            // width: "100%"
+                          }}
+                          alt="icon"
+                          crossOrigin="Anonymous"
+                        /> */}
             <div
               style={{
                 background: `url(${this.state.finalImage}) center no-repeat`,
@@ -208,25 +234,34 @@ export default class ImageUpload extends React.Component {
           style={{ width: this.state.width }}
         />
         {/*<div
-									className="flex flex-row space-around"
-									style={{ width: this.state.width }}
-								>
-									<FeatherIcon
-										icon="rotate-ccw"
-										className="ghost w-50"
-										onClick={this.rotate(-90)}
-									/>
-									<FeatherIcon
-										icon="rotate-cw"
-										className="ghost w-50"
-										onClick={this.rotate(90)}
-									/>
-								</div>*/}
-        <input type="file" name="file" id="imgFile" onChange={this.onChange} />
+                  className="flex flex-row space-around"
+                  style={{ width: this.state.width }}
+                >
+                  <FeatherIcon
+                    icon="rotate-ccw"
+                    className="ghost w-50"
+                    onClick={this.rotate(-90)}
+                  />
+                  <FeatherIcon
+                    icon="rotate-cw"
+                    className="ghost w-50"
+                    onClick={this.rotate(90)}
+                  />
+                </div>*/}
+        <input
+          type="file"
+          name="file"
+          id="imgFile"
+          accept=".jpeg,.jpg,.png,.gif"
+          onChange={this.onChange}
+        />
         <div className="horizontal">
-          <div className="btn mv2 tc" style={{ width: this.state.width / 2 }}>
-            <label htmlFor="imgFile">New</label>
-          </div>
+          <label htmlFor="imgFile">
+            <div className="btn mv2 tc" style={{ width: this.state.width / 2 }}>
+              New
+            </div>
+          </label>
+
           <div
             className="btn mv2 tc"
             style={{ width: this.state.width / 2 }}

@@ -7,7 +7,7 @@ import { Scrollbars } from "react-custom-scrollbars";
 import { connect } from "react-redux";
 import { withGun } from "react-gun";
 import { pull } from "../../../store/state/reducers";
-import { updateCircle, updateChannel } from "../../../store/state/actions";
+import { updateCircle, updateChannel, updateRevision } from "../../../store/state/actions";
 import FeatherIcon from "feather-icons-react";
 
 class Constitution extends PureComponent {
@@ -31,11 +31,11 @@ class Constitution extends PureComponent {
             //     // don't bother updating state
             // }
         } else {
-            let circleID = this.props.location.pathname.match(
-                /circle\/(CI.+)\/co/
-            )[1];
+            let circleID = this.props.location.pathname.match(/circle\/(CI.+)\/co/ )[1];
             this.props.dispatch(updateCircle(circleID));
             this.props.dispatch(updateChannel(null));
+            this.props.dispatch(updateRevision(null));
+
         }
     }
     getAmendments = () => {
@@ -86,7 +86,7 @@ class Constitution extends PureComponent {
         if (circle) {
             return (
                 <div id="docs-wrapper">
-                <div className="flex db-ns ph2 mobile-nav">
+                <div className="flex justify-between items-center ph2 mobile-nav">
                     <Link
                         to="/app"
                         className="flex justify-center items-center"

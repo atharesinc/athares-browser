@@ -9,13 +9,14 @@ import FAQ from "./FAQ";
 import { Scrollbars } from "react-custom-scrollbars";
 
 class About extends React.Component {
-    state = {
+        state = {
+        scrolled: false,
         top: 0
     };
     handleUpdate = ({ scrollTop }) => {
-        if (scrollTop !== this.state.top) {
-            this.setState({ top: scrollTop });
-        }
+      if(this.state.top !== scrollTop){
+        this.setState({ scrolled: scrollTop > 100, top: scrollTop });
+      }
     };
     render() {
         return (
@@ -33,7 +34,7 @@ class About extends React.Component {
                         <source src="./img/earth.mp4" type="video/mp4" />
                     </video>
 
-                    <Navbar {...this.props} top={this.state.top} />
+                    <Navbar {...this.state} top={this.state.top} />
                     <header className="bg-black-50 sans-serif">
                         <div className="mw9 center pa4 pt6">
                             <time className="f6 mb2 dib ttu tracked">
