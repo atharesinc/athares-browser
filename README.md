@@ -27,8 +27,7 @@ At this time there are no additional requirements to develop on athares-browser
 -   [Tachyons](http://tachyons.io/) - For better and more beautiful UIs
 -   [gunDB](https://github.com/amark/gun) - Realtime Distributed Graph database
 -   [Tachyons](http://tachyons.io/) - For better and beautiful markup
--   [Feather Icons](https://feathericons.com/) Beautiful SVG Icons
--   [feather-icons-react](https://github.com/ianmiller347/feather-icons-react) For stellar react bindings
+-   [feather-icons-react](https://github.com/ianmiller347/feather-icons-react) For stellar Feather Icon React bindings
 -   [GreenSock](https://greensock.com/gsap) The best animation library in the galaxy
 -   [react-dropzone](https://react-dropzone.js.org/) React Drag & Drop File Input
 -   [react-stylable-diff](https://github.com/davidmason/react-stylable-diff) Performant text diff
@@ -86,6 +85,7 @@ Each version outlines features that the platform must have to meet this version
 -   User edits and view other users work
 
 #### 0.0.4 - COMPLETE
+
 -   Encrypted Group Messages (limit group size)
 -   Live updates for group messages
 -   Add user to circle
@@ -95,6 +95,7 @@ Each version outlines features that the platform must have to meet this version
 -   Governance channels should be lit up when selected
 
 #### 0.0.5 - COMPLETE
+
 -   Remove User from Circle
 
 #### 0.0.6 - IN PROGRESS
@@ -115,8 +116,6 @@ Each version outlines features that the platform must have to meet this version
 
 -   Sign up for newsleter
     -   MailChimp
--   404 page look good
-    -   onHover links
 
 #### 0.1.2
 
@@ -139,10 +138,8 @@ Each version outlines features that the platform must have to meet this version
 
 #### 0.3.6 (5 minute fixes)
 
--   Mobile Ellipsis on channel should do something (???) or be hidden
--   Remove user from circle after leaving circle
 -   Make sure channel and revision are not both active
--   Find all the places where we're getting users from the circle and then fitler out those who are null (might be tricky)
+-   Find all the places where we're getting users from the circle and then filter out those who are null (might be tricky)
 
 #### 0.4.0 (Essential Nice-to-haves)
 
@@ -150,7 +147,7 @@ Each version outlines features that the platform must have to meet this version
 -   Support images and links in messages
 -   DM permission issue/not loading the messages correctly?
 -   Remove User from DM
--   Realtime countdown on View Revision 
+-   Realtime countdown on View Revision
 -   React Virtualize chat messages
 
 #### 0.8.0

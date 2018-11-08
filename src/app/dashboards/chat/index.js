@@ -1,18 +1,18 @@
-import React, { Component } from "react";
-import ChatWindow from "./ChatWindow";
-import ChatInput from "./ChatInput";
-import Loader from "../../Loader";
-import FeatherIcon from "feather-icons-react";
-import { Link } from "react-router-dom";
-import { pull } from "../../../store/state/reducers";
-import { updateChannel, updateRevision } from "../../../store/state/actions";
-import { connect } from "react-redux";
-import { withGun } from "react-gun";
-import Gun from "gun/gun";
-import moment from "moment";
+import React, { Component } from 'react';
+import ChatWindow from './ChatWindow';
+import ChatInput from './ChatInput';
+import Loader from '../../Loader';
+import FeatherIcon from 'feather-icons-react';
+import { Link } from 'react-router-dom';
+import { pull } from '../../../store/state/reducers';
+import { updateChannel, updateRevision } from '../../../store/state/actions';
+import { connect } from 'react-redux';
+import { withGun } from 'react-gun';
+import Gun from 'gun/gun';
+import moment from 'moment';
 
 class Chat extends Component {
-    constructor(){
+    constructor() {
         super();
         this.state = {
             messages: [],
@@ -23,12 +23,12 @@ class Chat extends Component {
     }
     componentDidMount() {
         this._isMounted = true;
-        
-        if(this.props.user !== null){
+
+        if (this.props.user !== null) {
             this._isMounted && this.getUser();
         }
 
-        if(this.props.activeChannel){
+        if (this.props.activeChannel) {
             this._isMounted && this.getMessages();
         } else {
             this.props.dispatch(updateChannel(this.props.match.params.id));
@@ -37,7 +37,7 @@ class Chat extends Component {
         }
 
         /* scroll to bottom */
-        let chatBox = document.getElementById("chat-window");
+        let chatBox = document.getElementById('chat-window');
         if (chatBox) {
             chatBox = chatBox.firstElementChild.firstElementChild;
             chatBox.scrollTop = chatBox.scrollHeight;
@@ -46,7 +46,7 @@ class Chat extends Component {
     componentDidUpdate(prevProps) {
         // something fucky here
         // if current url doesn't match internal state, update state to match url
-        if(this.props.match.params.id !== this.props.activeChannel){
+        if (this.props.match.params.id !== this.props.activeChannel) {
             this.props.dispatch(updateChannel(this.props.match.params.id));
             return;
         }
@@ -58,15 +58,15 @@ class Chat extends Component {
         // A new message has been added, scroll to bottom
         if (prevProps.messages.length !== this.props.messages.length) {
             this._isMounted && this.getMessages();
-            let chatBox = document.getElementById("chat-window");
+            let chatBox = document.getElementById('chat-window');
             if (chatBox) {
                 /* scroll to bottom */
                 chatBox = chatBox.firstElementChild.firstElementChild;
                 chatBox.scrollTop = chatBox.scrollHeight;
             }
         }
-    };
-    componentWillUnmount(){
+    }
+    componentWillUnmount() {
         this._isMounted = false;
         // unslurbsnib from this channel
         this.props.gun.get(this.props.activeChannel).off();
@@ -77,7 +77,7 @@ class Chat extends Component {
         let userRef = this.props.gun.user();
 
         if (this.props.user) {
-            userRef.get("profile").once(userInfo => {
+            userRef.get('profile').once(userInfo => {
                 user = userInfo;
             });
         }
@@ -85,24 +85,24 @@ class Chat extends Component {
     };
     getMessages = async () => {
         this.props.gun.get(this.props.activeChannel).open(thisChannel => {
-            let {messages, ...channel} = thisChannel;
-            if(messages === undefined) {
-                messages = []
+            let { messages, ...channel } = thisChannel;
+            if (messages === undefined) {
+                messages = [];
             }
             this.setState({
-                channel, 
+                channel,
                 messages: Object.values(messages).filter(m => m.id)
-            })
+            });
         });
-    }
+    };
     updateChannel = () => {
         this.props.dispatch(updateChannel(null));
     };
     submit = async text => {
-        let chatInput = document.getElementById("chat-input");
+        let chatInput = document.getElementById('chat-input');
 
         let newMessage = {
-            id: "MS" + Gun.text.random(),
+            id: 'MS' + Gun.text.random(),
             text: text.trim(),
             user: this.state.user,
             channel: this.props.activeChannel,
@@ -116,10 +116,10 @@ class Chat extends Component {
         let message = gunRef.get(newMessage.id);
         message.put(newMessage);
 
-        gunRef.get("messages").set(message);
+        gunRef.get('messages').set(message);
         gunRef
             .get(this.props.activeChannel)
-            .get("messages")
+            .get('messages')
             .set(message);
 
         // and the reference in this user
@@ -132,20 +132,20 @@ class Chat extends Component {
         //     .set(message);
 
         /* clear textbox */
-        chatInput.value = "";
-        chatInput.setAttribute("rows", 1);
+        chatInput.value = '';
+        chatInput.setAttribute('rows', 1);
 
         /* scroll to bottom */
-        let chatBox = document.getElementById("chat-window").firstElementChild
+        let chatBox = document.getElementById('chat-window').firstElementChild
             .firstElementChild;
         chatBox.scrollTop = chatBox.scrollHeight;
     };
     render() {
         // let { user, messages, channel } = this.state;
         // let { messages, channels } = this.props;
-        let {user} = this.state;
+        let { user } = this.state;
 
-        let {channel, messages} = this.state;
+        let { channel, messages } = this.state;
 
         // if(this.props.user){
         //     channel = this.props.channels.find(c => c.id === this.props.activeChannel);
@@ -157,23 +157,26 @@ class Chat extends Component {
         //     messages = this.state.messages;
         // }
         if (channel) {
-
             return (
-                <div id="chat-wrapper">
-                    <div id="current-channel">
-                        <Link to="/app">
+                <div id='chat-wrapper'>
+                    <div id='current-channel'>
+                        <Link to='/app'>
                             <FeatherIcon
-                                icon="chevron-left"
-                                className="white db dn-ns"
+                                icon='chevron-left'
+                                className='white db dn-ns'
                                 onClick={this.updateChannel}
                             />
                         </Link>
                         <div>{channel.name}</div>
-                        <div className="f6 dn db-ns" style={{background: "none",color: "#FFFFFF80"}}>{channel.description}</div>
-                        <FeatherIcon
+                        <div
+                            className='f6 dn db-ns'
+                            style={{ background: 'none', color: '#FFFFFF80' }}>
+                            {channel.description}
+                        </div>
+                        {/* <FeatherIcon
                             icon="more-vertical"
                             className="white db dn-ns"
-                        />
+                        /> */}
                     </div>
                     <ChatWindow messages={messages} user={user} />
                     {user && <ChatInput submit={this.submit} />}
@@ -181,9 +184,9 @@ class Chat extends Component {
             );
         } else {
             return (
-                <div id="chat-wrapper" style={{ justifyContent: "center" }}>
+                <div id='chat-wrapper' style={{ justifyContent: 'center' }}>
                     <Loader />
-                    <h1 className="mb3 mt0 lh-title mt4 f3 f2-ns">
+                    <h1 className='mb3 mt0 lh-title mt4 f3 f2-ns'>
                         Getting Messages
                     </h1>
                 </div>
@@ -194,11 +197,11 @@ class Chat extends Component {
 
 function mapStateToProps(state) {
     return {
-        user: pull(state, "user"),
-        activeChannel: pull(state, "activeChannel"),
-        activeCircle: pull(state, "activeCircle"),
-        messages: pull(state, "messages"),
-        channels: pull(state, "channels")
+        user: pull(state, 'user'),
+        activeChannel: pull(state, 'activeChannel'),
+        activeCircle: pull(state, 'activeCircle'),
+        messages: pull(state, 'messages'),
+        channels: pull(state, 'channels')
     };
 }
 
