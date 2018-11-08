@@ -179,7 +179,7 @@ class Chat extends Component {
                         /> */}
                     </div>
                     <ChatWindow messages={messages} user={user} />
-                    {user && <ChatInput submit={this.submit} />}
+                    {this.props.user && <ChatInput submit={this.submit} />}
                 </div>
             );
         } else {
