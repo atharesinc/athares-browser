@@ -147,6 +147,13 @@ class Login extends Component {
                         {' '}
                         <div className='switch-portal'>I want to register</div>
                     </Link>
+                    <Link to='policy'>
+                        <div className='white-70 dim ph4 pv2 f6'>
+                            {' '}
+                            By logging in you acknowledge that you agree to the
+                            Terms of Use and have read the Privacy Policy.
+                        </div>
+                    </Link>
                 </form>
             </Fragment>
         );

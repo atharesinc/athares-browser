@@ -1,24 +1,24 @@
-import React, { Component } from "react";
-import ErrorSwap from "../../../utils/ErrorSwap";
-import Loader from "../../Loader";
-import { withRouter, Link } from "react-router-dom";
-import { Scrollbars } from "react-custom-scrollbars";
-import { connect } from "react-redux";
-import { withGun } from "react-gun";
-import { pull } from "../../../store/state/reducers";
-import { updateRevision } from "../../../store/state/actions";
-import FeatherIcon from "feather-icons-react";
+import React, { Component } from 'react';
+import ErrorSwap from '../../../utils/ErrorSwap';
+import Loader from '../../Loader';
+import { withRouter, Link } from 'react-router-dom';
+import { Scrollbars } from 'react-custom-scrollbars';
+import { connect } from 'react-redux';
+import { withGun } from 'react-gun';
+import { pull } from '../../../store/state/reducers';
+import { updateRevision } from '../../../store/state/actions';
+import FeatherIcon from 'feather-icons-react';
 
-import Gun from "gun/gun";
-import moment from "moment";
+import Gun from 'gun/gun';
+import moment from 'moment';
 
 class CreateAmendment extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            name: "",
-            amendment: "",
+            name: '',
+            amendment: '',
             isTaken: false,
             loading: false
         };
@@ -26,7 +26,7 @@ class CreateAmendment extends Component {
     componentDidMount() {
         // verify this circle is real and that the user is logged in, but for now...
         if (!this.props.user || !this.props.activeCircle) {
-            this.props.history.push("/app");
+            this.props.history.push('/app');
         }
     }
     updateName = e => {
@@ -53,11 +53,12 @@ class CreateAmendment extends Component {
         let circle = this.props.circles.find(
             c => c.id === this.props.activeCircle
         );
+        console.log(circle.users);
         let numUsers = circle.users.length;
 
-        user.get("profile").once(async profile => {
+        user.get('profile').once(async profile => {
             const newRevision = {
-                id: "RV" + Gun.text.random(),
+                id: 'RV' + Gun.text.random(),
                 circle: this.props.activeCircle,
                 backer: profile,
                 title: this.state.name,
@@ -65,13 +66,13 @@ class CreateAmendment extends Component {
                 createdAt: moment().format(),
                 updatedAt: moment().format(),
                 expires: moment()
-                    .add(Math.max(this.customSigm(numUsers), 61), "s")
+                    .add(Math.max(this.customSigm(numUsers), 61), 's')
                     .format(),
                 voterThreshold: Math.round(numUsers / 2)
             };
 
             const newVote = {
-                id: "VO" + Gun.text.random(),
+                id: 'VO' + Gun.text.random(),
                 circle: this.props.activeCircle,
                 revision: newRevision.id,
                 user: this.props.user,
@@ -89,17 +90,17 @@ class CreateAmendment extends Component {
             // set this node as a revision in the parent circle
             gunRef
                 .get(this.props.activeCircle)
-                .get("revisions")
+                .get('revisions')
                 .set(revision);
 
             gunRef
                 .get(newRevision.id)
-                .get("votes")
+                .get('votes')
                 .set(vote);
 
             //add it to ambiguous "list" of revisions
-            gunRef.get("revisions").set(revision);
-            gunRef.get("votes").set(vote);
+            gunRef.get('revisions').set(revision);
+            gunRef.get('votes').set(vote);
 
             // // set it to this user's reference of the circle ??
             // let user = this.props.gun.user();
@@ -116,8 +117,8 @@ class CreateAmendment extends Component {
             //     .get("votes")
             //     .set(vote);
 
-            // user.get("revisions").set(revision);
-            // user.get("votes").set(vote);
+            user.get('revisions').set(revision);
+            user.get('votes').set(vote);
             this.props.dispatch(updateRevision(newRevision.id));
 
             this.props.history.push(
@@ -139,47 +140,50 @@ class CreateAmendment extends Component {
 
         if (this.state.loading) {
             return (
-                <div id="dashboard-wrapper" className="column-center">
+                <div id='dashboard-wrapper' className='column-center'>
                     <Loader />
                 </div>
             );
         } else if (activeCircle) {
             return (
-                <div id="revisions-wrapper">
-                <div className="flex db-ns ph2">
-                    <Link to="/app" className="flex justify-center items-center">
-                        <FeatherIcon
-                            icon="chevron-left"
-                            className="white db dn-ns"
-                            onClick={this.back}
-                        />
-                    </Link>
-                    <h2 className="ma3 lh-title white"> Create Amendment </h2>
-                     </div>
+                <div id='revisions-wrapper'>
+                    <div className='flex db-ns ph2'>
+                        <Link
+                            to='/app'
+                            className='flex justify-center items-center'>
+                            <FeatherIcon
+                                icon='chevron-left'
+                                className='white db dn-ns'
+                                onClick={this.back}
+                            />
+                        </Link>
+                        <h2 className='ma3 lh-title white'>
+                            {' '}
+                            Create Amendment{' '}
+                        </h2>
+                    </div>
                     <form
-                        className="pa2 pa4-ns white wrapper"
+                        className='pa2 pa4-ns white wrapper'
                         onSubmit={this.onSubmit}
-                        id="create-circle-form"
-                    >
-                        <Scrollbars style={{ height: "100%", width: "100%" }}>
-                            <article className="cf">
-                                <time className="f7 ttu tracked white-80">
-                                    Draft a new piece of legislation for{" "}
+                        id='create-circle-form'>
+                        <Scrollbars style={{ height: '100%', width: '100%' }}>
+                            <article className='cf'>
+                                <time className='f7 ttu tracked white-80'>
+                                    Draft a new piece of legislation for{' '}
                                     {activeCircle.name}
                                 </time>
-                                <div className="fn mt4">
-                                    <div className="measure mb4">
+                                <div className='fn mt4'>
+                                    <div className='measure mb4'>
                                         <label
-                                            htmlFor="name"
-                                            className="f6 b db mb2"
-                                        >
+                                            htmlFor='name'
+                                            className='f6 b db mb2'>
                                             Name
                                         </label>
                                         <input
-                                            id="name"
-                                            className="input-reset ba pa2 mb2 db w-100 ghost"
-                                            type="text"
-                                            aria-describedby="name-desc"
+                                            id='name'
+                                            className='input-reset ba pa2 mb2 db w-100 ghost'
+                                            type='text'
+                                            aria-describedby='name-desc'
                                             required
                                             value={this.state.name}
                                             onChange={this.updateName}
@@ -188,38 +192,34 @@ class CreateAmendment extends Component {
                                             condition={!this.state.isTaken}
                                             normal={
                                                 <small
-                                                    id="name-desc"
-                                                    className="f6 white-80 db mb2"
-                                                >
+                                                    id='name-desc'
+                                                    className='f6 white-80 db mb2'>
                                                     Provide a name for your new
                                                     amendment.
                                                 </small>
                                             }
                                             error={
                                                 <small
-                                                    id="name-desc"
-                                                    className="f6 red db mb2"
-                                                >
+                                                    id='name-desc'
+                                                    className='f6 red db mb2'>
                                                     Amendment must have a name
                                                 </small>
                                             }
                                         />
                                     </div>
-                                    <div className="mv4">
+                                    <div className='mv4'>
                                         <label
-                                            htmlFor="comment"
-                                            className="f6 b db mb2"
-                                        >
+                                            htmlFor='comment'
+                                            className='f6 b db mb2'>
                                             Amendment
                                         </label>
                                         <Scrollbars
                                             style={{
-                                                maxHeight: "11.5rem",
-                                                width: "100%"
+                                                maxHeight: '11.5rem',
+                                                width: '100%'
                                             }}
                                             autoHeight
-                                            className="ghost"
-                                        >
+                                            className='ghost'>
                                             <div
                                                 contentEditable={true}
                                                 className={`f6 amendment-text editableText`}
@@ -232,9 +232,8 @@ class CreateAmendment extends Component {
                                             condition={!this.state.isTaken}
                                             normal={
                                                 <small
-                                                    id="comment-desc"
-                                                    className="f6 white-80"
-                                                >
+                                                    id='comment-desc'
+                                                    className='f6 white-80'>
                                                     Draft your amendment. What
                                                     do you want to add to your
                                                     government?
@@ -242,9 +241,8 @@ class CreateAmendment extends Component {
                                             }
                                             error={
                                                 <small
-                                                    id="name-desc"
-                                                    className="f6 red db mb2"
-                                                >
+                                                    id='name-desc'
+                                                    className='f6 red db mb2'>
                                                     You can't submit an empty
                                                     amendment.
                                                 </small>
@@ -253,7 +251,7 @@ class CreateAmendment extends Component {
                                     </div>
                                 </div>
                             </article>
-                            <div id="comment-desc" className="f6 white-80">
+                            <div id='comment-desc' className='f6 white-80'>
                                 Pressing "Draft Amendment" will create a new
                                 revision for this amendment. Drafts must first
                                 be ratified by a minimum electorate of Circle
@@ -263,10 +261,9 @@ class CreateAmendment extends Component {
                                 any point before ratification.
                             </div>
                             <button
-                                id="create-circle-button"
-                                className="btn mt4"
-                                type="submit"
-                            >
+                                id='create-circle-button'
+                                className='btn mt4'
+                                type='submit'>
                                 Draft Amendment
                             </button>
                         </Scrollbars>
@@ -276,13 +273,12 @@ class CreateAmendment extends Component {
         } else {
             return (
                 <div
-                    id="dashboard-wrapper"
+                    id='dashboard-wrapper'
                     style={{
-                        display: "flex",
-                        justifyContent: "center",
-                        alignItems: "center"
-                    }}
-                >
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center'
+                    }}>
                     <Loader />
                 </div>
             );
@@ -292,10 +288,10 @@ class CreateAmendment extends Component {
 
 function mapStateToProps(state) {
     return {
-        user: pull(state, "user"),
-        activeCircle: pull(state, "activeCircle"),
-        circles: pull(state, "circles"),
-        activeRevision: pull(state, "activeRevision")
+        user: pull(state, 'user'),
+        activeCircle: pull(state, 'activeCircle'),
+        circles: pull(state, 'circles'),
+        activeRevision: pull(state, 'activeRevision')
     };
 }
 export default withRouter(withGun(connect(mapStateToProps)(CreateAmendment)));

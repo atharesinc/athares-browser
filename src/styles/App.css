@@ -17,7 +17,7 @@ light-alt: #0cb1ff50 (accent when transparent)
 html,
 body {
     height: 100%;
-    /*overflow: hidden;*/
+    overflow: hidden;
 }
 
 /*#root {
@@ -42,9 +42,9 @@ body {
     padding: 0;
     /* font-family: -apple-system, BlinkMacSystemFont, avenir next, avenir,
     helvetica neue, helvetica, ubuntu, roboto, noto, segoe ui, arial, sans-serif; */
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto",
-        "Oxygen", "Ubuntu", "Cantarell", "Avenir", "Fira Sans", "Droid Sans",
-        "Helvetica Neue", sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto',
+        'Oxygen', 'Ubuntu', 'Cantarell', 'Avenir', 'Fira Sans', 'Droid Sans',
+        'Helvetica Neue', sans-serif;
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
     background: #222222;
@@ -54,9 +54,9 @@ body {
     align-items: center;
 }
 .sans-serif {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto",
-        "Oxygen", "Ubuntu", "Cantarell", "Avenir", "Fira Sans", "Droid Sans",
-        "Helvetica Neue", sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto',
+        'Oxygen', 'Ubuntu', 'Cantarell', 'Avenir', 'Fira Sans', 'Droid Sans',
+        'Helvetica Neue', sans-serif;
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
 }
@@ -74,15 +74,15 @@ body {
 a,
 input,
 button,
-input[type="submit"],
+input[type='submit'],
 textarea,
 input:active,
 button:active,
-input[type="submit"]:active,
+input[type='submit']:active,
 textarea:active,
 input:focus,
 button:focus,
-input[type="submit"]:focus,
+input[type='submit']:focus,
 textarea:focus,
 a:focus,
 a:active {
@@ -98,7 +98,7 @@ a:active {
 }
 input:focus,
 button:focus,
-input[type="submit"]:focus,
+input[type='submit']:focus,
 textarea:focus {
     box-shadow: 0 0 1em #0cb1ff;
 }
@@ -108,13 +108,13 @@ textarea:focus {
 button,
 textarea,
 input.text,
-input[type="text"],
-input[type="button"],
-input[type="submit"],
-input[type="search"],
-input[type="password"],
-input[type="email"],
-input[type="phone"],
+input[type='text'],
+input[type='button'],
+input[type='submit'],
+input[type='search'],
+input[type='password'],
+input[type='email'],
+input[type='phone'],
 .input-checkbox {
     -webkit-appearance: none;
     -webkit-border-radius: 0px;
@@ -157,7 +157,7 @@ input[type="phone"],
     width: 100vw;
     margin: 0;
     position: absolute;
-    content: " ";
+    content: ' ';
     top: 0;
     left: 0;
     background: url(/img/iss-master.jpg) center no-repeat;
@@ -289,7 +289,7 @@ input[type="phone"],
 
 .RichTextEditor__root___2QXK- {
     color: black;
-    font-family: "Lato", sans-serif !important;
+    font-family: 'Lato', sans-serif !important;
     z-index: 100;
     position: relative;
     border-radius: 0;
@@ -298,7 +298,7 @@ input[type="phone"],
 
 .EditorToolbar__root___3_Aqz {
     margin: 0;
-    font-family: "Lato", sans-serif;
+    font-family: 'Lato', sans-serif;
 }
 
 .Button__root___1gz0c {
@@ -321,7 +321,7 @@ input[type="phone"],
 /* markdown editor */
 
 .editMask::before {
-    content: " ";
+    content: ' ';
     position: fixed;
     height: 100vh;
     width: 100vw;
@@ -498,16 +498,16 @@ input[type="phone"],
 }
 
 .react-tags__suggestions li {
-    border: 1px solid #FFFFFF;
+    border: 1px solid #ffffff;
     padding: 0.5em;
     background: transparent;
-    color: #FFFFFF;
+    color: #ffffff;
 }
 
 .react-tags__suggestions li mark {
     background: none;
     font-weight: 600;
-    color: #EEEEEE;
+    color: #eeeeee;
 }
 
 .react-tags__suggestions li:hover mark,
@@ -543,7 +543,7 @@ input[type="phone"],
 }
 
 .react-tags__selected-tag:after {
-    content: "\2715";
+    content: '\2715';
     color: #00dffc;
     margin-left: 0.5em;
     cursor: pointer;
@@ -757,10 +757,10 @@ input[type="phone"],
     color: #ffffff;
 }
 #bottom-nav {
-        height: 10vh;
-        background: transparent;
-        border-top: 1px solid #FFFFFF80;
-    }
+    height: 10vh;
+    background: transparent;
+    border-top: 1px solid #ffffff80;
+}
 #circle-name {
     display: flex;
     flex-direction: row;
@@ -869,16 +869,16 @@ input[type="phone"],
 }
 
 #current-channel {
-     display: flex;
-        flex-direction: column;
-        justify-content: space-around;
-        align-items: flex-end;
-        height: calc(100vh / 10);
-        width: 100%;
-        padding: 0 1em;
-        background: #3a3e5299;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: flex-end;
+    height: calc(100vh / 10);
+    width: 100%;
+    padding: 0 1em;
+    background: #3a3e5299;
 }
-#current-channel  div:first-of-type {
+#current-channel div:first-of-type {
     height: 2em;
     display: flex;
     justify-content: center;
@@ -1013,7 +1013,7 @@ input[type="phone"],
 }
 
 .particles-bg::before {
-    content: "";
+    content: '';
     position: absolute;
     z-index: -1;
     background: url(/img/particle-trails.jpg) center no-repeat;
@@ -1090,7 +1090,7 @@ input[type="phone"],
 }
 
 .timeline-point::before {
-    content: "";
+    content: '';
     display: inline-block;
     width: 1.5em;
     height: 1.5em;
@@ -1314,7 +1314,7 @@ a:visited {
 .loader:before {
     background: url(/img/Athares-logo-small-white.png) center no-repeat;
     position: fixed;
-    content: "";
+    content: '';
 }
 
 .loader {
@@ -1392,8 +1392,8 @@ a:visited {
     .mobile-nav {
         height: 10vh;
         display: flex;
-/*        justify-content: flex-start;
-*/        
+        /*        justify-content: flex-start;
+*/
         justify-content: space-between;
         flex-direction: row;
         align-items: center;
@@ -1402,7 +1402,7 @@ a:visited {
         padding: 0;
         height: 80vh;
     }
-    .mobile-body{
+    .mobile-body {
         height: 90vh;
     }
     #current-channel {
@@ -1414,7 +1414,7 @@ a:visited {
         width: 100%;
         padding: 0 1em;
     }
-    #revision-stats{
+    #revision-stats {
         height: -webkit-fill-available;
     }
     .splash > div {
@@ -1474,7 +1474,7 @@ a:visited {
         transition: all ease 0.25s;
     }
     .active-circle-mobile {
-            border: 2px solid #00DFFC;
+        border: 2px solid #00dffc;
     }
     .circle-img-wrapper {
         width: 100vw;
@@ -1550,12 +1550,12 @@ a:visited {
         background-color: #ffffff75;
         transition: all ease 0.25s;
     }
-        #bottom-nav:active {
+    #bottom-nav:active {
         background: #2f324299;
         transition: all 0.2s ease;
     }
     .transparent-hover-white:active {
-        background: #FFFFFF90;
+        background: #ffffff90;
         transition: all 0.2s ease;
     }
     .transparent-hover-theme:active {
@@ -1563,7 +1563,7 @@ a:visited {
         transition: all 0.2s ease;
     }
     .transparent-hover-text:active {
-        color: #FFFFFF40;
+        color: #ffffff40;
         transition: all 0.2s ease;
     }
 }
@@ -1594,7 +1594,7 @@ a:visited {
         transition: all 0.2s ease;
     }
     .transparent-hover-white:hover {
-        background: #FFFFFF90;
+        background: #ffffff90;
         transition: all 0.2s ease;
     }
     .transparent-hover-theme:hover {
@@ -1602,7 +1602,7 @@ a:visited {
         transition: all 0.2s ease;
     }
     .transparent-hover-text:hover {
-        color: #FFFFFF40;
+        color: #ffffff40;
         transition: all 0.2s ease;
     }
     #portal-header {
@@ -1732,21 +1732,21 @@ a:visited {
 
 /* aniamtion */
 .fade-enter {
-  opacity: 0.01;
+    opacity: 0.01;
 }
 
 .fade-enter.fade-enter-active {
-  opacity: 1;
-  transition: opacity 500ms ease-in;
+    opacity: 1;
+    transition: opacity 500ms ease-in;
 }
 
 .fade-leave {
-  opacity: 1;
+    opacity: 1;
 }
 
 .fade-leave.fade-leave-active {
-  opacity: 0.01;
-  transition: opacity 300ms ease-in;
+    opacity: 0.01;
+    transition: opacity 300ms ease-in;
 }
 
 @-webkit-keyframes load8 {

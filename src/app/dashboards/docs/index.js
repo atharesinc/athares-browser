@@ -1,14 +1,18 @@
-import React, { PureComponent } from "react";
-import Amendment from "./Amendment";
-import DocsSearchBar from "./DocsSearchBar";
-import Loader from "../../Loader.js";
-import { Link } from "react-router-dom";
-import { Scrollbars } from "react-custom-scrollbars";
-import { connect } from "react-redux";
-import { withGun } from "react-gun";
-import { pull } from "../../../store/state/reducers";
-import { updateCircle, updateChannel, updateRevision } from "../../../store/state/actions";
-import FeatherIcon from "feather-icons-react";
+import React, { PureComponent } from 'react';
+import Amendment from './Amendment';
+import DocsSearchBar from './DocsSearchBar';
+import Loader from '../../Loader.js';
+import { Link } from 'react-router-dom';
+import { Scrollbars } from 'react-custom-scrollbars';
+import { connect } from 'react-redux';
+import { withGun } from 'react-gun';
+import { pull } from '../../../store/state/reducers';
+import {
+    updateCircle,
+    updateChannel,
+    updateRevision
+} from '../../../store/state/actions';
+import FeatherIcon from 'feather-icons-react';
 
 class Constitution extends PureComponent {
     constructor(props) {
@@ -24,18 +28,15 @@ class Constitution extends PureComponent {
         // we should always make sure that the currently navigated-to circle is the activeCircle in redux
         this._isMounted = true;
         if (this.props.activeCircle) {
-            // if (this.props.user === null) {
             this.getAmendments();
-            // } else {
-            //     // we can get amendments and circles from props
-            //     // don't bother updating state
-            // }
+            this.props.dispatch(updateChannel(null));
         } else {
-            let circleID = this.props.location.pathname.match(/circle\/(CI.+)\/co/ )[1];
+            let circleID = this.props.location.pathname.match(
+                /circle\/(CI.+)\/co/
+            )[1];
             this.props.dispatch(updateCircle(circleID));
             this.props.dispatch(updateChannel(null));
             this.props.dispatch(updateRevision(null));
-
         }
     }
     getAmendments = () => {
@@ -48,7 +49,7 @@ class Constitution extends PureComponent {
                 name,
                 preamble,
                 createdAt,
-                users: Object.values(users)
+                users: Object.values(users).filter(u => u !== null)
             };
 
             if (amendments) {
@@ -85,26 +86,26 @@ class Constitution extends PureComponent {
 
         if (circle) {
             return (
-                <div id="docs-wrapper">
-                <div className="flex justify-between items-center ph2 mobile-nav">
-                    <Link
-                        to="/app"
-                        className="flex justify-center items-center"
-                    >
-                        <FeatherIcon
-                            icon="chevron-left"
-                            className="white db dn-ns"
-                            onClick={this.back}
-                        />
-                    </Link>
-                    <h2 className="ma3 lh-title white"> Constitution </h2>
-                    {user && <Link
-                                            to={`/app/circle/${circle.id}/add/amendment`}
-                                            className="icon-wrapper"
-                                        >
-                                            <FeatherIcon icon="plus" />
-                                        </Link>}
-                </div>
+                <div id='docs-wrapper'>
+                    <div className='flex justify-between items-center ph2 mobile-nav'>
+                        <Link
+                            to='/app'
+                            className='flex justify-center items-center'>
+                            <FeatherIcon
+                                icon='chevron-left'
+                                className='white db dn-ns'
+                                onClick={this.back}
+                            />
+                        </Link>
+                        <h2 className='ma3 lh-title white'> Constitution </h2>
+                        {user && (
+                            <Link
+                                to={`/app/circle/${circle.id}/add/amendment`}
+                                className='icon-wrapper'>
+                                <FeatherIcon icon='plus' />
+                            </Link>
+                        )}
+                    </div>
                     {/*{user && <DocsSearchBar id={circle.id} />}
                                         <div
                                             id="docs-inner"
@@ -132,9 +133,9 @@ class Constitution extends PureComponent {
                                             </Link>
                                         </div>*/}
 
-                    <div className="pa2 pa4-ns white wrapper mobile-body">
-                        <div className="f6 mt3 mb4">{circle.preamble}</div>
-                        <Scrollbars style={{ width: "100%", height: "70vh" }}>
+                    <div className='pa2 pa4-ns white wrapper mobile-body'>
+                        <div className='f6 mt3 mb4'>{circle.preamble}</div>
+                        <Scrollbars style={{ width: '100%', height: '70vh' }}>
                             {amendments &&
                                 amendments.map((section, i) => (
                                     <Amendment
@@ -154,16 +155,15 @@ class Constitution extends PureComponent {
         } else {
             return (
                 <div
-                    id="docs-wrapper"
+                    id='docs-wrapper'
                     style={{
-                        justifyContent: "center",
-                        alignItems: "center",
-                        display: "flex",
-                        flexDirection: "column"
-                    }}
-                >
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        display: 'flex',
+                        flexDirection: 'column'
+                    }}>
                     <Loader />
-                    <div className="f3 pb2 b mv4 tc">Loading Constitution</div>
+                    <div className='f3 pb2 b mv4 tc'>Loading Constitution</div>
                 </div>
             );
         }
@@ -172,10 +172,10 @@ class Constitution extends PureComponent {
 
 function mapStateToProps(state) {
     return {
-        user: pull(state, "user"),
-        activeCircle: pull(state, "activeCircle"),
-        circles: pull(state, "circles"),
-        amendments: pull(state, "amendments")
+        user: pull(state, 'user'),
+        activeCircle: pull(state, 'activeCircle'),
+        circles: pull(state, 'circles'),
+        amendments: pull(state, 'amendments')
     };
 }
 

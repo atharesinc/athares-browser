@@ -1,37 +1,38 @@
-import React, { PureComponent } from "react";
-import "tachyons";
-import "./styles/App.css";
-import "./styles/swaloverride.css";
+import React, { PureComponent } from 'react';
+import 'tachyons';
+import './styles/App.css';
+import './styles/swaloverride.css';
 
-import { Route, withRouter } from "react-router-dom";
-import { AnimatedSwitch } from "react-router-transition";
+import { Route, withRouter } from 'react-router-dom';
+import { AnimatedSwitch } from 'react-router-transition';
 
-import SplashPage from "./splash/landing";
-import Roadmap from "./splash/roadmap";
-import Login from "./portal/Login";
-import Register from "./portal/Register";
-import About from "./splash/about";
-import NoMatch from "./404";
-import DesktopLayout from "./app/DesktopLayout";
-import MobileLayout from "./app/MobileLayout";
+import SplashPage from './splash/landing';
+import Roadmap from './splash/roadmap';
+import Login from './portal/Login';
+import Register from './portal/Register';
+import About from './splash/about';
+import NoMatch from './404';
+import Policy from './policy';
+import DesktopLayout from './app/DesktopLayout';
+import MobileLayout from './app/MobileLayout';
 // import Loader from "./app/Loader";
-import throttle from "lodash.throttle";
-import { TweenMax } from "gsap";
-import Gun from "gun";
-import "gun/sea";
-import "gun-synclist";
-import "gun/lib/open";
-import "gun/lib/unset";
+import throttle from 'lodash.throttle';
+import { TweenMax } from 'gsap';
+import Gun from 'gun';
+import 'gun/sea';
+import 'gun-synclist';
+import 'gun/lib/open';
+import 'gun/lib/unset';
 
-import { GunProvider } from "react-gun";
-import { connect } from "react-redux";
-import { pull } from "./store/state/reducers";
-import * as sync from "./store/state/actions";
-import moment from "moment";
+import { GunProvider } from 'react-gun';
+import { connect } from 'react-redux';
+import { pull } from './store/state/reducers';
+import * as sync from './store/state/actions';
+import moment from 'moment';
 
 // web worker stuff
-import worker from "./workers/listener-worker";
-import WebWorker from "./workers/WebWorker";
+import worker from './workers/listener-worker';
+import WebWorker from './workers/WebWorker';
 // IndexedDb stuff for later
 // import "gun/lib/radix.js";
 // import "gun/lib/radisk.js";
@@ -73,14 +74,25 @@ class App extends PureComponent {
         // experimental web worker stuff
         this.worker = new WebWorker(worker);
 
-        this.worker.addEventListener("message", event => {
-        // update redux
-        let {messages, channels, amendments, revisions, votes, circles} = event.data;
+        this.worker.addEventListener('message', event => {
+            // update redux
+            let {
+                messages,
+                channels,
+                amendments,
+                revisions,
+                votes,
+                circles
+            } = event.data;
             this.props.dispatch(sync.circlesSync(circles));
-            messages.length !== 0 && this.props.dispatch(sync.setMessages(messages));
-            channels.length !== 0 && this.props.dispatch(sync.setChannels(channels));
-            amendments.length !== 0 && this.props.dispatch(sync.setAmendments(amendments));
-            revisions.length !== 0 && this.props.dispatch(sync.setRevisions(revisions));
+            messages.length !== 0 &&
+                this.props.dispatch(sync.setMessages(messages));
+            channels.length !== 0 &&
+                this.props.dispatch(sync.setChannels(channels));
+            amendments.length !== 0 &&
+                this.props.dispatch(sync.setAmendments(amendments));
+            revisions.length !== 0 &&
+                this.props.dispatch(sync.setRevisions(revisions));
             votes.length !== 0 && this.props.dispatch(sync.setVotes(votes));
             this.getNext();
         });
@@ -90,7 +102,7 @@ class App extends PureComponent {
             this.gun.user().recall({ sessionStorage: true });
             let user = this.gun.user();
             await user.auth(sessionStorage.alias, sessionStorage.tmp, ack => {
-                user.get("profile").once(profile => {
+                user.get('profile').once(profile => {
                     this.props.dispatch(sync.updateUser(profile.id));
                     this.props.dispatch(sync.updatePub(ack.pub));
                     // now that we're logged in, start listening to changes in nodes we care about
@@ -98,7 +110,7 @@ class App extends PureComponent {
                 });
             });
         }
-        window.addEventListener("resize", throttle(this.updateWidth, 1000));
+        window.addEventListener('resize', throttle(this.updateWidth, 1000));
         this.routeFix();
     }
     getNext = () => {
@@ -163,7 +175,7 @@ class App extends PureComponent {
             //     "we're creating this amendment because a majority has been reached"
             // );
             this.createAmendment({
-                id: thisRevision.id.replace("RV", "AM"),
+                id: thisRevision.id.replace('RV', 'AM'),
                 title: thisRevision.title,
                 text: thisRevision.newText,
                 revision: thisRevision.id,
@@ -176,7 +188,7 @@ class App extends PureComponent {
             // );
 
             this.createAmendment({
-                id: thisRevision.id.replace("RV", "AM"),
+                id: thisRevision.id.replace('RV', 'AM'),
                 title: thisRevision.title,
                 text: thisRevision.newText,
                 revision: thisRevision.id,
@@ -199,9 +211,9 @@ class App extends PureComponent {
             updatedAt: moment().format()
         });
 
-        user.get("circles")
+        user.get('circles')
             .get(rejectedRevision.circle)
-            .get("revisions")
+            .get('revisions')
             .get(rejectedRevision.id)
             .put({
                 passed: false,
@@ -225,33 +237,33 @@ class App extends PureComponent {
             updatedAt: moment().format()
         });
 
-        gunRef.get("amendments").set(amendment);
+        gunRef.get('amendments').set(amendment);
         gunRef
             .get(pendingAmendment.circle)
-            .get("amendments")
+            .get('amendments')
             .set(amendment);
 
         let user = gunRef.user();
 
-        user.get("circles")
+        user.get('circles')
             .get(pendingAmendment.circle)
-            .get("amendments")
+            .get('amendments')
             .set(amendment);
-        user.get("amendments").set(amendment);
+        user.get('amendments').set(amendment);
 
         // if the newly minted amendment is the result of a change to an existing amendment, we need to delete the old amendment
         gunRef.get(pendingAmendment.revision).once(revision => {
             if (revision.amendment) {
                 gunRef.get(revision.amendment).once(oldAmendment => {
-                oldAmendment = gunRef.get(oldAmendment.id);
-                
-                // remove it from the general list of amendments
-                gunRef.get("amendments").unset(oldAmendment);
-                // remove it from it's parent circle
-                gunRef
-                    .get(pendingAmendment.circle)
-                    .get("amendments")
-                    .unset(oldAmendment);
+                    oldAmendment = gunRef.get(oldAmendment.id);
+
+                    // remove it from the general list of amendments
+                    gunRef.get('amendments').unset(oldAmendment);
+                    // remove it from it's parent circle
+                    gunRef
+                        .get(pendingAmendment.circle)
+                        .get('amendments')
+                        .unset(oldAmendment);
                 });
             }
         });
@@ -260,27 +272,27 @@ class App extends PureComponent {
     allListeners = () => {
         let gunRef = this.gun;
         let user = gunRef.user();
-        user.get("circles").synclist(obj => {
+        user.get('circles').synclist(obj => {
             this.worker.postMessage(obj);
         });
         // listen for circle requests
-        user.get("profile").once(({circleChain}) => {
+        user.get('profile').once(({ circleChain }) => {
             // console.log(circleChain);
-            gunRef.get(circleChain).synclist(obj =>{
+            gunRef.get(circleChain).synclist(obj => {
                 // console.log(obj.list);
-                if(!obj.list){
+                if (!obj.list) {
                     return;
                 }
                 obj.list.forEach(circleId => {
                     // circleId will be null once accepted
-                    if(circleId){
+                    if (circleId) {
                         let thisCircle = gunRef.get(circleId);
                         // add the circle to this user's reference and remove the request from their keychain
-                        user.get("circles").set(thisCircle);
+                        user.get('circles').set(thisCircle);
                         gunRef.get(circleChain).unset(thisCircle);
                     }
-                })
-            })
+                });
+            });
         });
         // user.get("profile").once(profile =>{
         //     // get this users list of DMs and subcribe to each one
@@ -302,20 +314,20 @@ class App extends PureComponent {
     };
     routeFix = () => {
         document
-            .getElementById("root")
-            .addEventListener("mousemove", this.parallaxApp, true);
-        document.getElementById("root").style.overflow = "hidden";
+            .getElementById('root')
+            .addEventListener('mousemove', this.parallaxApp, true);
+        document.getElementById('root').style.overflow = 'hidden';
     };
     parallaxApp = e => {
         if (this.state.width < 992) {
             return false;
         }
-        this.parallaxIt(e, "#desktop-wrapper-outer", 30, "#main-layout");
-        this.parallaxIt(e, "#main-layout", -30, "#main-layout");
+        this.parallaxIt(e, '#desktop-wrapper-outer', 30, '#main-layout');
+        this.parallaxIt(e, '#main-layout', -30, '#main-layout');
     };
     componentWillUnmount() {
-        window.addEventListener("resize", throttle(this.updateWidth, 1000));
-        document.getElementById("root").addEventListener("mousemove", e => {
+        window.addEventListener('resize', throttle(this.updateWidth, 1000));
+        document.getElementById('root').addEventListener('mousemove', e => {
             e.stopPropogation();
             e.preventDefault();
         });
@@ -335,19 +347,18 @@ class App extends PureComponent {
 
     render() {
         return (
-            <div className="wrapper high-img" id="main-layout">
-                <div id="desktop-wrapper-outer" className="wrapper">
-                    <div className="wrapper grey-screen" id="desktop-wrapper">
+            <div className='wrapper high-img' id='main-layout'>
+                <div id='desktop-wrapper-outer' className='wrapper'>
+                    <div className='wrapper grey-screen' id='desktop-wrapper'>
                         <GunProvider gun={this.gun} SEA={Gun.SEA}>
                             <AnimatedSwitch
                                 atEnter={{ opacity: 0 }}
                                 atLeave={{ opacity: 0 }}
                                 atActive={{ opacity: 1 }}
-                                className="wrapper switch-wrapper"
-                            >
+                                className='wrapper switch-wrapper'>
                                 <Route
                                     exact
-                                    path="/login"
+                                    path='/login'
                                     render={props => (
                                         <Login
                                             {...props}
@@ -357,7 +368,7 @@ class App extends PureComponent {
                                 />
                                 <Route
                                     exact
-                                    path="/register"
+                                    path='/register'
                                     render={props => (
                                         <Register
                                             {...props}
@@ -367,21 +378,26 @@ class App extends PureComponent {
                                 />
                                 <Route
                                     exact
-                                    path="/"
+                                    path='/'
                                     render={() => <SplashPage />}
                                 />
                                 <Route
                                     exact
-                                    path="/roadmap"
+                                    path='/roadmap'
                                     render={() => <Roadmap />}
                                 />
                                 <Route
                                     exact
-                                    path="/about"
+                                    path='/about'
                                     render={() => <About />}
                                 />
                                 <Route
-                                    path="/app"
+                                    exact
+                                    path='/policy'
+                                    render={() => <Policy />}
+                                />
+                                <Route
+                                    path='/app'
                                     render={props =>
                                         this.state.width >= 992 ? (
                                             <DesktopLayout {...props} />
@@ -403,11 +419,11 @@ class App extends PureComponent {
 
 function mapStateToProps(state) {
     return {
-        user: pull(state, "user"),
-        revisions: pull(state, "revisions"),
-        votes: pull(state, "votes"),
-        amendments: pull(state, "amendments"),
-        circles: pull(state, "circles")
+        user: pull(state, 'user'),
+        revisions: pull(state, 'revisions'),
+        votes: pull(state, 'votes'),
+        amendments: pull(state, 'amendments'),
+        circles: pull(state, 'circles')
     };
 }
 export default withRouter(connect(mapStateToProps)(App));

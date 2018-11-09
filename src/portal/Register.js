@@ -234,6 +234,13 @@ class Register extends PureComponent {
                             I already have an account
                         </div>
                     </Link>
+                    <Link to='policy'>
+                        <div className='white-70 dim ph4 pv2 f6'>
+                            {' '}
+                            By registering, you acknowledge that you agree to
+                            the Terms of Use and have read the Privacy Policy.
+                        </div>
+                    </Link>
                 </form>
             </Fragment>
         );

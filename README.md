@@ -141,7 +141,6 @@ Each version outlines features that the platform must have to meet this version
 -   Make sure channel and revision are not both active
 -   Find all the places where we're getting users from the circle and then filter out those who are null (might be tricky)
 -   Where are my users in invite users?
--   Prevent Access to "../add/user" if not logged in
 -   On some components need to make sure that if props.user changes, we are hiding/showing what we need to hide/show (chat -> the chat input is still available)
 
 #### 0.4.0 (Essential Nice-to-haves)

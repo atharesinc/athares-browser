@@ -1,18 +1,19 @@
-import React from "react";
-import GroupChat from "./chat";
+import React from 'react';
+import GroupChat from './chat';
 // import DM from "./dmChat";
-import CreateCircle from "./createCircle";
-import CreateChannel from "./createChannel";
+import CreateCircle from './createCircle';
+import CreateChannel from './createChannel';
 // import CreateDM from "./createDM";
-import Dashboard from "./dashboard";
-import AddUser from "./addUser";
-import Docs from "./docs";
-import CreateAmendment from "./createAmendment";
-import User from "./user";
-import Revisions from "./revisions";
-import LeaveCircle from "./leaveCircle";
+import Dashboard from './dashboard';
+import AddUser from './addUser';
+import Docs from './docs';
+import CreateAmendment from './createAmendment';
+import User from './user';
+import Revisions from './revisions';
+import LeaveCircle from './leaveCircle';
+import News from './news';
 
-import { Switch, Route } from "react-router-dom";
+import { Switch, Route } from 'react-router-dom';
 
 const Dashboards = props => {
     const { match } = props;
@@ -21,7 +22,7 @@ const Dashboards = props => {
             <Route
                 exact
                 path={`${match.path}/circle/:id/channel/:id`}
-                render={(props) => <GroupChat {...props} />}
+                render={props => <GroupChat {...props} />}
             />
             <Route
                 exact
@@ -56,7 +57,7 @@ const Dashboards = props => {
             <Route
                 exact
                 path={`${match.path}/circle/:id/add/user`}
-                render={(props) => <AddUser {...props} />}
+                render={props => <AddUser {...props} />}
             />
             <Route
                 exact
@@ -76,12 +77,7 @@ const Dashboards = props => {
                 path={`${match.path}/circle/:id/revisions`}
                 render={props => <Revisions {...props} />}
             />
-            <Route
-                render={props => {
-                    props.history.push("/app");
-                    return null;
-                }}
-            />
+            <Route render={props => <News {...props} />} />
         </Switch>
     );
 };
