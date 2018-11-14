@@ -8,7 +8,6 @@
         "react-scripts": "^2.0.4"
     },
     "dependencies": {
-        "cra-append-sw": "^2.5.0",
         "diff": "^3.5.0",
         "exif-js": "^2.3.0",
         "feather-icons-react": "^0.2.0",
@@ -50,8 +49,8 @@
         "validate.js": "^0.12.0"
     },
     "scripts": {
-        "start": "node --max_old_space_size=2048 node_modules/.bin/react-scripts start && cra-append-sw --mode dev ./custom-sw.js",
-        "build": "react-scripts build && cra-append-sw ./custom-sw.js",
+        "start": "node --max_old_space_size=2048 node_modules/.bin/react-scripts start",
+        "build": "react-scripts build",
         "test": "react-scripts test --env=jsdom",
         "eject": "react-scripts eject"
     },

@@ -26,14 +26,14 @@ class ViewUser extends React.Component {
         this._isMounted && this.getUser();
     }
     componentDidUpdate(prevProps, prevState) {
-        console.log('PREV PROPS');
-        console.log(prevProps);
-        console.log('NEW PROPS');
-        console.log(this.props);
-        console.log('PREV STATE');
-        console.log(prevState);
-        console.log('NEW STATE');
-        console.log(this.state);
+        // console.log('PREV PROPS');
+        // console.log(prevProps);
+        // console.log('NEW PROPS');
+        // console.log(this.props);
+        // console.log('PREV STATE');
+        // console.log(prevState);
+        // console.log('NEW STATE');
+        // console.log(this.state);
     }
     getUser = () => {
         this.props.gun

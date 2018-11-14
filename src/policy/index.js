@@ -21,10 +21,14 @@ const Policy = ({ location }) => (
             }}>
             <a
                 target='_blank'
+                rel='noopener noreferrer'
                 href='https://app.termly.io/document/privacy-policy/a5978d1c-8a56-4910-b0b5-32b1ff526936'>
                 <div className='white-80 dim pv2 ph4'>Privacy Policy</div>
             </a>
-            <a target='_blank' href='https://github.com/atharesinc'>
+            <a
+                target='_blank'
+                rel='noopener noreferrer'
+                href='https://github.com/atharesinc'>
                 <div className='white-80 dim pv2 ph4'>Athares Source Code</div>
             </a>
 

@@ -91,7 +91,13 @@ class Chat extends Component {
             }
             this.setState({
                 channel,
-                messages: Object.values(messages).filter(m => m.id)
+                messages: Object.values(messages)
+                    .filter(m => m.id)
+                    .sort(
+                        (a, b) =>
+                            moment(a.createdAt).valueOf() -
+                            moment(b.createdAt).valueOf()
+                    )
             });
         });
     };

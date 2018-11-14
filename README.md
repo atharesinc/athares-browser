@@ -142,11 +142,14 @@ Each version outlines features that the platform must have to meet this version
 -   Find all the places where we're getting users from the circle and then filter out those who are null (might be tricky)
 -   Where are my users in invite users?
 -   On some components need to make sure that if props.user changes, we are hiding/showing what we need to hide/show (chat -> the chat input is still available)
+-   fix spacing on messages (more for all and less for multiMessages)
+-   figure out why ViewOtherUser is redirecting incorrectly (shows current user, not other user)
 
 #### 0.4.0 (Essential Nice-to-haves)
 
 -   Emoji conversion support
 -   Support images and links in messages
+-   Support tagging rev/amend/circ/channels in messages
 -   DM permission issue/not loading the messages correctly?
 -   Remove User from DM
 -   Realtime countdown on View Revision
