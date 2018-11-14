@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react';
+import React, { Component } from 'react';
 import CircleInviteList from './CircleInviteList';
 import { connect } from 'react-redux';
 import { pull } from '../../../store/state/reducers';
@@ -8,7 +8,7 @@ import swal from 'sweetalert';
 import FeatherIcon from 'feather-icons-react';
 import { Link } from 'react-router-dom';
 
-class addUser extends React.Component {
+class addUser extends Component {
     constructor(props) {
         super(props);
 
@@ -77,12 +77,14 @@ class addUser extends React.Component {
         e.preventDefault();
         let gunRef = this.props.gun;
         // double check that all users in state are NOT currently in circle
+        // ???
 
         // add each user to circle
         let { selectedUsers } = this.state;
-        selectedUsers.map(thisUser => {
+        selectedUsers.forEach(thisUser => {
             gunRef.get(thisUser.circleChain).set(this.props.activeCircle);
         });
+
         swal(
             'User Added',
             `${

@@ -139,8 +139,6 @@ Each version outlines features that the platform must have to meet this version
 #### 0.3.6 (5 minute fixes)
 
 -   Make sure channel and revision are not both active
--   Find all the places where we're getting users from the circle and then filter out those who are null (might be tricky)
--   Where are my users in invite users?
 -   On some components need to make sure that if props.user changes, we are hiding/showing what we need to hide/show (chat -> the chat input is still available)
 -   fix spacing on messages (more for all and less for multiMessages)
 -   figure out why ViewOtherUser is redirecting incorrectly (shows current user, not other user)

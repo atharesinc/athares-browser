@@ -28,7 +28,7 @@ const Splash = props => {
                         </div>
                     </div>
                 </div>
-                <img className='w-100 w-60-ns' src='/img/mockup.png' />
+                <img alt='' className='w-100 w-60-ns' src='/img/mockup.png' />
             </div>
         </div>
     );

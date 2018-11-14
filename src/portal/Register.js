@@ -51,8 +51,9 @@ class Register extends PureComponent {
 
         let { firstName, lastName, password, email } = this.state;
         const { random } = Gun.text;
+        let gunRef = this.props.gun;
         try {
-            let newUser = this.props.gun.user();
+            let newUser = gunRef.user();
 
             let user = {
                 id: 'US' + random(),
@@ -79,7 +80,7 @@ class Register extends PureComponent {
                     newUser.leave();
                     return false;
                 }
-                this.props.gun
+                gunRef
                     .get('users')
                     .get(user.id)
                     .put(ack.pub);
@@ -96,7 +97,7 @@ class Register extends PureComponent {
                     newUser.get('channels');
                     newUser.get('keys');
                     // create the "global" keychain for this user's DM's
-                    this.props.gun.get(user.keychain);
+                    gunRef.get(user.keychain);
 
                     // HERE'S SOMETHING STUPID
                     // I can't figure out how to do public key crypto with Gun/SEA

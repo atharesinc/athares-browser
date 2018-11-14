@@ -1,6 +1,5 @@
 import React, { PureComponent } from 'react';
 import Amendment from './Amendment';
-import DocsSearchBar from './DocsSearchBar';
 import Loader from '../../Loader.js';
 import { Link } from 'react-router-dom';
 import { Scrollbars } from 'react-custom-scrollbars';
@@ -71,7 +70,7 @@ class Constitution extends PureComponent {
         this._isMounted = false;
     }
     render() {
-        let { circles, activeCircle, user } = this.props;
+        let { user } = this.props;
         let circle = null;
         let amendments = [];
         // if user isn't set we can get this circle and it's amendments the hard way (for public transparency)
@@ -173,9 +172,7 @@ class Constitution extends PureComponent {
 function mapStateToProps(state) {
     return {
         user: pull(state, 'user'),
-        activeCircle: pull(state, 'activeCircle'),
-        circles: pull(state, 'circles'),
-        amendments: pull(state, 'amendments')
+        activeCircle: pull(state, 'activeCircle')
     };
 }
 

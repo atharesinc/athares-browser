@@ -99,7 +99,7 @@ const faqs = [
 
         question: "Shouldn't it be a Direct Democracy?",
         text:
-            'A resilient democracy needs to operate on a blockchain, so that no single person can control of the system. A direct democracy is the perfect use for a distributed technology, thus the name "Distributed Democracy": a direct democracy managed in a distributed system.'
+            'A resilient democracy needs to operate on a blockchain, so that no single person can control the system, and it has no single point of failure. A direct democracy is the perfect use for a distributed technology, thus the name "Distributed Democracy": a direct democracy managed in a distributed system.'
     },
     {
         id: 'what-are-blockchains',

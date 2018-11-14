@@ -48,7 +48,6 @@ class App extends PureComponent {
         this.state = {
             width: window.innerWidth
         };
-        // window.Gun = Gun;
         // For indexeddb support later
         //     var opt = {};
         // opt.store = RindexedDB(opt);
