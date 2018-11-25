@@ -142,6 +142,9 @@ Each version outlines features that the platform must have to meet this version
 -   On some components need to make sure that if props.user changes, we are hiding/showing what we need to hide/show (chat -> the chat input is still available)
 -   fix spacing on messages (more for all and less for multiMessages)
 -   figure out why ViewOtherUser is redirecting incorrectly (shows current user, not other user)
+-   Add Fun loading indicator for login/register because sync is wicked slow
+-   Prevent additional login attempts while authenticating
+-   Try to sync data on app mount instead of waiting for user to login/register
 
 #### 0.4.0 (Essential Nice-to-haves)
 

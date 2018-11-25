@@ -52,14 +52,17 @@ class App extends PureComponent {
         //     var opt = {};
         // opt.store = RindexedDB(opt);
         // var gun = Gun(opt);
-        this.gun = Gun('https://athares-gun.now.sh/gun');
+        this.gun = Gun([
+            'https://athares-gun.now.sh/gun'
+            // 'http://localhost:3000/gun'
+        ]);
         // this.gun = Gun();
         // if (process.env.NODE_ENV !== "production") {
-        //     window.gun = this.gun;
+        window.gun = this.gun;
         // }
         this.checkItemsTimer = checkItemsTimer;
-        let user = this.gun.user();
-        user.recall({ sessionStorage: true });
+        // let user = this.gun.user();
+        // user.recall({ sessionStorage: true });
     }
     updateWidth = () => {
         this.setState({
@@ -72,6 +75,8 @@ class App extends PureComponent {
     async componentDidMount() {
         // experimental web worker stuff
         this.worker = new WebWorker(worker);
+        this.gun.get('circles');
+        this.gun.get('channels');
 
         this.worker.addEventListener('message', event => {
             // update redux
