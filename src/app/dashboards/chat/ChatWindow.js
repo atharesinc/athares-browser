@@ -24,10 +24,17 @@ const ChatWindow = ({ messages = [], user, ...props }) => {
                             <Message
                                 multiMsg={
                                     i !== 0 &&
+                                    messages[i - 1].user &&
+                                    messages[i].user &&
+                                    user &&
                                     messages[i - 1].user.id ===
                                         messages[i].user.id
                                 }
-                                isMine={msg.user.id === user.id ? true : false}
+                                isMine={
+                                    msg.user && user && msg.user.id === user.id
+                                        ? true
+                                        : false
+                                }
                                 {...msg}
                                 key={msg.id}
                                 timestamp={msg.createdAt}

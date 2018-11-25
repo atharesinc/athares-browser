@@ -52,17 +52,12 @@ class App extends PureComponent {
         //     var opt = {};
         // opt.store = RindexedDB(opt);
         // var gun = Gun(opt);
-        this.gun = Gun([
-            'https://athares-gun.now.sh/gun'
-            // 'http://localhost:3000/gun'
-        ]);
+        this.gun = Gun(['https://athares-server-xtzbdlertq.now.sh/gun']);
         // this.gun = Gun();
         // if (process.env.NODE_ENV !== "production") {
         window.gun = this.gun;
         // }
         this.checkItemsTimer = checkItemsTimer;
-        // let user = this.gun.user();
-        // user.recall({ sessionStorage: true });
     }
     updateWidth = () => {
         this.setState({
@@ -102,15 +97,17 @@ class App extends PureComponent {
         });
 
         // check if user could log in
-        if (sessionStorage.alias && sessionStorage.tmp) {
-            this.gun.user().recall({ sessionStorage: true });
+        if (!this.props.user && sessionStorage.alias && sessionStorage.tmp) {
+            // indicate that the user is logging in and syncing
+            console.log('i should be logging in');
             let user = this.gun.user();
-            await user.auth(sessionStorage.alias, sessionStorage.tmp, ack => {
+            user.recall({ sessionStorage: true }, data => {
                 user.get('profile').once(profile => {
                     this.props.dispatch(sync.updateUser(profile.id));
-                    this.props.dispatch(sync.updatePub(ack.pub));
+                    this.props.dispatch(sync.updatePub(data.put.pub));
                     // now that we're logged in, start listening to changes in nodes we care about
                     this.allListeners();
+                    // clear loader ?
                 });
             });
         }

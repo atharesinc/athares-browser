@@ -119,7 +119,7 @@ class Register extends PureComponent {
                     newUser.get('profile').once(profile => {
                         // set the public key and id in redux to log in
                         this.props.dispatch(updateUser(user.id));
-                        this.props.dispatch(updatePub(otherAck.pub));
+                        this.props.dispatch(updatePub(otherAck.put.pub));
                         // start listening to changes on our user
                         this.props.listen();
                         this.props.history.push('/app');

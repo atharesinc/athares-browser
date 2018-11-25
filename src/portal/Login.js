@@ -68,7 +68,7 @@ class Login extends Component {
             newUser.get('profile').once(profile => {
                 // set the public key and id in redux to log in
                 this.props.dispatch(updateUser(profile.id));
-                this.props.dispatch(updatePub(ack.pub));
+                this.props.dispatch(updatePub(ack.put.pub));
                 // start listening to changes on our user
                 this.props.listen();
                 this.props.history.push('/app');

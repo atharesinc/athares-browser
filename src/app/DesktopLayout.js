@@ -1,11 +1,11 @@
-import React, { PureComponent } from "react";
-import Circles from "./circles";
-import Channels from "./channels";
-import Dashboards from "./dashboards";
-import PushingMenu from "./menu";
-import { withGun } from "react-gun";
-import { connect } from "react-redux";
-import * as stateSelectors from "../store/state/reducers";
+import React, { PureComponent } from 'react';
+import Circles from './circles';
+import Channels from './channels';
+import Dashboards from './dashboards';
+import PushingMenu from './menu';
+import { withGun } from 'react-gun';
+import { connect } from 'react-redux';
+import * as stateSelectors from '../store/state/reducers';
 
 // import Loader from "./Loader";
 
@@ -21,7 +21,11 @@ class DesktopLayout extends PureComponent {
         this.checkUser();
     }
     componentDidUpdate(prevProps) {
-        if (prevProps.user !== this.props.user) {
+        if (
+            prevProps.user !== this.props.user ||
+            prevProps.pub !== this.props.pub
+        ) {
+            console.log('rechecking user');
             this.checkUser();
         }
     }
@@ -30,7 +34,7 @@ class DesktopLayout extends PureComponent {
         if (this.props.pub) {
             let userRef = this.props.gun.user(this.props.pub);
 
-            userRef.get("profile").once(user => {
+            userRef.get('profile').once(user => {
                 // console.log(user);
                 this.setState({
                     user
@@ -52,7 +56,7 @@ class DesktopLayout extends PureComponent {
     };
     render() {
         return (
-            <div id="app-wrapper-outer" className="wrapper">
+            <div id='app-wrapper-outer' className='wrapper'>
                 <PushingMenu
                     isOpen={this.state.isOpen}
                     isMenuOpen={this.isMenuOpen}
@@ -61,12 +65,11 @@ class DesktopLayout extends PureComponent {
                     toggleMenu={this.toggleMenu}
                 />
                 <div
-                    className="wrapper"
-                    id="app-wrapper"
+                    className='wrapper'
+                    id='app-wrapper'
                     style={{
-                        marginLeft: this.state.isOpen ? "calc(30% - 300px)" : ""
-                    }}
-                >
+                        marginLeft: this.state.isOpen ? 'calc(30% - 300px)' : ''
+                    }}>
                     <Circles {...this.props} toggleMenu={this.toggleMenu} />
                     <Channels {...this.props} />
                     <Dashboards {...this.props} />
@@ -78,8 +81,8 @@ class DesktopLayout extends PureComponent {
 
 function mapStateToProps(state) {
     return {
-        user: stateSelectors.pull(state, "user"),
-        pub: stateSelectors.pull(state, "pub")
+        user: stateSelectors.pull(state, 'user'),
+        pub: stateSelectors.pull(state, 'pub')
     };
 }
 

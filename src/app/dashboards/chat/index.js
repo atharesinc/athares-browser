@@ -65,6 +65,11 @@ class Chat extends Component {
                 chatBox.scrollTop = chatBox.scrollHeight;
             }
         }
+        if (prevProps.user !== this.props.user) {
+            // this._isMounted && this.getMessages();
+            this._isMounted && this.getUser();
+            return;
+        }
     }
     componentWillUnmount() {
         this._isMounted = false;

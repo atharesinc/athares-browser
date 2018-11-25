@@ -911,8 +911,9 @@ input[type='phone'],
 }
 
 #chat-input {
-    background-color: #7782bb50;
+    background-color: #3a3e5299;
     border: none;
+    border-top: 1px solid #FFFFFF70;
     resize: none;
     flex: 1;
     font-size: 1em;

@@ -144,7 +144,8 @@ Each version outlines features that the platform must have to meet this version
 -   figure out why ViewOtherUser is redirecting incorrectly (shows current user, not other user)
 -   Add Fun loading indicator for login/register because sync is wicked slow
 -   Prevent additional login attempts while authenticating
--   Try to sync data on app mount instead of waiting for user to login/register
+-   Try to sync data on app mount instead of waiting for user to login/register (maybe fixed?)
+-   Changing circles (from circles list doesn't redirect to circle, but updates redux)
 
 #### 0.4.0 (Essential Nice-to-haves)
 
