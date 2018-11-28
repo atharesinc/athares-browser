@@ -15,6 +15,8 @@ import NoMatch from './404';
 import Policy from './policy';
 import DesktopLayout from './app/DesktopLayout';
 import MobileLayout from './app/MobileLayout';
+import Head from './head';
+
 // import Loader from "./app/Loader";
 import throttle from 'lodash.throttle';
 import { TweenMax } from 'gsap';
@@ -349,6 +351,7 @@ class App extends PureComponent {
     render() {
         return (
             <div className='wrapper high-img' id='main-layout'>
+                <Head />
                 <div id='desktop-wrapper-outer' className='wrapper'>
                     <div className='wrapper grey-screen' id='desktop-wrapper'>
                         <GunProvider gun={this.gun} SEA={Gun.SEA}>
@@ -408,7 +411,7 @@ class App extends PureComponent {
                                     }
                                 />
                                 {/* <Route exact path="/test" component={Test} /> */}
-                                <Route render={NoMatch} />
+                                <Route render={() => <NoMatch />} />
                             </AnimatedSwitch>
                         </GunProvider>
                     </div>

@@ -12,7 +12,7 @@ const TopNav = props => {
             }`}
             style={{ height: '3em' }}>
             <img
-                src={props.user.icon || '/img/user-default.png'}
+                src={props.user ? props.user.icon : '/img/user-default.png'}
                 className='ba b--white br-100 w2 h2 bw1'
                 alt='Menu'
                 onClick={props.toggleMenu}

@@ -5,7 +5,7 @@ import Dashboards from './dashboards';
 import PushingMenu from './menu';
 import { withGun } from 'react-gun';
 import { connect } from 'react-redux';
-import * as stateSelectors from '../store/state/reducers';
+import { pull } from '../store/state/reducers';
 
 // import Loader from "./Loader";
 
@@ -81,8 +81,8 @@ class DesktopLayout extends PureComponent {
 
 function mapStateToProps(state) {
     return {
-        user: stateSelectors.pull(state, 'user'),
-        pub: stateSelectors.pull(state, 'pub')
+        user: pull(state, 'user'),
+        pub: pull(state, 'pub')
     };
 }
 

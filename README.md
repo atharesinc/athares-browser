@@ -98,14 +98,15 @@ Each version outlines features that the platform must have to meet this version
 
 -   Remove User from Circle
 
-#### 0.0.6 - IN PROGRESS
+#### 0.0.6 - COMPLETE
 
--   Add Help page
 -   Dumbed down index
 
 #### 0.0.7
 
 -   Ensure public as possible use (not logged in, infer state from url)
+-   Add meta data as soon as available to rest of components
+-   See "Changing Circles" in 5 minute fixes
 
 #### 0.1.0
 

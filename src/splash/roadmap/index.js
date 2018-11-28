@@ -2,6 +2,8 @@ import React from 'react';
 import Navbar from '../Navbar';
 import Footer from '../Footer';
 import { Scrollbars } from 'react-custom-scrollbars';
+import { connect } from 'react-redux';
+import { updateDesc, updateTitle } from '../../store/head/actions';
 
 class Roadmap extends React.Component {
     state = {
@@ -13,6 +15,13 @@ class Roadmap extends React.Component {
             this.setState({ scrolled: scrollTop > 100, top: scrollTop });
         }
     };
+    componentDidMount() {
+        // Update meta tags
+        this.props.dispatch(
+            updateDesc("Where we are and where we're heading.")
+        );
+        this.props.dispatch(updateTitle('Athares - Roadmap'));
+    }
     render() {
         return (
             <Scrollbars
@@ -128,8 +137,10 @@ class Roadmap extends React.Component {
         );
     }
 }
-
-export default Roadmap;
+function mapStateToProps(state) {
+    return {};
+}
+export default connect(mapStateToProps)(Roadmap);
 
 let stages = [
     {

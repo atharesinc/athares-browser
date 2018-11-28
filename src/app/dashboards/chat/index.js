@@ -6,6 +6,7 @@ import FeatherIcon from 'feather-icons-react';
 import { Link } from 'react-router-dom';
 import { pull } from '../../../store/state/reducers';
 import { updateChannel, updateRevision } from '../../../store/state/actions';
+import { updateDesc, updateTitle } from '../../../store/head/actions';
 import { connect } from 'react-redux';
 import { withGun } from 'react-gun';
 import Gun from 'gun/gun';
@@ -104,6 +105,9 @@ class Chat extends Component {
                             moment(b.createdAt).valueOf()
                     )
             });
+            // Update meta tags
+            this.props.dispatch(updateDesc(channel.description));
+            this.props.dispatch(updateTitle(channel.name));
         });
     };
     updateChannel = () => {

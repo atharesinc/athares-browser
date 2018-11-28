@@ -1,33 +1,32 @@
-import React, { PureComponent } from "react";
-import Circle from "./Circle";
-import { withRouter } from "react-router-dom";
-import { Scrollbars } from "react-custom-scrollbars";
-import { pull } from "../../store/state/reducers";
-import { updateCircle } from "../../store/state/actions";
-import { withGun } from "react-gun";
-import { connect } from "react-redux";
+import React, { PureComponent } from 'react';
+import Circle from './Circle';
+import { withRouter } from 'react-router-dom';
+import { Scrollbars } from 'react-custom-scrollbars';
+import { pull } from '../../store/state/reducers';
+import { updateCircle } from '../../store/state/actions';
+import { withGun } from 'react-gun';
+import { connect } from 'react-redux';
 
 class OtherCircles extends PureComponent {
     state = {
         user: this.props.user
-        // circles: []
     };
 
     setActive = id => {
         this.props.dispatch(updateCircle(id));
+        this.props.history.push(`/app/circle/${id}`);
     };
     render() {
         const { circles } = this.props;
         return (
-            <div id="other-circles">
+            <div id='other-circles'>
                 <Scrollbars
-                    style={{ width: "100%", height: "100%" }}
-                    className="splash"
+                    style={{ width: '100%', height: '100%' }}
+                    className='splash'
                     autoHide
                     autoHideTimeout={1000}
                     autoHideDuration={200}
-                    universal={true}
-                >
+                    universal={true}>
                     {circles.map(circle => (
                         <Circle
                             key={circle.id}
@@ -44,10 +43,10 @@ class OtherCircles extends PureComponent {
 
 function mapStateToProps(state) {
     return {
-        user: pull(state, "user"),
-        activeCircle: pull(state, "activeCircle"),
-        pub: pull(state, "pub"),
-        circles: pull(state, "circles")
+        user: pull(state, 'user'),
+        activeCircle: pull(state, 'activeCircle'),
+        pub: pull(state, 'pub'),
+        circles: pull(state, 'circles')
     };
 }
 

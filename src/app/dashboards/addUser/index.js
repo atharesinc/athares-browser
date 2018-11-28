@@ -7,6 +7,7 @@ import { withGun } from 'react-gun';
 import swal from 'sweetalert';
 import FeatherIcon from 'feather-icons-react';
 import { Link } from 'react-router-dom';
+import { updateDesc, updateTitle } from '../../../store/head/actions';
 
 class addUser extends Component {
     constructor(props) {
@@ -36,6 +37,9 @@ class addUser extends Component {
         } else {
             this._isMounted && this.getUsers();
         }
+        // Update meta tags
+        this.props.dispatch(updateDesc('Invite users to this circle.'));
+        this.props.dispatch(updateTitle('Invite Users'));
     }
     getUsers = () => {
         let gunRef = this.props.gun;

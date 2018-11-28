@@ -1,18 +1,25 @@
-import React from 'react';
-// import Splash from "./Splash";
-// import Body from "./Body";
-// import Distributed from "./Distributed";
-// import Illustration from "./Illustration";
+import React, { PureComponent } from 'react';
 import Footer from '../Footer';
 import Navbar from '../Navbar';
 import FAQ from './FAQ';
 import { Scrollbars } from 'react-custom-scrollbars';
+import { connect } from 'react-redux';
+import { updateDesc, updateTitle } from '../../store/head/actions';
 
-class About extends React.Component {
+class About extends PureComponent {
     state = {
         scrolled: false,
         top: 0
     };
+    componentDidMount() {
+        // Update meta tags
+        this.props.dispatch(
+            updateDesc(
+                'View common questions about the best app in the galaxy.'
+            )
+        );
+        this.props.dispatch(updateTitle('Athares - About'));
+    }
     handleUpdate = ({ scrollTop }) => {
         if (this.state.top !== scrollTop) {
             this.setState({ scrolled: scrollTop > 100, top: scrollTop });
@@ -58,5 +65,7 @@ class About extends React.Component {
         );
     }
 }
-
-export default About;
+function mapStateToProps(state) {
+    return {};
+}
+export default connect(mapStateToProps)(About);

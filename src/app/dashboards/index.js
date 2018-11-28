@@ -32,7 +32,12 @@ const Dashboards = props => {
             <Route
                 exact
                 path={`${match.path}/`}
-                render={() => <Dashboard {...props} />}
+                render={props => <Dashboard {...props} />}
+            />
+            <Route
+                exact
+                path={`${match.path}/circle/:id`}
+                render={props => <Dashboard {...props} />}
             />
             <Route
                 exact
@@ -62,7 +67,7 @@ const Dashboards = props => {
             <Route
                 exact
                 path={`${match.path}/circle/:id/constitution/`}
-                render={() => <Docs {...props} />}
+                render={props => <Docs {...props} />}
             />
             <Route
                 exact

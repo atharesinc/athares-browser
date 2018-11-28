@@ -11,6 +11,8 @@ import {
     updateChannel,
     updateRevision
 } from '../../../store/state/actions';
+import { updateDesc, updateTitle } from '../../../store/head/actions';
+
 import FeatherIcon from 'feather-icons-react';
 
 class Constitution extends PureComponent {
@@ -27,12 +29,12 @@ class Constitution extends PureComponent {
         // we should always make sure that the currently navigated-to circle is the activeCircle in redux
         this._isMounted = true;
         if (this.props.activeCircle) {
-            this.getAmendments();
+            this._isMounted && this.getAmendments();
             this.props.dispatch(updateChannel(null));
+            this.props.dispatch(updateRevision(null));
         } else {
-            let circleID = this.props.location.pathname.match(
-                /circle\/(CI.+)\/co/
-            )[1];
+            let circleID = this.props.match.params.id;
+
             this.props.dispatch(updateCircle(circleID));
             this.props.dispatch(updateChannel(null));
             this.props.dispatch(updateRevision(null));
@@ -59,6 +61,9 @@ class Constitution extends PureComponent {
                     circle: thisCircle,
                     amendments
                 });
+            // Update meta tags
+            this.props.dispatch(updateDesc(circle.preamble));
+            this.props.dispatch(updateTitle(circle.name));
         });
     };
     componentDidUpdate(prevProps) {

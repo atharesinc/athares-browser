@@ -1,5 +1,4 @@
-import stateReducers from "./state/reducers";
+import stateReducers from './state/reducers';
+import headReducers from './head/reducers';
 
-export {
-  stateReducers
-};
+export { stateReducers, headReducers };

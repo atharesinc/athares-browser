@@ -13,6 +13,7 @@ import {
 import { validateLogin } from '../utils/validators';
 import { pull } from '../store/state/reducers';
 import { connect } from 'react-redux';
+import { updateDesc, updateTitle } from '../store/head/actions';
 
 class Login extends Component {
     constructor(props) {
@@ -29,6 +30,9 @@ class Login extends Component {
             this.props.dispatch(updateChannel(null));
             this.props.dispatch(updateCircle(null));
             this.props.dispatch(updateRevision(null));
+            // Update meta tags
+            this.props.dispatch(updateDesc('Log in to Athares'));
+            this.props.dispatch(updateTitle('Athares - Login'));
         }
     }
     tryLogin = async e => {

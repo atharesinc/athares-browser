@@ -16,6 +16,7 @@ import {
 import { connect } from 'react-redux';
 import { pull } from '../store/state/reducers';
 import { pair } from 'simple-asym-crypto';
+import { updateDesc, updateTitle } from '../store/head/actions';
 
 class Register extends PureComponent {
     constructor(props) {
@@ -36,6 +37,13 @@ class Register extends PureComponent {
             this.props.dispatch(updateChannel(null));
             this.props.dispatch(updateCircle(null));
             this.props.dispatch(updateRevision(null));
+            // Update meta tags
+            this.props.dispatch(
+                updateDesc(
+                    'Register with Athares, the only government platform committed to 100% transparency and secured with blockchain technology.'
+                )
+            );
+            this.props.dispatch(updateTitle('Athares - Register'));
         }
     }
     tryRegister = async e => {
