@@ -52,6 +52,18 @@ class Dashboard extends Component {
             });
         }
     }
+    componentDidUpdate() {
+        if (this.props.match.params.id) {
+            this.props.gun.get(this.props.match.params.id).once(circle => {
+                this.props.dispatch(updateCircle(circle.id));
+                this.props.dispatch(updateChannel(null));
+                this.props.dispatch(updateRevision(null));
+                // update meta data
+                this.props.dispatch(updateDesc(circle.preamble));
+                this.props.dispatch(updateTitle(circle.name));
+            });
+        }
+    }
     render() {
         return (
             <div

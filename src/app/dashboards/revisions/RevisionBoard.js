@@ -9,6 +9,7 @@ import {
     updateRevision,
     updateCircle
 } from '../../../store/state/actions';
+import { updateDesc, updateTitle } from '../../../store/head/actions';
 import { pull } from '../../../store/state/reducers';
 import { connect } from 'react-redux';
 import FeatherIcon from 'feather-icons-react';
@@ -52,6 +53,9 @@ class RevisionBoard extends Component {
                     revisions: revisions ? Object.values(revisions) : [],
                     circle
                 });
+            // update meta data
+            this.props.dispatch(updateDesc(circle.preamble));
+            this.props.dispatch(updateTitle(circle.name + ' - Revisions'));
         });
     };
     render() {

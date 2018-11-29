@@ -63,7 +63,7 @@ class Constitution extends PureComponent {
                 });
             // Update meta tags
             this.props.dispatch(updateDesc(circle.preamble));
-            this.props.dispatch(updateTitle(circle.name));
+            this.props.dispatch(updateTitle(circle.name + ' - Constitution'));
         });
     };
     componentDidUpdate(prevProps) {

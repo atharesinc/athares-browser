@@ -5,7 +5,11 @@ import Loader from '../../Loader';
 import FeatherIcon from 'feather-icons-react';
 import { Link } from 'react-router-dom';
 import { pull } from '../../../store/state/reducers';
-import { updateChannel, updateRevision } from '../../../store/state/actions';
+import {
+    updateChannel,
+    updateRevision,
+    updateCircle
+} from '../../../store/state/actions';
 import { updateDesc, updateTitle } from '../../../store/head/actions';
 import { connect } from 'react-redux';
 import { withGun } from 'react-gun';
@@ -24,11 +28,15 @@ class Chat extends Component {
     }
     componentDidMount() {
         this._isMounted = true;
-
+        const circleId = this.props.match.url.match(
+            /app\/circle\/(.+)\/channel/
+        )[1];
         if (this.props.user !== null) {
             this._isMounted && this.getUser();
         }
-
+        if (circleId) {
+            this.props.dispatch(updateCircle(circleId));
+        }
         if (this.props.activeChannel) {
             this._isMounted && this.getMessages();
         } else {
@@ -105,6 +113,7 @@ class Chat extends Component {
                             moment(b.createdAt).valueOf()
                     )
             });
+            console.log(this.props);
             // Update meta tags
             this.props.dispatch(updateDesc(channel.description));
             this.props.dispatch(updateTitle(channel.name));
