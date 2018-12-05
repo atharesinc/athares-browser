@@ -56,12 +56,12 @@ class App extends PureComponent {
         // opt.store = RindexedDB(opt);
         // var gun = Gun(opt);
         this.gun = Gun([
-            // 'https://athares-server-xtzbdlertq.now.sh/gun',
-            'http://localhost:5000/gun'
+            'https://athares-server.now.sh'
+            // 'http://localhost:5000/gun'
         ]);
         // this.gun = Gun();
         // if (process.env.NODE_ENV !== "production") {
-        window.gun = this.gun;
+        // window.gun = this.gun;
         // }
         this.checkItemsTimer = checkItemsTimer;
     }
