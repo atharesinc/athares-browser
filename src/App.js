@@ -301,6 +301,7 @@ class App extends PureComponent {
                 });
             });
         });
+        // // this bit is for DM's FIGURE IT OUT
         // user.get("profile").once(profile =>{
         //     // get this users list of DMs and subcribe to each one
         //     this.gun.get(profile.keychain).synclist(obj => {
