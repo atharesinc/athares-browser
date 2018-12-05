@@ -164,13 +164,13 @@ class ViewRevision extends Component {
                 /* Represents a change to existing legislation; Show diff panels   */
                 return (
                     <div id='revisions-wrapper'>
-                        <div className='flex db-ns ph2 mobile-nav'>
+                        <div className='flex dn-l ph2 mobile-nav'>
                             <Link
                                 to='/app'
                                 className='flex justify-center items-center'>
                                 <FeatherIcon
                                     icon='chevron-left'
-                                    className='white db dn-ns'
+                                    className='white db dn-l'
                                     onClick={this.back}
                                 />
                             </Link>
@@ -211,13 +211,13 @@ class ViewRevision extends Component {
                 /* Represents a new legislation without precedent; Show single panel */
                 return (
                     <div id='revisions-wrapper'>
-                        <div className='flex db-ns ph2 mobile-nav'>
+                        <div className='flex dn-l ph2 mobile-nav'>
                             <Link
                                 to='/app'
                                 className='flex justify-center items-center'>
                                 <FeatherIcon
                                     icon='chevron-left'
-                                    className='white db dn-ns'
+                                    className='white db dn-l'
                                     onClick={this.back}
                                 />
                             </Link>

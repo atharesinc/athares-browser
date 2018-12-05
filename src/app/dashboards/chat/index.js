@@ -192,7 +192,7 @@ class Chat extends Component {
                         <Link to='/app'>
                             <FeatherIcon
                                 icon='chevron-left'
-                                className='white db dn-ns'
+                                className='white db dn-l'
                                 onClick={this.updateChannel}
                             />
                         </Link>

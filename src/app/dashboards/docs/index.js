@@ -97,7 +97,7 @@ class Constitution extends PureComponent {
                             className='flex justify-center items-center'>
                             <FeatherIcon
                                 icon='chevron-left'
-                                className='white db dn-ns'
+                                className='white db dn-l'
                                 onClick={this.back}
                             />
                         </Link>

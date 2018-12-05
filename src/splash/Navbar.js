@@ -18,26 +18,37 @@ export default class Navbar extends Component {
         const { scrolled } = this.props;
 
         const logo = scrolled
-                ? '/img/Athares-logo-small-black.png'
-                : '/img/Athares-logo-small-white.png',
+                ? '/img/Athares-owl-logo-large-black.png'
+                : '/img/Athares-owl-logo-large-white.png',
             brand = !scrolled
-                ? '/img/Athares-full-small-white.png'
-                : '/img/Athares-full-small-black.png';
+                ? '/img/Athares-type-small-white.png'
+                : '/img/Athares-type-small-black.png';
 
         const textStyle = scrolled ? whiteStyle : normalStyle;
 
         return (
             <nav
-                className='dt w-100 center tracked'
+                className='dt w-100 center tracked ph1'
                 id='splash-nav'
                 style={textStyle}>
-                <div className='dtc w2 v-mid pa1 ph3'>
-                    <Link to='/' className='dib w3 h3 pa1 dim border-box'>
-                        <img src={logo} alt='A' />
-                        <img src={brand} alt='Athares' className='dn db-ns' />
+                <div className='dtc v-mid pa1 ph2'>
+                    <Link
+                        to='/'
+                        className='flex flex-row justify-start items-center ma1 dim'>
+                        <img
+                            src={logo}
+                            alt='A'
+                            className='pr2'
+                            style={{ height: '3em' }}
+                        />
+                        <img
+                            src={brand}
+                            alt='Athares'
+                            className='h2 dn db-ns'
+                        />
                     </Link>
                 </div>
-                <div className='dtc v-mid tr pa1 ph3'>
+                <div className='dtc v-mid tr pa1 pr3'>
                     <Link to='/roadmap'>
                         <div
                             className='f6 fw4 dim no-underline dn dib-l pv2 ph3'
@@ -54,7 +65,7 @@ export default class Navbar extends Component {
                     </Link>
                     <Link to='/login'>
                         <div
-                            className='f6 fw4 dim br-pill ba bw1 ph3 pv2 mb2 dib'
+                            className='f6 fw4 dim br-pill ba bw1 ph3 pv2 dib'
                             style={textStyle}>
                             Login
                         </div>

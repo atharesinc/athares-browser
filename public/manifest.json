@@ -1,25 +1,23 @@
 {
-  "short_name": "Athares",
-  "name": "Athares Distributed Democracy Platform",
-  "icons": [
-    {
-      "src": "android-chrome-192x192.png",
-      "sizes": "192x192",
-      "type": "image/png"
-    },
-    {
-      "src": "android-chrome-256x256.png",
-      "sizes": "256x256",
-      "type": "image/png"
-    }
-  ],
-  "start_url": "./index.html",
-  "display": "standalone",
-  "theme_color": "#00DFFC",
-  "background_color": "#00DFFC",
-  "lang": "en-US",
-  "start_url": "/login",
-  "orientation": "portrait",
-  "description":
-    "Athares lets you create and maintain organizations with equality."
+    "short_name": "Athares",
+    "name": "Athares Distributed Democracy Platform",
+    "icons": [
+        {
+            "src": "android-chrome-192x192.png",
+            "sizes": "192x192",
+            "type": "image/png"
+        },
+        {
+            "src": "android-chrome-256x256.png",
+            "sizes": "256x256",
+            "type": "image/png"
+        }
+    ],
+    "start_url": "./index.html",
+    "display": "standalone",
+    "theme_color": "#00DFFC",
+    "background_color": "#00DFFC",
+    "lang": "en-US",
+    "orientation": "portrait",
+    "description": "Athares lets you create and maintain organizations with equality."
 }

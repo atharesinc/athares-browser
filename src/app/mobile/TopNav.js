@@ -4,7 +4,6 @@ import FeatherIcon from 'feather-icons-react';
 
 // https://codesandbox.io/s/q3mqkny5o9
 const TopNav = props => {
-    console.log(props);
     return (
         <div
             className={`w-100 v-mid bg-theme-dark flex-row justify-between items-center pv2 ph3 ${

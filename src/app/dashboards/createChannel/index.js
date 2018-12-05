@@ -127,13 +127,13 @@ class CreateChannel extends Component {
         }
         return (
             <div id='revisions-wrapper'>
-                <div className='flex db-ns ph2 mobile-nav'>
+                <div className='flex dn-l ph2 mobile-nav'>
                     <Link
                         to='/app'
                         className='flex justify-center items-center'>
                         <FeatherIcon
                             icon='chevron-left'
-                            className='white db dn-ns'
+                            className='white db dn-l'
                             onClick={this.back}
                         />
                     </Link>

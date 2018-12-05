@@ -110,14 +110,14 @@ class RevisionBoard extends Component {
         return (
             <div id='revisions-wrapper'>
                 <div
-                    className='flex db-ns ph2 mobile-nav'
+                    className='flex dn-l ph2 mobile-nav'
                     style={{ height: '10vh' }}>
                     <Link
                         to='/app'
                         className='flex justify-center items-center'>
                         <FeatherIcon
                             icon='chevron-left'
-                            className='white db dn-ns'
+                            className='white db dn-l'
                             onClick={this.back}
                         />
                     </Link>

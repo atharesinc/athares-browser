@@ -5,7 +5,7 @@ const Circle = props => {
     <div className="circle-img-wrapper transparent-hover-theme">
       <img
         src={
-          "/img/Athares-logo-small-white.png"
+          "/img/Athares-owl-logo-large-white.png"
         }
         className="circle-img"
         alt=""

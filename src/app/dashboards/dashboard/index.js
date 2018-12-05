@@ -76,7 +76,9 @@ class Dashboard extends Component {
                     className='contain bg-center h4 pa2 mb2'
                     style={{
                         backgroundImage:
-                            'url(/img/Athares-full-large-white.png)'
+                            'url(/img/Athares-type-large-white.png)',
+                        height: '3rem',
+                        margin: '2em auto'
                     }}
                 />
                 <div className='f7 ttu tracked white-80 mb3'>

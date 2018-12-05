@@ -13,12 +13,12 @@ const Portal = props => {
         <Fragment>
             <div id='portal-header'>
                 <img
-                    src='/img/Athares-logo-small-white.png'
+                    src='/img/Athares-owl-logo-large-white.png'
                     id='portal-logo'
                     alt='logo'
                 />
                 <img
-                    src='/img/Athares-full-small-white.png'
+                    src='/img/Athares-type-small-white.png'
                     id='portal-brand'
                     alt='brand'
                 />
