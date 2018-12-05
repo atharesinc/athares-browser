@@ -3,10 +3,10 @@
 
 // If they are: they proceed to the page
 // If not: they are redirected to the login page.
-import React from "react";
-import { Redirect, Route, withRouter } from "react-router-dom";
-import * as stateSelectors from "../store/state/reducers";
-import {connect} from "react-redux";
+import React from 'react';
+import { Redirect, Route, withRouter } from 'react-router-dom';
+import * as stateSelectors from '../store/state/reducers';
+import { connect } from 'react-redux';
 
 const PrivateRoute = ({ component: Component, user, ...rest }) => {
     if (user || true) {
@@ -15,7 +15,7 @@ const PrivateRoute = ({ component: Component, user, ...rest }) => {
     return (
         <Redirect
             to={{
-                pathname: "/login"
+                pathname: '/login'
             }}
         />
     );
@@ -23,8 +23,8 @@ const PrivateRoute = ({ component: Component, user, ...rest }) => {
 
 function mapStateToProps(state) {
     return {
-      user: stateSelectors.pull(state, "user")
-    }
-  }
+        user: stateSelectors.pull(state, 'user')
+    };
+}
 
-  export default withRouter(connect(mapStateToProps)(PrivateRoute));
+export default withRouter(connect(mapStateToProps)(PrivateRoute));

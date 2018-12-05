@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Link, withRouter } from 'react-router-dom';
-import Loader from '../../Loader';
+import Loader from '../../../components/Loader';
 import moment from 'moment';
 import { Scrollbars } from 'react-custom-scrollbars';
 import { withGun } from 'react-gun';
@@ -38,7 +38,7 @@ class RevisionBoard extends Component {
     }
     componentDidUpdate(prevProps) {
         if (this.props.activeCircle !== prevProps.activeCircle) {
-            this.getRevisions();
+            this._isMounted && this.getRevisions();
         }
     }
     componentWillUnmount() {

@@ -6,7 +6,7 @@ import { connect } from 'react-redux';
 import { pull } from '../../../store/state/reducers';
 import { updateCircle } from '../../../store/state/actions';
 import Gun from 'gun/gun';
-import Loader from '../../Loader';
+import Loader from '../../../components/Loader';
 import swal from 'sweetalert';
 import { Scrollbars } from 'react-custom-scrollbars';
 import moment from 'moment';

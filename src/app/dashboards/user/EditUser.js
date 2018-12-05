@@ -1,27 +1,27 @@
-import React, { Component } from "react";
-import ImageUpload from "../createCircle/imageUpload";
-import ErrorSwap from "../../../utils/ErrorSwap";
-import Phone from "react-phone-number-input";
-import "react-phone-number-input/rrui.css";
-import "react-phone-number-input/style.css";
-import { Link, withRouter } from "react-router-dom";
-import Loader from "../../Loader";
-import { Scrollbars } from "react-custom-scrollbars";
-import { withGun } from "react-gun";
-import { connect } from "react-redux";
-import { pull } from "../../../store/state/reducers";
-import moment from "moment";
+import React, { Component } from 'react';
+import ImageUpload from '../createCircle/imageUpload';
+import ErrorSwap from '../../../utils/ErrorSwap';
+import Phone from 'react-phone-number-input';
+import 'react-phone-number-input/rrui.css';
+import 'react-phone-number-input/style.css';
+import { Link, withRouter } from 'react-router-dom';
+import Loader from '../../../components/Loader';
+import { Scrollbars } from 'react-custom-scrollbars';
+import { withGun } from 'react-gun';
+import { connect } from 'react-redux';
+import { pull } from '../../../store/state/reducers';
+import moment from 'moment';
 
 class EditUser extends Component {
     constructor(props) {
         super(props);
         this.state = {
             id: null,
-            icon: "",
-            phone: "",
-            firstName: "",
-            lastName: "",
-            uname: "",
+            icon: '',
+            phone: '',
+            firstName: '',
+            lastName: '',
+            uname: '',
             phoneTaken: false,
             unameTaken: false,
             loading: true,
@@ -30,15 +30,15 @@ class EditUser extends Component {
     }
     componentDidMount() {
         if (!this.props.userId) {
-            this.props.history.push("/app");
+            this.props.history.push('/app');
         }
         this.setState({
             ...this.props.user,
             loading: false
         });
     }
-editMode = (bool) => {
-        console.log(bool)
+    editMode = bool => {
+        console.log(bool);
         this.setState({
             editMode: bool
         });
@@ -81,7 +81,7 @@ editMode = (bool) => {
     };
     onSubmit = async e => {
         e.preventDefault();
-        if(this.state.editMode){
+        if (this.state.editMode) {
             return false;
         }
         await this.setState({ loading: true });
@@ -114,7 +114,7 @@ editMode = (bool) => {
 
             let user = this.props.gun.user();
 
-            user.get("profile").put(updatedUser);
+            user.get('profile').put(updatedUser);
 
             await this.setState({
                 loading: false,
@@ -122,18 +122,16 @@ editMode = (bool) => {
                 unameTaken: false
             });
 
-            this.props.history.push("/app/user");
+            this.props.history.push('/app/user');
         } catch (err) {
             console.log(err.message);
         }
     };
     shrinkBase64 = base64String => {
         return new Promise(resolve => {
+            var img = document.createElement('img');
 
-        var img = document.createElement('img');
-
-        img.onload = function()
-            {        
+            img.onload = function() {
                 var canvas = document.createElement('canvas');
                 var ctx = canvas.getContext('2d');
 
@@ -143,13 +141,10 @@ editMode = (bool) => {
                 ctx.drawImage(this, 0, 0, 200, 200);
 
                 resolve(canvas.toDataURL('image/png'));
-
-              
             };
 
-        img.src = base64String;
-    });
-     
+            img.src = base64String;
+        });
     };
     clearError = () => {
         this.setState({
@@ -161,127 +156,117 @@ editMode = (bool) => {
         if (this.state.loading || this.state.id === null) {
             return (
                 <div
-                    id="dashboard-wrapper"
+                    id='dashboard-wrapper'
                     style={{
-                        justifyContent: "center"
+                        justifyContent: 'center'
                     }}
-                    className="pa2"
-                >
+                    className='pa2'>
                     <Loader />
-                    <h1 className="mb3 mt0 lh-title mt4 f3 f2-ns">
+                    <h1 className='mb3 mt0 lh-title mt4 f3 f2-ns'>
                         Loading...
                     </h1>
                 </div>
             );
         }
         return (
-            <div id="dashboard-wrapper">
+            <div id='dashboard-wrapper'>
                 <Scrollbars
-                    style={{ width: "100%", height: "100%" }}
+                    style={{ width: '100%', height: '100%' }}
                     autoHide
                     autoHideTimeout={1000}
                     autoHideDuration={200}
-                    universal={true}
-                >
+                    universal={true}>
                     <form
-                        className="pa4 white wrapper"
+                        className='pa4 white wrapper'
                         onSubmit={this.onSubmit}
-                        id="update-user-form"
-                    >
-                        <article className="cf">
+                        id='update-user-form'>
+                        <article className='cf'>
                             <div
-                                className="w-100 row-center"
+                                className='w-100 row-center'
                                 style={{
-                                    justifyContent: "space-between",
-                                    flexDirection: "row-reverse"
-                                }}
-                            >
+                                    justifyContent: 'space-between',
+                                    flexDirection: 'row-reverse'
+                                }}>
                                 <Link
-                                    className="f6 link dim br-pill ba bw1 ph3 pv2 ml4-ns ml2 dib white"
-                                    to="/app/user"
-                                >
+                                    className='f6 link dim br-pill ba bw1 ph3 pv2 ml4-ns ml2 dib white'
+                                    to='/app/user'>
                                     BACK
                                 </Link>
-                                <h1 className="mv0 lh-title">Edit Info</h1>
+                                <h1 className='mv0 lh-title'>Edit Info</h1>
                             </div>
-                            <header className="fn fl-ns w-50-ns pr4-ns">
+                            <header className='fn fl-ns w-50-ns pr4-ns'>
                                 <ImageUpload
                                     onSet={this.changeImage}
                                     defaultImage={this.state.icon}
                                     editMode={this.editMode}
                                 />
                                 <small
-                                    id="name-desc"
-                                    className="f6 white-80 db mb2"
-                                >
+                                    id='name-desc'
+                                    className='f6 white-80 db mb2'>
                                     Your profile picture will be cropped as a
                                     circle. It is recommended you upload a
                                     square photo with dimensions around 250x250
                                     pixels.
                                 </small>
                             </header>
-                            <div className="fn fl-ns w-50-ns mt4">
-                                <div className="row-center">
-                                    <div className="w-50 mb4">
+                            <div className='fn fl-ns w-50-ns mt4'>
+                                <div className='row-center'>
+                                    <div className='w-50 mb4'>
                                         <label
-                                            htmlFor="firstName"
-                                            className="f6 b db mb2"
-                                        >
+                                            htmlFor='firstName'
+                                            className='f6 b db mb2'>
                                             First Name
                                         </label>
                                         <input
-                                            id="firstName"
-                                            className="input-reset ba pa2 mb2 db ghost w-90"
-                                            type="text"
-                                            aria-describedby="name-desc"
+                                            id='firstName'
+                                            className='input-reset ba pa2 mb2 db ghost w-90'
+                                            type='text'
+                                            aria-describedby='name-desc'
                                             required
                                             value={this.state.firstName}
                                             onChange={this.updateFirstName}
                                         />
                                     </div>
-                                    <div className="w-50 mb4">
+                                    <div className='w-50 mb4'>
                                         <label
-                                            htmlFor="lastName"
-                                            className="f6 b db mb2"
-                                        >
+                                            htmlFor='lastName'
+                                            className='f6 b db mb2'>
                                             Last Name
                                         </label>
                                         <input
-                                            id="lastName"
-                                            className="input-reset ba pa2 mb2 db ghost w-100"
-                                            type="text"
-                                            aria-describedby="edit-last-name"
+                                            id='lastName'
+                                            className='input-reset ba pa2 mb2 db ghost w-100'
+                                            type='text'
+                                            aria-describedby='edit-last-name'
                                             required
                                             value={this.state.lastName}
                                             onChange={this.updateLastName}
                                         />
                                     </div>
                                 </div>
-                                <div className="measure mb4">
+                                <div className='measure mb4'>
                                     <label
-                                        htmlFor="name"
-                                        className="f6 b db mb2"
-                                    >
+                                        htmlFor='name'
+                                        className='f6 b db mb2'>
                                         Phone Number
                                     </label>
                                     <Phone
-                                        placeholder="+1 123 456 7890"
+                                        placeholder='+1 123 456 7890'
                                         value={this.state.phone}
-                                        country="US"
-                                        inputClassName="db w-100 ghost pa2"
-                                        aria-describedby="name-desc"
+                                        country='US'
+                                        inputClassName='db w-100 ghost pa2'
+                                        aria-describedby='name-desc'
                                         displayInitialValueAsLocalNumber={true}
                                         onChange={this.updatePhone}
                                         nativeCountrySelect
-                                        className="mv2"
+                                        className='mv2'
                                     />
                                     <ErrorSwap
                                         condition={!this.state.phoneTaken}
                                         normal={
                                             <small
-                                                id="name-desc"
-                                                className="f6 white-80 db mb2"
-                                            >
+                                                id='name-desc'
+                                                className='f6 white-80 db mb2'>
                                                 Your phone number is used for
                                                 multi-factor authentication.
                                                 This number must be unique.
@@ -289,9 +274,8 @@ editMode = (bool) => {
                                         }
                                         error={
                                             <small
-                                                id="name-desc"
-                                                className="f6 red db mb2"
-                                            >
+                                                id='name-desc'
+                                                className='f6 red db mb2'>
                                                 This number has already been
                                                 taken.
                                             </small>
@@ -333,19 +317,18 @@ editMode = (bool) => {
 									}
 								/>
 							</div>*/}
-                                <div className="measure mb4">
+                                <div className='measure mb4'>
                                     <label
-                                        htmlFor="uname"
-                                        className="f6 b db mb2"
-                                    >
+                                        htmlFor='uname'
+                                        className='f6 b db mb2'>
                                         Unique Name
                                     </label>
                                     <input
-                                        id="uname"
-                                        className="input-reset ba pa2 mb2 db w-100 ghost"
-                                        type="text"
-                                        aria-describedby="name-desc"
-                                        placeholder="firstname.lastname"
+                                        id='uname'
+                                        className='input-reset ba pa2 mb2 db w-100 ghost'
+                                        type='text'
+                                        aria-describedby='name-desc'
+                                        placeholder='firstname.lastname'
                                         value={this.state.uname}
                                         onChange={this.updateUsername}
                                     />
@@ -353,9 +336,8 @@ editMode = (bool) => {
                                         condition={!this.state.unameTaken}
                                         normal={
                                             <small
-                                                id="name-desc"
-                                                className="f6 white-80 db mb2"
-                                            >
+                                                id='name-desc'
+                                                className='f6 white-80 db mb2'>
                                                 This is a human-readable way to
                                                 uniquely identify each user.
                                                 This name must be unique.
@@ -363,9 +345,8 @@ editMode = (bool) => {
                                         }
                                         error={
                                             <small
-                                                id="name-desc"
-                                                className="f6 red db mb2"
-                                            >
+                                                id='name-desc'
+                                                className='f6 red db mb2'>
                                                 Sorry! This name has already
                                                 been taken.
                                             </small>
@@ -375,13 +356,14 @@ editMode = (bool) => {
                             </div>
                         </article>
 
-                        {!this.state.editMode && <button
-                                                    id="create-circle-button"
-                                                    className="btn"
-                                                    type="submit"
-                                                >
-                                                    SAVE
-                                                </button>}
+                        {!this.state.editMode && (
+                            <button
+                                id='create-circle-button'
+                                className='btn'
+                                type='submit'>
+                                SAVE
+                            </button>
+                        )}
                     </form>
                 </Scrollbars>
             </div>
@@ -391,7 +373,7 @@ editMode = (bool) => {
 
 function mapStateToProps(state) {
     return {
-        userId: pull(state, "user")
+        userId: pull(state, 'user')
     };
 }
 export default withRouter(withGun(connect(mapStateToProps)(EditUser)));

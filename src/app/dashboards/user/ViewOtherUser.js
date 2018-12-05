@@ -2,7 +2,7 @@ import React from 'react';
 import FeatherIcon from 'feather-icons-react';
 import { Scrollbars } from 'react-custom-scrollbars';
 import { withGun } from 'react-gun';
-import Loader from '../../Loader';
+import Loader from '../../../components/Loader';
 import moment from 'moment';
 
 class ViewUser extends React.Component {

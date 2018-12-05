@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import ChatWindow from './ChatWindow';
 import ChatInput from './ChatInput';
-import Loader from '../../Loader';
+import Loader from '../../../components/Loader';
 import FeatherIcon from 'feather-icons-react';
 import { Link } from 'react-router-dom';
 import { pull } from '../../../store/state/reducers';
@@ -95,28 +95,33 @@ class Chat extends Component {
                 user = userInfo;
             });
         }
-        this.setState({ user });
+        this._isMounted && this.setState({ user });
     };
     getMessages = async () => {
-        this.props.gun.get(this.props.activeChannel).open(thisChannel => {
+        let gunRef = this.props.gun;
+        gunRef.get(this.props.activeChannel).open(thisChannel => {
             let { messages, ...channel } = thisChannel;
             if (messages === undefined) {
                 messages = [];
             }
-            this.setState({
-                channel,
-                messages: Object.values(messages)
-                    .filter(m => m.id)
-                    .sort(
-                        (a, b) =>
-                            moment(a.createdAt).valueOf() -
-                            moment(b.createdAt).valueOf()
-                    )
+            gunRef.get(this.props.activeCircle).once(circle => {
+                this._isMounted &&
+                    this.setState({
+                        channel,
+                        messages: Object.values(messages)
+                            .filter(m => m.id)
+                            .sort(
+                                (a, b) =>
+                                    moment(a.createdAt).valueOf() -
+                                    moment(b.createdAt).valueOf()
+                            )
+                    });
+                // Update meta tags
+                this.props.dispatch(updateDesc(channel.description));
+                this.props.dispatch(
+                    updateTitle(circle.name + ' - ' + channel.name)
+                );
             });
-            console.log(this.props);
-            // Update meta tags
-            this.props.dispatch(updateDesc(channel.description));
-            this.props.dispatch(updateTitle(channel.name));
         });
     };
     updateChannel = () => {

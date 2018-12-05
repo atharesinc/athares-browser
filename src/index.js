@@ -1,18 +1,18 @@
-import React from "react";
-import ReactDOM from "react-dom";
-import App from "./App";
-import { BrowserRouter } from "react-router-dom";
-import registerServiceWorker from './registerServiceWorker';
+import React from 'react';
+import ReactDOM from 'react-dom';
+import App from './App';
+import { BrowserRouter } from 'react-router-dom';
 
-import { createStore, applyMiddleware, combineReducers, compose } from "redux";
-import { Provider } from "react-redux";
-import thunk from "redux-thunk";
-import * as reducers from "./store/reducers";
+import { createStore, applyMiddleware, combineReducers, compose } from 'redux';
+import { Provider } from 'react-redux';
+import thunk from 'redux-thunk';
+import * as reducers from './store/reducers';
+import { loadingBarReducer } from 'react-redux-loading-bar';
 
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
 const store = createStore(
-    combineReducers(reducers),
+    combineReducers({ ...reducers, loadingBar: loadingBarReducer }),
     composeEnhancers(applyMiddleware(thunk))
 );
 
@@ -22,6 +22,5 @@ ReactDOM.render(
             <App />
         </BrowserRouter>
     </Provider>,
-    document.getElementById("root")
+    document.getElementById('root')
 );
-registerServiceWorker();

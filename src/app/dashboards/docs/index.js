@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import Amendment from './Amendment';
-import Loader from '../../Loader.js';
+import Loader from '../../../components/Loader.js';
 import { Link } from 'react-router-dom';
 import { Scrollbars } from 'react-custom-scrollbars';
 import { connect } from 'react-redux';

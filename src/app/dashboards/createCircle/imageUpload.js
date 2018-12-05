@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactAvatarEditor from 'react-avatar-editor';
 import Dropzone from 'react-dropzone';
-import Loader from '../../Loader';
+import Loader from '../../../components/Loader';
 import Slider from 'rc-slider/lib/Slider';
 import 'rc-slider/assets/index.css';
 import EXIF from 'exif-js';

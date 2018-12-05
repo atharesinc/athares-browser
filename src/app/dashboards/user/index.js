@@ -1,12 +1,12 @@
-import React, { Component } from "react";
-import ViewUser from "./ViewUser";
-import EditUser from "./EditUser";
-import ViewOtherUser from "./ViewOtherUser"; // same as view user w/o btns to toggle
-import { Switch, Route } from "react-router-dom";
-import { connect } from "react-redux";
-import { withGun } from "react-gun";
-import { pull } from "../../../store/state/reducers";
-import Loader from "../../Loader";
+import React, { Component } from 'react';
+import ViewUser from './ViewUser';
+import EditUser from './EditUser';
+import ViewOtherUser from './ViewOtherUser'; // same as view user w/o btns to toggle
+import { Switch, Route } from 'react-router-dom';
+import { connect } from 'react-redux';
+import { withGun } from 'react-gun';
+import { pull } from '../../../store/state/reducers';
+import Loader from '../../../components/Loader';
 
 class User extends Component {
     state = {
@@ -29,7 +29,7 @@ class User extends Component {
             // get the logged-in user ref
             let userRef = this.props.gun.user();
 
-            userRef.get("profile").once(user => {
+            userRef.get('profile').once(user => {
                 let myRevisions = revisions.filter(r => r.backer.id === id);
 
                 this.setState({
@@ -44,7 +44,7 @@ class User extends Component {
                 });
             });
         } else {
-            this.props.history.push("/app");
+            this.props.history.push('/app');
         }
     }
     render() {
@@ -53,14 +53,13 @@ class User extends Component {
         if (loading) {
             return (
                 <div
-                    id="dashboard-wrapper"
+                    id='dashboard-wrapper'
                     style={{
-                        justifyContent: "center"
+                        justifyContent: 'center'
                     }}
-                    className="pa2"
-                >
+                    className='pa2'>
                     <Loader />
-                    <h1 className="mb3 mt0 lh-title mt4 f3 f2-ns">
+                    <h1 className='mb3 mt0 lh-title mt4 f3 f2-ns'>
                         Getting User Information
                     </h1>
                 </div>
@@ -98,11 +97,11 @@ class User extends Component {
 
 function mapStateToProps(state) {
     return {
-        user: pull(state, "user"),
-        pub: pull(state, "pub"),
-        circles: pull(state, "circles"),
-        votes: pull(state, "votes"),
-        revisions: pull(state, "revisions")
+        user: pull(state, 'user'),
+        pub: pull(state, 'pub'),
+        circles: pull(state, 'circles'),
+        votes: pull(state, 'votes'),
+        revisions: pull(state, 'revisions')
     };
 }
 

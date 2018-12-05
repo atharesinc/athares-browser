@@ -1,4 +1,4 @@
-import React, { PureComponent } from 'react';
+import React, { PureComponent, Fragment } from 'react';
 import 'tachyons';
 import './styles/App.css';
 import './styles/swaloverride.css';
@@ -31,6 +31,7 @@ import { connect } from 'react-redux';
 import { pull } from './store/state/reducers';
 import * as sync from './store/state/actions';
 import moment from 'moment';
+import LoadingBar from 'react-redux-loading-bar';
 
 // web worker stuff
 import worker from './workers/listener-worker';
@@ -353,73 +354,88 @@ class App extends PureComponent {
 
     render() {
         return (
-            <div className='wrapper high-img' id='main-layout'>
-                <Head />
-                <div id='desktop-wrapper-outer' className='wrapper'>
-                    <div className='wrapper grey-screen' id='desktop-wrapper'>
-                        <GunProvider gun={this.gun} SEA={Gun.SEA}>
-                            <AnimatedSwitch
-                                atEnter={{ opacity: 0 }}
-                                atLeave={{ opacity: 0 }}
-                                atActive={{ opacity: 1 }}
-                                className='wrapper switch-wrapper'>
-                                <Route
-                                    exact
-                                    path='/login'
-                                    render={props => (
-                                        <Login
-                                            {...props}
-                                            listen={this.allListeners}
-                                        />
-                                    )}
-                                />
-                                <Route
-                                    exact
-                                    path='/register'
-                                    render={props => (
-                                        <Register
-                                            {...props}
-                                            listen={this.allListeners}
-                                        />
-                                    )}
-                                />
-                                <Route
-                                    exact
-                                    path='/'
-                                    render={() => <SplashPage />}
-                                />
-                                <Route
-                                    exact
-                                    path='/roadmap'
-                                    render={() => <Roadmap />}
-                                />
-                                <Route
-                                    exact
-                                    path='/about'
-                                    render={() => <About />}
-                                />
-                                <Route
-                                    exact
-                                    path='/policy'
-                                    render={() => <Policy />}
-                                />
-                                <Route
-                                    path='/app'
-                                    render={props =>
-                                        this.state.width >= 992 ? (
-                                            <DesktopLayout {...props} />
-                                        ) : (
-                                            <MobileLayout {...props} />
-                                        )
-                                    }
-                                />
-                                {/* <Route exact path="/test" component={Test} /> */}
-                                <Route render={() => <NoMatch />} />
-                            </AnimatedSwitch>
-                        </GunProvider>
+            <Fragment>
+                <LoadingBar
+                    style={{
+                        height: '0.25em',
+                        backgroundColor: '#00DFFC',
+                        boxShadow: '0 0 0.5em #00DFFC',
+                        zIndex: 1,
+                        position: 'fixed'
+                    }}
+                    showFastActions
+                />
+                <div className='wrapper high-img' id='main-layout'>
+                    <Head />
+
+                    <div id='desktop-wrapper-outer' className='wrapper'>
+                        <div
+                            className='wrapper grey-screen'
+                            id='desktop-wrapper'>
+                            <GunProvider gun={this.gun} SEA={Gun.SEA}>
+                                <AnimatedSwitch
+                                    atEnter={{ opacity: 0 }}
+                                    atLeave={{ opacity: 0 }}
+                                    atActive={{ opacity: 1 }}
+                                    className='wrapper switch-wrapper'>
+                                    <Route
+                                        exact
+                                        path='/login'
+                                        render={props => (
+                                            <Login
+                                                {...props}
+                                                listen={this.allListeners}
+                                            />
+                                        )}
+                                    />
+                                    <Route
+                                        exact
+                                        path='/register'
+                                        render={props => (
+                                            <Register
+                                                {...props}
+                                                listen={this.allListeners}
+                                            />
+                                        )}
+                                    />
+                                    <Route
+                                        exact
+                                        path='/'
+                                        render={() => <SplashPage />}
+                                    />
+                                    <Route
+                                        exact
+                                        path='/roadmap'
+                                        render={() => <Roadmap />}
+                                    />
+                                    <Route
+                                        exact
+                                        path='/about'
+                                        render={() => <About />}
+                                    />
+                                    <Route
+                                        exact
+                                        path='/policy'
+                                        render={() => <Policy />}
+                                    />
+                                    <Route
+                                        path='/app'
+                                        render={props =>
+                                            this.state.width >= 992 ? (
+                                                <DesktopLayout {...props} />
+                                            ) : (
+                                                <MobileLayout {...props} />
+                                            )
+                                        }
+                                    />
+                                    {/* <Route exact path="/test" component={Test} /> */}
+                                    <Route render={() => <NoMatch />} />
+                                </AnimatedSwitch>
+                            </GunProvider>
+                        </div>
                     </div>
                 </div>
-            </div>
+            </Fragment>
         );
     }
 }

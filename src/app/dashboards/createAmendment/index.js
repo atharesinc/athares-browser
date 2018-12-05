@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import ErrorSwap from '../../../utils/ErrorSwap';
-import Loader from '../../Loader';
+import Loader from '../../../components/Loader';
 import { withRouter, Link } from 'react-router-dom';
 import { Scrollbars } from 'react-custom-scrollbars';
 import { connect } from 'react-redux';
