@@ -127,7 +127,7 @@ class CreateChannel extends Component {
         }
         return (
             <div id='revisions-wrapper'>
-                <div className='flex dn-l ph2 mobile-nav'>
+                <div className='flex ph2 mobile-nav'>
                     <Link
                         to='/app'
                         className='flex justify-center items-center'>

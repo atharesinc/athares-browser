@@ -109,9 +109,7 @@ class RevisionBoard extends Component {
         // console.log(revisions);
         return (
             <div id='revisions-wrapper'>
-                <div
-                    className='flex dn-l ph2 mobile-nav'
-                    style={{ height: '10vh' }}>
+                <div className='flex ph2 mobile-nav' style={{ height: '10vh' }}>
                     <Link
                         to='/app'
                         className='flex justify-center items-center'>

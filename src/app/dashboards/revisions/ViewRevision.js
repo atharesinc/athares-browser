@@ -64,7 +64,7 @@ class ViewRevision extends Component {
                 this.setState({
                     revision: {
                         ...revision,
-                        votes: Object.values(revision.votes)
+                        votes: Object.values(revision.votes) || []
                     }
                 });
         });
@@ -141,16 +141,6 @@ class ViewRevision extends Component {
     render() {
         const { revision } = this.state;
 
-        // let revision = null;
-        // let votes = [];
-        // if (this.state.revision) {
-        //     revision = this.state.revision;
-        //     votes = revision.votes;
-        // } else if (revisions.length !== 0 && activeRevision !== null) {
-        //     revision =
-        //         revisions.find(({ id }) => id === activeRevision) || null;
-        //     votes = this.props.votes;
-        // }
         if (revision && revision.backer) {
             const { newText, title, votes } = revision;
 
@@ -164,7 +154,7 @@ class ViewRevision extends Component {
                 /* Represents a change to existing legislation; Show diff panels   */
                 return (
                     <div id='revisions-wrapper'>
-                        <div className='flex dn-l ph2 mobile-nav'>
+                        <div className='flex ph2 mobile-nav'>
                             <Link
                                 to='/app'
                                 className='flex justify-center items-center'>
@@ -211,7 +201,7 @@ class ViewRevision extends Component {
                 /* Represents a new legislation without precedent; Show single panel */
                 return (
                     <div id='revisions-wrapper'>
-                        <div className='flex dn-l ph2 mobile-nav'>
+                        <div className='flex ph2 mobile-nav'>
                             <Link
                                 to='/app'
                                 className='flex justify-center items-center'>

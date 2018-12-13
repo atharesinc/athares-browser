@@ -51,14 +51,34 @@ class App extends PureComponent {
         this.state = {
             width: window.innerWidth
         };
+        // Add listener
+        // Gun.on('opt', function(ctx) {
+        //     console.log('triggered');
+        //     if (ctx.once) {
+        //         return;
+        //     }
+        //     ctx.on('out', function(msg) {
+        //         console.log('out');
+        //         var to = this.to;
+        //         // Adds headers for put
+        //         msg.headers = {
+        //             token: 'thisIsTheTokenForRealsOUT'
+        //         };
+        //         to.next(msg); // pass to next middleware
+        //     });
+        // });
+
         // For indexeddb support later
         //     var opt = {};
         // opt.store = RindexedDB(opt);
         // var gun = Gun(opt);
-        this.gun = Gun([
-            'https://athares-server.now.sh'
-            // 'http://localhost:5000/gun'
-        ]);
+        this.gun = Gun({
+            peers: [
+                // 'https://athares-server.now.sh/gun'
+                'http://localhost:5000/gun'
+            ],
+            // secure: true
+        });
         // this.gun = Gun();
         // if (process.env.NODE_ENV !== "production") {
         // window.gun = this.gun;
