@@ -11,6 +11,7 @@ import { withGun } from 'react-gun';
 import { connect } from 'react-redux';
 import { pull } from '../../../store/state/reducers';
 import moment from 'moment';
+import { hideLoading } from 'react-redux-loading-bar';
 
 class EditUser extends Component {
     constructor(props) {
@@ -28,14 +29,15 @@ class EditUser extends Component {
             editMode: false
         };
     }
-    componentDidMount() {
+    async componentDidMount() {
         if (!this.props.userId) {
-            this.props.history.push('/app');
+            this.props.history.replace('/app');
         }
-        this.setState({
+        await this.setState({
             ...this.props.user,
             loading: false
         });
+        this.props.dispatch(hideLoading());
     }
     editMode = bool => {
         console.log(bool);

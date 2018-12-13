@@ -37,10 +37,10 @@ import LoadingBar from 'react-redux-loading-bar';
 import worker from './workers/listener-worker';
 import WebWorker from './workers/WebWorker';
 // IndexedDb stuff for later
-// import "gun/lib/radix.js";
-// import "gun/lib/radisk.js";
-// import "gun/lib/store.js";
-// import "gun/lib/rindexed.js";
+import 'gun/lib/radix.js';
+import 'gun/lib/radisk.js';
+import 'gun/lib/store.js';
+import 'gun/lib/rindexed.js';
 
 let checkItemsTimer = null;
 
@@ -73,11 +73,12 @@ class App extends PureComponent {
                 : 'http://localhost:5000/gun';
 
         // For indexeddb support later
-        //     var opt = {};
+        // let opt = {};
         // opt.store = RindexedDB(opt);
         // var gun = Gun(opt);
         this.gun = Gun({
-            peers: [rootPeer]
+            peers: [rootPeer],
+            store: window.RindexedDB({})
             // secure: true
         });
         // this.gun = Gun();

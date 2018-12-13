@@ -22,7 +22,7 @@ class CreateChannel extends Component {
     componentDidMount() {
         // verify this circle is real and that the user is logged in, but for now...
         if (!this.props.user || !this.props.activeCircle) {
-            this.props.history.push('/app');
+            this.props.history.replace('/app');
         }
         let circle = this.props.circles.find(
             c => c.id && c.id === this.props.activeCircle

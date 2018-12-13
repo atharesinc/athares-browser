@@ -21,6 +21,22 @@ const RevisionStats = ({
         <div className='pa3 bg-theme-dark' id='revision-stats'>
             <article data-name='slab-stat-small'>
                 <div className='cf'>
+                {remaining > 0 && (
+                                        <dl className='fl fn-l w-50 dib-l w-auto-l lh-title mr5-l'>
+                        <dd className='f6 fw4 ml0 white-70'>Date Proposed</dd>
+                        <dd className='f3 fw6 ml0 white'>
+                        <ReactCountdownClock
+                            seconds={remaining}
+                            color='#00dcff'
+                            weight={size * 0.3}
+                            alpha={0.7}
+                            timeFormat={'hms'}
+                            size={size * 5}
+                            font={'sans-serif'}
+                        />
+                        </dd>
+                        </dl>
+                    )}
                     <dl className='fl fn-l w-50 dib-l w-auto-l lh-title mr5-l'>
                         <dd className='f6 fw4 ml0 white-70'>Date Proposed</dd>
                         <dd className='f3 fw6 ml0 white'>
@@ -75,17 +91,6 @@ const RevisionStats = ({
                             </small>
                         </div>
                     </Link>
-                    {remaining > 0 && (
-                        <ReactCountdownClock
-                            seconds={remaining}
-                            color='#00dcff'
-                            weight={size * 0.3}
-                            alpha={0.7}
-                            timeFormat={'hms'}
-                            size={size * 5}
-                            font={'sans-serif'}
-                        />
-                    )}
                 </dl>
             </article>
         </div>

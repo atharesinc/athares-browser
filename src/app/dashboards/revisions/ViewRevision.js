@@ -64,7 +64,9 @@ class ViewRevision extends Component {
                 this.setState({
                     revision: {
                         ...revision,
-                        votes: Object.values(revision.votes) || []
+                        votes: revision.votes
+                            ? Object.values(revision.votes)
+                            : []
                     }
                 });
         });

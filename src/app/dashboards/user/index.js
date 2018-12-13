@@ -44,7 +44,7 @@ class User extends Component {
                 });
             });
         } else {
-            this.props.history.push('/app');
+            this.props.history.replace('/app');
         }
     }
     render() {

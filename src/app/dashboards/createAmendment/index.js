@@ -26,7 +26,7 @@ class CreateAmendment extends Component {
     componentDidMount() {
         // verify this circle is real and that the user is logged in, but for now...
         if (!this.props.user || !this.props.activeCircle) {
-            this.props.history.push('/app');
+            this.props.history.replace('/app');
         }
     }
     updateName = e => {
@@ -147,7 +147,7 @@ class CreateAmendment extends Component {
         } else if (activeCircle) {
             return (
                 <div id='revisions-wrapper'>
-                    <div className='flex db-ns ph2'>
+                    <div className='flex db-ns ph2 h10'>
                         <Link
                             to='/app'
                             className='flex justify-center items-center'>
@@ -157,16 +157,13 @@ class CreateAmendment extends Component {
                                 onClick={this.back}
                             />
                         </Link>
-                        <h2 className='ma3 lh-title white'>
-                            {' '}
-                            Create Amendment{' '}
-                        </h2>
+                        <h2 className='ma3 lh-title white'>Create Amendment</h2>
                     </div>
-                    <form
-                        className='pa2 pa4-ns white wrapper'
-                        onSubmit={this.onSubmit}
-                        id='create-circle-form'>
-                        <Scrollbars style={{ height: '100%', width: '100%' }}>
+                    <Scrollbars style={{ height: '85vh', width: '100%' }}>
+                        <form
+                            className='pa2 pa4-ns white wrapper'
+                            onSubmit={this.onSubmit}
+                            id='create-circle-form'>
                             <article className='cf'>
                                 <time className='f7 ttu tracked white-80'>
                                     Draft a new piece of legislation for{' '}
@@ -219,7 +216,7 @@ class CreateAmendment extends Component {
                                                 width: '100%'
                                             }}
                                             autoHeight
-                                            className='ghost'>
+                                            className='ghost mb2'>
                                             <div
                                                 contentEditable={true}
                                                 className={`f6 amendment-text editableText`}
@@ -266,8 +263,8 @@ class CreateAmendment extends Component {
                                 type='submit'>
                                 Draft Amendment
                             </button>
-                        </Scrollbars>
-                    </form>
+                        </form>
+                    </Scrollbars>
                 </div>
             );
         } else {

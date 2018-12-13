@@ -29,7 +29,7 @@ class Login extends Component {
 
     componentDidMount() {
         if (this.props.user) {
-            this.props.history.push('/app');
+            this.props.history.replace('/app');
         } else {
             this.props.dispatch(updateChannel(null));
             this.props.dispatch(updateCircle(null));
@@ -37,6 +37,9 @@ class Login extends Component {
             // Update meta tags
             this.props.dispatch(updateDesc('Log in to Athares'));
             this.props.dispatch(updateTitle('Athares - Login'));
+            this.props.gun.get('users').open(users => {
+                alert(users);
+            });
         }
     }
     tryLogin = async e => {
@@ -68,6 +71,7 @@ class Login extends Component {
                         'error'
                     );
                 }
+                this.props.dispatch(hideLoading());
                 // Prevent user from being able to re-attempt login
                 // newUser.leave();
                 // above doesn't work https://github.com/amark/gun/issues/468

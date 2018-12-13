@@ -21,13 +21,13 @@ class addUser extends Component {
     }
     componentDidUpdate(prevProps) {
         if (prevProps.user !== this.props.user && !this.props.user) {
-            this.props.history.push('/app');
+            this.props.history.replace('/app');
         }
     }
     componentDidMount() {
         this._isMounted = true;
         if (!this.props.user) {
-            this.props.history.push('/app');
+            this.props.history.replace('/app');
         }
         if (
             !this.props.activeCircle ||

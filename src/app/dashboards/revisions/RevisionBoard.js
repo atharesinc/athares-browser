@@ -73,7 +73,7 @@ class RevisionBoard extends Component {
                         alignItems: 'center'
                     }}>
                     <h1 className='ma3 lh-title white'>Revisions</h1>
-                    <small className='f6 white-80 db mb4 ml3'>
+                    <small className='f6 white-80 db mb4 ml3-l'>
                         Review proposed legislation and changes to existing laws
                     </small>
 
@@ -122,7 +122,7 @@ class RevisionBoard extends Component {
                     <h2 className='ma3 lh-title white'>Revisions</h2>
                 </div>
                 <small
-                    className='f6 white-80 db mb2 ml3 mobile-nav'
+                    className='f6 white-80 db mb2 ml3-l mobile-nav ph2'
                     style={{ height: '10vh' }}>
                     Review proposed legislation and changes to existing laws
                 </small>
@@ -160,7 +160,7 @@ class RevisionBoard extends Component {
 
 const Board = ({ title, revisions, circleID, user }) => {
     return (
-        <div className='w-50 mv2 ml2 pa2 revision-board'>
+        <div className='w-100 w-50-ns pa2 revision-board'>
             <div className='bb b--white pa2 mb2'>
                 <div className='white'>{title}</div>
             </div>

@@ -10,7 +10,7 @@ class Constitution extends PureComponent {
     componentDidMount() {
         this.props.dispatch(updateChannel(null));
         this.props.dispatch(updateRevision(null));
-        this.props.history.push('/app');
+        this.props.history.replace('/app');
     }
     render() {
         return null;

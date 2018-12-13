@@ -70,7 +70,7 @@ body {
     /* font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto',
         'Oxygen', 'Ubuntu', 'Cantarell', 'Avenir', 'Fira Sans', 'Droid Sans',
         'Helvetica Neue', sans-serif; */
-    font-family: 'Avenir Next LT Pro Regular';
+    font-family: 'Avenir Next LT Pro Demi';
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
     background: #222222;
@@ -196,7 +196,7 @@ input[type='phone'],
     display: flex;
     flex-direction: column;
     justify-content: space-around;
-    height: 70%;
+    height: 60%;
     align-items: center;
 }
 
@@ -1165,7 +1165,7 @@ input[type='phone'],
 
 .revision-board {
     min-width: 45%;
-    margin: 0 0.5rem;
+    margin: 0;
 }
 
 .vote-btn {
@@ -1670,7 +1670,6 @@ a:visited {
     #portal-login,
     #portal-register {
         width: calc(50% - 1px);
-        /* height: 56%; */
         margin: 0;
     }
     #register-button,

@@ -36,7 +36,7 @@ class Register extends PureComponent {
 
     componentDidMount() {
         if (this.props.user) {
-            this.props.history.push('/app');
+            this.props.history.replace('/app');
         } else {
             this.props.dispatch(updateChannel(null));
             this.props.dispatch(updateCircle(null));
