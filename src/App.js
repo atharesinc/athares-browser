@@ -67,16 +67,17 @@ class App extends PureComponent {
         //         to.next(msg); // pass to next middleware
         //     });
         // });
+        const rootPeer =
+            process.env.NODE_ENV === 'production'
+                ? 'https://athares-server.now.sh/gun'
+                : 'http://localhost:5000/gun';
 
         // For indexeddb support later
         //     var opt = {};
         // opt.store = RindexedDB(opt);
         // var gun = Gun(opt);
         this.gun = Gun({
-            peers: [
-                // 'https://athares-server.now.sh/gun'
-                'http://localhost:5000/gun'
-            ],
+            peers: [rootPeer]
             // secure: true
         });
         // this.gun = Gun();
