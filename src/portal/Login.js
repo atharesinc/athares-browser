@@ -16,6 +16,7 @@ import { connect } from 'react-redux';
 import { updateDesc, updateTitle } from '../store/head/actions';
 import { showLoading, hideLoading } from 'react-redux-loading-bar';
 import Loader from '../components/Loader';
+import sha from 'simple-hash-browser';
 
 class Login extends Component {
     constructor(props) {
@@ -37,9 +38,6 @@ class Login extends Component {
             // Update meta tags
             this.props.dispatch(updateDesc('Log in to Athares'));
             this.props.dispatch(updateTitle('Athares - Login'));
-            this.props.gun.get('users').open(users => {
-                alert(users);
-            });
         }
     }
     tryLogin = async e => {
@@ -58,7 +56,10 @@ class Login extends Component {
         let { password, email } = this.state;
 
         let newUser = this.props.gun.user();
-
+        // hash our password so it's mildly more safe when stored in localstorage
+        // TODO: better login persistence
+        let token = await sha(password);
+        console.log(password, token);
         newUser.auth(email, password, async ack => {
             if (ack.err) {
                 console.log(ack.err);

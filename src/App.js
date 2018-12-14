@@ -41,6 +41,8 @@ import 'gun/lib/radix.js';
 import 'gun/lib/radisk.js';
 import 'gun/lib/store.js';
 import 'gun/lib/rindexed.js';
+import sha from 'simple-hash-browser';
+window.sha = sha;
 
 let checkItemsTimer = null;
 
@@ -52,39 +54,28 @@ class App extends PureComponent {
             width: window.innerWidth
         };
         // Add listener
-        // Gun.on('opt', function(ctx) {
-        //     console.log('triggered');
-        //     if (ctx.once) {
-        //         return;
-        //     }
-        //     ctx.on('out', function(msg) {
-        //         console.log('out');
-        //         var to = this.to;
-        //         // Adds headers for put
-        //         msg.headers = {
-        //             token: 'thisIsTheTokenForRealsOUT'
-        //         };
-        //         to.next(msg); // pass to next middleware
-        //     });
-        // });
+        Gun.on('opt', function(ctx) {
+            if (ctx.once) {
+                return;
+            }
+            ctx.on('out', function(msg) {
+                // Adds headers for put
+                msg.headers = {
+                    token: process.env.REACT_APP_TOKEN
+                };
+                this.to.next(msg);
+            });
+        });
         const rootPeer =
             process.env.NODE_ENV === 'production'
                 ? 'https://athares-server.now.sh/gun'
                 : 'http://localhost:5000/gun';
 
-        // For indexeddb support later
-        // let opt = {};
-        // opt.store = RindexedDB(opt);
-        // var gun = Gun(opt);
         this.gun = Gun({
             peers: [rootPeer],
             store: window.RindexedDB({})
-            // secure: true
         });
-        // this.gun = Gun();
-        // if (process.env.NODE_ENV !== "production") {
-        // window.gun = this.gun;
-        // }
+
         this.checkItemsTimer = checkItemsTimer;
     }
     updateWidth = () => {
@@ -129,15 +120,16 @@ class App extends PureComponent {
             // indicate that the user is logging in and syncing
             console.log('i should be logging in');
             let user = this.gun.user();
-            user.recall({ sessionStorage: true }, data => {
-                user.get('profile').once(profile => {
-                    this.props.dispatch(sync.updateUser(profile.id));
-                    this.props.dispatch(sync.updatePub(data.put.pub));
-                    // now that we're logged in, start listening to changes in nodes we care about
-                    this.allListeners();
-                    // clear loader ?
-                });
-            });
+            // this.gun.on('auth', data => {
+            //     console.log(data)
+            //     user.get('profile').once(profile => {
+            //         this.props.dispatch(sync.updateUser(profile.id));
+            //         this.props.dispatch(sync.updatePub(data.put.pub));
+            //         // now that we're logged in, start listening to changes in nodes we care about
+            //         this.allListeners();
+            //         // clear loader ?
+            //     });
+            // });
         }
         window.addEventListener('resize', throttle(this.updateWidth, 1000));
         this.routeFix();

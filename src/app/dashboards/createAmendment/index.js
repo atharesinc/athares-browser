@@ -53,7 +53,7 @@ class CreateAmendment extends Component {
         let circle = this.props.circles.find(
             c => c.id === this.props.activeCircle
         );
-        console.log(circle.users);
+
         let numUsers = circle.users.length;
 
         user.get('profile').once(async profile => {

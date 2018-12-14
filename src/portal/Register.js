@@ -20,6 +20,7 @@ import { updateDesc, updateTitle } from '../store/head/actions';
 import { showLoading, hideLoading } from 'react-redux-loading-bar';
 import defaultUser from './defaultUser.json';
 import Loader from '../components/Loader';
+import sha from 'simple-hash-browser';
 
 class Register extends PureComponent {
     constructor(props) {
@@ -86,15 +87,18 @@ class Register extends PureComponent {
                 createdAt: moment().format(),
                 updatedAt: moment().format()
             };
-
-            newUser.create(email, password, ack => {
+            // hash our password so it's mildly more safe when stored in localstorage
+            // TODO: better login persistence
+            let token = await sha(password);
+            console.log(password, token);
+            newUser.create(email, token, ack => {
+                console.log(ack, newUser);
                 if (ack.err) {
                     swal(
                         'Error',
                         'User already exists with that email.',
                         'error'
                     );
-                    // Prevent user from being able to re-attempt login
                     newUser.leave();
                     return false;
                 }
@@ -102,7 +106,7 @@ class Register extends PureComponent {
                     .get('users')
                     .get(user.id)
                     .put(ack.pub);
-                newUser.auth(email, password, async otherAck => {
+                newUser.auth(email, token, async otherAck => {
                     // setup user's other information (since apparently it can't live inside of profile)
                     // Before i tried to set circles as an object inside of profile so that the user's circles could be attained with:
                     // user.get("profile").get("circles").map(circle=>...)
