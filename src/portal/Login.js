@@ -59,10 +59,9 @@ class Login extends Component {
         // hash our password so it's mildly more safe when stored in localstorage
         // TODO: better login persistence
         let token = await sha(password);
-        console.log(password, token);
-        newUser.auth(email, password, async ack => {
+        newUser.auth(email, token, async ack => {
             if (ack.err) {
-                console.log(ack.err);
+                // console.log(ack.err);
                 if (ack.err.indexOf('Auth attempt failed!')) {
                     swal('Error', 'Incorrect password', 'error');
                 } else {
@@ -83,6 +82,8 @@ class Login extends Component {
                 newUser = null;
                 return false;
             }
+            window.localStorage.setItem('ATHARES_ALIAS', email);
+            window.localStorage.setItem('ATHARES_TOKEN', token);
             newUser.get('profile').once(async profile => {
                 // set the public key and id in redux to log in
                 this.props.dispatch(updateUser(profile.id));

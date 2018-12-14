@@ -41,8 +41,6 @@ import 'gun/lib/radix.js';
 import 'gun/lib/radisk.js';
 import 'gun/lib/store.js';
 import 'gun/lib/rindexed.js';
-import sha from 'simple-hash-browser';
-window.sha = sha;
 
 let checkItemsTimer = null;
 
@@ -72,6 +70,7 @@ class App extends PureComponent {
                 : 'http://localhost:5000/gun';
 
         this.gun = Gun({
+            localStorage: false,
             peers: [rootPeer],
             store: window.RindexedDB({})
         });
@@ -116,20 +115,26 @@ class App extends PureComponent {
         });
 
         // check if user could log in
-        if (!this.props.user && sessionStorage.alias && sessionStorage.tmp) {
+        if (
+            !this.props.user &&
+            localStorage.getItem('ATHARES_ALIAS') &&
+            localStorage.getItem('ATHARES_TOKEN')
+        ) {
             // indicate that the user is logging in and syncing
-            console.log('i should be logging in');
             let user = this.gun.user();
-            // this.gun.on('auth', data => {
-            //     console.log(data)
-            //     user.get('profile').once(profile => {
-            //         this.props.dispatch(sync.updateUser(profile.id));
-            //         this.props.dispatch(sync.updatePub(data.put.pub));
-            //         // now that we're logged in, start listening to changes in nodes we care about
-            //         this.allListeners();
-            //         // clear loader ?
-            //     });
-            // });
+            let alias = localStorage.getItem('ATHARES_ALIAS');
+            let token = localStorage.getItem('ATHARES_TOKEN');
+            user.auth(alias, token, ack => {
+                if (!ack.err) {
+                    user.get('profile').once(profile => {
+                        this.props.dispatch(sync.updateUser(profile.id));
+                        this.props.dispatch(sync.updatePub(ack.put.pub));
+                        // now that we're logged in, start listening to changes in nodes we care about
+                        this.allListeners();
+                        // clear loader ?
+                    });
+                }
+            });
         }
         window.addEventListener('resize', throttle(this.updateWidth, 1000));
         this.routeFix();

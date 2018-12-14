@@ -90,18 +90,19 @@ class Register extends PureComponent {
             // hash our password so it's mildly more safe when stored in localstorage
             // TODO: better login persistence
             let token = await sha(password);
-            console.log(password, token);
             newUser.create(email, token, ack => {
-                console.log(ack, newUser);
+                //store alias and token in localstorage
                 if (ack.err) {
                     swal(
                         'Error',
                         'User already exists with that email.',
                         'error'
-                    );
-                    newUser.leave();
-                    return false;
-                }
+                        );
+                        newUser.leave();
+                        return false;
+                    }
+                    window.localStorage.setItem('ATHARES_ALIAS', email);
+                    window.localStorage.setItem('ATHARES_TOKEN', token);
                 gunRef
                     .get('users')
                     .get(user.id)
@@ -131,7 +132,7 @@ class Register extends PureComponent {
                     // This can be decrypted by the user when necessary
                     let encryptedPriv = await this.props.SEA.encrypt(
                         keys.priv,
-                        newUser.pair()
+                        { pub: newUser.is.pub, priv: newUser._.sea.priv }
                     );
 
                     // Actually set the user's information
