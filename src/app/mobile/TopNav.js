@@ -7,10 +7,9 @@ const TopNav = props => {
     console.log(props);
     return (
         <div
-            className={`w-100 v-mid bg-theme-dark flex-row justify-between items-center pv2 ph3 ${
+            className={`mobile-top-nav w-100 v-mid bg-theme-dark flex-row justify-between items-center pv2 ph3 ${
                 props.hide ? 'dn' : 'flex'
-            }`}
-            style={{ height: '3em' }}>
+            }`}>
             <img
                 src={props.user ? props.user.icon : '/img/user-default.png'}
                 className='ba b--white br-100 w2 h2 bw1'

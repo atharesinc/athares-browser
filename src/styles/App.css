@@ -1433,6 +1433,12 @@ a:visited {
     body {
         overflow: initial;
     }
+    .mobile-top-nav {
+        height: 4em;
+    }
+    .channel-group-label {
+        height: 2.25em;
+    }
     .high-img::before {
         height: 100vh;
         width: 100vw;
@@ -1480,7 +1486,11 @@ a:visited {
         width: 195%;
     }
     #circle-name {
-        max-height: 3em;
+        max-height: unset;
+        flex: auto;
+    }
+    #bottom-nav {
+        border-top: none;
     }
     #desktop-wrapper,
     #app-wrapper,
@@ -1518,8 +1528,12 @@ a:visited {
         background: #2f324299;
     }
     #channels-wrapper {
-        height: 100vh;
+        /* height: 100vh; */
         width: 100vw !important;
+        height: calc(100vh - 11em);
+    }
+    #channels-list {
+        height: calc(100% - 3em);
     }
     .revision-board {
         min-width: 80%;

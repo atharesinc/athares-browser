@@ -7,6 +7,7 @@ import { pull } from '../../store/state/reducers';
 import { withGun } from 'react-gun';
 import BottomNav from './BottomNav';
 import FeatherIcon from 'feather-icons-react';
+import { Scrollbars } from 'react-custom-scrollbars';
 
 class Channels extends Component {
     constructor(props) {
@@ -79,26 +80,36 @@ class Channels extends Component {
                         )}
                     </div>
                     <div id='channels-list'>
-                        <GovernanceChannelGroup
-                            style={style.docs}
-                            name={'Governance'}
-                        />
-                        <ChannelGroup
-                            style={style.channels}
-                            channelType={'group'}
-                            activeChannel={activeChannel}
-                            name={'Channels'}
-                            channels={channels.filter(channel => {
-                                return channel.channelType === 'group';
-                            })}
-                        />
-                        {/* <ChannelGroup
+                        <Scrollbars
+                            style={{
+                                width: '100%',
+                                height: '100%'
+                            }}
+                            autoHide
+                            autoHideTimeout={1000}
+                            autoHideDuration={200}
+                            universal={true}>
+                            <GovernanceChannelGroup
+                                style={style.docs}
+                                name={'Governance'}
+                            />
+                            <ChannelGroup
+                                style={style.channels}
+                                channelType={'group'}
+                                activeChannel={activeChannel}
+                                name={'Channels'}
+                                channels={channels.filter(channel => {
+                                    return channel.channelType === 'group';
+                                })}
+                            />
+                            {/* <ChannelGroup
                             style={style.dm}
                             channelType={"dm"}
                             activeChannel={activeChannel}
                             name={"Direct Messages"}
                             channels={dms}
                         /> */}
+                        </Scrollbars>
                     </div>
                     <BottomNav show={!!user} activeCircle={activeCircle} />
                 </div>
