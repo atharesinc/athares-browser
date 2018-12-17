@@ -25,7 +25,6 @@ class DesktopLayout extends PureComponent {
             prevProps.user !== this.props.user ||
             prevProps.pub !== this.props.pub
         ) {
-            console.log('rechecking user');
             this.checkUser();
         }
     }

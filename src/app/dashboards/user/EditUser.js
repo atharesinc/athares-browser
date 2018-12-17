@@ -33,10 +33,13 @@ class EditUser extends Component {
         if (!this.props.userId) {
             this.props.history.replace('/app');
         }
+        this.props.dispatch(hideLoading());
         await this.setState({
             ...this.props.user,
             loading: false
         });
+    }
+    componentWillUnmount() {
         this.props.dispatch(hideLoading());
     }
     editMode = bool => {

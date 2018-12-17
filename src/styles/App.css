@@ -1511,6 +1511,8 @@ a:visited {
     #bottom-nav {
         height: 3em;
         background: #2f3242;
+        position: fixed;
+        bottom: 0;
     }
     #bottom-nav:active {
         background: #2f324299;

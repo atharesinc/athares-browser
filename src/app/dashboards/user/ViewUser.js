@@ -6,7 +6,7 @@ import Loader from '../../../components/Loader';
 import { Scrollbars } from 'react-custom-scrollbars';
 import { connect } from 'react-redux';
 import { pull } from '../../../store/state/reducers';
-import { showLoading } from 'react-redux-loading-bar';
+import { showLoading, hideLoading } from 'react-redux-loading-bar';
 
 class ViewUser extends React.Component {
     constructor(props) {
@@ -24,7 +24,11 @@ class ViewUser extends React.Component {
     }
     toEdit = () => {
         this.props.dispatch(showLoading());
+        this.props.history.push('/app/user/edit');
     };
+    componentWillUnmount() {
+        this.props.dispatch(hideLoading());
+    }
     render() {
         const { user, stats } = this.state;
         const { loading } = this.props;
@@ -50,8 +54,8 @@ class ViewUser extends React.Component {
                                 BACK
                             </Link>
                             <div
+                                style={{ cursor: 'pointer' }}
                                 className='f6 link dim br-pill ba bw1 ph3 pv2 mh2 mh4-ns dib white'
-                                to='/app/user/edit'
                                 onClick={this.toEdit}>
                                 EDIT
                             </div>
