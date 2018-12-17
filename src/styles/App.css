@@ -1678,7 +1678,6 @@ a:visited {
     }
     .switch-portal {
         font-size: 0.9em;
-        margin-top: 2em;
     }
     .switch-portal:hover {
         transition: all 0.1s ease;
@@ -1686,7 +1685,7 @@ a:visited {
         cursor: pointer;
     }
     .portal-text {
-        margin: 1em 0;
+        margin: 0;
         font-size: 1em;
     }
     #other-circles .circle-img-wrapper:hover {
