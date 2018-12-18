@@ -1393,6 +1393,42 @@ a:visited {
 #revision-board-wrapper > div > div {
     overflow-y: hidden !important;
 }
+/* Search */
+
+#suggestions-wrapper {
+    width: 200px;
+    border: 1px solid #565656;
+}
+.suggestion-items-wrapper {
+    width: 100%;
+}
+.suggestion-header {
+    color: #fff;
+    background-color: #565656;
+    padding: 0.25em;
+    text-align: left;
+}
+.suggestion-items {
+    text-align: left;
+}
+.suggestion-item {
+    padding: 0.25em 0.25em 0.25em 1em;
+    color: #222;
+    border-bottom: 1px solid #565656;
+    transition: all 0.25s ease;
+}
+.suggestion-item:hover {
+    background: #444;
+    color: #00dffc;
+    cursor: pointer;
+    padding-left: 1.5em;
+}
+.suggestion-items:last-child {
+    border-bottom: none;
+}
+
+/* end search */
+
 .delay {
     animation-delay: 0.15s;
 }
