@@ -9,6 +9,10 @@ const MenuWrapper = ({ isOpen, history, isMenuOpen, user, ...props }) => {
     const logoutUser = async () => {
         props.dispatch(logout());
         sessionStorage.clear();
+
+        window.localStorage.removeItem('ATHARES_ALIAS');
+        window.localStorage.removeItem('ATHARES_TOKEN');
+
         props.toggleMenu();
     };
     const alsoToggleMenu = () => {

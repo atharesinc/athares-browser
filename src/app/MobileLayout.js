@@ -8,13 +8,18 @@ import Channels from './channels';
 import Dashboards from './dashboards';
 import PushingMenu from './menu';
 import Search from './search';
-import { Switch, Route } from 'react-router-dom';
+import { Switch, Route, withRouter } from 'react-router-dom';
 import { withGun } from 'react-gun';
 import { connect } from 'react-redux';
 import { pull } from '../store/state/reducers';
-import { updateCircle } from '../store/state/actions';
 import { pull as pullUI } from '../store/ui/reducers';
-import { openSearch, closeSearch, toggleSearch } from '../store/ui/actions';
+import { closeSearch, toggleSearch } from '../store/ui/actions';
+import { updateDesc, updateTitle } from '../store/head/actions';
+import {
+    updateCircle,
+    updateChannel,
+    updateRevision
+} from '../store/state/actions';
 
 class MobileLayout extends PureComponent {
     constructor(props) {
@@ -29,12 +34,37 @@ class MobileLayout extends PureComponent {
         if (this.props.user) {
             this.getUser();
         }
+        if (/app\/circle\/(CI[a-zA-Z\d]+)/.test(this.props.location.pathname)) {
+            this.getCircle();
+        }
     }
     componentDidUpdate(prevProps) {
         if (this.props.user !== prevProps.user) {
             this.getUser();
         }
+        if (
+            /app\/circle\/(CI[a-zA-Z\d]+)/.test(this.props.location.pathname) &&
+            /app\/circle\/(CI[a-zA-Z\d]+)/.exec(
+                this.props.location.pathname
+            )[1] !== prevProps.activeCircle
+        ) {
+            this.getCircle(
+                /app\/circle\/(CI[a-zA-Z\d]+)/.exec(
+                    this.props.location.pathname
+                )[1]
+            );
+        }
     }
+    getCircle = circleID => {
+        this.props.gun.get(circleID).once(circle => {
+            this.props.dispatch(updateCircle(circleID));
+            this.props.dispatch(updateChannel(null));
+            this.props.dispatch(updateRevision(null));
+            // update meta data
+            this.props.dispatch(updateDesc(circle.preamble));
+            this.props.dispatch(updateTitle(circle.name));
+        });
+    };
     clickOffSearch = e => {
         console.log(e.target.className);
         if (e.target.className === 'modal-mask') {
@@ -97,7 +127,9 @@ class MobileLayout extends PureComponent {
                         toggleMenu={this.toggleMenu}
                         hide={
                             location.pathname !== '/app' &&
-                            !location.pathname.includes('/app/circle/CI')
+                            !/app\/circle\/CI[a-zA-Z\d]{24}$/.test(
+                                location.pathname
+                            )
                         }
                         user={user}
                         toggleOpenSearch={this.toggleOpenSearch}
@@ -155,7 +187,7 @@ function mapStateToProps(state) {
     };
 }
 
-export default withGun(connect(mapStateToProps)(MobileLayout));
+export default withRouter(withGun(connect(mapStateToProps)(MobileLayout)));
 
 const CirclesAndChannels = props => {
     return (

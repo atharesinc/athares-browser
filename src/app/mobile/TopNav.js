@@ -9,10 +9,11 @@ const TopNav = ({ searchOpen = false, ...props }) => {
             className={`mobile-top-nav w-100 v-mid bg-theme-dark flex-row justify-between items-center pv2 ph3 ${
                 props.hide ? 'dn' : 'flex'
             }`}>
-            <FeatherIcon
-                icon='user'
-                className='white w2 h2'
-                style={{ height: '1.5em', width: '1.5em' }}
+            <img
+                src={props.user ? props.user.icon : '/img/user-default.png'}
+                className='ba b--white br-100 w2 h2 bw1'
+                alt='Menu'
+                onClick={props.toggleMenu}
             />
 
             {searchOpen ? (
