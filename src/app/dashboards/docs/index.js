@@ -50,7 +50,7 @@ class Constitution extends PureComponent {
                 name,
                 preamble,
                 createdAt,
-                users: Object.values(users).filter(u => u !== null)
+                users: users ? Object.values(users).filter(u => u !== null) : []
             };
 
             if (amendments) {

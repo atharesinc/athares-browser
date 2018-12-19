@@ -25,6 +25,7 @@ import 'gun/sea';
 import 'gun-synclist';
 import 'gun/lib/open';
 import 'gun/lib/unset';
+import 'gun/lib/load';
 
 import { GunProvider } from 'react-gun';
 import { connect } from 'react-redux';

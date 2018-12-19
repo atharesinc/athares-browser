@@ -7,30 +7,24 @@ import BottomNav from './mobile/BottomNav';
 import Channels from './channels';
 import Dashboards from './dashboards';
 import PushingMenu from './menu';
+import Search from './search';
 import { Switch, Route } from 'react-router-dom';
 import { withGun } from 'react-gun';
 import { connect } from 'react-redux';
 import { pull } from '../store/state/reducers';
 import { updateCircle } from '../store/state/actions';
+import { pull as pullUI } from '../store/ui/reducers';
+import { openSearch, closeSearch, toggleSearch } from '../store/ui/actions';
 
 class MobileLayout extends PureComponent {
     constructor(props) {
         super(props);
         this.state = {
             index: 0,
-            isOpen: false,
+            menuIsOpen: false,
             user: null
         };
     }
-    /*Triggered when swiping between views (mobile only) */
-    onChangeIndex = (index, type) => {
-        // console.log(index, type);
-        if (type === 'end') {
-            this.setState({
-                index: index
-            });
-        }
-    };
     componentDidMount() {
         if (this.props.user) {
             this.getUser();
@@ -41,6 +35,15 @@ class MobileLayout extends PureComponent {
             this.getUser();
         }
     }
+    clickOffSearch = e => {
+        console.log(e.target.className);
+        if (e.target.className === 'modal-mask') {
+            this.props.dispatch(closeSearch());
+        }
+    };
+    toggleOpenSearch = () => {
+        this.props.dispatch(toggleSearch());
+    };
     getUser = () => {
         // get this user
         let userRef = this.props.gun.user();
@@ -51,24 +54,14 @@ class MobileLayout extends PureComponent {
             });
         });
     };
-    /* Triggered when manually switching views (with button) */
-    changeIndex = e => {
-        const switcher = {
-            calendar: 0,
-            addTask: 1
-        };
-        this.setState({
-            index: switcher[e]
-        });
-    };
     toggleMenu = () => {
         this.setState({
-            isOpen: !this.state.isOpen
+            menuIsOpen: !this.state.menuIsOpen
         });
     };
     isMenuOpen = state => {
         this.setState({
-            isOpen: state.isOpen
+            menuIsOpen: state.menuIsOpen
         });
     };
     setActive = id => {
@@ -76,11 +69,17 @@ class MobileLayout extends PureComponent {
     };
     render() {
         const { user } = this.state;
-        const { circles, activeCircle, activeChannel, location } = this.props;
+        const {
+            circles,
+            activeCircle,
+            activeChannel,
+            location,
+            searchOpen
+        } = this.props;
         return (
             <div id='app-wrapper-outer' className='wrapper'>
                 <PushingMenu
-                    isOpen={this.state.isOpen}
+                    isOpen={this.state.menuIsOpen}
                     isMenuOpen={this.isMenuOpen}
                     history={this.props.history}
                     user={user}
@@ -96,9 +95,21 @@ class MobileLayout extends PureComponent {
                     id='app-wrapper'>
                     <TopNav
                         toggleMenu={this.toggleMenu}
-                        hide={location.pathname !== '/app'}
+                        hide={
+                            location.pathname !== '/app' &&
+                            !location.pathname.includes('/app/circle/CI')
+                        }
                         user={user}
+                        toggleOpenSearch={this.toggleOpenSearch}
+                        searchOpen={searchOpen}
                     />
+                    {searchOpen && (
+                        <div
+                            className='modal-mask'
+                            onClick={this.clickOffSearch}>
+                            <Search />
+                        </div>
+                    )}
                     <Switch>
                         <Route
                             exact
@@ -113,6 +124,19 @@ class MobileLayout extends PureComponent {
                             )}
                             path='/app'
                         />
+                        <Route
+                            exact
+                            component={props => (
+                                <CirclesAndChannels
+                                    activeCircle={activeCircle}
+                                    circles={circles}
+                                    setActive={this.setActive}
+                                    user={user}
+                                    {...props}
+                                />
+                            )}
+                            path='/app/circle/:id'
+                        />
                         <Route component={props => <Dashboards {...props} />} />
                     </Switch>
                 </div>
@@ -126,7 +150,8 @@ function mapStateToProps(state) {
         pub: pull(state, 'pub'),
         activeCircle: pull(state, 'activeCircle'),
         circles: pull(state, 'circles'),
-        activeChannel: pull(state, 'activeChannel')
+        activeChannel: pull(state, 'activeChannel'),
+        searchOpen: pullUI(state, 'searchOpen')
     };
 }
 

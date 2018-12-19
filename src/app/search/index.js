@@ -1,14 +1,15 @@
 import React from 'react';
+import SearchResults from './SearchResults';
+import FeatherIcon from 'feather-icons-react';
 import { withGun } from 'react-gun';
 
-class SearchWrapper extends React.Component {
+class Search extends React.Component {
     constructor() {
         super();
         this.state = {
             searchParams: '',
             circles: [],
             channels: [],
-            // users: [],
             amendments: [],
             revisions: [],
             loading: false
@@ -29,12 +30,12 @@ class SearchWrapper extends React.Component {
                 circles.forEach(
                     ({ users, channels, revisions, amendments, ...c }) => {
                         newState.circles = [...newState.circles, c];
-                        // newState.users = [...newState.users, ...Object.values(users)];
-                        newState.channels = [
-                            ...newState.channels,
-                            ...Object.values(channels)
-                        ];
-
+                        if (c.amendments !== undefined) {
+                            newState.channels = [
+                                ...newState.channels,
+                                ...Object.values(channels)
+                            ];
+                        }
                         if (c.amendments !== undefined) {
                             newState.amendments = [
                                 ...newState.amendments,
@@ -66,15 +67,18 @@ class SearchWrapper extends React.Component {
     render() {
         const { searchParams, loading } = this.state;
         return (
-            <div className='App'>
-                <h1>Hello CodeSandbox</h1>
-                <div>
+            <div className='bg-theme'>
+                <div id='search-input-wrapper' className='pv2 ph3'>
+                    <FeatherIcon className='theme-light-alt' icon='search' />
                     <input
-                        onBlur={this.hideSearch}
                         onChange={this.updateText}
                         value={searchParams}
+                        className={'transparent-input'}
+                        placeholder={'Enter search text'}
                     />
-                    {loading && 'Loading'}
+                    {loading && (
+                        <FeatherIcon className='spin white' icon='loader' />
+                    )}
                 </div>
                 {searchParams.length > 2 && !loading && (
                     <SearchResults {...this.state} />
@@ -84,4 +88,4 @@ class SearchWrapper extends React.Component {
     }
 }
 
-export default withGun(SearchWrapper);
+export default withGun(Search);

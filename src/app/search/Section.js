@@ -1,5 +1,7 @@
 import React from 'react';
 import { withRouter } from 'react-router-dom';
+import { closeSearch } from '../../store/ui/actions';
+import { connect } from 'react-redux';
 
 const Section = props => {
     let { data } = props;
@@ -18,6 +20,8 @@ const Section = props => {
         const item = e.currentTarget;
         const id = item.getAttribute('data-id');
         const chosenItem = data.find(item => item.id === id);
+        console.log(item, id, chosenItem);
+
         if (chosenItem) {
             const { history } = props;
 
@@ -41,6 +45,7 @@ const Section = props => {
                     );
                     break;
             }
+            props.dispatch(closeSearch());
         }
     };
     // If the user hasn't entered any search terms, or there are no results for this section, don't display the section
@@ -49,7 +54,7 @@ const Section = props => {
     }
     return (
         <div id='suggestion-items-wrapper'>
-            <div class='suggestion-header'>{props.title}</div>
+            <div className='suggestion-header'>{props.title.toUpperCase()}</div>
             <div />
             <div id='suggestion-items'>
                 {data.map(item => {
@@ -57,8 +62,8 @@ const Section = props => {
                         <div
                             className='suggestion-item'
                             key={item.id}
-                            data-id={item.id}
-                            onClick={navigate}>
+                            onClick={navigate}
+                            data-id={item.id}>
                             {item[props.searchOn]}
                         </div>
                     );
@@ -67,5 +72,7 @@ const Section = props => {
         </div>
     );
 };
-
-export default withRouter(Section);
+function mapStateToProps(state) {
+    return {};
+}
+export default connect(mapStateToProps)(withRouter(Section));

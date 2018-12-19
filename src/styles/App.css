@@ -1395,6 +1395,40 @@ a:visited {
 }
 /* Search */
 
+.modal-mask {
+    position: fixed;
+    z-index: 10;
+    top: 4em;
+    left: 0;
+    background: #00dffc99;
+    box-shadow: inset 0 3em 3em #00dffc;
+    height: 100vh;
+    width: 100vw;
+    animation: slide-down 0.25s ease-in-out;
+}
+#search-input-wrapper {
+    background: #2f3242;
+    color: #fff;
+    height: 2.5em;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+}
+.transparent-input {
+    background: transparent;
+    border: none;
+    color: #00deff;
+    margin-left: 1em;
+}
+.transparent-input:focus {
+    outline: none !important;
+    box-shadow: none;
+}
+.transparent-input::placeholder {
+    color: #5a6181;
+}
+
 #suggestions-wrapper {
     width: 200px;
     border: 1px solid #565656;
@@ -1404,27 +1438,38 @@ a:visited {
 }
 .suggestion-header {
     color: #fff;
-    background-color: #565656;
+    background-color: #3a3e52;
     padding: 0.25em;
+    padding-left: 0.75rem;
     text-align: left;
+    letter-spacing: 0.25em;
+    font-size: 0.7em;
 }
 .suggestion-items {
     text-align: left;
 }
 .suggestion-item {
-    padding: 0.25em 0.25em 0.25em 1em;
-    color: #222;
+    padding: 0.25em 0.25em 0.25em 1.5em;
     border-bottom: 1px solid #565656;
     transition: all 0.25s ease;
+    color: #5a6181;
+    height: 2.5em;
+    display: flex;
+    flex-direction: row;
+    justify-content: left;
+    align-items: center;
 }
 .suggestion-item:hover {
-    background: #444;
+    background: #44444499;
     color: #00dffc;
     cursor: pointer;
-    padding-left: 1.5em;
+    padding-left: 1.75em;
 }
 .suggestion-items:last-child {
     border-bottom: none;
+}
+.spin {
+    animation: spin infinite 1s;
 }
 
 /* end search */
@@ -1461,6 +1506,9 @@ a:visited {
 }
 .theme-light {
     color: #3a3e52;
+}
+.theme-light-alt {
+    color: #5a6181;
 }
 /* Small screens */
 
@@ -1882,6 +1930,62 @@ a:visited {
         opacity: 0.5;
     }
     100% {
+        opacity: 1;
+    }
+}
+/* Spin */
+@-moz-keyframes spin {
+    from {
+        -moz-transform: rotate(0deg);
+    }
+    to {
+        -moz-transform: rotate(360deg);
+    }
+}
+@-webkit-keyframes spin {
+    from {
+        -webkit-transform: rotate(0deg);
+    }
+    to {
+        -webkit-transform: rotate(360deg);
+    }
+}
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+/* Slide Down */
+@keyframes slide-down {
+    from {
+        height: 0;
+        opacity: 0;
+    }
+    to {
+        height: 100vh;
+        opacity: 1;
+    }
+}
+@-webkit-keyframes slide-down {
+    from {
+        height: 0;
+        opacity: 0;
+    }
+    to {
+        height: 100vh;
+        opacity: 1;
+    }
+}
+@-moz-keyframes slide-down {
+    from {
+        height: 0;
+        opacity: 0;
+    }
+    to {
+        height: 100vh;
         opacity: 1;
     }
 }
