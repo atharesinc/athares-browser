@@ -66,7 +66,6 @@ class MobileLayout extends PureComponent {
         });
     };
     clickOffSearch = e => {
-        console.log(e.target.className);
         if (e.target.className === 'modal-mask') {
             this.props.dispatch(closeSearch());
         }

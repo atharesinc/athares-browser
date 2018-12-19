@@ -14,6 +14,7 @@ class Search extends React.Component {
             revisions: [],
             loading: false
         };
+        this._isMounted = false;
     }
     updateText = e => {
         e.preventDefault();
@@ -22,27 +23,41 @@ class Search extends React.Component {
         });
     };
     async componentDidMount() {
+        this._isMounted = true;
         this.setState({ loading: true });
         this.props.gun.get('circles').load(data => {
+            console.log(data);
             if (data) {
                 let circles = Object.values(data);
                 let newState = { ...this.state };
                 circles.forEach(
                     ({ users, channels, revisions, amendments, ...c }) => {
                         newState.circles = [...newState.circles, c];
-                        if (c.amendments !== undefined) {
+                        if (channels !== undefined) {
+                            channels = Object.values(channels).map(o => ({
+                                ...o,
+                                circleName: c.name
+                            }));
                             newState.channels = [
                                 ...newState.channels,
                                 ...Object.values(channels)
                             ];
                         }
-                        if (c.amendments !== undefined) {
+                        if (amendments !== undefined) {
+                            amendments = Object.values(amendments).map(o => ({
+                                ...o,
+                                circleName: c.name
+                            }));
                             newState.amendments = [
                                 ...newState.amendments,
                                 ...Object.values(amendments)
                             ];
                         }
-                        if (c.revisions) {
+                        if (revisions !== undefined) {
+                            revisions = Object.values(revisions).map(o => ({
+                                ...o,
+                                circleName: c.name
+                            }));
                             newState.revisions = [
                                 ...newState.revisions,
                                 ...Object.values(revisions)
@@ -50,14 +65,18 @@ class Search extends React.Component {
                         }
                     }
                 );
-
-                this.setState({
-                    ...this.state,
-                    ...newState,
-                    loading: false
-                });
+                console.log(newState);
+                this._isMounted &&
+                    this.setState({
+                        ...this.state,
+                        ...newState,
+                        loading: false
+                    });
             }
         });
+    }
+    componentWillUnmount() {
+        this._isMounted = false;
     }
     hideSearch = () => {
         this.setState({

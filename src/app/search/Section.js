@@ -64,7 +64,8 @@ const Section = props => {
                             key={item.id}
                             onClick={navigate}
                             data-id={item.id}>
-                            {item[props.searchOn]}
+                            {item[props.searchOn] +
+                                (!item.preamble ? ' - ' + item.circleName : '')}
                         </div>
                     );
                 })}
