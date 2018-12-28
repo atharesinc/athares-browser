@@ -82,13 +82,12 @@ class Register extends PureComponent {
                 phone: '',
                 icon: defaultUser.text,
                 uname: '',
-                keychain: 'KC' + random(),
-                circleChain: 'CC' + random(),
+                keychain: 'KC' + random(), // keychain for dms
+                circleChain: 'CC' + random(), // keychain for circles
                 createdAt: moment().format(),
                 updatedAt: moment().format()
             };
             // hash our password so it's mildly more safe when stored in localstorage
-            // TODO: better login persistence
             let token = await sha(password);
             newUser.create(email, token, ack => {
                 //store alias and token in localstorage
@@ -97,12 +96,12 @@ class Register extends PureComponent {
                         'Error',
                         'User already exists with that email.',
                         'error'
-                        );
-                        newUser.leave();
-                        return false;
-                    }
-                    window.localStorage.setItem('ATHARES_ALIAS', email);
-                    window.localStorage.setItem('ATHARES_TOKEN', token);
+                    );
+                    newUser.leave();
+                    return false;
+                }
+                window.localStorage.setItem('ATHARES_ALIAS', email);
+                window.localStorage.setItem('ATHARES_TOKEN', token);
                 gunRef
                     .get('users')
                     .get(user.id)
@@ -118,9 +117,12 @@ class Register extends PureComponent {
                     newUser.get('revisions');
                     newUser.get('votes');
                     newUser.get('channels');
-                    newUser.get('keys');
-                    // create the "global" keychain for this user's DM's
+                    newUser.get('keychain');
+                    newUser.get('circleChain');
+
+                    // create the "global" keychain for this user's DM's and their circles
                     gunRef.get(user.keychain);
+                    gunRef.get(user.circleChain);
 
                     // HERE'S SOMETHING STUPID
                     // I can't figure out how to do public key crypto with Gun/SEA
@@ -135,7 +137,7 @@ class Register extends PureComponent {
                         { pub: newUser.is.pub, priv: newUser._.sea.priv }
                     );
 
-                    // Actually set the user's information
+                    // // Actually set the user's information
                     newUser
                         .get('profile')
                         .put({ ...user, apub: keys.pub, apriv: encryptedPriv });

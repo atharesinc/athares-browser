@@ -12,6 +12,7 @@ import { Scrollbars } from 'react-custom-scrollbars';
 import moment from 'moment';
 import FeatherIcon from 'feather-icons-react';
 import { Link } from 'react-router-dom';
+import { createGunCircle, getGunCircle, randPass } from '../../../utils/gunLib';
 
 class createCircleBoard extends Component {
     constructor(props) {
@@ -99,7 +100,10 @@ class createCircleBoard extends Component {
             swal('Sorry', 'Circles must have a name and preamble.', 'error');
             return false;
         }
+        let gunRef = this.props.gun;
         await this.setState({ loading: true });
+
+        let user = gunRef.user();
 
         // create circle
         let newCircle = {
@@ -110,24 +114,42 @@ class createCircleBoard extends Component {
             createdAt: moment().format(),
             updatedAt: moment().format()
         };
-        // get our user as a readonly ref
-        let user = this.props.gun.user(this.props.pub);
 
-        // create the node reference
-        let circle = this.props.gun.get(newCircle.id);
+        let newCircleEntity = gunRef.user();
+        const circleEntityPassword = randPass();
+        console.log(circleEntityPassword);
+        console.log(circleEntityPassword);
 
-        // populate node
-        circle.put(newCircle);
+        let res = await createGunCircle(
+            this.props.gun,
+            newCircle.id,
+            circleEntityPassword
+        );
 
-        // add this user to the node's circles
+        console.log(res);
+
+        console.log(circleEntityPassword);
+
+        let circle = await getGunCircle(
+            this.props.gun,
+            newCircle.id,
+            circleEntityPassword
+        );
+        console.log(circle);
+        circle.get('profile').put(newCircle);
+        // encrypt this new keypair in the user's circleChain
+        let priv = await this.props.SEA.encrypt(circleEntityPassword, {
+            pub: user.is.pub,
+            priv: user._.sea.priv
+        });
         circle.get('users').set(user);
-
-        // add this circle to the list of all circles
-        this.props.gun.get('circles').set(circle);
-
-        // add this circle to the user's list of circles
-
+        user.get('circleChain').set({
+            alias: newCircle.id,
+            pub: res.pub,
+            priv
+        });
         user.get('circles').set(circle);
+        gunRef.get('circles').set(circle);
 
         // set activeCircle as this one
         this.props.dispatch(updateCircle(newCircle.id));

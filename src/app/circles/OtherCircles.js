@@ -9,15 +9,26 @@ import { connect } from 'react-redux';
 
 class OtherCircles extends PureComponent {
     state = {
-        user: this.props.user
+        user: this.props.user,
+        circles: []
     };
-
+    componentDidMount() {
+        let user = this.props.gun.user();
+        user.get('circles').open(circles => {
+            console.log(circles);
+            if (circles) {
+                this.setState({
+                    circles
+                });
+            }
+        });
+    }
     setActive = id => {
         this.props.dispatch(updateCircle(id));
         this.props.history.push(`/app/circle/${id}`);
     };
     render() {
-        const { circles } = this.props;
+        const { circles } = this.state;
         return (
             <div id='other-circles'>
                 <Scrollbars
