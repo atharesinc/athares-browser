@@ -12,7 +12,7 @@
         "exif-js": "^2.3.0",
         "feather-icons-react": "^0.2.0",
         "gsap": "^1.20.4",
-        "gun": "^0.9.99999",
+        "gun": "^0.9.999995",
         "gun-synclist": "^1.0.2",
         "lodash.debounce": "^4.0.8",
         "lodash.throttle": "^4.1.1",
