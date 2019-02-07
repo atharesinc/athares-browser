@@ -1,175 +1,143 @@
-import React, { Component } from 'react';
-import CircleInviteList from './CircleInviteList';
-import { connect } from 'react-redux';
-import { pull } from '../../../store/state/reducers';
-import { updateCircle } from '../../../store/state/actions';
-import { withGun } from 'react-gun';
-import swal from 'sweetalert';
-import FeatherIcon from 'feather-icons-react';
-import { Link } from 'react-router-dom';
-import { updateDesc, updateTitle } from '../../../store/head/actions';
+import React, { Component } from "react";
+import CircleInviteList from "./CircleInviteList";
+import { connect } from "react-redux";
+import { pull } from "../../../store/state/reducers";
+import { updateCircle } from "../../../store/state/actions";
+import swal from "sweetalert";
+import FeatherIcon from "feather-icons-react";
+import { Link } from "react-router-dom";
+import { updateDesc, updateTitle } from "../../../store/head/actions";
+import { compose, graphql } from "react-apollo";
+import { ADD_USER_TO_CIRCLE } from "../../../graphql/mutations";
+// import { GET_USERS_BY_CIRCLE_ID} from "../../../graphql/queries";
 
 class addUser extends Component {
-    constructor(props) {
-        super(props);
+  constructor(props) {
+    super(props);
 
-        this.state = {
-            selectedUsers: [],
-            suggestions: []
-        };
-        this._isMounted = false;
-    }
-    componentDidUpdate(prevProps) {
-        if (prevProps.user !== this.props.user && !this.props.user) {
-            this.props.history.replace('/app');
-        }
-    }
-    componentDidMount() {
-        this._isMounted = true;
-        if (!this.props.user) {
-            this.props.history.replace('/app');
-        }
-        if (
-            !this.props.activeCircle ||
-            this.props.activeCircle !== this.props.match.params.id
-        ) {
-            this.props.dispatch(updateCircle(this.props.match.params.id));
-        } else {
-            this._isMounted && this.getUsers();
-        }
-        // Update meta tags
-        this.props.dispatch(updateDesc('Invite users to this circle.'));
-        this.props.dispatch(updateTitle('Invite Users'));
-    }
-    getUsers = () => {
-        let gunRef = this.props.gun;
-        gunRef.get('users').synclist(obj => {
-            let users = [];
-
-            // painstakingly get all the users
-            // maybe a task for a webworker?
-            if (obj.list) {
-                obj.list.forEach(pub => {
-                    if (pub === this.props.pub) {
-                        return;
-                    }
-                    let thisUser = gunRef.user(pub);
-                    thisUser.get('profile').once(user => {
-                        users.push({
-                            ...user,
-                            name: user.firstName + ' ' + user.lastName
-                        });
-                    });
-                });
-            }
-
-            this._isMounted &&
-                this.setState({
-                    suggestions: users
-                });
-        });
+    this.state = {
+      selectedUsers: []
     };
-    componentWillUnmount() {
-        this._isMounted = false;
+  }
+  componentDidUpdate(prevProps) {
+    if (prevProps.user !== this.props.user && !this.props.user) {
+      this.props.history.replace("/app");
     }
-    updateList = items => {
-        this.setState({
-            selectedUsers: items
-        });
-    };
-    onSubmit = e => {
-        e.preventDefault();
-        let gunRef = this.props.gun;
-        // double check that all users in state are NOT currently in circle
-        // ???
+  }
+  componentDidMount() {
+    this._isMounted = true;
+    if (!this.props.user) {
+      this.props.history.replace("/app");
+    }
+    if (
+      !this.props.activeCircle ||
+      this.props.activeCircle !== this.props.match.params.id
+    ) {
+      this.props.dispatch(updateCircle(this.props.match.params.id));
+    }
+    // Update meta tags
+    this.props.dispatch(updateDesc("Invite users to this circle."));
+    this.props.dispatch(updateTitle("Invite Users"));
+  }
 
-        // add each user to circle
-        let { selectedUsers } = this.state;
-        selectedUsers.forEach(thisUser => {
-            gunRef.get(thisUser.circleChain).set(this.props.activeCircle);
-        });
+  updateList = items => {
+    this.setState({
+      selectedUsers: items
+    });
+  };
+  onSubmit = e => {
+    e.preventDefault();
 
+    // add each user to circle
+    let { selectedUsers } = this.state;
+    try {
+      let invites = selectedUsers.map(user => {
+        return this.props.addUserToCircle({
+          variables: {
+            user: user.id,
+            circle: this.props.activeCircle
+          }
+        });
+      });
+      Promise.all(invites).then(() => {
         swal(
-            'User Added',
-            `${
-                selectedUsers.length > 1 ? 'These users have' : 'This user has'
-            } been added.`,
-            'success'
+          `${selectedUsers.length > 1 ? "Users Added" : "User Added"}`,
+          `${
+            selectedUsers.length > 1 ? "These users have" : "This user has"
+          } been added.`,
+          "success"
         );
-        this.props.history.push('/app');
+        this.props.history.push("/app");
         // clear state
         this.setState({
-            users: []
+          users: []
         });
-    };
-    render() {
-        const { suggestions, selectedUsers } = this.state;
-        return (
-            <div id='revisions-wrapper'>
-                <div className='flex ph2 mobile-nav'>
-                    <Link
-                        to='/app'
-                        className='flex justify-center items-center'>
-                        <FeatherIcon
-                            icon='chevron-left'
-                            className='white db dn-l'
-                            onClick={this.back}
-                        />
-                    </Link>
-                    <h2 className='ma3 lh-title white'> Invite Users </h2>
-                </div>
-                <form
-                    className='pa4 white wrapper mobile-body'
-                    onSubmit={this.onSubmit}
-                    id='create-circle-form'
-                    style={{
-                        overflowY: 'scroll'
-                    }}>
-                    <article className='cf'>
-                        <time className='f7 ttu tracked white-60'>
-                            Add existing users to participate in this circle
-                        </time>
-                        <div className='fn mt4'>
-                            <div
-                                className='mb4 ba b--white-30'
-                                id='circle-invite-list'>
-                                <CircleInviteList
-                                    shouldPlaceholder={
-                                        this.state.selectedUsers.length === 0
-                                    }
-                                    updateList={this.updateList}
-                                    suggestions={suggestions}
-                                    selectedUsers={selectedUsers}
-                                />
-                            </div>
-                        </div>
-                    </article>
-                    <div id='comment-desc' className='f6 white-60'>
-                        After pressing "Invite", the recipient(s) may be added
-                        automatically to this circle.
-                        <br />
-                        <br />
-                        Invitations are public information, but aren't subject
-                        to democratic process.
-                    </div>
-                    <button
-                        id='create-circle-button'
-                        className='btn mt4'
-                        type='submit'>
-                        Invite Users
-                    </button>
-                </form>
-            </div>
-        );
+      });
+    } catch (err) {
+      console.error(new Error(e));
+      swal("Error", "There was an error inviting users.", "error");
     }
+  };
+  render() {
+    const { selectedUsers } = this.state;
+    return (
+      <div id="revisions-wrapper">
+        <div className="flex ph2 mobile-nav">
+          <Link to="/app" className="flex justify-center items-center">
+            <FeatherIcon
+              icon="chevron-left"
+              className="white db dn-l"
+              onClick={this.back}
+            />
+          </Link>
+          <h2 className="ma3 lh-title white"> Invite Users </h2>
+        </div>
+        <form
+          className="pa4 white wrapper mobile-body"
+          onSubmit={this.onSubmit}
+          id="create-circle-form"
+          style={{
+            overflowY: "scroll"
+          }}
+        >
+          <article className="cf">
+            <time className="f7 ttu tracked white-60">
+              Add existing users to participate in this circle
+            </time>
+            <div className="fn mt4">
+              <div className="mb4 ba b--white-30" id="circle-invite-list">
+                <CircleInviteList
+                  shouldPlaceholder={this.state.selectedUsers.length === 0}
+                  updateList={this.updateList}
+                  selectedUsers={selectedUsers}
+                />
+              </div>
+            </div>
+          </article>
+          <div id="comment-desc" className="f6 white-60">
+            After pressing "Invite", the recipient(s) may be added automatically
+            to this circle.
+            <br />
+            <br />
+            Invitations aren't subject to democratic process.
+          </div>
+          <button id="create-circle-button" className="btn mt4" type="submit">
+            Invite Users
+          </button>
+        </form>
+      </div>
+    );
+  }
 }
 
 function mapStateToProps(state) {
-    return {
-        user: pull(state, 'user'),
-        pub: pull(state, 'pub'),
-        activeCircle: pull(state, 'activeCircle')
-    };
+  return {
+    user: pull(state, "user"),
+    pub: pull(state, "pub"),
+    activeCircle: pull(state, "activeCircle")
+  };
 }
 
-export default withGun(connect(mapStateToProps)(addUser));
+export default connect(mapStateToProps)(
+  graphql(ADD_USER_TO_CIRCLE, { name: "addUserToCircle" })(addUser)
+);

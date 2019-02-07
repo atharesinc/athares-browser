@@ -45,9 +45,8 @@ const ChannelLabel = props => {
     if (props.isTop) {
       return false;
     }
-
     props.dispatch(updateChannel(props.id));
-    if (props.id.substring(0, 2) !== "DM") {
+    if (props.channelType !== "dm") {
       props.history.push(
         `/app/circle/${props.activeCircle}/channel/${props.id}`
       );

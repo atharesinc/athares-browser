@@ -4,54 +4,33 @@ import ChatInput from "./ChatInput";
 import DMInviteList from "./DMInviteList";
 import { Link, withRouter } from "react-router-dom";
 import FeatherIcon from "feather-icons-react";
-import * as stateSelectors from "../../../store/state/reducers";
+import { pull } from "../../../store/state/reducers";
 import { connect } from "react-redux";
-import { withGun } from "react-gun";
 import { encrypt } from "simple-asym-crypto";
-import Gun from "gun/gun";
-import moment from "moment";
+import SimpleCrypto from "simple-crypto-js";
+import { GET_USER_BY_ID } from "../../../graphql/queries";
+import {
+  CREATE_CHANNEL,
+  CREATE_KEY,
+  CREATE_MESSAGE,
+  ADD_USER_TO_CHANNEL
+} from "../../../graphql/mutations";
+import { graphql, compose } from "react-apollo";
 
 class CreateDM extends Component {
-  constructor(props){
-super(props);
+  constructor(props) {
+    super(props);
     this.state = {
       text: "",
-      selectedUsers: [],
-      suggestions: []
+      selectedUsers: []
     };
-    this._isMounted = false;
   }
   componentDidMount() {
-    this._isMounted = true;
     if (!this.props.user) {
       this.props.history.push("/app");
     }
     document.getElementById("no-messages").innerText =
       "Enter a user's name to start a conversation";
-
-    this._isMounted && this.getUsers();
-  }
-  getUsers = () => {
-    let gunRef = this.props.gun;
-    gunRef.get("users").listonce(obj => {
-      let users = [];
-
-      // painstakingly get all the users
-      // maybe a task for a webworker?
-      obj.list.forEach(pub => {
-        let thisUser = gunRef.user(pub);
-        thisUser.get("profile").once(user => {
-          users.push({ ...user, name: user.firstName + " " + user.lastName });
-        });
-      });
-
-      this._isMounted && this.setState({
-        suggestions: users
-      });
-    });
-  }
-  componentWillUnmount(){
-    this._isMounted = false;
   }
   updateList = items => {
     this.setState({
@@ -65,67 +44,87 @@ super(props);
   };
   submit = async () => {
     let { selectedUsers, text } = this.state;
+    let { data } = this.props;
+    if (!data.User) {
+      return false;
+    }
     if (selectedUsers.length === 0) {
-      console.log("no users!");
       return false;
     }
     if (text.trim().length === 0) {
-      console.log("no text!");
       return false;
     }
-    // create a pub/priv key pair for the new channel
-    let pair = await this.props.SEA.pair();
-    let gunRef = this.props.gun;
+
+    let { User: user } = this.props.data;
+
+    // create a symmetric key for the new channel
+    var _secretKey = SimpleCrypto.generateRandom({ length: 256 });
+
+    var simpleCrypto = new SimpleCrypto(_secretKey);
+
     // add this user to the list of selectedUsers
-    let user = gunRef.user();
-    user.get("profile").once(async profile => {
-      selectedUsers.push(profile);
+    selectedUsers.push(user);
 
-      const newChannel = {
-        name: selectedUsers.map(u => u.firstName + " " + u.lastName).join(", "),
-        channelType: "dm",
-        id: "DM" + Gun.text.random(),
-         createdAt: moment().format(),
-        updatedAt: moment().format()
-      };
-      // give each user an encrypted copy of this keypair
-      selectedUsers.forEach(async user => {
-        // this is the symmetric shared key all users will need to encrypt and decrypt messages in this channel
-        // we encrypt the symmetric key with
-        const encryptedPair = await encrypt(pair, user.apub);
-        let keychain = gunRef.get(user.keychain);
-        console.log(keychain);
-        keychain.set({ ...newChannel, key: encryptedPair });
-      });
-      // create channel node
-      let channel = gunRef.get(newChannel.id);
-      channel.put(newChannel);
+    const tempName = selectedUsers
+      .map(u => u.firstName + " " + u.lastName)
+      .join(", ");
 
-      // set this node as a channel
-      gunRef.get("channels").set(channel);
+    const newChannel = {
+      name: tempName,
+      channelType: "dm",
+      description: tempName
+    };
 
-      // send the first message, encrypted with the channel's SEA pair
-      let newMessage = {
-        id: "MS" + Gun.text.random(),
-        text: await this.props.SEA.encrypt(this.state.text.trim(), pair),
-        user: profile,
-        channel: newChannel.id,
-        createdAt: moment().format(),
-        updatedAt: moment().format()
-      };
-
-      let message = gunRef.get(newMessage.id);
-      message.put(newMessage);
-
-      gunRef.get("messages").set(message);
-      channel.get("messages").set(message, ()=>{
-              this.props.history.push(`/app/channel/${newChannel.id}`);
-      });
-
+    // create the channel as a DM channel
+    let res = await this.props.createChannel({
+      variables: {
+        ...newChannel
+      }
     });
+
+    let { id } = res.data.createChannel;
+
+    // give each user an encrypted copy of this keypair and store it in
+    let promiseList = selectedUsers.map(async u => {
+      const encryptedKey = await encrypt(_secretKey, user.pub);
+      return this.props.createKey({
+        variables: {
+          key: encryptedKey,
+          user: u.id,
+          channel: id
+        }
+      });
+    });
+
+    // add each user to this channel
+    let promiseList2 = selectedUsers.map(u =>
+      this.props.addUserToChannel({
+        variables: {
+          channel: id,
+          user: u.id
+        }
+      })
+    );
+    // store all the keys, add all the users
+    await Promise.all(promiseList);
+    await Promise.all(promiseList2);
+    // send the first message, encrypted with the channel's SEA pair
+    let newMessage = {
+      text: simpleCrypto.encrypt(this.state.text.trim()),
+      user: this.props.user,
+      channel: id
+    };
+
+    this.props.createMessage({
+      variables: {
+        ...newMessage
+      }
+    });
+
+    this.props.history.push(`/app/channel/${id}`);
   };
   render() {
-    const { suggestions, selectedUsers } = this.state;
+    const { selectedUsers } = this.state;
     return (
       <div id="chat-wrapper">
         <div id="current-channel">
@@ -135,7 +134,6 @@ super(props);
           <DMInviteList
             shouldPlaceholder={this.state.selectedUsers.length === 0}
             updateList={this.updateList}
-            suggestions={suggestions}
             selectedUsers={selectedUsers}
           />
           <FeatherIcon icon="more-vertical" className="white db dn-ns" />
@@ -153,8 +151,18 @@ super(props);
 
 function mapStateToProps(state) {
   return {
-    user: stateSelectors.pull(state, "user")
+    user: pull(state, "user")
   };
 }
 
-export default withRouter(withGun(connect(mapStateToProps)(CreateDM)));
+export default connect(mapStateToProps)(
+  compose(
+    graphql(CREATE_MESSAGE, { name: "createMessage" }),
+    graphql(ADD_USER_TO_CHANNEL, { name: "addUserToChannel" }),
+    graphql(CREATE_CHANNEL, { name: "createChannel" }),
+    graphql(CREATE_KEY, { name: "createKey" }),
+    graphql(GET_USER_BY_ID, {
+      options: ({ user }) => ({ variables: { id: user || "" } })
+    })
+  )(withRouter(CreateDM))
+);
