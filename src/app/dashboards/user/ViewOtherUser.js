@@ -1,7 +1,6 @@
 import React from "react";
 import FeatherIcon from "feather-icons-react";
 import { Scrollbars } from "react-custom-scrollbars";
-import { withGun } from "react-gun";
 import Loader from "../../../components/Loader";
 import moment from "moment";
 import { Query } from "react-apollo";

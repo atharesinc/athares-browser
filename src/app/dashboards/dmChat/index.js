@@ -18,41 +18,15 @@ import {
 import { compose, graphql, Query } from "react-apollo";
 
 class DMChat extends Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
 
     this.state = {
-      loading: false,
       cryptoEnabled: false,
       text: ""
     };
     this.simpleCrypto = new SimpleCrypto("nope");
   }
-  async componentDidUpdate(prevProps) {
-    if (prevProps.getUserKeys.User !== this.props.getUserKeys.User) {
-      try {
-        let decryptedChannelSecret = await decrypt(
-          this.props.getUserKeys.User.keys[0].key,
-          this.props.getUserKeys.User.priv
-        );
-
-        this.simpleCrypto.setSecret(decryptedChannelSecret);
-        this.setState({
-          cryptoEnabled: true
-        });
-      } catch (err) {
-        console.error(new Error(err));
-      }
-    }
-  }
-  scrollToBottom = () => {
-    let chatBox = document.getElementById("chat-window");
-    if (chatBox) {
-      /* scroll to bottom */
-      chatBox = chatBox.firstElementChild.firstElementChild;
-      chatBox.scrollTop = chatBox.scrollHeight;
-    }
-  };
   async componentDidMount() {
     if (this.props.user === null) {
       this.props.history.push("/app");
@@ -69,58 +43,55 @@ class DMChat extends Component {
       //   this._isMounted && (await this.decryptMessages());
       this.scrollToBottom();
     }
+    if (this.props.getUserKeys.User) {
+      try {
+        let decryptedChannelSecret = await decrypt(
+          this.props.getUserKeys.User.keys[0].key,
+          this.props.getUserKeys.User.priv
+        );
+
+        this.simpleCrypto.setSecret(decryptedChannelSecret);
+        this.setState({
+          cryptoEnabled: true
+        });
+      } catch (err) {
+        console.error(new Error(err));
+      }
+    }
   }
-  //   decryptMessages = async () => {
-  //     // clear the old messages
-  //     const { SEA, activeChannel, dmsgs } = this.props;
-  //     let { key } = this.props.dms.find(d => d.id === activeChannel);
-  //     let encMessages = dmsgs.filter(d => d.channel === activeChannel);
 
-  //     let pair = await this.getThisChannelsPair(key);
-  //     // for each message, SEA decrypt the text and add it to messageState
-  //     let res = await encMessages.map(async msg => {
-  //       let decryptedMsg = {
-  //         ...msg,
-  //         text: await SEA.decrypt(msg.text, pair)
-  //       };
-  //       return decryptedMsg;
-  //     });
-  //     console.log(res);
-  //     Promise.all(res).then(messages => {
-  //       this.setState(
-  //         {
-  //           messages
-  //         },
-  //         this.scrollToBottom
-  //       );
-  //     });
-  //   };
-  //   getUser = async () => {
-  //     let user = null;
-  //     // if the user is logged in, get their user profile
-  //     let userRef = this.props.gun.user();
+  componentWillUnmount() {
+    console.log("should reset!");
+  }
+  async componentDidUpdate(prevProps) {
+    console.log("update");
+    if (prevProps.getUserKeys.User !== this.props.getUserKeys.User) {
+      console.log("crypto ready!");
+      try {
+        let decryptedChannelSecret = await decrypt(
+          this.props.getUserKeys.User.keys[0].key,
+          this.props.getUserKeys.User.priv
+        );
 
-  //     if (this.props.user) {
-  //       userRef.get("profile").once(userInfo => {
-  //         user = userInfo;
-  //       });
-  //     }
-  //     this.setState({ user });
-  //   };
-  //   getThisChannelsPair = async keyFromKeychain => {
-  //     const { user } = this.state;
-  //     const { SEA, gun } = this.props;
-  //     let gunUser = gun.user();
-  //     // keyfrom keychain is asymmetrically encrypted SEA pair used to encrypt and decrypt channel messages
-  //     // we need our asymmetric private key (apriv, aPriv, etc.), which can be decrypted with SEA's decrypt
-  //     const myAPriv = await this.props.SEA.decrypt(user.apriv, gunUser.pair());
-  //     if (myAPriv === undefined) {
-  //       console.error(SEA.error);
-  //       return false;
-  //     }
-  //     // now we can decrypt our version of the key and return the object to the user for SEA encryption/decryption
-  //     return await decrypt(keyFromKeychain, myAPriv);
-  //   };
+        this.simpleCrypto.setSecret(decryptedChannelSecret);
+        this.setState({
+          cryptoEnabled: true
+        });
+      } catch (err) {
+        console.error(new Error(err));
+      }
+    }
+    this.scrollToBottom();
+  }
+  scrollToBottom = () => {
+    let chatBox = document.getElementById("chat-window");
+    if (chatBox) {
+      /* scroll to bottom */
+      chatBox = chatBox.firstElementChild.firstElementChild;
+      chatBox.scrollTop = chatBox.scrollHeight;
+    }
+  };
+
   submit = async text => {
     let chatInput = document.getElementById("chat-input");
     let { user, activeChannel: channel } = this.props;
@@ -172,6 +143,7 @@ class DMChat extends Component {
   };
 
   render() {
+    console.log(this.props);
     let { activeChannel, getUserKeys } = this.props;
     let channel = null,
       messages = [],
@@ -190,11 +162,16 @@ class DMChat extends Component {
           if (getUserKeys.User) {
             user = getUserKeys.User;
           }
-          if (channel && messages && user && this.state.loading === false) {
+          console.log("channel: ", channel);
+          console.log("messages: ", messages);
+          console.log("user: ", user);
+          console.log("enabled: ", this.state.cryptoEnabled);
+          if (channel && messages && user && this.state.cryptoEnabled) {
             messages = messages.map(m => ({
               ...m,
               text: this.simpleCrypto.decrypt(m.text)
             }));
+            console.log("this should all be readable now");
             return (
               <div id="chat-wrapper">
                 <div id="current-channel">

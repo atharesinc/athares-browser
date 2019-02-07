@@ -2,7 +2,6 @@ import React, { Fragment, Component } from "react";
 import FeatherIcon from "feather-icons-react";
 import swal from "sweetalert";
 import { Link, withRouter } from "react-router-dom";
-import { withGun } from "react-gun";
 import {
   updateUser,
   updatePub,

@@ -86,7 +86,7 @@ class CreateDM extends Component {
 
     // give each user an encrypted copy of this keypair and store it in
     let promiseList = selectedUsers.map(async u => {
-      const encryptedKey = await encrypt(_secretKey, user.pub);
+      const encryptedKey = await encrypt(_secretKey, u.pub);
       return this.props.createKey({
         variables: {
           key: encryptedKey,

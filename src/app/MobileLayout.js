@@ -9,7 +9,6 @@ import Dashboards from "./dashboards";
 import PushingMenu from "./menu";
 import Search from "./search";
 import { Switch, Route, withRouter } from "react-router-dom";
-import { withGun } from "react-gun";
 import { connect } from "react-redux";
 import { pull } from "../store/state/reducers";
 import { pull as pullUI } from "../store/ui/reducers";

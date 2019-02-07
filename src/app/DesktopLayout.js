@@ -3,7 +3,6 @@ import Circles from "./circles";
 import Channels from "./channels";
 import Dashboards from "./dashboards";
 import PushingMenu from "./menu";
-import { withGun } from "react-gun";
 import { connect } from "react-redux";
 import { pull } from "../store/state/reducers";
 

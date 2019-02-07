@@ -4,7 +4,6 @@ import EditUser from "./EditUser";
 import ViewOtherUser from "./ViewOtherUser"; // same as view user w/o btns to toggle
 import { Switch, Route } from "react-router-dom";
 import { connect } from "react-redux";
-import { withGun } from "react-gun";
 import { pull } from "../../../store/state/reducers";
 import Loader from "../../../components/Loader";
 import { Query } from "react-apollo";
