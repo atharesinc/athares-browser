@@ -275,3 +275,72 @@ export const GET_USER_KEYS = gql`
     }
   }
 `;
+
+export const SEARCH_ALL = gql`
+  query searchForUser($text: String!, $id: ID!) {
+    allCircles(
+      last: 5
+      filter: { OR: [{ id: $id }, { name_contains: $text }] }
+    ) {
+      id
+      name
+      icon
+    }
+    allChannels(
+      last: 5
+      filter: {
+        channelType_not: "dm"
+        OR: [{ id: $id }, { name_contains: $text }]
+      }
+    ) {
+      id
+      name
+      description
+      circle {
+        id
+        name
+      }
+    }
+    allRevisions(
+      last: 5
+      filter: { OR: [{ id: $id }, { title_contains: $text }] }
+    ) {
+      id
+      title
+      newText
+      circle {
+        id
+        name
+      }
+    }
+    allAmendments(
+      last: 5
+      filter: { OR: [{ id: $id }, { title_contains: $text }] }
+    ) {
+      id
+      title
+      text
+      circle {
+        id
+        name
+      }
+    }
+    allUsers(
+      last: 5
+      filter: {
+        OR: [
+          { id: $id }
+          { firstName_contains: $text }
+          { lastName_contains: $text }
+          { email_contains: $text }
+          { uname_contains: $text }
+        ]
+      }
+    ) {
+      id
+      firstName
+      lastName
+      icon
+    }
+  }
+`;

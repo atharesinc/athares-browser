@@ -60,13 +60,8 @@ class DMChat extends Component {
     }
   }
 
-  componentWillUnmount() {
-    console.log("should reset!");
-  }
   async componentDidUpdate(prevProps) {
-    console.log("update");
     if (prevProps.getUserKeys.User !== this.props.getUserKeys.User) {
-      console.log("crypto ready!");
       try {
         let decryptedChannelSecret = await decrypt(
           this.props.getUserKeys.User.keys[0].key,
@@ -143,7 +138,6 @@ class DMChat extends Component {
   };
 
   render() {
-    console.log(this.props);
     let { activeChannel, getUserKeys } = this.props;
     let channel = null,
       messages = [],
@@ -162,16 +156,12 @@ class DMChat extends Component {
           if (getUserKeys.User) {
             user = getUserKeys.User;
           }
-          console.log("channel: ", channel);
-          console.log("messages: ", messages);
-          console.log("user: ", user);
-          console.log("enabled: ", this.state.cryptoEnabled);
+
           if (channel && messages && user && this.state.cryptoEnabled) {
             messages = messages.map(m => ({
               ...m,
               text: this.simpleCrypto.decrypt(m.text)
             }));
-            console.log("this should all be readable now");
             return (
               <div id="chat-wrapper">
                 <div id="current-channel">

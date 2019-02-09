@@ -29,31 +29,31 @@ class MobileLayout extends PureComponent {
     };
   }
   componentDidMount() {
-    if (/app\/circle\/(CI[a-zA-Z\d]+)/.test(this.props.location.pathname)) {
-      this.getCircle();
-    }
+    // if (/app\/circle\/(CI[a-zA-Z\d]+)/.test(this.props.location.pathname)) {
+    //   this.getCircle();
+    // }
   }
   componentDidUpdate(prevProps) {
-    if (
-      /app\/circle\/(CI[a-zA-Z\d]+)/.test(this.props.location.pathname) &&
-      /app\/circle\/(CI[a-zA-Z\d]+)/.exec(this.props.location.pathname)[1] !==
-        prevProps.activeCircle
-    ) {
-      this.getCircle(
-        /app\/circle\/(CI[a-zA-Z\d]+)/.exec(this.props.location.pathname)[1]
-      );
-    }
+    // if (
+    //   /app\/circle\/(CI[a-zA-Z\d]+)/.test(this.props.location.pathname) &&
+    //   /app\/circle\/(CI[a-zA-Z\d]+)/.exec(this.props.location.pathname)[1] !==
+    //     prevProps.activeCircle
+    // ) {
+    //   this.getCircle(
+    //     /app\/circle\/(CI[a-zA-Z\d]+)/.exec(this.props.location.pathname)[1]
+    //   );
+    // }
   }
-  getCircle = circleID => {
-    this.props.gun.get(circleID).once(circle => {
-      this.props.dispatch(updateCircle(circleID));
-      this.props.dispatch(updateChannel(null));
-      this.props.dispatch(updateRevision(null));
-      // update meta data
-      this.props.dispatch(updateDesc(circle.preamble));
-      this.props.dispatch(updateTitle(circle.name));
-    });
-  };
+  // getCircle = circleID => {
+  //   this.props.gun.get(circleID).once(circle => {
+  //     this.props.dispatch(updateCircle(circleID));
+  //     this.props.dispatch(updateChannel(null));
+  //     this.props.dispatch(updateRevision(null));
+  //     // update meta data
+  //     this.props.dispatch(updateDesc(circle.preamble));
+  //     this.props.dispatch(updateTitle(circle.name));
+  //   });
+  // };
   clickOffSearch = e => {
     if (e.target.className === "modal-mask") {
       this.props.dispatch(closeSearch());
@@ -116,7 +116,7 @@ class MobileLayout extends PureComponent {
             toggleMenu={this.toggleMenu}
             hide={
               location.pathname !== "/app" &&
-              !/app\/circle\/CI[a-zA-Z\d]{24}$/.test(location.pathname)
+              !/app\/circle\/[a-zA-Z\d]{25}$/.test(location.pathname)
             }
             user={user}
             toggleOpenSearch={this.toggleOpenSearch}

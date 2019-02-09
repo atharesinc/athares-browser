@@ -12,23 +12,34 @@ import {
   GET_DMS_BY_USER
 } from "../../graphql/queries";
 import { Query, graphql } from "react-apollo";
+import { updateCircle } from "../../store/state/actions";
 
 class Channels extends Component {
   constructor(props) {
     super(props);
-
-    this.state = {
-      channels: [],
-      circle: null
-    };
-    this._isMounted = false;
+  }
+  componentDidMount() {
+    if (/\/app\/circle\/.{25}$/.test(this.props.location.pathname)) {
+      let match = /\/app\/circle\/(.{25})$/.exec(this.props.location.pathname);
+      this.props.dispatch(updateCircle(match[1]));
+    }
+  }
+  componentDidUpdate(prevProps) {
+    if (/\/app\/circle\/.{25}$/.test(this.props.location.pathname)) {
+      let match = /\/app\/circle\/(.{25})$/.exec(
+        this.props.location.pathname
+      )[1];
+      if (match !== this.props.activeCircle) {
+        this.props.dispatch(updateCircle(match));
+      }
+    }
   }
   goToOptions = () => {
     this.props.history.push(`/app/circle/${this.props.activeCircle}/leave`);
   };
   render() {
     let { activeChannel, user, activeCircle, getDMsByUser } = this.props;
-
+    let mobile = window.innerWidth < 993 ? false : true;
     let circle = null;
     let channels = [];
     let dms = [];
@@ -61,37 +72,38 @@ class Channels extends Component {
                   )}
                 </div>
                 <div id="channels-list">
-                  <Scrollbars
+                  {/* <Scrollbars
                     style={{
-                      width: "100%",
-                      height: "100%"
+                      // width: "100%",
+                      // height: "100%",
+                      overflow: "none"
                     }}
                     autoHide
                     autoHideTimeout={1000}
                     autoHideDuration={200}
                     universal={true}
-                  >
-                    <GovernanceChannelGroup
-                      style={style.docs}
-                      name={"Governance"}
-                    />
-                    <ChannelGroup
-                      style={style.channels}
-                      channelType={"group"}
-                      activeChannel={activeChannel}
-                      name={"Channels"}
-                      channels={channels.filter(channel => {
-                        return channel.channelType === "group";
-                      })}
-                    />
-                    <ChannelGroup
-                      style={style.dm}
-                      channelType={"dm"}
-                      activeChannel={activeChannel}
-                      name={"Direct Messages"}
-                      channels={dms}
-                    />
-                  </Scrollbars>
+                  > */}
+                  <GovernanceChannelGroup
+                    style={style.docs}
+                    name={"Governance"}
+                  />
+                  <ChannelGroup
+                    style={style.channels}
+                    channelType={"group"}
+                    activeChannel={activeChannel}
+                    name={"Channels"}
+                    channels={channels.filter(channel => {
+                      return channel.channelType === "group";
+                    })}
+                  />
+                  <ChannelGroup
+                    style={style.dm}
+                    channelType={"dm"}
+                    activeChannel={activeChannel}
+                    name={"Direct Messages"}
+                    channels={dms}
+                  />
+                  {/* </Scrollbars> */}
                 </div>
                 <BottomNav show={!!user} activeCircle={activeCircle} />
               </div>
@@ -107,17 +119,21 @@ class Channels extends Component {
                     alignItems: "center"
                   }}
                 >
-                  <div>
+                  <div className="w-100">
                     {user ? (
                       <Link to={"/app/new/circle"}>
-                        Select a circle or create one
+                        <div className="pv2 ph3 w-100 mt2 white-50 glow">
+                          Select a circle or create one
+                        </div>
                       </Link>
                     ) : (
                       <Link to={"/login"}>
-                        Welcome to Athares
-                        <br />
-                        <br />
-                        Login or Register to get started.
+                        <div className="pv2 ph3 w-100">
+                          Welcome to Athares
+                          <br />
+                          <br />
+                          Login or Register to get started.
+                        </div>
                       </Link>
                     )}
                   </div>
@@ -141,13 +157,13 @@ class Channels extends Component {
 
 const style = {
   docs: {
-    // flex: 1
+    flex: 1
   },
   channels: {
-    // flex: 1
+    flex: 1
   },
   dm: {
-    // flex: 1
+    flex: 1
   }
 };
 
