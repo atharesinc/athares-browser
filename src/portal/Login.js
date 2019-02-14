@@ -44,41 +44,47 @@ class Login extends Component {
   tryLogin = async e => {
     this.props.dispatch(showLoading());
     e.preventDefault();
-    const isValid = validateLogin({ ...this.state });
-
     await this.setState({ loading: true });
+    const isValid = validateLogin({ ...this.state });
 
     if (isValid !== undefined) {
       swal("Error", isValid[Object.keys(isValid)[0]][0], "error");
+      this.setState({ loading: false });
       this.props.dispatch(hideLoading());
       return false;
     }
     const { signinUser } = this.props;
     let { password, email } = this.state;
-    let hashedToken = await sha(password);
+    try {
+      let hashedToken = await sha(password);
 
-    const res = await signinUser({
-      variables: {
-        email,
-        password: hashedToken
-      }
-    });
+      const res = await signinUser({
+        variables: {
+          email,
+          password: hashedToken
+        }
+      });
 
-    console.log(res);
-    const {
-      data: {
-        signinUser: { user }
-      }
-    } = res;
+      const {
+        data: {
+          signinUser: { user }
+        }
+      } = res;
 
-    //store in redux
-    window.localStorage.setItem("ATHARES_ALIAS", email);
-    window.localStorage.setItem("ATHARES_TOKEN", hashedToken);
-    this.props.dispatch(updateUser(user.id));
-    this.props.dispatch(updatePub(hashedToken));
-    this.props.history.push("/app");
-    this.props.dispatch(hideLoading());
-    await this.setState({ loading: false });
+      //store in redux
+      window.localStorage.setItem("ATHARES_ALIAS", email);
+      window.localStorage.setItem("ATHARES_TOKEN", hashedToken);
+      this.props.dispatch(updateUser(user.id));
+      this.props.dispatch(updatePub(hashedToken));
+      this.props.dispatch(hideLoading());
+      this.setState({ loading: false });
+      this.props.history.push("/app");
+    } catch (err) {
+      console.log(err);
+      this.props.dispatch(hideLoading());
+      swal("Error", err.message, "error");
+      this.setState({ loading: false });
+    }
   };
   updateInfo = () => {
     this.setState({
@@ -105,7 +111,7 @@ class Login extends Component {
             alt="brand"
           />
         </div>
-        {loading ? (
+        {this.state.loading ? (
           <div
             className="wrapper flex flex-row justify-center items-center"
             id="portal-login"

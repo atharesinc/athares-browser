@@ -10,7 +10,7 @@ import { Scrollbars } from "react-custom-scrollbars";
 */
 const ChannelGroup = props => {
   return (
-    <div className="channel-group-wrapper">
+    <div className="channel-group-wrapper openDown">
       {props.name ? (
         <ChannelLabel
           name={props.name}
@@ -21,7 +21,11 @@ const ChannelGroup = props => {
         />
       ) : null}
       <Scrollbars
-        style={{ width: "100%", height: "calc(100vh /3)", paddingLeft: "1em" }}
+        style={{
+          width: "100%",
+          height: "calc(100vh /3)",
+          paddingLeft: "1em"
+        }}
         flex={1}
         autoHide
         autoHideTimeout={1000}

@@ -10,7 +10,7 @@ import Docs from "./docs";
 import CreateAmendment from "./createAmendment";
 import User from "./user";
 import Revisions from "./revisions";
-import LeaveCircle from "./leaveCircle";
+import Settings from "./settings";
 import News from "./news";
 
 import { Switch, Route } from "react-router-dom";
@@ -26,8 +26,8 @@ const Dashboards = props => {
       />
       <Route
         exact
-        path={`${match.path}/circle/:id/leave`}
-        render={props => <LeaveCircle {...props} />}
+        path={`${match.path}/circle/:id/settings`}
+        render={props => <Settings {...props} />}
       />
       <Route
         exact

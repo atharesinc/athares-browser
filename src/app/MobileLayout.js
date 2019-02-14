@@ -33,27 +33,7 @@ class MobileLayout extends PureComponent {
     //   this.getCircle();
     // }
   }
-  componentDidUpdate(prevProps) {
-    // if (
-    //   /app\/circle\/(CI[a-zA-Z\d]+)/.test(this.props.location.pathname) &&
-    //   /app\/circle\/(CI[a-zA-Z\d]+)/.exec(this.props.location.pathname)[1] !==
-    //     prevProps.activeCircle
-    // ) {
-    //   this.getCircle(
-    //     /app\/circle\/(CI[a-zA-Z\d]+)/.exec(this.props.location.pathname)[1]
-    //   );
-    // }
-  }
-  // getCircle = circleID => {
-  //   this.props.gun.get(circleID).once(circle => {
-  //     this.props.dispatch(updateCircle(circleID));
-  //     this.props.dispatch(updateChannel(null));
-  //     this.props.dispatch(updateRevision(null));
-  //     // update meta data
-  //     this.props.dispatch(updateDesc(circle.preamble));
-  //     this.props.dispatch(updateTitle(circle.name));
-  //   });
-  // };
+
   clickOffSearch = e => {
     if (e.target.className === "modal-mask") {
       this.props.dispatch(closeSearch());
@@ -62,16 +42,6 @@ class MobileLayout extends PureComponent {
   toggleOpenSearch = () => {
     this.props.dispatch(toggleSearch());
   };
-  //   getUser = () => {
-  //     // get this user
-  //     let userRef = this.props.gun.user();
-
-  //     userRef.get("profile").once(async user => {
-  //       this.setState({
-  //         user
-  //       });
-  //     });
-  //   };
   toggleMenu = () => {
     this.setState({
       menuIsOpen: !this.state.menuIsOpen
@@ -94,6 +64,7 @@ class MobileLayout extends PureComponent {
       searchOpen,
       user
     } = this.props;
+    console.log(searchOpen);
     return (
       <div id="app-wrapper-outer" className="wrapper">
         <PushingMenu

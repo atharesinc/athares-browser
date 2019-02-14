@@ -124,8 +124,18 @@ export const ADD_CHANNEL_TO_CIRCLE = gql`
 `;
 
 export const CREATE_MESSAGE = gql`
-  mutation createMessage($text: String!, $user: ID!, $channel: ID!) {
-    createMessage(text: $text, channelId: $channel, userId: $user) {
+  mutation createMessage(
+    $text: String!
+    $user: ID!
+    $channel: ID!
+    $type: String
+  ) {
+    createMessage(
+      text: $text
+      channelId: $channel
+      userId: $user
+      type: "text"
+    ) {
       id
     }
   }
@@ -250,6 +260,22 @@ export const ADD_USER_TO_CHANNEL = gql`
       channelsChannel {
         id
       }
+    }
+  }
+`;
+
+export const CREATE_INVITE = gql`
+  mutation createInvite($inviter: ID!, $circle: ID!) {
+    createInvite(inviterId: $inviter, circleId: $circle, hasAccepted: false) {
+      id
+    }
+  }
+`;
+
+export const UPDATE_INVITE = gql`
+  mutation updateInvite($id: ID!) {
+    updateInvite(id: $id, hasAccepted: true) {
+      id
     }
   }
 `;

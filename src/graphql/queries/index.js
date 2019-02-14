@@ -68,6 +68,7 @@ export const GET_CHANNELS_BY_CIRCLE_ID = gql`
     Circle(id: $id) {
       id
       name
+      preamble
       channels {
         id
         name
@@ -341,6 +342,26 @@ export const SEARCH_ALL = gql`
       firstName
       lastName
       icon
+    }
+  }
+`;
+
+export const GET_INVITE_BY_ID = gql`
+  query getInviteById($id: ID!) {
+    Invite(id: $id) {
+      id
+      hasAccepted
+      inviter {
+        id
+        firstName
+        lastName
+        icon
+      }
+      circle {
+        id
+        name
+        icon
+      }
     }
   }
 `;

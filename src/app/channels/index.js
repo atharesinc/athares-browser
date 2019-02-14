@@ -35,7 +35,7 @@ class Channels extends Component {
     }
   }
   goToOptions = () => {
-    this.props.history.push(`/app/circle/${this.props.activeCircle}/leave`);
+    this.props.history.push(`/app/circle/${this.props.activeCircle}/settings`);
   };
   render() {
     let { activeChannel, user, activeCircle, getDMsByUser } = this.props;
@@ -115,7 +115,6 @@ class Channels extends Component {
                 <div
                   id="channels-list"
                   style={{
-                    justifyContent: "space-around",
                     alignItems: "center"
                   }}
                 >

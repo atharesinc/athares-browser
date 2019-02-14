@@ -47,9 +47,11 @@ class addUser extends Component {
   };
   onSubmit = e => {
     e.preventDefault();
-
     // add each user to circle
     let { selectedUsers } = this.state;
+    if (selectedUsers.length === 0) {
+      return;
+    }
     try {
       let invites = selectedUsers.map(user => {
         return this.props.addUserToCircle({

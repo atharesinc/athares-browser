@@ -16,7 +16,7 @@ import Policy from "./policy";
 import DesktopLayout from "./app/DesktopLayout";
 import MobileLayout from "./app/MobileLayout";
 import RevisionMonitor from "./components/RevisionMonitor";
-
+import Invite from "./invite";
 import Head from "./head";
 
 // import Loader from "./app/Loader";
@@ -26,13 +26,11 @@ import { TweenMax } from "gsap";
 import { connect } from "react-redux";
 import { pull } from "./store/state/reducers";
 import * as sync from "./store/state/actions";
-import moment from "moment";
 import LoadingBar from "react-redux-loading-bar";
 
 // web worker stuff
 // import worker from "./workers/listener-worker";
 // import WebWorker from "./workers/WebWorker";
-// IndexedDb stuff for later
 import { SIGNIN_USER } from "./graphql/mutations";
 import { graphql } from "react-apollo";
 
@@ -150,16 +148,12 @@ class App extends PureComponent {
                 <Route
                   exact
                   path="/login"
-                  render={props => (
-                    <Login {...props} listen={this.allListeners} />
-                  )}
+                  render={props => <Login {...props} />}
                 />
                 <Route
                   exact
                   path="/register"
-                  render={props => (
-                    <Register {...props} listen={this.allListeners} />
-                  )}
+                  render={props => <Register {...props} />}
                 />
                 <Route exact path="/" render={() => <SplashPage />} />
                 <Route exact path="/roadmap" render={() => <Roadmap />} />
@@ -174,6 +168,11 @@ class App extends PureComponent {
                       <MobileLayout {...props} />
                     )
                   }
+                />
+                <Route
+                  exact
+                  path="/invite/:id"
+                  render={props => <Invite {...props} />}
                 />
                 {/* <Route exact path="/test" component={Test} /> */}
                 <Route render={() => <NoMatch />} />

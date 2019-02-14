@@ -20,6 +20,7 @@ import sha from "simple-hash-browser";
 import { CREATE_USER, SIGNIN_USER } from "../graphql/mutations";
 import { graphql, compose } from "react-apollo";
 import { pair } from "simple-asym-crypto";
+import SimpleCrypto from "simple-crypto-js";
 
 class Register extends PureComponent {
   constructor(props) {
@@ -70,6 +71,8 @@ class Register extends PureComponent {
     let { firstName, lastName, password, email } = this.state;
 
     let hashedToken = await sha(password);
+    // Encrypt the user's private key in the database with the hashed password
+    let simpleCrypto = new SimpleCrypto(hashedToken);
     try {
       let keys = await pair();
       await createUser({
@@ -80,7 +83,7 @@ class Register extends PureComponent {
           icon: defaultUser.text,
           password: hashedToken,
           pub: keys.pub,
-          priv: keys.priv
+          priv: simpleCrypto.encrypt(keys.priv)
         }
       });
       const res = await signinUser({
@@ -90,7 +93,6 @@ class Register extends PureComponent {
         }
       });
 
-      console.log(res);
       const {
         data: {
           signinUser: { user }

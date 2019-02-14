@@ -92,7 +92,6 @@ class ViewRevision extends Component {
     this.forceUpdate();
   };
   render() {
-    console.log(this.props);
     let revision = null;
     const { data } = this.props;
 

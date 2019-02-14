@@ -45,9 +45,15 @@ class DMChat extends Component {
     }
     if (this.props.getUserKeys.User) {
       try {
+        let hashed = window.localStorage.getItem("ATHARES_TOKEN");
+        let simpleCryptoForUserPriv = new SimpleCrypto(hashed);
+        const userPriv = simpleCryptoForUserPriv.decrypt(
+          this.props.getUserKeys.User.priv
+        );
+
         let decryptedChannelSecret = await decrypt(
           this.props.getUserKeys.User.keys[0].key,
-          this.props.getUserKeys.User.priv
+          userPriv
         );
 
         this.simpleCrypto.setSecret(decryptedChannelSecret);
@@ -63,9 +69,16 @@ class DMChat extends Component {
   async componentDidUpdate(prevProps) {
     if (prevProps.getUserKeys.User !== this.props.getUserKeys.User) {
       try {
+        let hashed = window.localStorage.getItem("ATHARES_TOKEN");
+        let simpleCryptoForUserPriv = new SimpleCrypto(hashed);
+
+        let userPriv = simpleCryptoForUserPriv.decrypt(
+          this.props.getUserKeys.User.priv
+        );
+
         let decryptedChannelSecret = await decrypt(
           this.props.getUserKeys.User.keys[0].key,
-          this.props.getUserKeys.User.priv
+          userPriv
         );
 
         this.simpleCrypto.setSecret(decryptedChannelSecret);

@@ -6,22 +6,11 @@ import { connect } from "react-redux";
 const Section = props => {
   console.log(props);
   let { data } = props;
-  // Filter the items of this type that contain the search criteria
-  // limit it to 10 items per section
-  //   data = data
-  //     .filter(
-  //       item =>
-  //         item[props.searchOn]
-  //           .toLowerCase()
-  //           .indexOf(props.search.toLowerCase()) !== -1
-  //     )
-  //     .slice(0, 10);
 
   const navigate = e => {
     const item = e.currentTarget;
     const id = item.getAttribute("data-id");
     const chosenItem = data.find(item => item.id === id);
-    console.log(item, id, chosenItem);
 
     if (chosenItem) {
       const { history } = props;
@@ -58,7 +47,6 @@ const Section = props => {
       <div />
       <div id="suggestion-items">
         {data.map(item => {
-          console.log(item);
           return (
             <div
               className="suggestion-item"

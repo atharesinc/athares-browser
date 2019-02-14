@@ -23,57 +23,6 @@ class Search extends React.Component {
       searchParams: e.currentTarget.value
     });
   };
-  async componentDidMount() {
-    // this._isMounted = true;
-    // this.setState({ loading: true });
-    // this.props.gun.get("circles").load(data => {
-    //   console.log(data);
-    //   if (data) {
-    //     let circles = Object.values(data);
-    //     let newState = { ...this.state };
-    //     circles.forEach(({ users, channels, revisions, amendments, ...c }) => {
-    //       newState.circles = [...newState.circles, c];
-    //       if (channels !== undefined) {
-    //         channels = Object.values(channels).map(o => ({
-    //           ...o,
-    //           circleName: c.name
-    //         }));
-    //         newState.channels = [
-    //           ...newState.channels,
-    //           ...Object.values(channels)
-    //         ];
-    //       }
-    //       if (amendments !== undefined) {
-    //         amendments = Object.values(amendments).map(o => ({
-    //           ...o,
-    //           circleName: c.name
-    //         }));
-    //         newState.amendments = [
-    //           ...newState.amendments,
-    //           ...Object.values(amendments)
-    //         ];
-    //       }
-    //       if (revisions !== undefined) {
-    //         revisions = Object.values(revisions).map(o => ({
-    //           ...o,
-    //           circleName: c.name
-    //         }));
-    //         newState.revisions = [
-    //           ...newState.revisions,
-    //           ...Object.values(revisions)
-    //         ];
-    //       }
-    //     });
-    //     console.log(newState);
-    //     this._isMounted &&
-    //       this.setState({
-    //         ...this.state,
-    //         ...newState,
-    //         loading: false
-    //       });
-    //   }
-    // });
-  }
   componentWillUnmount() {
     this._isMounted = false;
   }

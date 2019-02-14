@@ -9,8 +9,11 @@ import {
   updateChannel,
   updateRevision
 } from "../../../store/state/actions";
-import { Query } from "react-apollo";
-import { GET_ALL_NOTICES } from "../../../graphql/queries";
+import { Query, graphql } from "react-apollo";
+import {
+  GET_ALL_NOTICES,
+  GET_CHANNELS_BY_CIRCLE_ID
+} from "../../../graphql/queries";
 
 class Dashboard extends Component {
   constructor(props) {
@@ -41,30 +44,22 @@ class Dashboard extends Component {
     //     .catch(err => {
     //         console.error("Couldn't connect to Github API");
     //     });
+  }
+  componentDidUpdate(prevProps) {
+    // if (
+    //   this.props.match.params.id !== prevProps.match.params.id &&
+    //   this.props.getCircle.Circle
+    // ) {
+    //   let { Circle: circle } = this.props.getCircle;
+    //   this.props.dispatch(updateCircle(circle.id));
+    //   this.props.dispatch(updateChannel(null));
+    //   this.props.dispatch(updateRevision(null));
+    //   // update meta data
+    //   this.props.dispatch(updateDesc(circle.preamble));
+    //   this.props.dispatch(updateTitle(circle.name));
+    // }
+  }
 
-    if (this.props.match.params.id) {
-      // this.props.gun.get(this.props.match.params.id).once(circle => {
-      //   this.props.dispatch(updateCircle(circle.id));
-      //   this.props.dispatch(updateChannel(null));
-      //   this.props.dispatch(updateRevision(null));
-      //   // update meta data
-      //   this.props.dispatch(updateDesc(circle.preamble));
-      //   this.props.dispatch(updateTitle(circle.name));
-      // });
-    }
-  }
-  componentDidUpdate() {
-    if (this.props.match.params.id) {
-      // this.props.gun.get(this.props.match.params.id).once(circle => {
-      //   this.props.dispatch(updateCircle(circle.id));
-      //   this.props.dispatch(updateChannel(null));
-      //   this.props.dispatch(updateRevision(null));
-      //   // update meta data
-      //   this.props.dispatch(updateDesc(circle.preamble));
-      //   this.props.dispatch(updateTitle(circle.name));
-      // });
-    }
-  }
   render() {
     return (
       <div
@@ -142,4 +137,9 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(mapStateToProps)(Dashboard);
+export default connect(mapStateToProps)(
+  graphql(GET_CHANNELS_BY_CIRCLE_ID, {
+    name: "getCircle",
+    options: ({ activeCircle }) => ({ variables: { id: activeCircle || "" } })
+  })(Dashboard)
+);
