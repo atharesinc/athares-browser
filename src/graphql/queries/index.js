@@ -96,6 +96,8 @@ export const GET_MESSAGES_FROM_CHANNEL_ID = gql`
         id
         text
         createdAt
+        file
+        fileName
         user {
           id
           icon
@@ -253,6 +255,8 @@ export const GET_DMS_BY_USER = gql`
   query getDMsByUser($id: ID!) {
     User(id: $id) {
       id
+      firstName
+      lastName
       channels(filter: { channelType: "dm" }) {
         id
         name

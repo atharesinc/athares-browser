@@ -128,13 +128,15 @@ export const CREATE_MESSAGE = gql`
     $text: String!
     $user: ID!
     $channel: ID!
-    $type: String
+    $file: String
+    $fileName: String
   ) {
     createMessage(
       text: $text
       channelId: $channel
       userId: $user
-      type: "text"
+      file: $file
+      fileName: $fileName
     ) {
       id
     }

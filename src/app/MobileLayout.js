@@ -28,11 +28,6 @@ class MobileLayout extends PureComponent {
       menuIsOpen: false
     };
   }
-  componentDidMount() {
-    // if (/app\/circle\/(CI[a-zA-Z\d]+)/.test(this.props.location.pathname)) {
-    //   this.getCircle();
-    // }
-  }
 
   clickOffSearch = e => {
     if (e.target.className === "modal-mask") {
@@ -64,7 +59,6 @@ class MobileLayout extends PureComponent {
       searchOpen,
       user
     } = this.props;
-    console.log(searchOpen);
     return (
       <div id="app-wrapper-outer" className="wrapper">
         <PushingMenu

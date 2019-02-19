@@ -17,6 +17,9 @@ import {
 } from "../../../graphql/queries";
 import { compose, graphql, Query } from "react-apollo";
 
+import IPFS from "ipfs-http-client";
+import fileReaderPullStream from "pull-file-reader";
+
 class DMChat extends Component {
   constructor(props) {
     super(props);
@@ -26,6 +29,11 @@ class DMChat extends Component {
       text: ""
     };
     this.simpleCrypto = new SimpleCrypto("nope");
+    this.node = new IPFS({
+      host: "ipfs.infura.io",
+      protocol: "https",
+      port: 5001
+    });
   }
   async componentDidMount() {
     if (this.props.user === null) {
@@ -41,7 +49,7 @@ class DMChat extends Component {
       this.props.dispatch(updateChannel(this.props.match.params.id));
     } else {
       //   this._isMounted && (await this.decryptMessages());
-      this.scrollToBottom();
+      // this.scrollToBottom();
     }
     if (this.props.getUserKeys.User) {
       try {
@@ -89,7 +97,7 @@ class DMChat extends Component {
         console.error(new Error(err));
       }
     }
-    this.scrollToBottom();
+    // this.scrollToBottom();
   }
   scrollToBottom = () => {
     let chatBox = document.getElementById("chat-window");
@@ -99,15 +107,50 @@ class DMChat extends Component {
       chatBox.scrollTop = chatBox.scrollHeight;
     }
   };
+  updateProgress = (prog, length) => {
+    console.log(prog / length);
+  };
+  addToIPFS = async (file, fileName, rawFile) => {
+    return new Promise(async resolve => {
+      file = {
+        path: fileName,
+        content: fileReaderPullStream(rawFile)
+      };
 
-  submit = async text => {
+      this.node.add(
+        file,
+        {
+          progress: prog => {
+            this.updateProgress(prog, rawFile.size);
+          }
+        },
+        async (err, result) => {
+          if (err) {
+            throw err;
+          }
+          let pinRes = await this.node.pin.add(result[0].hash);
+          console.log(pinRes);
+          resolve("https://ipfs.io/ipfs/" + result[0].hash);
+        }
+      );
+    }).catch(err => {
+      console.error(new Error(err));
+    });
+  };
+
+  submit = async (text, file = null, fileName = "", rawFile = null) => {
     let chatInput = document.getElementById("chat-input");
     let { user, activeChannel: channel } = this.props;
     // create the message, encrypted with the channel's key
+    let url =
+      file === null ? null : await this.addToIPFS(file, fileName, rawFile);
+
     let newMessage = {
       text: this.simpleCrypto.encrypt(text.trim()),
       user,
-      channel
+      channel,
+      file: this.simpleCrypto.encrypt(url),
+      fileName: fileName !== "" ? fileName : null
     };
     this.props.createMessage({
       variables: {
@@ -118,11 +161,7 @@ class DMChat extends Component {
     /* clear textbox */
     chatInput.value = "";
     chatInput.setAttribute("rows", 1);
-
-    /* scroll to bottom */
-    let chatBox = document.getElementById("chat-window").firstElementChild
-      .firstElementChild;
-    chatBox.scrollTop = chatBox.scrollHeight;
+    // this.scrollToBottom();
   };
   updateChannel = () => {
     this.props.dispatch(updateChannel(null));
@@ -130,7 +169,13 @@ class DMChat extends Component {
   normalizeName = name => {
     let retval = name
       .split(", ")
-      .filter(n => n !== this.props.getUserKeys.User.firstName);
+      .filter(
+        n =>
+          n !==
+          this.props.getUserKeys.User.firstName +
+            " " +
+            this.props.getUserKeys.User.lastName
+      );
     if (retval.length === 0) {
       return name;
     }
@@ -173,7 +218,8 @@ class DMChat extends Component {
           if (channel && messages && user && this.state.cryptoEnabled) {
             messages = messages.map(m => ({
               ...m,
-              text: this.simpleCrypto.decrypt(m.text)
+              text: this.simpleCrypto.decrypt(m.text),
+              file: m.file ? this.simpleCrypto.decrypt(m.file) : null
             }));
             return (
               <div id="chat-wrapper">

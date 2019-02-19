@@ -38,13 +38,20 @@ class Channels extends Component {
     this.props.history.push(`/app/circle/${this.props.activeCircle}/settings`);
   };
   render() {
-    let { activeChannel, user, activeCircle, getDMsByUser } = this.props;
+    let { activeChannel, activeCircle, getDMsByUser } = this.props;
+    let user = null;
     let mobile = window.innerWidth < 993 ? false : true;
     let circle = null;
     let channels = [];
     let dms = [];
     if (getDMsByUser.User && getDMsByUser.User.channels) {
       dms = getDMsByUser.User.channels;
+      user = getDMsByUser.User;
+      user = {
+        id: user.id,
+        firstName: user.firstName,
+        lastName: user.lastName
+      };
     }
     return (
       <Query
@@ -102,6 +109,7 @@ class Channels extends Component {
                     activeChannel={activeChannel}
                     name={"Direct Messages"}
                     channels={dms}
+                    user={user}
                   />
                   {/* </Scrollbars> */}
                 </div>
@@ -142,6 +150,7 @@ class Channels extends Component {
                     activeChannel={activeChannel}
                     name={"Direct Messages"}
                     channels={dms}
+                    user={user}
                   />
                 </div>
                 <BottomNav show={!!user} activeCircle={activeCircle} />

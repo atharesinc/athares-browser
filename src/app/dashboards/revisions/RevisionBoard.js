@@ -49,7 +49,6 @@ class RevisionBoard extends Component {
         pollInterval={10000}
       >
         {({ loading, err, data }) => {
-          console.log(data);
           if (data.Circle) {
             circle = data.Circle;
             allRevisions = data.Circle.revisions;

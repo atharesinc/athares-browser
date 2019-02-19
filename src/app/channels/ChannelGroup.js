@@ -37,6 +37,7 @@ const ChannelGroup = props => {
             key={i}
             channel={channel}
             activeChannel={props.activeChannel}
+            user={props.user}
           />
         ))}
       </Scrollbars>

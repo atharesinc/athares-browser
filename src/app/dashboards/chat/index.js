@@ -15,6 +15,8 @@ import { connect } from "react-redux";
 import { CREATE_MESSAGE } from "../../../graphql/mutations";
 import { GET_MESSAGES_FROM_CHANNEL_ID } from "../../../graphql/queries";
 import { compose, graphql, Query } from "react-apollo";
+import IPFS from "ipfs-http-client";
+import fileReaderPullStream from "pull-file-reader";
 
 class Chat extends Component {
   constructor() {
@@ -25,6 +27,11 @@ class Chat extends Component {
       channel: null
     };
     this._isMounted = false;
+    this.node = new IPFS({
+      host: "ipfs.infura.io",
+      protocol: "https",
+      port: 5001
+    });
   }
   componentDidMount() {
     const circleId = this.props.match.url.match(
@@ -40,13 +47,6 @@ class Chat extends Component {
       this.props.dispatch(updateRevision(null));
       return;
     }
-
-    /* scroll to bottom */
-    let chatBox = document.getElementById("chat-window");
-    if (chatBox) {
-      chatBox = chatBox.firstElementChild.firstElementChild;
-      chatBox.scrollTop = chatBox.scrollHeight;
-    }
   }
   componentDidUpdate(prevProps) {
     // if current url doesn't match internal state, update state to match url
@@ -54,18 +54,65 @@ class Chat extends Component {
       this.props.dispatch(updateChannel(this.props.match.params.id));
       return;
     }
+    if (
+      this.props.messages &&
+      this.props.messages.length > prevProps.messages.length
+    ) {
+      // /* scroll to bottom */
+      // let chatBox = document.getElementById("chat-window-scroller");
+      // let lastMsg = document.getElementById("last-message");
+      // if (chatBox) {
+      //   chatBox.scrollTop = lastMsg.scrollHeight;
+      // }
+    }
   }
 
   updateChannel = () => {
     this.props.dispatch(updateChannel(null));
   };
-  submit = async text => {
+  updateProgress = (prog, length) => {
+    console.log(prog / length);
+  };
+  addToIPFS = async (file, fileName, rawFile) => {
+    return new Promise(async resolve => {
+      file = {
+        path: fileName,
+        content: fileReaderPullStream(rawFile)
+      };
+
+      this.node.add(
+        file,
+        {
+          progress: prog => {
+            this.updateProgress(prog, rawFile.size);
+          }
+        },
+        async (err, result) => {
+          if (err) {
+            throw err;
+          }
+          let pinRes = await this.node.pin.add(result[0].hash);
+          console.log(pinRes);
+          resolve("https://ipfs.io/ipfs/" + result[0].hash);
+        }
+      );
+    }).catch(err => {
+      console.error(new Error(err));
+    });
+  };
+
+  submit = async (text, file = null, fileName = "", rawFile = null) => {
     let chatInput = document.getElementById("chat-input");
+
+    let url =
+      file === null ? null : await this.addToIPFS(file, fileName, rawFile);
 
     let newMessage = {
       text: text.trim(),
       channel: this.props.activeChannel,
-      user: this.props.user
+      user: this.props.user,
+      file: url,
+      fileName: fileName !== "" ? fileName : null
     };
 
     let newMessageRes = await this.props.createMessage({
@@ -81,8 +128,7 @@ class Chat extends Component {
     chatInput.setAttribute("rows", 1);
 
     /* scroll to bottom */
-    let chatBox = document.getElementById("chat-window").firstElementChild
-      .firstElementChild;
+    let chatBox = document.getElementById("chat-window-scroller");
     chatBox.scrollTop = chatBox.scrollHeight;
   };
   render() {

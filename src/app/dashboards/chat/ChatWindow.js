@@ -16,6 +16,7 @@ const ChatWindow = ({ messages = [], user, ...props }) => {
           autoHideTimeout={1000}
           autoHideDuration={200}
           universal={true}
+          id="chat-window-scroller"
         >
           {messages.map((msg, i) => {
             // if the user sends multiple consecutive messages we don't need to append the username and image to every message
@@ -28,6 +29,7 @@ const ChatWindow = ({ messages = [], user, ...props }) => {
                   user &&
                   messages[i - 1].user.id === messages[i].user.id
                 }
+                lastMessage={i === messages.length - 1}
                 isMine={msg.user && user && msg.user.id === user ? true : false}
                 {...msg}
                 key={msg.id}

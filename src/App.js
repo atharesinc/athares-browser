@@ -2,6 +2,7 @@ import React, { PureComponent, Fragment } from "react";
 import "tachyons";
 import "./styles/App.css";
 import "./styles/swaloverride.css";
+import "emoji-mart/css/emoji-mart.css";
 
 import { Route, withRouter } from "react-router-dom";
 import { AnimatedSwitch } from "react-router-transition";
