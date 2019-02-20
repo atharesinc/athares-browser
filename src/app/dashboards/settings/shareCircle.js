@@ -12,7 +12,7 @@ import swal from "sweetalert";
 let urlBase =
   process.env.NODE_ENV === "development"
     ? "http://localhost:3000/invite/"
-    : "https://athares.us/invite/";
+    : "https://www.athares.us/invite/";
 class ShareCircle extends Component {
   state = {
     loading: false,
