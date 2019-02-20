@@ -7,7 +7,7 @@ import swal from "sweetalert";
 import FeatherIcon from "feather-icons-react";
 import { Link } from "react-router-dom";
 import { updateDesc, updateTitle } from "../../../store/head/actions";
-import { compose, graphql } from "react-apollo";
+import { graphql } from "react-apollo";
 import { ADD_USER_TO_CIRCLE } from "../../../graphql/mutations";
 // import { GET_USERS_BY_CIRCLE_ID} from "../../../graphql/queries";
 

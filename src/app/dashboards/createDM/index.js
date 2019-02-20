@@ -1,6 +1,6 @@
 import React, { Component } from "react";
-import ChatWindow from "../chat/ChatWindow";
-import ChatInput from "./ChatInput";
+import ChatWindow from "../../../components/ChatWindow";
+import ChatInput from "../../../components/ChatInput";
 import DMInviteList from "./DMInviteList";
 import { Link, withRouter } from "react-router-dom";
 import FeatherIcon from "feather-icons-react";
@@ -16,13 +16,17 @@ import {
   ADD_USER_TO_CHANNEL
 } from "../../../graphql/mutations";
 import { graphql, compose } from "react-apollo";
+import uploadToIPFS from "../../../utils/uploadToIPFS";
+import swal from "sweetalert";
 
 class CreateDM extends Component {
   constructor(props) {
     super(props);
     this.state = {
       text: "",
-      selectedUsers: []
+      selectedUsers: [],
+      cryptoEnabled: false,
+      uploadInProgress: false
     };
   }
   componentDidMount() {
@@ -42,8 +46,12 @@ class CreateDM extends Component {
       text
     });
   };
-  submit = async () => {
-    let { selectedUsers, text } = this.state;
+
+  updateProgress = (prog, length) => {
+    console.log(prog / length);
+  };
+  submit = async (text, file = null) => {
+    let { selectedUsers } = this.state;
     let { data } = this.props;
     if (!data.User) {
       return false;
@@ -51,10 +59,12 @@ class CreateDM extends Component {
     if (selectedUsers.length === 0) {
       return false;
     }
-    if (text.trim().length === 0) {
+    if (text.trim().length === 0 && file === null) {
       return false;
     }
-
+    await this.setState({
+      uploadInProgress: true
+    });
     let { User: user } = this.props.data;
 
     // create a symmetric key for the new channel
@@ -75,53 +85,72 @@ class CreateDM extends Component {
       description: tempName
     };
 
-    // create the channel as a DM channel
-    let res = await this.props.createChannel({
-      variables: {
-        ...newChannel
-      }
-    });
-
-    let { id } = res.data.createChannel;
-
-    // give each user an encrypted copy of this keypair and store it in
-    let promiseList = selectedUsers.map(async u => {
-      const encryptedKey = await encrypt(_secretKey, u.pub);
-      return this.props.createKey({
+    try {
+      // create the channel as a DM channel
+      let res = await this.props.createChannel({
         variables: {
-          key: encryptedKey,
-          user: u.id,
-          channel: id
+          ...newChannel
         }
       });
-    });
 
-    // add each user to this channel
-    let promiseList2 = selectedUsers.map(u =>
-      this.props.addUserToChannel({
-        variables: {
-          channel: id,
-          user: u.id
-        }
-      })
-    );
-    // store all the keys, add all the users
-    await Promise.all(promiseList);
-    await Promise.all(promiseList2);
-    // send the first message, encrypted with the channel's SEA pair
-    let newMessage = {
-      text: simpleCrypto.encrypt(this.state.text.trim()),
-      user: this.props.user,
-      channel: id
-    };
+      let { id } = res.data.createChannel;
 
-    this.props.createMessage({
-      variables: {
-        ...newMessage
+      // give each user an encrypted copy of this keypair and store it in
+      let promiseList = selectedUsers.map(async u => {
+        const encryptedKey = await encrypt(_secretKey, u.pub);
+        return this.props.createKey({
+          variables: {
+            key: encryptedKey,
+            user: u.id,
+            channel: id
+          }
+        });
+      });
+
+      // add each user to this channel
+      let promiseList2 = selectedUsers.map(u =>
+        this.props.addUserToChannel({
+          variables: {
+            channel: id,
+            user: u.id
+          }
+        })
+      );
+      // store all the keys, add all the users
+      await Promise.all(promiseList);
+      await Promise.all(promiseList2);
+
+      let url =
+        file === null ? null : await uploadToIPFS(file, this.updateProgress);
+      if (file) {
+        fetch(file);
       }
-    });
+      // send the first message, encrypted with the channel's SEA pair
+      let newMessage = {
+        text: simpleCrypto.encrypt(this.state.text.trim()),
+        user: this.props.user,
+        channel: id,
+        file: url ? this.simpleCrypto.encrypt(url) : "",
+        fileName: file !== null ? file.name : null
+      };
 
-    this.props.history.push(`/app/channel/${id}`);
+      this.props.createMessage({
+        variables: {
+          ...newMessage
+        }
+      });
+      await this.setState({
+        uploadInProgress: false
+      });
+      this.props.history.push(`/app/channel/${id}`);
+    } catch (err) {
+      console.error(new Error(err));
+      swal(
+        "Error",
+        "We were unable to send your message, please try again later",
+        "error"
+      );
+    }
   };
   render() {
     const { selectedUsers } = this.state;
@@ -143,6 +172,7 @@ class CreateDM extends Component {
           submit={this.submit}
           text={this.state.text}
           updateText={this.updateText}
+          uploadInProgress={this.state.uploadInProgress}
         />
       </div>
     );

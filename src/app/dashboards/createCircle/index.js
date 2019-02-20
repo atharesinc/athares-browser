@@ -7,7 +7,6 @@ import { updateCircle } from "../../../store/state/actions";
 import Loader from "../../../components/Loader";
 import swal from "sweetalert";
 import { Scrollbars } from "react-custom-scrollbars";
-import moment from "moment";
 import FeatherIcon from "feather-icons-react";
 import { Link } from "react-router-dom";
 import { CREATE_CIRCLE, ADD_USER_TO_CIRCLE } from "../../../graphql/mutations";
@@ -116,7 +115,7 @@ class createCircleBoard extends Component {
 
     newCircle.id = newCircleRes.data.createCircle.id;
 
-    let res = await this.props.addCircleToUser({
+    await this.props.addCircleToUser({
       variables: {
         user: this.props.user,
         circle: newCircle.id

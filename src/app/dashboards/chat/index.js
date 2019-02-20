@@ -1,6 +1,6 @@
 import React, { Component } from "react";
-import ChatWindow from "./ChatWindow";
-import ChatInput from "./ChatInput";
+import ChatWindow from "../../../components/ChatWindow";
+import ChatInput from "../../../components/ChatInput";
 import Loader from "../../../components/Loader";
 import FeatherIcon from "feather-icons-react";
 import { Link } from "react-router-dom";
@@ -10,13 +10,13 @@ import {
   updateRevision,
   updateCircle
 } from "../../../store/state/actions";
-import { updateDesc, updateTitle } from "../../../store/head/actions";
+// import { updateDesc, updateTitle } from "../../../store/head/actions";
 import { connect } from "react-redux";
 import { CREATE_MESSAGE } from "../../../graphql/mutations";
 import { GET_MESSAGES_FROM_CHANNEL_ID } from "../../../graphql/queries";
 import { compose, graphql, Query } from "react-apollo";
-import IPFS from "ipfs-http-client";
-import fileReaderPullStream from "pull-file-reader";
+import swal from "sweetalert";
+import uploadToIPFS from "../../../utils/uploadToIPFS";
 
 class Chat extends Component {
   constructor() {
@@ -24,14 +24,10 @@ class Chat extends Component {
     this.state = {
       messages: [],
       user: null,
-      channel: null
+      channel: null,
+      uploadInProgress: false
     };
     this._isMounted = false;
-    this.node = new IPFS({
-      host: "ipfs.infura.io",
-      protocol: "https",
-      port: 5001
-    });
   }
   componentDidMount() {
     const circleId = this.props.match.url.match(
@@ -59,77 +55,68 @@ class Chat extends Component {
       this.props.messages.length > prevProps.messages.length
     ) {
       // /* scroll to bottom */
-      // let chatBox = document.getElementById("chat-window-scroller");
-      // let lastMsg = document.getElementById("last-message");
-      // if (chatBox) {
-      //   chatBox.scrollTop = lastMsg.scrollHeight;
-      // }
+      // this.scrollToBottom()
     }
   }
-
+  scrollToBottom = () => {
+    let chatBox = document.getElementById("chat-window-scroller");
+    let lastMsg = document.getElementById("last-message");
+    if (chatBox) {
+      chatBox.scrollTop = lastMsg.scrollHeight;
+    }
+  };
   updateChannel = () => {
     this.props.dispatch(updateChannel(null));
   };
   updateProgress = (prog, length) => {
     console.log(prog / length);
   };
-  addToIPFS = async (file, fileName, rawFile) => {
-    return new Promise(async resolve => {
-      file = {
-        path: fileName,
-        content: fileReaderPullStream(rawFile)
-      };
 
-      this.node.add(
-        file,
-        {
-          progress: prog => {
-            this.updateProgress(prog, rawFile.size);
-          }
-        },
-        async (err, result) => {
-          if (err) {
-            throw err;
-          }
-          let pinRes = await this.node.pin.add(result[0].hash);
-          console.log(pinRes);
-          resolve("https://ipfs.io/ipfs/" + result[0].hash);
-        }
-      );
-    }).catch(err => {
-      console.error(new Error(err));
-    });
-  };
-
-  submit = async (text, file = null, fileName = "", rawFile = null) => {
+  submit = async (text, file = null) => {
     let chatInput = document.getElementById("chat-input");
 
-    let url =
-      file === null ? null : await this.addToIPFS(file, fileName, rawFile);
-
-    let newMessage = {
-      text: text.trim(),
-      channel: this.props.activeChannel,
-      user: this.props.user,
-      file: url,
-      fileName: fileName !== "" ? fileName : null
-    };
-
-    let newMessageRes = await this.props.createMessage({
-      variables: {
-        ...newMessage
-      }
+    await this.setState({
+      uploadInProgress: true
     });
 
-    newMessage.id = newMessageRes.data.createMessage.id;
+    try {
+      let url =
+        file === null ? null : await uploadToIPFS(file, this.updateProgress);
+      if (file) {
+        fetch(url);
+      }
+      let newMessage = {
+        text: text.trim(),
+        channel: this.props.activeChannel,
+        user: this.props.user,
+        file: url,
+        fileName: file !== null ? file.name : null
+      };
 
-    /* clear textbox */
-    chatInput.value = "";
-    chatInput.setAttribute("rows", 1);
+      let newMessageRes = await this.props.createMessage({
+        variables: {
+          ...newMessage
+        }
+      });
 
-    /* scroll to bottom */
-    let chatBox = document.getElementById("chat-window-scroller");
-    chatBox.scrollTop = chatBox.scrollHeight;
+      newMessage.id = newMessageRes.data.createMessage.id;
+
+      /* clear textbox */
+      chatInput.value = "";
+      chatInput.setAttribute("rows", 1);
+      await this.setState({
+        uploadInProgress: false
+      });
+      /* scroll to bottom */
+      // this.scrollToBottom();
+    } catch (err) {
+      console.error(new Error(err));
+      swal(
+        "Error",
+        "We were unable to send your message, please try again later",
+        "error"
+      );
+    }
   };
   render() {
     let channel = null;
@@ -171,7 +158,12 @@ class Chat extends Component {
                         /> */}
                 </div>
                 <ChatWindow messages={messages} user={user} />
-                {user && <ChatInput submit={this.submit} />}
+                {user && (
+                  <ChatInput
+                    submit={this.submit}
+                    uploadInProgress={this.state.uploadInProgress}
+                  />
+                )}
               </div>
             );
           } else {

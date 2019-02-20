@@ -44,22 +44,46 @@ class Dashboard extends Component {
     //     .catch(err => {
     //         console.error("Couldn't connect to Github API");
     //     });
+    let circleId = this.props.location.pathname.match(
+      /\/circle\/([a-zA-Z0-9]{25})/
+    );
+    if (circleId !== null) {
+      circleId = circleId[1];
+      this.setState({
+        circle: circleId
+      });
+      this.props.dispatch(updateCircle(circleId));
+    }
+    this.props.dispatch(updateChannel(null));
+    this.props.dispatch(updateRevision(null));
+    this.updateMeta();
   }
-  componentDidUpdate(prevProps) {
-    // if (
-    //   this.props.match.params.id !== prevProps.match.params.id &&
-    //   this.props.getCircle.Circle
-    // ) {
-    //   let { Circle: circle } = this.props.getCircle;
-    //   this.props.dispatch(updateCircle(circle.id));
-    //   this.props.dispatch(updateChannel(null));
-    //   this.props.dispatch(updateRevision(null));
-    //   // update meta data
-    //   this.props.dispatch(updateDesc(circle.preamble));
-    //   this.props.dispatch(updateTitle(circle.name));
-    // }
-  }
+  componentDidUpdate(prevProps, prevState) {
+    let circleId = this.props.location.pathname.match(
+      /\/circle\/([a-zA-Z0-9]{25})/
+    );
 
+    if (circleId !== null) {
+      circleId = circleId[1];
+
+      if (this.props.activeCircle !== circleId) {
+        this.props.dispatch(updateCircle(circleId));
+      }
+      this.updateMeta();
+    }
+    if (this.props.activeCircle !== prevProps.activeCircle) {
+      this.updateMeta();
+    }
+  }
+  updateMeta = () => {
+    if (this.props.getCircle.Circle) {
+      console.log(this.props.getCircle.Circle);
+      // update meta data
+      let { Circle: circle } = this.props.getCircle;
+      this.props.dispatch(updateTitle(circle.name));
+      this.props.dispatch(updateDesc(circle.preamble));
+    }
+  };
   render() {
     return (
       <div
@@ -133,7 +157,8 @@ class Dashboard extends Component {
 
 function mapStateToProps(state) {
   return {
-    user: pull(state, "user")
+    user: pull(state, "user"),
+    activeCircle: pull(state, "activeCircle")
   };
 }
 

@@ -1,13 +1,12 @@
 import React, { Component } from "react";
-import ChatWindow from "./ChatWindow";
-import ChatInput from "./ChatInput";
+import ChatWindow from "../../../components/ChatWindow";
+import ChatInput from "../../../components/ChatInput";
 import Loader from "../../../components/Loader";
 import FeatherIcon from "feather-icons-react";
 import { Link } from "react-router-dom";
 import { pull } from "../../../store/state/reducers";
 import { updateChannel } from "../../../store/state/actions";
 import { connect } from "react-redux";
-import moment from "moment";
 import { decrypt } from "simple-asym-crypto";
 import SimpleCrypto from "simple-crypto-js";
 import { CREATE_MESSAGE } from "../../../graphql/mutations";
@@ -16,9 +15,8 @@ import {
   GET_USER_KEYS
 } from "../../../graphql/queries";
 import { compose, graphql, Query } from "react-apollo";
-
-import IPFS from "ipfs-http-client";
-import fileReaderPullStream from "pull-file-reader";
+import uploadToIPFS from "../../../utils/uploadToIPFS";
+import swal from "sweetalert";
 
 class DMChat extends Component {
   constructor(props) {
@@ -26,20 +24,15 @@ class DMChat extends Component {
 
     this.state = {
       cryptoEnabled: false,
-      text: ""
+      text: "",
+      uploadInProgress: false
     };
     this.simpleCrypto = new SimpleCrypto("nope");
-    this.node = new IPFS({
-      host: "ipfs.infura.io",
-      protocol: "https",
-      port: 5001
-    });
   }
   async componentDidMount() {
     if (this.props.user === null) {
       this.props.history.push("/app");
     }
-    // this._isMounted && (await this.getUser());
 
     // Make sure activeChannel is set
     if (
@@ -48,7 +41,6 @@ class DMChat extends Component {
     ) {
       this.props.dispatch(updateChannel(this.props.match.params.id));
     } else {
-      //   this._isMounted && (await this.decryptMessages());
       // this.scrollToBottom();
     }
     if (this.props.getUserKeys.User) {
@@ -110,58 +102,49 @@ class DMChat extends Component {
   updateProgress = (prog, length) => {
     console.log(prog / length);
   };
-  addToIPFS = async (file, fileName, rawFile) => {
-    return new Promise(async resolve => {
-      file = {
-        path: fileName,
-        content: fileReaderPullStream(rawFile)
-      };
 
-      this.node.add(
-        file,
-        {
-          progress: prog => {
-            this.updateProgress(prog, rawFile.size);
-          }
-        },
-        async (err, result) => {
-          if (err) {
-            throw err;
-          }
-          let pinRes = await this.node.pin.add(result[0].hash);
-          console.log(pinRes);
-          resolve("https://ipfs.io/ipfs/" + result[0].hash);
-        }
-      );
-    }).catch(err => {
-      console.error(new Error(err));
+  submit = async (text, file = null) => {
+    if (text.trim() === "" && file === null) {
+      return false;
+    }
+    await this.setState({
+      uploadInProgress: true
     });
-  };
-
-  submit = async (text, file = null, fileName = "", rawFile = null) => {
-    let chatInput = document.getElementById("chat-input");
     let { user, activeChannel: channel } = this.props;
-    // create the message, encrypted with the channel's key
-    let url =
-      file === null ? null : await this.addToIPFS(file, fileName, rawFile);
+    try {
+      let url =
+        file === null ? null : await uploadToIPFS(file, this.updateProgress);
 
-    let newMessage = {
-      text: this.simpleCrypto.encrypt(text.trim()),
-      user,
-      channel,
-      file: this.simpleCrypto.encrypt(url),
-      fileName: fileName !== "" ? fileName : null
-    };
-    this.props.createMessage({
-      variables: {
-        ...newMessage
-      }
-    });
+      // create the message, encrypted with the channel's key
+      let newMessage = {
+        text: this.simpleCrypto.encrypt(text.trim()),
+        user,
+        channel,
+        file: url ? this.simpleCrypto.encrypt(url) : "",
+        fileName: file !== null ? file.name : null
+      };
+      this.props.createMessage({
+        variables: {
+          ...newMessage
+        }
+      });
 
-    /* clear textbox */
-    chatInput.value = "";
-    chatInput.setAttribute("rows", 1);
-    // this.scrollToBottom();
+      await this.setState({
+        uploadInProgress: false
+      });
+      /* clear textbox */
+      let chatInput = document.getElementById("chat-input");
+      chatInput.value = "";
+      chatInput.setAttribute("rows", 1);
+      // this.scrollToBottom();
+    } catch (err) {
+      console.error(new Error(err));
+      swal(
+        "Error",
+        "We were unable to send your message, please try again later",
+        "error"
+      );
+    }
   };
   updateChannel = () => {
     this.props.dispatch(updateChannel(null));
@@ -196,7 +179,7 @@ class DMChat extends Component {
   };
 
   render() {
-    let { activeChannel, getUserKeys } = this.props;
+    let { getUserKeys } = this.props;
     let channel = null,
       messages = [],
       user = null;
@@ -241,7 +224,10 @@ class DMChat extends Component {
                 ) : (
                   <Loader />
                 )}
-                <ChatInput submit={this.submit} />
+                <ChatInput
+                  submit={this.submit}
+                  uploadInProgress={this.state.uploadInProgress}
+                />
               </div>
             );
           } else {
