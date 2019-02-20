@@ -130,7 +130,7 @@ class CreateDM extends Component {
         text: simpleCrypto.encrypt(this.state.text.trim()),
         user: this.props.user,
         channel: id,
-        file: url ? this.simpleCrypto.encrypt(url) : "",
+        file: url ? simpleCrypto.encrypt(url) : "",
         fileName: file !== null ? file.name : null
       };
 

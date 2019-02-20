@@ -22,16 +22,16 @@ At this time there are no additional requirements to develop on athares-browser
 
 ...code from a lot of great open-source developers. This list is by no means exhaustive.
 
--   [React](https://reactjs.org/) - The web framework used
--   [Yarn](https://yarnpkg.com/en/) - Dependency Management
--   [Tachyons](http://tachyons.io/) - For better and more beautiful UIs
--   [gunDB](https://github.com/amark/gun) - Realtime Distributed Graph database
--   [Tachyons](http://tachyons.io/) - For better and beautiful markup
--   [feather-icons-react](https://github.com/ianmiller347/feather-icons-react) For stellar Feather Icon React bindings
--   [GreenSock](https://greensock.com/gsap) The best animation library in the galaxy
--   [react-dropzone](https://react-dropzone.js.org/) React Drag & Drop File Input
--   [react-stylable-diff](https://github.com/davidmason/react-stylable-diff) Performant text diff
--   [Sweetalert](https://github.com/t4t5/sweetalert) Beautiful, extensible, non-blocking alert replacements
+- [React](https://reactjs.org/) - The web framework used
+- [Yarn](https://yarnpkg.com/en/) - Dependency Management
+- [Tachyons](http://tachyons.io/) - For better and more beautiful UIs
+- [Apollo Client](https://github.com/apollographql/apollo-client) - GraphQL client
+- [Tachyons](http://tachyons.io/) - For better and beautiful markup
+- [feather-icons-react](https://github.com/ianmiller347/feather-icons-react) For stellar Feather Icon React bindings
+- [GreenSock](https://greensock.com/gsap) The best animation library in the galaxy
+- [react-dropzone](https://react-dropzone.js.org/) React Drag & Drop File Input
+- [react-stylable-diff](https://github.com/davidmason/react-stylable-diff) Performant text diff
+- [Sweetalert](https://github.com/t4t5/sweetalert) Beautiful, extensible, non-blocking alert replacements
 
 ## Contributing
 
@@ -43,156 +43,156 @@ Each version outlines features that the platform must have to meet this version
 
 #### 0.0.1
 
--   Complete & Responsive UI Flow
+- Complete & Responsive UI Flow
 
 #### 0.0.1 - COMPLETE
 
--   Connected to GraphCool backend
--   Added Login/Registration/Logout
--   Click-around functional
--   Fixed orientation issue on image upload for mobile
--   PrivateRoute for /app
--   Added 404 page
--   Updated Login and Register page to use email
--   Added validation to login/register portal
--   Update User
--   Create Circle
--   Create Public Channel
+- Connected to GraphCool backend
+- Added Login/Registration/Logout
+- Click-around functional
+- Fixed orientation issue on image upload for mobile
+- PrivateRoute for /app
+- Added 404 page
+- Updated Login and Register page to use email
+- Added validation to login/register portal
+- Update User
+- Create Circle
+- Create Public Channel
 
 #### 0.0.2 - COMPLETE
 
--   Replaced GraphCool with GunJS DB
--   Auth works everywhere consistently
--   Deprecated PrivateRoute for unauthenticated limited used
--   CreateChannel feature
--   Login/Register, enter to submit now works
--   Update User now works
--   Public channel messaging
--   Vote casting
--   Revision creation
+- Replaced GraphCool with GunJS DB
+- Auth works everywhere consistently
+- Deprecated PrivateRoute for unauthenticated limited used
+- CreateChannel feature
+- Login/Register, enter to submit now works
+- Update User now works
+- Public channel messaging
+- Vote casting
+- Revision creation
 
 #### 0.0.3 - COMPLETE
 
--   Live update circles and channel creation
--   Live updates for public messages
--   Live updates for revisions and amendments
--   RevisionBoard
-    -   Live vote changes works
-    -   Revision cards display proper vote splits
--   Revision checker and timer (see codesandbox example)
-    -   Works for normally expired new revisions
-    -   From amendment revision
--   User edits and view other users work
+- Live update circles and channel creation
+- Live updates for public messages
+- Live updates for revisions and amendments
+- RevisionBoard
+  - Live vote changes works
+  - Revision cards display proper vote splits
+- Revision checker and timer (see codesandbox example)
+  - Works for normally expired new revisions
+  - From amendment revision
+- User edits and view other users work
 
 #### 0.0.4 - COMPLETE
 
--   Encrypted Group Messages (limit group size)
--   Live updates for group messages
--   Add user to circle
--   Correct scrolling in RevisionBoard
--   Correct spacing between revision cards
--   (Mobile) ViewRevision should be full-height
--   Governance channels should be lit up when selected
+- Encrypted Group Messages (limit group size)
+- Live updates for group messages
+- Add user to circle
+- Correct scrolling in RevisionBoard
+- Correct spacing between revision cards
+- (Mobile) ViewRevision should be full-height
+- Governance channels should be lit up when selected
 
 #### 0.0.5 - COMPLETE
 
--   Remove User from Circle
+- Remove User from Circle
 
 #### 0.0.6 - COMPLETE
 
--   Dumbed down index
+- Dumbed down index
 
 #### 0.0.7
 
--   Ensure public as possible use (not logged in, infer state from url)
--   Add meta data as soon as available to rest of components
--   See "Changing Circles" in 5 minute fixes
+- Ensure public as possible use (not logged in, infer state from url)
+- Add meta data as soon as available to rest of components
+- See "Changing Circles" in 5 minute fixes
 
 #### 0.1.0
 
--   Express Server to serve data to peers and clients
--   Search (see that one debounce throttle article)(??? Elastic search?)
+- Express Server to serve data to peers and clients
+- Search (see that one debounce throttle article)(??? Elastic search?)
 
 #### 0.1.1
 
--   Sign up for newsleter
-    -   MailChimp
+- Sign up for newsleter
+  - MailChimp
 
 #### 0.1.2
 
--   Site/Circle news
-    -   News items for each circle (created on amendment being passed or rejected, a revision deadline nearing, etc.)
+- Site/Circle news
+  - News items for each circle (created on amendment being passed or rejected, a revision deadline nearing, etc.)
 
 #### 0.2.0
 
--   REST API
+- REST API
 
 #### 0.3.0
 
--   GraphQL API
+- GraphQL API
 
 #### 0.3.5
 
--   Front-end data-management finalized
--   Validate all input fields (createCircle, createChannel, createRevision)
--   XSS sanitize all fields
+- Front-end data-management finalized
+- Validate all input fields (createCircle, createChannel, createRevision)
+- XSS sanitize all fields
 
 #### 0.3.6 (5 minute fixes)
 
--   Make sure channel and revision are not both active
--   On some components need to make sure that if props.user changes, we are hiding/showing what we need to hide/show (chat -> the chat input is still available)
--   fix spacing on messages (more for all and less for multiMessages)
--   figure out why ViewOtherUser is redirecting incorrectly (shows current user, not other user)
--   Add Fun loading indicator for login/register because sync is wicked slow
--   Prevent additional login attempts while authenticating
--   Try to sync data on app mount instead of waiting for user to login/register (maybe fixed?)
--   Changing circles (from circles list doesn't redirect to circle, but updates redux)
+- Make sure channel and revision are not both active
+- On some components need to make sure that if props.user changes, we are hiding/showing what we need to hide/show (chat -> the chat input is still available)
+- fix spacing on messages (more for all and less for multiMessages)
+- figure out why ViewOtherUser is redirecting incorrectly (shows current user, not other user)
+- Add Fun loading indicator for login/register because sync is wicked slow
+- Prevent additional login attempts while authenticating
+- Try to sync data on app mount instead of waiting for user to login/register (maybe fixed?)
+- Changing circles (from circles list doesn't redirect to circle, but updates redux)
 
 #### 0.4.0 (Essential Nice-to-haves)
 
--   Emoji conversion support
--   Support images and links in messages
--   Support tagging rev/amend/circ/channels in messages
--   DM permission issue/not loading the messages correctly?
--   Remove User from DM
--   Realtime countdown on View Revision
--   React Virtualize chat messages
+- Emoji conversion support
+- Support images and links in messages
+- Support tagging rev/amend/circ/channels in messages
+- DM permission issue/not loading the messages correctly?
+- Remove User from DM
+- Realtime countdown on View Revision
+- React Virtualize chat messages
 
 #### 0.8.0
 
--   CSS transitions for routes & everything else
-    -   Micro-interactions
--   Server-side rendering
--   Error Components
--   Microoptimizing
--   Webworkers and PWA stuff
-    -   caching images
-    -   Request to be added to homescreen
-    -   Push notifictions?
-        -   Is this even possible
+- CSS transitions for routes & everything else
+  - Micro-interactions
+- Server-side rendering
+- Error Components
+- Microoptimizing
+- Webworkers and PWA stuff
+  - caching images
+  - Request to be added to homescreen
+  - Push notifictions?
+    - Is this even possible
 
 #### 0.9.0
 
--   App functionally ready for alpha
--   jslint (tabs -> spaces and such)
--   Components -> PureComponents if necessary
--   Pure Components -> Stateless if possible
--   Code splitting (react-loadable etc.)
+- App functionally ready for alpha
+- jslint (tabs -> spaces and such)
+- Components -> PureComponents if necessary
+- Pure Components -> Stateless if possible
+- Code splitting (react-loadable etc.)
 
 #### 1.0.0
 
--   Deployed to AWS (Somehow)
--   Capable of dealing with region-specific load-provisioning
--   Review AXE module of Gun progress
+- Deployed to AWS (Somehow)
+- Capable of dealing with region-specific load-provisioning
+- Review AXE module of Gun progress
 
 #### 1.0.1
 
--   App in alpha-review process
+- App in alpha-review process
 
 #### 1.0.1
 
--   Invitation Links/emails
-    -   Probably a separate server
+- Invitation Links/emails
+  - Probably a separate server
 
 ## License
 
