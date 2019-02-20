@@ -4,11 +4,8 @@ import TagComponent from "./TagComponent";
 import swal from "sweetalert";
 import { connect } from "react-redux";
 import { pull } from "../../../store/state/reducers";
-import {
-  SEARCH_FOR_USER,
-  GET_USERS_BY_CIRCLE_ID
-} from "../../../graphql/queries";
-import { compose, graphql, Query } from "react-apollo";
+import { SEARCH_FOR_USER } from "../../../graphql/queries";
+import { Query } from "react-apollo";
 
 class DMInviteList extends Component {
   state = {

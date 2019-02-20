@@ -10,13 +10,9 @@ import * as reducers from "./store/reducers";
 import { loadingBarReducer } from "react-redux-loading-bar";
 import ApolloClient from "apollo-boost";
 import { ApolloProvider } from "react-apollo";
-import { BatchHttpLink } from "apollo-link-batch-http";
 
-const link = new BatchHttpLink({
-  uri: "https://api.graph.cool/simple/v1/cjrucg3gz1obq0149g3vd7nxh"
-});
 const client = new ApolloClient({
-  link
+  uri: "https://api.graph.cool/simple/v1/cjrucg3gz1obq0149g3vd7nxh"
 });
 
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;

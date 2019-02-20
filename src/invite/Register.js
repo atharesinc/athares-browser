@@ -1,21 +1,13 @@
-import React, { Fragment, PureComponent } from "react";
+import React, { PureComponent } from "react";
 import FeatherIcon from "feather-icons-react";
 import { validateRegister } from "../utils/validators";
 import { Link, withRouter } from "react-router-dom";
 import swal from "sweetalert";
-import {
-  updateUser,
-  updatePub,
-  updateChannel,
-  updateCircle,
-  updateRevision
-} from "../store/state/actions";
+import { updateUser, updatePub } from "../store/state/actions";
 import { connect } from "react-redux";
 import { pull } from "../store/state/reducers";
-import { updateDesc, updateTitle } from "../store/head/actions";
 import { showLoading, hideLoading } from "react-redux-loading-bar";
 import defaultUser from "../portal/defaultUser.json";
-import Loader from "../components/Loader";
 import sha from "simple-hash-browser";
 import { CREATE_USER, SIGNIN_USER } from "../graphql/mutations";
 import { graphql, compose } from "react-apollo";
@@ -105,7 +97,7 @@ class MiniRegister extends PureComponent {
     });
   };
   render() {
-    const { firstName, lastName, email, password, loading } = this.state;
+    const { firstName, lastName, email, password } = this.state;
     return (
       <form
         id="portal-register"

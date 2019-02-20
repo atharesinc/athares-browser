@@ -2,7 +2,7 @@ import React from "react";
 import FeatherIcon from "feather-icons-react";
 
 const FileMessage = ({ file, fileName }) => (
-  <a href={file} target="_blank" rel="no-referrer-opener">
+  <a href={file} target="_blank" rel="noopener noreferrer">
     <div
       style={{ height: "6rem", width: "8rem" }}
       className="ma2 mb0 ba bg-theme-light b--white-70 flex flex-column justify-center items-center"

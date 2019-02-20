@@ -111,7 +111,7 @@ class Login extends Component {
             alt="brand"
           />
         </div>
-        {this.state.loading ? (
+        {loading ? (
           <div
             className="wrapper flex flex-row justify-center items-center"
             id="portal-login"

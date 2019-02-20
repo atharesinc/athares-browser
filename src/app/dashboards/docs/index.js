@@ -10,9 +10,9 @@ import {
   updateChannel,
   updateRevision
 } from "../../../store/state/actions";
-import { updateDesc, updateTitle } from "../../../store/head/actions";
+// import { updateDesc, updateTitle } from "../../../store/head/actions";
 import { GET_AMENDMENTS_FROM_CIRCLE_ID } from "../../../graphql/queries";
-import { Query, graphql } from "react-apollo";
+import { Query } from "react-apollo";
 
 import FeatherIcon from "feather-icons-react";
 

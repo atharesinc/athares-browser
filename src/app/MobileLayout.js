@@ -1,9 +1,6 @@
 import React, { PureComponent, Fragment } from "react";
-// import Loader from "./Loader";
-
 import TopNav from "./mobile/TopNav";
 import Circles from "./mobile/Circles";
-import BottomNav from "./mobile/BottomNav";
 import Channels from "./channels";
 import Dashboards from "./dashboards";
 import PushingMenu from "./menu";
@@ -13,12 +10,7 @@ import { connect } from "react-redux";
 import { pull } from "../store/state/reducers";
 import { pull as pullUI } from "../store/ui/reducers";
 import { closeSearch, toggleSearch } from "../store/ui/actions";
-import { updateDesc, updateTitle } from "../store/head/actions";
-import {
-  updateCircle,
-  updateChannel,
-  updateRevision
-} from "../store/state/actions";
+import { updateCircle } from "../store/state/actions";
 
 class MobileLayout extends PureComponent {
   constructor(props) {
@@ -51,14 +43,7 @@ class MobileLayout extends PureComponent {
     this.props.dispatch(updateCircle(id));
   };
   render() {
-    const {
-      circles,
-      activeCircle,
-      activeChannel,
-      location,
-      searchOpen,
-      user
-    } = this.props;
+    const { circles, activeCircle, location, searchOpen, user } = this.props;
     return (
       <div id="app-wrapper-outer" className="wrapper">
         <PushingMenu

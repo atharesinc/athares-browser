@@ -138,6 +138,7 @@ class Invite extends Component {
               <div className="circle-frame flex items-center justify-center mr4">
                 <img
                   src={circle.icon}
+                  alt=""
                   style={{
                     margin: 0,
                     width: "4em",

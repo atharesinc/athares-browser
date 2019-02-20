@@ -4,9 +4,6 @@ import Channels from "./channels";
 import Dashboards from "./dashboards";
 import PushingMenu from "./menu";
 import { connect } from "react-redux";
-import { pull } from "../store/state/reducers";
-
-// import Loader from "./Loader";
 
 class DesktopLayout extends PureComponent {
   constructor(props) {
@@ -16,32 +13,6 @@ class DesktopLayout extends PureComponent {
       user: null
     };
   }
-  componentDidMount() {
-    // this.checkUser();
-  }
-  componentDidUpdate(prevProps) {
-    // if (
-    //   prevProps.user !== this.props.user ||
-    //   prevProps.pub !== this.props.pub
-    // ) {
-    //   this.checkUser();
-    // }
-  }
-  //   checkUser = () => {
-  //     // console.log("updating user", this.props);
-  //     if (this.props.pub) {
-  //       let userRef = this.props.gun.user(this.props.pub);
-
-  //       userRef.get("profile").once(user => {
-  //         // console.log(user);
-  //         this.setState({
-  //           user
-  //         });
-  //       });
-  //     } else {
-  //       this.setState({ user: null });
-  //     }
-  //   };
   toggleMenu = () => {
     this.setState({
       isOpen: !this.state.isOpen

@@ -1,20 +1,12 @@
-import React, { Fragment, Component } from "react";
+import React, { Component } from "react";
 import FeatherIcon from "feather-icons-react";
 import swal from "sweetalert";
 import { Link, withRouter } from "react-router-dom";
-import {
-  updateUser,
-  updatePub,
-  updateChannel,
-  updateCircle,
-  updateRevision
-} from "../store/state/actions";
+import { updateUser, updatePub } from "../store/state/actions";
 import { validateLogin } from "../utils/validators";
 import { pull } from "../store/state/reducers";
 import { connect } from "react-redux";
-import { updateDesc, updateTitle } from "../store/head/actions";
 import { showLoading, hideLoading } from "react-redux-loading-bar";
-import Loader from "../components/Loader";
 import sha from "simple-hash-browser";
 import { SIGNIN_USER } from "../graphql/mutations";
 import { graphql } from "react-apollo";
@@ -82,7 +74,7 @@ class MiniLogin extends Component {
     return nextState !== this.state;
   }
   render() {
-    const { email, password, loading } = this.state;
+    const { email, password } = this.state;
 
     return (
       <form

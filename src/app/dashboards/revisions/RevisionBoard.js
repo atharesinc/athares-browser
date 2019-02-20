@@ -8,7 +8,7 @@ import {
   updateRevision,
   updateCircle
 } from "../../../store/state/actions";
-import { updateDesc, updateTitle } from "../../../store/head/actions";
+// import { updateDesc, updateTitle } from "../../../store/head/actions";
 import { pull } from "../../../store/state/reducers";
 import { connect } from "react-redux";
 import FeatherIcon from "feather-icons-react";

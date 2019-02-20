@@ -14,6 +14,7 @@
     "apollo-link-batch-http": "^1.2.8",
     "apollo-link-http": "^1.5.9",
     "apollo-link-ws": "^1.0.12",
+    "apollo-offline": "^0.1.1",
     "buffer": "^5.2.1",
     "diff": "^3.5.0",
     "emoji-mart": "^2.9.2",

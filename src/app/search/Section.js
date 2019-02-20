@@ -33,6 +33,8 @@ const Section = props => {
         case "users":
           history.push(`/app/user/${id}`);
           break;
+        default:
+          break;
       }
       props.dispatch(closeSearch());
     }
@@ -56,7 +58,11 @@ const Section = props => {
             >
               {props.title === "users" ? (
                 <div className="suggestion-item-user">
-                  <img src={item.icon} className="suggestion-item-user-image" />{" "}
+                  <img
+                    src={item.icon}
+                    className="suggestion-item-user-image"
+                    alt=""
+                  />{" "}
                   <span>{item.firstName + " " + item.lastName + " "}</span>
                   {item.uname && <span>- {item.uname}</span>}{" "}
                 </div>

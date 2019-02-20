@@ -5,7 +5,6 @@ import ViewOtherUser from "./ViewOtherUser"; // same as view user w/o btns to to
 import { Switch, Route } from "react-router-dom";
 import { connect } from "react-redux";
 import { pull } from "../../../store/state/reducers";
-import Loader from "../../../components/Loader";
 import { Query } from "react-apollo";
 import { GET_USER_BY_ID_ALL } from "../../../graphql/queries";
 

@@ -6,7 +6,6 @@ import { connect } from "react-redux";
 import { pull } from "../../store/state/reducers";
 import BottomNav from "./BottomNav";
 import FeatherIcon from "feather-icons-react";
-import { Scrollbars } from "react-custom-scrollbars";
 import {
   GET_CHANNELS_BY_CIRCLE_ID,
   GET_DMS_BY_USER
@@ -15,9 +14,6 @@ import { Query, graphql } from "react-apollo";
 import { updateCircle } from "../../store/state/actions";
 
 class Channels extends Component {
-  constructor(props) {
-    super(props);
-  }
   componentDidMount() {
     if (/\/app\/circle\/.{25}$/.test(this.props.location.pathname)) {
       let match = /\/app\/circle\/(.{25})$/.exec(this.props.location.pathname);
@@ -40,7 +36,6 @@ class Channels extends Component {
   render() {
     let { activeChannel, activeCircle, getDMsByUser } = this.props;
     let user = null;
-    let mobile = window.innerWidth < 993 ? false : true;
     let circle = null;
     let channels = [];
     let dms = [];

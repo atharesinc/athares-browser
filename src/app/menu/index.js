@@ -5,7 +5,7 @@ import FeatherIcon from "feather-icons-react";
 import { logout } from "../../store/state/actions";
 import { connect } from "react-redux";
 import { pull } from "../../store/state/reducers";
-import { graphql, Query } from "react-apollo";
+import { Query } from "react-apollo";
 import { GET_USER_BY_ID } from "../../graphql/queries";
 
 const MenuWrapper = ({ isOpen, history, isMenuOpen, ...props }) => {
@@ -27,7 +27,7 @@ const MenuWrapper = ({ isOpen, history, isMenuOpen, ...props }) => {
       variables={{ id: props.userId || "" }}
       pollInterval={30000}
     >
-      {({ loading, err, data }) => {
+      {({ data }) => {
         let user = null;
         if (data.User) {
           user = data.User;

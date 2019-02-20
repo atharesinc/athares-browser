@@ -150,7 +150,6 @@ export default class ChatInput extends PureComponent {
     });
   };
   render() {
-    console.log(this.props.uploadInProgress);
     let { showFilePreview, fileIsImage, file, showEmoji } = this.state;
     let width = window.innerWidth < 993 ? "100%" : "300px";
     return (

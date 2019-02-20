@@ -52,8 +52,7 @@ class CreateAmendment extends Component {
     // ???
     await this.setState({ loading: true });
     let {
-      data: { Circle: circle },
-      user
+      data: { Circle: circle }
     } = this.props;
 
     let numUsers = circle.users.length;
@@ -83,7 +82,7 @@ class CreateAmendment extends Component {
         support: true
       };
 
-      let newVoteRes = await this.props.createVote({
+      await this.props.createVote({
         variables: {
           ...newVote
         }
