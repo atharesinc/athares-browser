@@ -1573,14 +1573,17 @@ a:visited {
   color: #5a6181;
 }
 
-.squish-on-small {
+.invite-banner {
   color: #ffffff;
   background: transparent;
   text-align: center;
   display: flex;
   flex-direction: row;
   align-items: center;
-  justify-content: flex-start;
+  justify-content: center;
+}
+.invite-banner > img {
+  width: 4rem;
 }
 /* Small screens */
 
@@ -1784,7 +1787,7 @@ a:visited {
     background-color: #ffffff75;
     transition: all ease 0.25s;
   }
-  .squish-on-small {
+  .invite-banner {
     color: #ffffff;
     background: transparent;
     text-align: center;
@@ -1792,6 +1795,9 @@ a:visited {
     flex-direction: column;
     align-items: center;
     justify-content: flex-start;
+  }
+  .invite-banner > img {
+    height: 4rem;
   }
   #bottom-nav:active {
     background: #2f324299;
@@ -1823,6 +1829,9 @@ a:visited {
 }
 
 @media screen and (min-width: 993px) {
+  .invite-banner {
+    margin-top: 4rem;
+  }
   .bm-menu-wrap {
     width: 30% !important;
   }

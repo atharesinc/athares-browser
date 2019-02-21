@@ -115,16 +115,12 @@ class Invite extends Component {
               justifyContent: "flex-start"
             }}
           >
-            <div className="squish-on-small">
+            <div className="invite-banner">
               <img
                 src={circle.icon}
                 alt=""
-                style={{
-                  margin: 0,
-                  // width: "4em",
-                  fontWeight: 500
-                }}
-                className="ba b--white bw2 br-100 h3 ma2"
+                style={{ fontWeight: 500 }}
+                className="ba b--white bw2 br-100 ma2 mr4-ns"
               />
               <div
                 style={{
