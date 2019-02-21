@@ -12,7 +12,7 @@ import Loader from "../components/Loader";
 import { withRouter } from "react-router-dom";
 import swal from "sweetalert";
 import { logout } from "../store/state/actions";
-
+import { Scrollbars } from "react-custom-scrollbars";
 import MiniLoginRegister from "./MiniLoginRegister";
 
 class Invite extends Component {
@@ -100,20 +100,12 @@ class Invite extends Component {
     }
     if (circle && loading === false) {
       return (
-        <div
-          style={{
-            height: "100vh",
-            width: "100vw",
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            justifyContent: "center",
-            position: "relative",
-            top: "20%"
-          }}
-          className="wrapper test"
-        >
-          <div
+        <div className="wrapper mt2">
+          <Scrollbars
+            autoHide
+            autoHideTimeout={1000}
+            autoHideDuration={200}
+            universal={true}
             style={{
               height: "100vh",
               width: "100vw",
@@ -122,30 +114,18 @@ class Invite extends Component {
               alignItems: "center",
               justifyContent: "flex-start"
             }}
-            className="wrapper"
           >
-            <div
-              style={{
-                color: "#FFFFFF",
-                background: "transparent",
-                textAlign: "center",
-                display: "flex",
-                flexDirection: "row",
-                alignItems: "center",
-                justifyContent: "flex-start"
-              }}
-            >
-              <div className="circle-frame flex items-center justify-center mr4">
-                <img
-                  src={circle.icon}
-                  alt=""
-                  style={{
-                    margin: 0,
-                    width: "4em",
-                    fontWeight: 500
-                  }}
-                />
-              </div>
+            <div className="squish-on-small">
+              <img
+                src={circle.icon}
+                alt=""
+                style={{
+                  margin: 0,
+                  // width: "4em",
+                  fontWeight: 500
+                }}
+                className="ba b--white bw2 br-100 h3 ma2"
+              />
               <div
                 style={{
                   display: "inline-block",
@@ -154,7 +134,7 @@ class Invite extends Component {
                   height: "49px"
                 }}
               >
-                <h2 className="ma0 pa0 f4">
+                <h2 className="ma0 pa0 f5 f4-ns white">
                   {invitingUser.firstName +
                     " " +
                     invitingUser.lastName +
@@ -164,29 +144,30 @@ class Invite extends Component {
               </div>
             </div>
             {/* end top line */}
-
-            {user ? (
-              <button
-                id="create-circle-button"
-                className="btn mv4 springUp"
-                onClick={this.joinCircle}
-              >
-                Join Circle
-              </button>
-            ) : (
-              <MiniLoginRegister />
-            )}
-            {user && (
-              <Fragment>
-                <div className="white-70 mb3 springUp">
-                  Logged in as: {user.firstName}
-                </div>
-                <div className="white-70 glow springUp" onClick={this.logout}>
-                  Not you?
-                </div>
-              </Fragment>
-            )}
-          </div>
+            <div className="w-100 tc mb3">
+              {user ? (
+                <button
+                  id="create-circle-button"
+                  className="btn mv4 springUp"
+                  onClick={this.joinCircle}
+                >
+                  Join Circle
+                </button>
+              ) : (
+                <MiniLoginRegister />
+              )}
+              {user && (
+                <Fragment>
+                  <div className="white-70 mb3 springUp">
+                    Logged in as: {user.firstName}
+                  </div>
+                  <div className="white-70 glow springUp" onClick={this.logout}>
+                    Not you?
+                  </div>
+                </Fragment>
+              )}
+            </div>
+          </Scrollbars>
         </div>
       );
     }

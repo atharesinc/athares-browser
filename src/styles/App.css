@@ -1287,10 +1287,6 @@ a:visited {
   cursor: pointer;
 }
 
-#bordered:hover {
-  /*animation: blink 0.2s;*/
-}
-
 #bordered:hover > .top-borders,
 #bordered:hover > .bottom-borders {
   opacity: 1;
@@ -1576,6 +1572,16 @@ a:visited {
 .theme-light-alt {
   color: #5a6181;
 }
+
+.squish-on-small {
+  color: #ffffff;
+  background: transparent;
+  text-align: center;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+}
 /* Small screens */
 
 @media screen and (max-width: 992px) {
@@ -1777,6 +1783,15 @@ a:visited {
   .dashboard-item:active {
     background-color: #ffffff75;
     transition: all ease 0.25s;
+  }
+  .squish-on-small {
+    color: #ffffff;
+    background: transparent;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
   }
   #bottom-nav:active {
     background: #2f324299;
