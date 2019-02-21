@@ -13,6 +13,7 @@ import {
 // import { updateDesc, updateTitle } from "../../../store/head/actions";
 import { connect } from "react-redux";
 import { CREATE_MESSAGE } from "../../../graphql/mutations";
+import { SUB_TO_MESSAGES_BY_CHANNEL_ID } from "../../../graphql/subscriptions";
 import { GET_MESSAGES_FROM_CHANNEL_ID } from "../../../graphql/queries";
 import { compose, graphql, Query } from "react-apollo";
 import swal from "sweetalert";
@@ -50,19 +51,11 @@ class Chat extends Component {
       this.props.dispatch(updateChannel(this.props.match.params.id));
       return;
     }
-    if (
-      this.props.messages &&
-      this.props.messages.length > prevProps.messages.length
-    ) {
-      // /* scroll to bottom */
-      // this.scrollToBottom()
-    }
   }
   scrollToBottom = () => {
-    let chatBox = document.getElementById("chat-window-scroller");
-    let lastMsg = document.getElementById("last-message");
+    let chatBox = document.getElementById("chat-window-scroller").firstChild;
     if (chatBox) {
-      chatBox.scrollTop = lastMsg.scrollHeight;
+      chatBox.scrollTop = chatBox.lastElementChild.offsetTop;
     }
   };
   updateChannel = () => {
@@ -75,9 +68,11 @@ class Chat extends Component {
   submit = async (text, file = null) => {
     let chatInput = document.getElementById("chat-input");
 
-    await this.setState({
-      uploadInProgress: true
-    });
+    if (file) {
+      await this.setState({
+        uploadInProgress: true
+      });
+    }
 
     try {
       let url =
@@ -108,8 +103,11 @@ class Chat extends Component {
         uploadInProgress: false
       });
       /* scroll to bottom */
-      // this.scrollToBottom();
+      this.scrollToBottom();
     } catch (err) {
+      this.setState({
+        uploadInProgress: false
+      });
       console.error(new Error(err));
       swal(
         "Error",
@@ -118,18 +116,38 @@ class Chat extends Component {
       );
     }
   };
+  _subToMore = subscribeToMore => {
+    subscribeToMore({
+      document: SUB_TO_MESSAGES_BY_CHANNEL_ID,
+      variables: { id: this.props.activeChannel || "" },
+      updateQuery: (prev, { subscriptionData }) => {
+        // this.props.getChannelMessages.refetch({
+        //   id: activeChannel
+        // });
+        let newMsg = subscriptionData.data.Message.node;
+        if (!prev.Channel.messages.find(m => m.id === newMsg.id)) {
+          // merge new messages into prev.messages
+          prev.Channel.messages = [...prev.Channel.messages, newMsg];
+        }
+
+        return prev;
+      }
+    });
+  };
   render() {
     let channel = null;
     let messages = [];
     let { user } = this.props;
+
     return (
       <Query
         query={GET_MESSAGES_FROM_CHANNEL_ID}
         variables={{ id: this.props.activeChannel || "" }}
-        pollInterval={1500}
+        onCompleted={this.scrollToBottom}
       >
-        {({ loading, err, data }) => {
+        {({ data, subscribeToMore }) => {
           if (data.Channel) {
+            this._subToMore(subscribeToMore);
             channel = data.Channel;
             messages = data.Channel.messages;
           }

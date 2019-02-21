@@ -70,6 +70,9 @@ const ChannelLabel = props => {
     >
       <div>{props.name}</div>
       {shouldRenderAddChannel(props.activeCircle)}
+      {props.unread && (
+        <FeatherIcon icon="alert-circle" className="theme-blue h1 popIn" />
+      )}
     </div>
   );
 };

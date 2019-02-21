@@ -5,7 +5,7 @@ import Loader from "../../../components/Loader";
 import FeatherIcon from "feather-icons-react";
 import { Link } from "react-router-dom";
 import { pull } from "../../../store/state/reducers";
-import { updateChannel } from "../../../store/state/actions";
+import { updateChannel, removeUnreadDM } from "../../../store/state/actions";
 import { connect } from "react-redux";
 import { decrypt } from "simple-asym-crypto";
 import SimpleCrypto from "simple-crypto-js";
@@ -14,6 +14,7 @@ import {
   GET_MESSAGES_FROM_CHANNEL_ID,
   GET_USER_KEYS
 } from "../../../graphql/queries";
+import { SUB_TO_MESSAGES_BY_CHANNEL_ID } from "../../../graphql/subscriptions";
 import { compose, graphql, Query } from "react-apollo";
 import uploadToIPFS from "../../../utils/uploadToIPFS";
 import swal from "sweetalert";
@@ -40,8 +41,9 @@ class DMChat extends Component {
       this.props.activeChannel !== this.props.match.params.id
     ) {
       this.props.dispatch(updateChannel(this.props.match.params.id));
-    } else {
-      // this.scrollToBottom();
+    }
+    if (this.props.activeChannel) {
+      this.props.dispatch(removeUnreadDM(this.props.activeChannel));
     }
     if (this.props.getUserKeys.User) {
       try {
@@ -67,6 +69,12 @@ class DMChat extends Component {
   }
 
   async componentDidUpdate(prevProps) {
+    if (
+      this.props.activeChannel &&
+      this.props.activeChannel !== prevProps.activeChannel
+    ) {
+      this.props.dispatch(removeUnreadDM(this.props.activeChannel));
+    }
     if (prevProps.getUserKeys.User !== this.props.getUserKeys.User) {
       try {
         let hashed = window.localStorage.getItem("ATHARES_TOKEN");
@@ -89,13 +97,12 @@ class DMChat extends Component {
         console.error(new Error(err));
       }
     }
-    // this.scrollToBottom();
   }
   scrollToBottom = () => {
-    let chatBox = document.getElementById("chat-window");
+    let chatBox = document.getElementById("chat-window-scroller");
     if (chatBox) {
       /* scroll to bottom */
-      chatBox = chatBox.firstElementChild.firstElementChild;
+      chatBox = chatBox.firstElementChild;
       chatBox.scrollTop = chatBox.scrollHeight;
     }
   };
@@ -107,9 +114,11 @@ class DMChat extends Component {
     if (text.trim() === "" && file === null) {
       return false;
     }
-    await this.setState({
-      uploadInProgress: true
-    });
+    if (file) {
+      await this.setState({
+        uploadInProgress: true
+      });
+    }
     let { user, activeChannel: channel } = this.props;
     try {
       let url =
@@ -138,6 +147,9 @@ class DMChat extends Component {
       chatInput.setAttribute("rows", 1);
       // this.scrollToBottom();
     } catch (err) {
+      this.setState({
+        uploadInProgress: false
+      });
       console.error(new Error(err));
       swal(
         "Error",
@@ -177,7 +189,24 @@ class DMChat extends Component {
     retval = retval.join(", ");
     return retval;
   };
+  _subToMore = subscribeToMore => {
+    subscribeToMore({
+      document: SUB_TO_MESSAGES_BY_CHANNEL_ID,
+      variables: { id: this.props.activeChannel || "" },
+      updateQuery: (prev, { subscriptionData }) => {
+        // this.props.getChannelMessages.refetch({
+        //   id: activeChannel
+        // });
+        let newMsg = subscriptionData.data.Message.node;
+        if (!prev.Channel.messages.find(m => m.id === newMsg.id)) {
+          // merge new messages into prev.messages
+          prev.Channel.messages = [...prev.Channel.messages, newMsg];
+        }
 
+        return prev;
+      }
+    });
+  };
   render() {
     let { getUserKeys } = this.props;
     let channel = null,
@@ -187,10 +216,11 @@ class DMChat extends Component {
       <Query
         query={GET_MESSAGES_FROM_CHANNEL_ID}
         variables={{ id: this.props.activeChannel || "" }}
-        pollInterval={1500}
+        onCompleted={this.scrollToBottom}
       >
-        {({ loading, err, data }) => {
+        {({ data, subscribeToMore }) => {
           if (data.Channel) {
+            this._subToMore(subscribeToMore);
             channel = data.Channel;
             messages = data.Channel.messages;
           }

@@ -17,6 +17,7 @@ import Policy from "./policy";
 import DesktopLayout from "./app/DesktopLayout";
 import MobileLayout from "./app/MobileLayout";
 import RevisionMonitor from "./components/RevisionMonitor";
+import ChannelUpdateMonitor from "./components/ChannelUpdateMonitor";
 import Invite from "./invite";
 import Head from "./head";
 
@@ -135,6 +136,7 @@ class App extends PureComponent {
           showFastActions
         />
         <RevisionMonitor />
+        {this.props.user && <ChannelUpdateMonitor />}
         <div className="wrapper high-img" id="main-layout">
           <Head />
 

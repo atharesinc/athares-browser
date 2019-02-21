@@ -34,13 +34,16 @@ class Channels extends Component {
     this.props.history.push(`/app/circle/${this.props.activeCircle}/settings`);
   };
   render() {
-    let { activeChannel, activeCircle, getDMsByUser } = this.props;
+    let { activeChannel, activeCircle, getDMsByUser, unreadDMs } = this.props;
     let user = null;
     let circle = null;
     let channels = [];
     let dms = [];
     if (getDMsByUser.User && getDMsByUser.User.channels) {
-      dms = getDMsByUser.User.channels;
+      dms = getDMsByUser.User.channels.map(dm => ({
+        unread: unreadDMs.includes(dm.id),
+        ...dm
+      }));
       user = getDMsByUser.User;
       user = {
         id: user.id,
@@ -174,7 +177,8 @@ function mapStateToProps(state) {
   return {
     user: pull(state, "user"),
     activeCircle: pull(state, "activeCircle"),
-    activeChannel: pull(state, "activeChannel")
+    activeChannel: pull(state, "activeChannel"),
+    unreadDMs: pull(state, "unreadDMs")
   };
 }
 

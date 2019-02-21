@@ -99,13 +99,13 @@ export default class ChatInput extends PureComponent {
       }
       return (
         <img
-          className="h-100"
+          className="mw4 mr2"
           src={this.state.filePreview}
           alt={this.state.file.name}
         />
       );
     } else {
-      return <FeatherIcon icon="file" />;
+      return <FeatherIcon icon="file-text" />;
     }
   };
   getImagePreview = () => {
