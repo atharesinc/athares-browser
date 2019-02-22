@@ -492,7 +492,7 @@ input[type="phone"],
   align-items: center;
   border: 1px solid #00dffc;
   border-radius: 999px;
-  width: 9em;
+  width: initial;
 }
 
 .react-tags__search {

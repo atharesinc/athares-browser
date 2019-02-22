@@ -25,8 +25,7 @@ const uploadToIPFS = async (file, updateProgress = console.log) => {
         if (err) {
           throw err;
         }
-        let pinRes = await node.pin.add(result[0].hash);
-        console.log(pinRes);
+        await node.pin.add(result[0].hash);
         resolve("https://ipfs.io/ipfs/" + result[0].hash);
       }
     );

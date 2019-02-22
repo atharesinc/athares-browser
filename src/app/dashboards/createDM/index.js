@@ -50,7 +50,7 @@ class CreateDM extends Component {
   updateProgress = (prog, length) => {
     console.log(prog / length);
   };
-  submit = async (text, file = null) => {
+  submit = async (text = "", file = null) => {
     let { selectedUsers } = this.state;
     let { data } = this.props;
     if (!data.User) {
@@ -127,7 +127,7 @@ class CreateDM extends Component {
       }
       // send the first message, encrypted with the channel's SEA pair
       let newMessage = {
-        text: simpleCrypto.encrypt(this.state.text.trim()),
+        text: simpleCrypto.encrypt(text.trim()),
         user: this.props.user,
         channel: id,
         file: url ? simpleCrypto.encrypt(url) : "",
