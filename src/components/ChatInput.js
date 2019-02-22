@@ -3,8 +3,9 @@ import TextareaAutosize from "react-autosize-textarea";
 import FeatherIcon from "feather-icons-react";
 import Loader from "./Loader";
 // import emojer from "emojer";
-import EXIF from "exif-js";
+// import EXIF from "exif-js";
 import { Picker } from "emoji-mart";
+var loadImage = require("blueimp-load-image-npm");
 
 export default class ChatInput extends PureComponent {
   constructor() {
@@ -16,7 +17,9 @@ export default class ChatInput extends PureComponent {
       file: null,
       fileIsImage: false,
       loadingImage: false,
-      showEmoji: false
+      showEmoji: false,
+      rotate: 0,
+      extension: null
     };
   }
   componentDidMount() {
@@ -100,6 +103,7 @@ export default class ChatInput extends PureComponent {
       return (
         <img
           className="mw4 mr2"
+          style={{ transform: this.state.rotate }}
           src={this.state.filePreview}
           alt={this.state.file.name}
         />
@@ -108,34 +112,95 @@ export default class ChatInput extends PureComponent {
       return <FeatherIcon icon="file-text" />;
     }
   };
-  getImagePreview = () => {
+  // once we know file is image, see if it needs to be rotated
+  // getRotation = file => {
+  //   return new Promise(resolve => {
+  //     EXIF.getData(file, () => {
+  //       var orientation = EXIF.getTag(file, "Orientation");
+  //       let rotatePic = 0;
+  //       switch (orientation) {
+  //         case 8:
+  //           rotatePic = 270;
+  //           break;
+  //         case 6:
+  //           rotatePic = 90;
+  //           break;
+  //         case 3:
+  //           rotatePic = 180;
+  //           break;
+  //         default:
+  //           rotatePic = 0;
+  //       }
+  //       resolve(rotatePic);
+  //     });
+  //   }).catch(err => {
+  //     console.error(new Error(err));
+  //     return;
+  //   });
+  // };
+  // rotateImage = (file, angle) => {
+  //   return new Promise(resolve => {
+  //     var u = URL.createObjectURL(file);
+  //     var img = new Image();
+
+  //     img.onload = function() {
+  //       var c = document.createElement("canvas");
+  //       c.width = img.width;
+  //       c.height = img.height;
+  //       var ctx = c.getContext("2d");
+  //       ctx.rotate(angle);
+  //       var imgData = ctx.createImageData(this.width, this.height);
+  //       ctx.putImageData(imgData, 0, 0);
+  //       c.toBlob(blob => {
+  //         blob.lastModifiedDate = new Date();
+  //         blob.name = file.name;
+  //         console.log(URL.createObjectURL(blob));
+  //         resolve(blob);
+  //       });
+  //     };
+  //     img.src = u;
+  //   });
+  // };
+  dataURItoBlob = dataURI => {
+    var binary = atob(dataURI.split(",")[1]);
+    var array = [];
+    for (var i = 0; i < binary.length; i++) {
+      array.push(binary.charCodeAt(i));
+    }
+    return new Blob([new Uint8Array(array)], { type: "image/jpg" });
+  };
+  getImagePreview = async () => {
     let { file } = this.state;
-    let reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onloadend = e => {
-      EXIF.getData(file, () => {
-        var orientation = EXIF.getTag(this, "Orientation");
-        let rotatePic = 0;
-        switch (orientation) {
-          case 8:
-            rotatePic = 270;
-            break;
-          case 6:
-            rotatePic = 90;
-            break;
-          case 3:
-            rotatePic = 180;
-            break;
-          default:
-            rotatePic = 0;
+    let that = this;
+    loadImage.parseMetaData(file, function(data) {
+      let ori = 0;
+      if (data.exif) {
+        ori = data.exif.get("Orientation");
+      }
+      loadImage(
+        file,
+        function(img) {
+          img.toBlob(blob => {
+            blob.name = file.name;
+            let reader = new FileReader();
+            reader.onloadend = e => {
+              that.setState({
+                loadingImage: false,
+                filePreview: reader.result,
+                file: blob
+              });
+            };
+            reader.readAsDataURL(blob);
+          });
+        },
+        {
+          meta: true,
+          canvas: true,
+          orientation: ori,
+          maxWidth: 600
         }
-        this.setState({
-          loadingImage: false,
-          filePreview: reader.result,
-          rotate: rotatePic
-        });
-      });
-    };
+      );
+    });
   };
   deleteImage = () => {
     this.setState({

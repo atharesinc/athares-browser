@@ -105,7 +105,7 @@ export default class ImageUpload extends React.Component {
     this.setState({ loading: true });
     reader.onloadend = e => {
       EXIF.getData(file, () => {
-        var orientation = EXIF.getTag(this, "Orientation");
+        var orientation = EXIF.getTag(file, "Orientation");
         let rotatePic = 0;
         switch (orientation) {
           case 8:

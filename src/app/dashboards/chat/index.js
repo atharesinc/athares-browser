@@ -53,9 +53,11 @@ class Chat extends Component {
     }
   }
   scrollToBottom = () => {
-    let chatBox = document.getElementById("chat-window-scroller").firstChild;
+    let chatBox = document.getElementById("chat-window-scroller");
     if (chatBox) {
-      chatBox.scrollTop = chatBox.lastElementChild.offsetTop;
+      /* scroll to bottom */
+      chatBox = chatBox.firstElementChild;
+      chatBox.scrollTop = chatBox.scrollHeight;
     }
   };
   updateChannel = () => {
