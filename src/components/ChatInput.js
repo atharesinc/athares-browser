@@ -53,12 +53,32 @@ export default class ChatInput extends PureComponent {
       showEmoji: !this.state.showEmoji
     });
   };
-  submit = e => {
-    if (e.key === "Enter" && !e.shiftKey) {
-      e.preventDefault();
-      if (this.state.input.trim() === "" && this.state.file === null) {
-        return false;
+
+  // submit
+  // -- desktop
+  // -- shift held
+
+  // new line
+  // -- mobile
+  submitHandler = e => {
+    if (e.key === "Enter") {
+      let mobile = window.innerWidth < 993;
+      if (e.shiftKey === false && mobile === false) {
+        this.submit();
+      } else if (e.shiftKey === true && mobile === false) {
+        // e.preventDefault();
+        // console.log("newLine");
+      } else if (mobile === true) {
+        // console.log("newLine - mobile");
+      } else {
+        this.submit();
       }
+    }
+  };
+  submit = () => {
+    if (this.state.input.trim() === "" && this.state.file === null) {
+      return false;
+    } else {
       // send the message to parent
       this.props.submit(this.state.input, this.state.file);
       this.setState({
@@ -112,55 +132,7 @@ export default class ChatInput extends PureComponent {
       return <FeatherIcon icon="file-text" />;
     }
   };
-  // once we know file is image, see if it needs to be rotated
-  // getRotation = file => {
-  //   return new Promise(resolve => {
-  //     EXIF.getData(file, () => {
-  //       var orientation = EXIF.getTag(file, "Orientation");
-  //       let rotatePic = 0;
-  //       switch (orientation) {
-  //         case 8:
-  //           rotatePic = 270;
-  //           break;
-  //         case 6:
-  //           rotatePic = 90;
-  //           break;
-  //         case 3:
-  //           rotatePic = 180;
-  //           break;
-  //         default:
-  //           rotatePic = 0;
-  //       }
-  //       resolve(rotatePic);
-  //     });
-  //   }).catch(err => {
-  //     console.error(new Error(err));
-  //     return;
-  //   });
-  // };
-  // rotateImage = (file, angle) => {
-  //   return new Promise(resolve => {
-  //     var u = URL.createObjectURL(file);
-  //     var img = new Image();
 
-  //     img.onload = function() {
-  //       var c = document.createElement("canvas");
-  //       c.width = img.width;
-  //       c.height = img.height;
-  //       var ctx = c.getContext("2d");
-  //       ctx.rotate(angle);
-  //       var imgData = ctx.createImageData(this.width, this.height);
-  //       ctx.putImageData(imgData, 0, 0);
-  //       c.toBlob(blob => {
-  //         blob.lastModifiedDate = new Date();
-  //         blob.name = file.name;
-  //         console.log(URL.createObjectURL(blob));
-  //         resolve(blob);
-  //       });
-  //     };
-  //     img.src = u;
-  //   });
-  // };
   dataURItoBlob = dataURI => {
     var binary = atob(dataURI.split(",")[1]);
     var array = [];
@@ -216,7 +188,8 @@ export default class ChatInput extends PureComponent {
   };
   render() {
     let { showFilePreview, fileIsImage, file, showEmoji } = this.state;
-    let width = window.innerWidth < 993 ? "100%" : "300px";
+    let mobile = window.innerWidth < 993;
+    let width = mobile ? "100%" : "300px";
     return (
       <div id="chat-input-wrapper">
         {/* new stuff below */}
@@ -269,7 +242,7 @@ export default class ChatInput extends PureComponent {
         </div>
 
         {/* end new stuff */}
-        <div className="flex flex-row items-start justify-start bt b--white-70">
+        <div className="flex flex-row items-start justify-start">
           <div id="chat-util-icons">
             {/* This should be a smile but feather-icons-react is behind :\ */}
             <div
@@ -284,20 +257,29 @@ export default class ChatInput extends PureComponent {
                 <FeatherIcon icon="paperclip" />
               </div>
             </label>
-            {/* <div className="chat-util-icon">
-            <FeatherIcon icon="video" />
-        </div> */}
           </div>
           <TextareaAutosize
             rows={1}
-            maxRows={3}
+            // maxRows={mobile ? 3 : 5}
             id="chat-input"
             value={this.state.input}
             placeholder="Enter Message"
-            onKeyDown={this.submit}
+            onKeyDown={this.submitHandler}
             onChange={this.changeText}
             tabIndex="1"
+            style={{ minHeight: "10vh", maxHeight: "30vh", height: "auto" }}
           />
+          {window.innerWidth < 993 && (
+            <div
+              id="chat-util-icons"
+              className="mobile-chat-bar"
+              style={{ width: "3em" }}
+            >
+              <div className="chat-util-icon" onClick={this.submit}>
+                <FeatherIcon icon="send" />
+              </div>
+            </div>
+          )}
         </div>
       </div>
     );

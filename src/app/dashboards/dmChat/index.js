@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import ChatWindow from "../../../components/ChatWindow";
 import ChatInput from "../../../components/ChatInput";
+import DMSettings from "./DMSettings";
 import Loader from "../../../components/Loader";
 import FeatherIcon from "feather-icons-react";
 import { Link } from "react-router-dom";
@@ -18,6 +19,8 @@ import { SUB_TO_MESSAGES_BY_CHANNEL_ID } from "../../../graphql/subscriptions";
 import { compose, graphql, Query } from "react-apollo";
 import uploadToIPFS from "../../../utils/uploadToIPFS";
 import swal from "sweetalert";
+import { openDMSettings } from "../../../store/ui/actions";
+const pullUI = require("../../../store/ui/reducers").pull;
 
 class DMChat extends Component {
   constructor(props) {
@@ -207,6 +210,9 @@ class DMChat extends Component {
       }
     });
   };
+  showDMSettings = () => {
+    this.props.dispatch(openDMSettings());
+  };
   render() {
     let { getUserKeys } = this.props;
     let channel = null,
@@ -236,7 +242,7 @@ class DMChat extends Component {
             }));
             return (
               <div id="chat-wrapper">
-                <div id="current-channel">
+                <div id="current-dm-channel">
                   <Link to="/app">
                     <FeatherIcon
                       icon="chevron-left"
@@ -246,7 +252,8 @@ class DMChat extends Component {
                   <div>{this.normalizeName(channel.name)}</div>
                   <FeatherIcon
                     icon="more-vertical"
-                    className="white db dn-ns"
+                    className="white db pointer"
+                    onClick={this.showDMSettings}
                   />
                 </div>
                 {messages.length !== 0 ? (
@@ -258,6 +265,7 @@ class DMChat extends Component {
                   submit={this.submit}
                   uploadInProgress={this.state.uploadInProgress}
                 />
+                {this.props.dmSettings && <DMSettings />}
               </div>
             );
           } else {
@@ -276,7 +284,8 @@ class DMChat extends Component {
 function mapStateToProps(state) {
   return {
     user: pull(state, "user"),
-    activeChannel: pull(state, "activeChannel")
+    activeChannel: pull(state, "activeChannel"),
+    dmSettings: pullUI(state, "dmSettings")
   };
 }
 

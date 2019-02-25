@@ -156,7 +156,7 @@ class CreateDM extends Component {
     const { selectedUsers } = this.state;
     return (
       <div id="chat-wrapper">
-        <div id="current-channel">
+        <div id="create-dm-channel">
           <Link to="/app">
             <FeatherIcon icon="chevron-left" className="white db dn-ns" />
           </Link>
@@ -165,7 +165,6 @@ class CreateDM extends Component {
             updateList={this.updateList}
             selectedUsers={selectedUsers}
           />
-          <FeatherIcon icon="more-vertical" className="white db dn-ns" />
         </div>
         <ChatWindow />
         <ChatInput

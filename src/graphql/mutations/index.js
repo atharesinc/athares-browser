@@ -281,3 +281,27 @@ export const UPDATE_INVITE = gql`
     }
   }
 `;
+
+export const DELETE_USER_FROM_DM = gql`
+  mutation deleteUserFromDM($channel: ID!, $user: ID!) {
+    removeFromUsersOnChannels(channelsChannelId: $channel, usersUserId: $user) {
+      usersUser {
+        id
+        keys(filter: { channel: { id: $channel } }) {
+          id
+        }
+      }
+      channelsChannel {
+        id
+      }
+    }
+  }
+`;
+
+export const DELETE_USER_KEY = gql`
+  mutation($id: ID!) {
+    deleteKey(id: $id) {
+      id
+    }
+  }
+`;

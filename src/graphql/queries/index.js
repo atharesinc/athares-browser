@@ -369,3 +369,14 @@ export const GET_INVITE_BY_ID = gql`
     }
   }
 `;
+
+export const GET_USERS_BY_CHANNEL_ID = gql`
+  query getUsersByChannelId($id: ID!) {
+    Channel(id: $id) {
+      id
+      users {
+        id
+      }
+    }
+  }
+`;
