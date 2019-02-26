@@ -12,6 +12,8 @@ import {
 } from "../../graphql/queries";
 import { Query, graphql } from "react-apollo";
 import { updateCircle } from "../../store/state/actions";
+import Search from "../search";
+import Scrollbars from "react-custom-scrollbars";
 
 class Channels extends Component {
   componentDidMount() {
@@ -51,6 +53,7 @@ class Channels extends Component {
         lastName: user.lastName
       };
     }
+    const mobile = window.innerWidth < 993;
     return (
       <Query
         query={GET_CHANNELS_BY_CIRCLE_ID}
@@ -76,40 +79,41 @@ class Channels extends Component {
                     />
                   )}
                 </div>
+
                 <div id="channels-list">
-                  {/* <Scrollbars
+                  {!mobile && <Search />}
+                  <Scrollbars
                     style={{
-                      // width: "100%",
-                      // height: "100%",
-                      overflow: "none"
+                      width: "100%",
+                      height: mobile ? "80vh" : "100%"
                     }}
                     autoHide
                     autoHideTimeout={1000}
                     autoHideDuration={200}
                     universal={true}
-                  > */}
-                  <GovernanceChannelGroup
-                    style={style.docs}
-                    name={"Governance"}
-                  />
-                  <ChannelGroup
-                    style={style.channels}
-                    channelType={"group"}
-                    activeChannel={activeChannel}
-                    name={"Channels"}
-                    channels={channels.filter(channel => {
-                      return channel.channelType === "group";
-                    })}
-                  />
-                  <ChannelGroup
-                    style={style.dm}
-                    channelType={"dm"}
-                    activeChannel={activeChannel}
-                    name={"Direct Messages"}
-                    channels={dms}
-                    user={user}
-                  />
-                  {/* </Scrollbars> */}
+                  >
+                    <GovernanceChannelGroup
+                      style={style.docs}
+                      name={"Governance"}
+                    />
+                    <ChannelGroup
+                      style={style.channels}
+                      channelType={"group"}
+                      activeChannel={activeChannel}
+                      name={"Channels"}
+                      channels={channels.filter(channel => {
+                        return channel.channelType === "group";
+                      })}
+                    />
+                    <ChannelGroup
+                      style={style.dm}
+                      channelType={"dm"}
+                      activeChannel={activeChannel}
+                      name={"Direct Messages"}
+                      channels={dms}
+                      user={user}
+                    />
+                  </Scrollbars>
                 </div>
                 <BottomNav show={!!user} activeCircle={activeCircle} />
               </div>
@@ -118,12 +122,14 @@ class Channels extends Component {
             return (
               <div id="channels-wrapper">
                 <div id="circle-name">No Circle Selected</div>
+
                 <div
                   id="channels-list"
                   style={{
                     alignItems: "center"
                   }}
                 >
+                  {!mobile && <Search />}
                   <div className="w-100">
                     {user ? (
                       <Link to={"/app/new/circle"}>

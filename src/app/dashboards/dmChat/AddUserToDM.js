@@ -114,19 +114,16 @@ class AddUserToDM extends Component {
     return (
       <Fragment>
         <div
-          className="flex items-center lh-copy ph0 h3 bb b--white-10 dim pointer"
+          className="flex items-center lh-copy h3 bb b--white-10 dim pointer ph3"
           onClick={this.toggleUserInput}
         >
-          <div className="pl3 flex-auto" to="about">
+          <div className="flex-auto">
             <span className="f5 db white">Add Users</span>
             {users.length >= 6 && (
               <span className="f6 white-50">You can't add any more users</span>
             )}
           </div>
-          <FeatherIcon
-            className="w2 h2 w3-ns h3-ns pa3-ns pa0"
-            icon="user-plus"
-          />
+          <FeatherIcon className="w2 h2 w3-ns h3-ns" icon="user-plus" />
         </div>
         {this.props.showAddMoreUsers && (
           <div className="flex flex-row justify-between items-start">
@@ -137,7 +134,7 @@ class AddUserToDM extends Component {
             />
             <FeatherIcon
               icon="plus"
-              className="white w2 h-100 bg-theme-blue ph1 ph2 pointer"
+              className="white w3 w2-ns h-100 bg-theme-blue pv1 ph2 pointer"
               onClick={this.submit}
             />
           </div>

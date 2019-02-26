@@ -15,12 +15,12 @@ const GovernanceChannelGroup = ({ activeCircle, location, ...props }) => {
   return (
     <div className="channel-group-wrapper">
       <div
-        className={`channel-group-label`}
-        style={{ color: "#FFFFFF", lineHeight: "4rem" }}
+        className={`channel-group-label ttu tracked f7`}
+        style={{ color: "#FFFFFF", lineHeight: "2rem" }}
       >
         {props.name}
       </div>
-      <Scrollbars
+      {/* <Scrollbars
         style={{
           width: "100%",
           height: "calc(100vh /3)",
@@ -31,33 +31,33 @@ const GovernanceChannelGroup = ({ activeCircle, location, ...props }) => {
         autoHideTimeout={1000}
         autoHideDuration={200}
         universal={true}
-      >
-        <Link to={`/app/circle/${activeCircle}/constitution`}>
-          <div
-            className={`channel-group-label ${docsActive ? "active-bg" : ""}`}
-            style={{ borderBottom: "none" }}
-          >
-            Constitution
-          </div>
-        </Link>
-        <Link to={`/app/circle/${activeCircle}/revisions`}>
-          <div
-            className={`channel-group-label ${revActive ? "active-bg" : ""}`}
-            style={{ borderBottom: "none" }}
-          >
-            Polls
-          </div>
-        </Link>
-        <Link to={`/app/circle/${activeCircle}/news`}>
-          <div
-            className={`channel-group-label ${newsActive ? "active-bg" : ""}`}
-            style={{ borderBottom: "none" }}
-          >
-            <span>News</span>{" "}
-            <span className="bg-theme-light br-pill pv1 ph2">Coming Soon</span>
-          </div>
-        </Link>
-      </Scrollbars>
+      > */}
+      <Link to={`/app/circle/${activeCircle}/constitution`}>
+        <div
+          className={`channel-group-label ${docsActive ? "active-bg" : ""}`}
+          style={{ borderBottom: "none" }}
+        >
+          Constitution
+        </div>
+      </Link>
+      <Link to={`/app/circle/${activeCircle}/revisions`}>
+        <div
+          className={`channel-group-label ${revActive ? "active-bg" : ""}`}
+          style={{ borderBottom: "none" }}
+        >
+          Polls
+        </div>
+      </Link>
+      <Link to={`/app/circle/${activeCircle}/news`}>
+        <div
+          className={`channel-group-label ${newsActive ? "active-bg" : ""}`}
+          style={{ borderBottom: "none" }}
+        >
+          <span>News</span>{" "}
+          <span className="bg-theme-light br-pill pv1 ph2">Coming Soon</span>
+        </div>
+      </Link>
+      {/* </Scrollbars> */}
     </div>
   );
 };

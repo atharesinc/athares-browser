@@ -20,7 +20,7 @@ const ChannelGroup = props => {
           activeChannel={props.activeChannel}
         />
       ) : null}
-      <Scrollbars
+      {/* <Scrollbars
         style={{
           width: "100%",
           height: "calc(100vh /3)",
@@ -31,16 +31,16 @@ const ChannelGroup = props => {
         autoHideTimeout={1000}
         autoHideDuration={200}
         universal={true}
-      >
-        {props.channels.map((channel, i) => (
-          <Channel
-            key={i}
-            channel={channel}
-            activeChannel={props.activeChannel}
-            user={props.user}
-          />
-        ))}
-      </Scrollbars>
+      > */}
+      {props.channels.map((channel, i) => (
+        <Channel
+          key={i}
+          channel={channel}
+          activeChannel={props.activeChannel}
+          user={props.user}
+        />
+      ))}
+      {/* </Scrollbars> */}
     </div>
   );
 };

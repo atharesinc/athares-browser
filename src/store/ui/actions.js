@@ -8,6 +8,16 @@ export function closeSearch() {
     dispatch({ type: "CLOSE_SEARCH" });
   };
 }
+export function clearSearch() {
+  return async dispatch => {
+    dispatch({ type: "CLEAR_SEARCH" });
+  };
+}
+export function updateSearchParams(searchParams) {
+  return async dispatch => {
+    dispatch({ type: "UPDATE_SEARCH", searchParams });
+  };
+}
 export function toggleSearch() {
   return async dispatch => {
     dispatch({ type: "TOGGLE_SEARCH" });

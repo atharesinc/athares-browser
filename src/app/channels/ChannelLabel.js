@@ -63,7 +63,7 @@ const ChannelLabel = props => {
       className={`channel-group-label ${active} ${
         !["Channels", "Governance", "Direct Messages"].includes(props.name)
           ? "channel-wrapper"
-          : ""
+          : "ttu tracked f7"
       }`}
       onClick={setActiveChannel}
       style={hasBorder(props.name)}

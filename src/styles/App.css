@@ -1620,6 +1620,11 @@ a:visited {
   body {
     overflow: initial;
   }
+  #dm-settings {
+  position: absolute;
+  right: 0;
+  width: 100vw;
+}
   .mobile-top-nav {
     height: 4em;
   }

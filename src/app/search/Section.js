@@ -1,10 +1,9 @@
 import React from "react";
 import { withRouter } from "react-router-dom";
-import { closeSearch } from "../../store/ui/actions";
+import { closeSearch, clearSearch } from "../../store/ui/actions";
 import { connect } from "react-redux";
 
 const Section = props => {
-  console.log(props);
   let { data } = props;
 
   const navigate = e => {
@@ -37,6 +36,7 @@ const Section = props => {
           break;
       }
       props.dispatch(closeSearch());
+      props.dispatch(clearSearch());
     }
   };
   // If the user hasn't entered any search terms, or there are no results for this section, don't display the section

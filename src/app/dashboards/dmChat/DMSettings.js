@@ -5,7 +5,7 @@ import FeatherIcon from "feather-icons-react";
 import { closeDMSettings } from "../../../store/ui/actions";
 import LeaveDM from "./LeaveDM";
 import AddUserToDM from "./AddUserToDM";
-
+import Scrollbars from "react-custom-scrollbars";
 class DMSettings extends Component {
   close = () => {
     this.props.dispatch(closeDMSettings());
@@ -21,8 +21,10 @@ class DMSettings extends Component {
           <FeatherIcon icon="x" onClick={this.close} className="pointer" />
         </div>
         {/* Various Settings */}
-        <AddUserToDM />
-        <LeaveDM />
+        <Scrollbars style={{ width: "100vw", height: "90vh" }}>
+          <AddUserToDM />
+          <LeaveDM />
+        </Scrollbars>
       </div>
     );
   }

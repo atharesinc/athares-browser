@@ -3,12 +3,14 @@ import SearchResults from "./SearchResults";
 import FeatherIcon from "feather-icons-react";
 import { Query } from "react-apollo";
 import { SEARCH_ALL } from "../../graphql/queries";
+import { connect } from "react-redux";
+import { pull } from "../../store/ui/reducers";
+import { updateSearchParams } from "../../store/ui/actions";
 
 class Search extends React.Component {
   constructor() {
     super();
     this.state = {
-      searchParams: "",
       circles: [],
       channels: [],
       amendments: [],
@@ -19,9 +21,7 @@ class Search extends React.Component {
   }
   updateText = e => {
     e.preventDefault();
-    this.setState({
-      searchParams: e.currentTarget.value
-    });
+    this.props.dispatch(updateSearchParams(e.currentTarget.value));
   };
   componentWillUnmount() {
     this._isMounted = false;
@@ -32,7 +32,7 @@ class Search extends React.Component {
     });
   };
   render() {
-    const { searchParams } = this.state;
+    const { searchParams } = this.props;
 
     return (
       <Query
@@ -41,7 +41,7 @@ class Search extends React.Component {
       >
         {({ loading, err, data }) => {
           return (
-            <div className="bg-theme">
+            <div className="bg-theme w-100">
               <div id="search-input-wrapper" className="pv2 ph3">
                 <FeatherIcon className="theme-light-alt" icon="search" />
                 <input
@@ -65,4 +65,9 @@ class Search extends React.Component {
   }
 }
 
-export default Search;
+function mapStateToProps(state) {
+  return {
+    searchParams: pull(state, "searchParams")
+  };
+}
+export default connect(mapStateToProps)(Search);

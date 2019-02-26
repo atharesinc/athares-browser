@@ -1,7 +1,8 @@
 const initialState = {
   searchOpen: false,
   dmSettings: false,
-  showAddMoreUsers: false
+  showAddMoreUsers: false,
+  searchParams: ""
 };
 
 export default function reduce(state = initialState, action = {}) {
@@ -18,6 +19,8 @@ export default function reduce(state = initialState, action = {}) {
       return { ...state, dmSettings: true };
     case "TOGGLE_ADD_USERS":
       return { ...state, showAddMoreUsers: !state.showAddMoreUsers };
+    case "UPDATE_SEARCH":
+      return { ...state, searchParams: action.searchParams };
     default:
       return { ...initialState };
   }
