@@ -57,7 +57,7 @@ class Channels extends Component {
         variables={{ id: this.props.activeCircle || "" }}
         pollInterval={3000}
       >
-        {({ loading, err, data }) => {
+        {({ data }) => {
           if (data.Circle) {
             circle = data.Circle;
             channels = circle.channels;
@@ -185,6 +185,9 @@ function mapStateToProps(state) {
 export default connect(mapStateToProps)(
   graphql(GET_DMS_BY_USER, {
     name: "getDMsByUser",
-    options: ({ user }) => ({ variables: { id: user || "" } })
+    options: ({ user }) => ({
+      pollInterval: 5000,
+      variables: { id: user || "" }
+    })
   })(Channels)
 );

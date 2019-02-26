@@ -27,7 +27,10 @@ const Message = props => {
     }
   };
   return (
-    <div className="message-wrapper">
+    <div
+      className="message-wrapper"
+      style={{ animationDelay: "0." + props.lastMessage + "s" }}
+    >
       {props.multiMsg === false && !props.isMine && (
         <div style={{ color: "#FFFFFF", fontSize: "0.8em" }}>
           {props.user.firstName}
