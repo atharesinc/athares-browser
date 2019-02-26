@@ -1,5 +1,5 @@
 # projectId: cjrucg3gz1obq0149g3vd7nxh
-# version: 10
+# version: 14
 
 type Amendment @model {
   circle: Circle! @relation(name: "CircleOnAmendments")
@@ -80,7 +80,8 @@ type Message @model {
   text: String!
   updatedAt: DateTime!
   user: User! @relation(name: "UserOnMessages")
-  type: String!
+  file: String
+  fileName: String
 }
 
 type Notice @model {

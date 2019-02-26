@@ -6,14 +6,16 @@ import { pull } from "../../../store/state/reducers";
 import { updateChannel } from "../../../store/state/actions";
 import {
   DELETE_USER_FROM_DM,
-  DELETE_USER_KEY
+  DELETE_USER_KEY,
+  UPDATE_CHANNEL_NAME
 } from "../../../graphql/mutations";
+import { GET_USERS_BY_CHANNEL_ID } from "../../../graphql/queries";
 import { closeDMSettings } from "../../../store/ui/actions";
 import { withRouter } from "react-router-dom";
 
 class LeaveDM extends Component {
   leave = () => {
-    let { activeChannel, user } = this.props;
+    let { activeChannel, user, updateChannelName } = this.props;
 
     try {
       swal("Are you sure you'd like to leave this Channel?", {
@@ -23,13 +25,24 @@ class LeaveDM extends Component {
         }
       }).then(async value => {
         if (value === true) {
+          // real quick, get the existing channel's name, and remove our name from it
+          let channelName = this.props.getUsers.Channel.users
+            .filter(u => u.id !== user)
+            .map(u => u.firstName + " " + u.lastName)
+            .join(", ");
+
+          updateChannelName({
+            variables: {
+              id: activeChannel,
+              name: channelName
+            }
+          });
           let res = await this.props.deleteUserFromDM({
             variables: {
               user,
               channel: activeChannel
             }
           });
-          console.log(res);
           let { id } = res.data.removeFromUsersOnChannels.usersUser.keys[0];
 
           await this.props.deleteUserKey({
@@ -87,6 +100,13 @@ function mapStateToProps(state) {
 export default withRouter(
   connect(mapStateToProps)(
     compose(
+      graphql(GET_USERS_BY_CHANNEL_ID, {
+        name: "getUsers",
+        options: ({ activeChannel }) => ({
+          variables: { id: activeChannel || "" }
+        })
+      }),
+      graphql(UPDATE_CHANNEL_NAME, { name: "updateChannelName" }),
       graphql(DELETE_USER_FROM_DM, { name: "deleteUserFromDM" }),
       graphql(DELETE_USER_KEY, { name: "deleteUserKey" })
     )(LeaveDM)

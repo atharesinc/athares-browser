@@ -376,6 +376,8 @@ export const GET_USERS_BY_CHANNEL_ID = gql`
       id
       users {
         id
+        firstName
+        lastName
       }
     }
   }

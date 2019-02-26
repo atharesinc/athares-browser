@@ -535,7 +535,7 @@ input[type="phone"],
 .react-tags__suggestions li {
   border: 1px solid #ffffff;
   padding: 0.5em;
-  background: transparent;
+  background: #2f3242;
   color: #ffffff;
 }
 
@@ -552,7 +552,7 @@ input[type="phone"],
 
 .react-tags__suggestions li:hover {
   cursor: pointer;
-  background: transparent;
+  background: #3a3e52;
   color: #00dffc;
   border: 1px solid #00dffc;
 }
@@ -568,7 +568,7 @@ input[type="phone"],
   cursor: pointer;
   background: #ffffff;
   color: #00dffc;
-  background-color: transparent;
+  background-color: #3a3e52;
   border: 1px solid #00dffc;
 }
 

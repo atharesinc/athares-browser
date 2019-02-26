@@ -3,11 +3,8 @@ import ReactTags from "react-tag-autocomplete";
 import TagComponent from "./TagComponent";
 import { connect } from "react-redux";
 import { pull } from "../../../store/state/reducers";
-import {
-  SEARCH_FOR_USER,
-  GET_USERS_BY_CHANNEL_ID
-} from "../../../graphql/queries";
-import { compose, graphql, Query } from "react-apollo";
+import { SEARCH_FOR_USER } from "../../../graphql/queries";
+import { Query } from "react-apollo";
 
 class AddMoreUsers extends Component {
   state = {
@@ -21,9 +18,6 @@ class AddMoreUsers extends Component {
     this.props.updateList(updatedListOfSelections);
   };
   inputChange = input => {
-    if (this.props.selectedUsers.length >= 6) {
-      return;
-    }
     this.setState({
       search: input
     });
@@ -33,10 +27,8 @@ class AddMoreUsers extends Component {
     this.props.updateList(newSelectedList);
   };
   render() {
-    console.log(this.props, this.state);
-    let { selectedUsers, users } = this.props;
+    let { selectedUsers, existingUsers, user } = this.props;
     let suggestions = [];
-
     return (
       <Query
         query={SEARCH_FOR_USER}
@@ -52,13 +44,9 @@ class AddMoreUsers extends Component {
             // display some results to the user
             // filter out names that don't meet criteria and filter out alreadys selected users
             suggestions = allUsers
-              .filter(
-                s =>
-                  this.props.existingUsers.findIndex(su => su.id === s.id) ===
-                  -1
-              )
+              .filter(s => existingUsers.findIndex(su => su.id === s.id) === -1)
               .filter(s => selectedUsers.findIndex(su => su.id === s.id) === -1)
-              .filter(s => s.id !== this.props.user)
+              .filter(s => s.id !== user)
               .map(s => ({ name: s.firstName + " " + s.lastName, ...s }));
           }
           return (
@@ -89,14 +77,4 @@ function mapStateToProps(state) {
     activeChannel: pull(state, "activeChannel")
   };
 }
-export default connect(mapStateToProps)(
-  //   compose(
-  //     graphql(GET_USERS_BY_CHANNEL_ID, {
-  //       name: "getUsers",
-  //       options: ({ activeChannel }) => ({
-  //         variables: { id: activeChannel || "" }
-  //       })
-  //     })
-  //   )
-  AddMoreUsers
-);
+export default connect(mapStateToProps)(AddMoreUsers);

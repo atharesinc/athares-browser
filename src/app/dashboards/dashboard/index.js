@@ -77,7 +77,7 @@ class Dashboard extends Component {
   }
   updateMeta = () => {
     if (this.props.getCircle.Circle) {
-      console.log(this.props.getCircle.Circle);
+      // console.log(this.props.getCircle.Circle);
       // update meta data
       let { Circle: circle } = this.props.getCircle;
       this.props.dispatch(updateTitle(circle.name));

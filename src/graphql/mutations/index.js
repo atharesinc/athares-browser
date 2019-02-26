@@ -305,3 +305,10 @@ export const DELETE_USER_KEY = gql`
     }
   }
 `;
+export const UPDATE_CHANNEL_NAME = gql`
+  mutation($id: ID!, $name: String!) {
+    updateChannel(id: $id, name: $name) {
+      id
+    }
+  }
+`;

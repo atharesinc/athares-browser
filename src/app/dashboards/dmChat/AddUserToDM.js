@@ -1,13 +1,22 @@
 import React, { Component, Fragment } from "react";
-import swal from "sweetalert";
 import { graphql, compose } from "react-apollo";
 import { connect } from "react-redux";
 import { pull } from "../../../store/state/reducers";
-import { updateChannel } from "../../../store/state/actions";
-import { closeDMSettings, toggleAddUsers } from "../../../store/ui/actions";
+import { toggleAddUsers } from "../../../store/ui/actions";
 import FeatherIcon from "feather-icons-react";
 import AddMoreUsers from "./AddMoreUsers";
-import { GET_USERS_BY_CHANNEL_ID } from "../../../graphql/queries";
+import {
+  GET_USERS_BY_CHANNEL_ID,
+  GET_USER_KEYS
+} from "../../../graphql/queries";
+import {
+  ADD_USER_TO_CHANNEL,
+  CREATE_KEY,
+  UPDATE_CHANNEL_NAME
+} from "../../../graphql/mutations";
+import SimpleCrypto from "simple-crypto-js";
+import { decrypt, encrypt } from "simple-asym-crypto";
+import swal from "sweetalert";
 
 const pullUI = require("../../../store/ui/reducers").pull;
 
@@ -19,67 +28,86 @@ class AddUserToDM extends Component {
       selectedUsers: []
     };
   }
-  leave = () => {
-    let { activeChannel, user } = this.props;
 
-    try {
-      swal("Are you sure you'd like to leave this Channel?", {
-        buttons: {
-          cancel: "Not yet",
-          confirm: true
-        }
-      }).then(async value => {
-        if (value === true) {
-          let res = await this.props.deleteUserFromDM({
-            variables: {
-              user,
-              channel: activeChannel
-            }
-          });
-          let { id } = res.data.deleteUserFromDM.usersUser.keys[0];
-
-          await this.props.deleteUserKey({
-            variables: {
-              id
-            }
-          });
-
-          swal(
-            "Removed From Channel",
-            `You have left this channel. You will have to be re-invited to participate at a later time.`,
-            "warning"
-          );
-          this.props.dispatch(updateChannel(null));
-          this.props.dispatch(closeDMSettings());
-          this.props.history.push(`/app`);
-        }
-      });
-    } catch (err) {
-      console.error(new Error(err));
-      swal("Error", "There was an error leaving this channel.", "error");
-    }
-  };
   updateList = selectedUsers => {
     this.setState({
       selectedUsers
     });
   };
-  submit = () => {
-    console.log(this.props.selectedUsers);
+  submit = async () => {
     // hoo boy theres a lot to do here
+    let { selectedUsers } = this.state;
+    let { activeChannel, updateChannelName } = this.props;
+    let { User: user } = this.props.getUserKeys;
     // get the users encrypted priv key
-    // decrypt with stored token
-    // decrypt this user's channel key
-    // for each new user, encrypt the sym key
-    // add connection from new user to channel
-    // add each users key
+    let userChannelKey = user.keys[0].key;
+    let myToken = window.localStorage.getItem("ATHARES_TOKEN");
+
+    // decrypt user's priv with stored token
+    let simpleCrypto = new SimpleCrypto(myToken);
+
+    let userPriv = simpleCrypto.decrypt(user.priv);
+
+    try {
+      // decrypt this user's channel key
+      let decryptedChannelSecret = await decrypt(userChannelKey, userPriv);
+
+      // for each new user, encrypt the sym key
+      // add connection from new user to channel
+      // add each users key
+      // give each user an encrypted copy of this keypair and store it in
+      let promiseList = selectedUsers.map(async u => {
+        const encryptedKey = await encrypt(decryptedChannelSecret, u.pub);
+        return this.props.createKey({
+          variables: {
+            key: encryptedKey,
+            user: u.id,
+            channel: activeChannel
+          }
+        });
+      });
+
+      // add each user to this channel
+      let promiseList2 = selectedUsers.map(u =>
+        this.props.addUserToChannel({
+          variables: {
+            channel: activeChannel,
+            user: u.id
+          }
+        })
+      );
+      const { users: existingUsers } = this.props.getUsers.Channel;
+      const allUsers = [...selectedUsers, ...existingUsers];
+
+      const channelName = allUsers
+        .map(u => u.firstName + " " + u.lastName)
+        .join(", ");
+
+      // store all the keys, add all the users, and update the channel name
+      await Promise.all(promiseList);
+      await Promise.all(promiseList2);
+      updateChannelName({
+        variables: {
+          id: activeChannel,
+          name: channelName
+        }
+      });
+      this.props.dispatch(toggleAddUsers());
+      this.setState({
+        selectedUsers: []
+      });
+      this.props.getUsers.refetch();
+      swal("Users Added", "Successfully added users", "success");
+    } catch (err) {
+      console.error(new Error(err));
+      swal("Error", "There was an error adding users at this time", "error");
+    }
   };
   toggleUserInput = () => {
     this.props.dispatch(toggleAddUsers());
   };
   render() {
     let users = [];
-    console.log(this.props);
     if (this.props.getUsers.Channel) {
       users = this.props.getUsers.Channel.users;
     }
@@ -107,7 +135,11 @@ class AddUserToDM extends Component {
               existingUsers={users || []}
               updateList={this.updateList}
             />
-            <FeatherIcon icon="add" onClick={this.submit} />
+            <FeatherIcon
+              icon="plus"
+              className="white w2 h-100 bg-theme-blue ph1 ph2 pointer"
+              onClick={this.submit}
+            />
           </div>
         )}
       </Fragment>
@@ -123,6 +155,15 @@ function mapStateToProps(state) {
 }
 export default connect(mapStateToProps)(
   compose(
+    graphql(ADD_USER_TO_CHANNEL, { name: "addUserToChannel" }),
+    graphql(UPDATE_CHANNEL_NAME, { name: "updateChannelName" }),
+    graphql(CREATE_KEY, { name: "createKey" }),
+    graphql(GET_USER_KEYS, {
+      name: "getUserKeys",
+      options: ({ activeChannel, user }) => ({
+        variables: { channel: activeChannel || "", user: user || "" }
+      })
+    }),
     graphql(GET_USERS_BY_CHANNEL_ID, {
       name: "getUsers",
       options: ({ activeChannel }) => ({
