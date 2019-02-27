@@ -70,13 +70,14 @@ class MiniRegister extends PureComponent {
 
       const {
         data: {
-          signinUser: { user }
+          signinUser: { token, user }
         }
       } = res;
 
       //store in redux
       window.localStorage.setItem("ATHARES_ALIAS", email);
-      window.localStorage.setItem("ATHARES_TOKEN", hashedToken);
+      window.localStorage.setItem("ATHARES_HASH", hashedToken);
+      window.localStorage.setItem("ATHARES_TOKEN", token);
       this.props.dispatch(updateUser(user.id));
       this.props.dispatch(updatePub(hashedToken));
 

@@ -41,7 +41,7 @@ class AddUserToDM extends Component {
     let { User: user } = this.props.getUserKeys;
     // get the users encrypted priv key
     let userChannelKey = user.keys[0].key;
-    let myToken = window.localStorage.getItem("ATHARES_TOKEN");
+    let myToken = window.localStorage.getItem("ATHARES_HASH");
 
     // decrypt user's priv with stored token
     let simpleCrypto = new SimpleCrypto(myToken);

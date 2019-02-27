@@ -50,7 +50,7 @@ class DMChat extends Component {
     }
     if (this.props.getUserKeys.User) {
       try {
-        let hashed = window.localStorage.getItem("ATHARES_TOKEN");
+        let hashed = window.localStorage.getItem("ATHARES_HASH");
         let simpleCryptoForUserPriv = new SimpleCrypto(hashed);
         const userPriv = simpleCryptoForUserPriv.decrypt(
           this.props.getUserKeys.User.priv
@@ -80,7 +80,7 @@ class DMChat extends Component {
     }
     if (prevProps.getUserKeys.User !== this.props.getUserKeys.User) {
       try {
-        let hashed = window.localStorage.getItem("ATHARES_TOKEN");
+        let hashed = window.localStorage.getItem("ATHARES_HASH");
         let simpleCryptoForUserPriv = new SimpleCrypto(hashed);
 
         let userPriv = simpleCryptoForUserPriv.decrypt(

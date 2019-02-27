@@ -57,28 +57,28 @@ class App extends PureComponent {
     if (
       !this.props.user &&
       localStorage.getItem("ATHARES_ALIAS") &&
-      localStorage.getItem("ATHARES_TOKEN")
+      localStorage.getItem("ATHARES_HASH")
     ) {
       // indicate that the user is logging in and syncing
       let alias = localStorage.getItem("ATHARES_ALIAS");
-      let token = localStorage.getItem("ATHARES_TOKEN");
-      const { signinUser } = this.props;
+      let hash = localStorage.getItem("ATHARES_HASH");
 
       try {
-        const res = await signinUser({
+        const res = await this.props.signinUser({
           variables: {
             email: alias,
-            password: token
+            password: hash
           }
         });
 
         const {
           data: {
-            signinUser: { user }
+            signinUser: { token, user }
           }
         } = res;
         this.props.dispatch(sync.updateUser(user.id));
-        this.props.dispatch(sync.updatePub(token));
+        this.props.dispatch(sync.updatePub(hash));
+        window.localStorage.setItem("ATHARES_TOKEN", token);
       } catch (err) {
         console.log(new Error(err));
         // there was some sort of error auto-logging in, clear localStorage and redux just in case

@@ -15,6 +15,7 @@ const MenuWrapper = ({ isOpen, history, isMenuOpen, ...props }) => {
 
     window.localStorage.removeItem("ATHARES_ALIAS");
     window.localStorage.removeItem("ATHARES_TOKEN");
+    window.localStorage.removeItem("ATHARES_HASH");
 
     props.toggleMenu();
   };
