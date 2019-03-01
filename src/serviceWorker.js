@@ -34,7 +34,7 @@ export function register(config) {
       return;
     }
     window.addEventListener("fetch", function(event) {
-      console.log("Request -->", event.request.url);
+      // console.log("Request -->", event.request.url);
 
       //To tell browser to evaluate the result of event
       event.respondWith(
