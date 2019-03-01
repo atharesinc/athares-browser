@@ -38,3 +38,13 @@ export function toggleAddUsers() {
     dispatch({ type: "TOGGLE_ADD_USERS" });
   };
 }
+export function hideInstall() {
+  return async dispatch => {
+    dispatch({ type: "HIDE_INSTALL_APP" });
+  };
+}
+export function showInstall() {
+  return async dispatch => {
+    dispatch({ type: "SHOW_INSTALL_APP" });
+  };
+}

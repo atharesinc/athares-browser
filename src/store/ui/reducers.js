@@ -2,7 +2,8 @@ const initialState = {
   searchOpen: false,
   dmSettings: false,
   showAddMoreUsers: false,
-  searchParams: ""
+  searchParams: "",
+  showInstall: false
 };
 
 export default function reduce(state = initialState, action = {}) {
@@ -21,6 +22,10 @@ export default function reduce(state = initialState, action = {}) {
       return { ...state, showAddMoreUsers: !state.showAddMoreUsers };
     case "UPDATE_SEARCH":
       return { ...state, searchParams: action.searchParams };
+    case "HIDE_INSTALL_APP":
+      return { ...state, showInstall: false };
+    case "SHOW_INSTALL_APP":
+      return { ...state, showInstall: true };
     default:
       return { ...initialState };
   }
