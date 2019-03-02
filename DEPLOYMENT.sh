@@ -6,4 +6,6 @@ cd ~/Documents/react/athares-browser
 npm run build
 date +%Y-%m-%dT%H:%M:%S > build/version.txt
 # upload the new compiled files to the s3 bucket and delete whatever wasn't overwritten
-aws s3 sync ./build s3://athares-browser --cache-control max-age=86400 --delete --exclude '.DS_Store'
+# also set the service worker and index.html so that they don't cache so aggressively
+aws s3 sync ./build s3://athares-browser --delete --exclude '.DS_Store'
+aws s3 cp s3://athares-browser/index.html s3://athares-browser/index.html --metadata-directive REPLACE --cache-control max-age=0,no-cache,no-store,must-revalidate --content-type text/html --acl public-read

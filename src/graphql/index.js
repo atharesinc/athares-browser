@@ -3,6 +3,7 @@ import { HttpLink } from "apollo-link-http";
 import { WebSocketLink } from "apollo-link-ws";
 import { getMainDefinition } from "apollo-utilities";
 import { InMemoryCache } from "apollo-cache-inmemory";
+import { RetryLink } from "apollo-link-retry";
 
 let uri =
   process.env.NODE_ENV === "production"
@@ -38,6 +39,8 @@ const authMiddleware = new ApolloLink((operation, forward) => {
   return forward(operation);
 });
 
+const retry = new RetryLink({ attempts: { max: Infinity } });
+
 // using the ability to split links, you can send data to each link
 // depending on what kind of operation is being sent
 const link = split(
@@ -47,7 +50,7 @@ const link = split(
     return kind === "OperationDefinition" && operation === "subscription";
   },
   wsLink,
-  concat(authMiddleware, httpLink)
+  concat(retry, concat(authMiddleware, httpLink))
 );
 
 export { link, cache };

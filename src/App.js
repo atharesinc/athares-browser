@@ -30,7 +30,6 @@ import { connect } from "react-redux";
 import { pull } from "./store/state/reducers";
 import * as sync from "./store/state/actions";
 import LoadingBar from "react-redux-loading-bar";
-// import * as serviceWorker from "./serviceWorker";
 
 import { SIGNIN_USER } from "./graphql/mutations";
 import { graphql } from "react-apollo";
@@ -42,8 +41,6 @@ class App extends PureComponent {
     this.state = {
       width: window.innerWidth
     };
-    this.serviceWorker = serviceWorker;
-    this.serviceWorker.unregister();
   }
   updateWidth = () => {
     this.setState({
