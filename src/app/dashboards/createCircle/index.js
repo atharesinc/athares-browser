@@ -196,7 +196,7 @@ class createCircleBoard extends Component {
           <Scrollbars style={{ height: "100%", width: "100%" }}>
             <article className="cf">
               <time className="f7 ttu tracked white-80">
-                Circles represent the digital repository for your government.
+                Circles are collaborative, voting-centric organizations.
               </time>
               <header className="fn fl-ns w-50-ns pr4-ns">
                 <ImageUpload
