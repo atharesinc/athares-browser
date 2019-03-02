@@ -8,10 +8,9 @@
     "react-scripts": "^2.1.5"
   },
   "dependencies": {
-    "apollo-boost": "^0.1.23",
+    "apollo-cache-inmemory": "^1.5.1",
     "apollo-client": "^2.4.13",
     "apollo-link": "^1.2.8",
-    "apollo-link-batch-http": "^1.2.8",
     "apollo-link-http": "^1.5.11",
     "apollo-link-ws": "^1.0.14",
     "apollo-offline": "^0.1.1",
@@ -25,9 +24,7 @@
     "graphql": "^14.0.2",
     "graphql-tag": "^2.10.0",
     "gsap": "^1.20.4",
-    "ipfs": "^0.34.4",
     "ipfs-http-client": "^29.1.1",
-    "ipfs-mini": "^1.1.5",
     "lodash.debounce": "^4.0.8",
     "lodash.throttle": "^4.1.1",
     "moment": "^2.22.2",

@@ -76,11 +76,11 @@ function registerValidSW(swUrl, config) {
           //If push subscription wasnt done yet have to do here
           // console.log("sw already activated - Do watever needed here");
         }
-        serviceWorker.addEventListener("statechange", e => {
-          stateChange(e, reg);
-        });
+        // serviceWorker.addEventListener("statechange", e => {
+        //   stateChange(e, reg);
+        // });
         serviceWorker.addEventListener("fetch", fetchHandler);
-        // serviceWorker.addEventListener("push", e => {
+        // // serviceWorker.addEventListener("push", e => {
         //   pushHandler(e, reg);
         // });
       }
@@ -90,13 +90,13 @@ function registerValidSW(swUrl, config) {
     });
 }
 
-function stateChange(e, reg) {
-  // console.log("sw statechange : ", e.target.state);
-  if (e.target.state === "activated") {
-    // use pushManger for subscribing here.
-    success(reg);
-  }
-}
+// function stateChange(e, reg) {
+//   // console.log("sw statechange : ", e.target.state);
+//   if (e.target.state === "activated") {
+//     // use pushManger for subscribing here.
+//     success(reg);
+//   }
+// }
 // function pushHandler(event, reg) {
 //   if (event.data) {
 //     console.log("Push event!! ", event.data);
@@ -114,19 +114,19 @@ function stateChange(e, reg) {
 // };
 
 function fetchHandler(event) {
-  console.log("Request -->", event.request.url);
-  //To tell browser to evaluate the result of event
-  event.respondWith(
-    caches
-      .match(event.request) //To match current request with cached request it
-      .then(function(response) {
-        //If response found return it, else fetch again.
-        return response || fetch(event.request);
-      })
-      .catch(function(error) {
-        console.error("Error: ", error);
-      })
-  );
+  // console.log("Request -->", event.request.url);
+  // //To tell browser to evaluate the result of event
+  // event.respondWith(
+  //   caches
+  //     .match(event.request) //To match current request with cached request it
+  //     .then(function(response) {
+  //       //If response found return it, else fetch again.
+  //       return response || fetch(event.request);
+  //     })
+  //     .catch(function(error) {
+  //       console.error("Error: ", error);
+  //     })
+  // );
 }
 function checkValidServiceWorker(swUrl, config) {
   // Check if the service worker can be found. If it can't reload the page.
@@ -185,15 +185,14 @@ const urlB64ToUint8Array = base64String => {
 
 async function success(registration) {
   //// register our push thing?
-
-  try {
-    const applicationServerKey = urlB64ToUint8Array(
-      "BK7vkqUTCCJa_crRPyl8VfMzgEFKHgEChiPrHdMqNbvsfamOGREF5iZD5lLk7zSI_aGLLrjeXN41ZcLxnGUE7y8"
-    );
-    const options = { applicationServerKey, userVisibleOnly: true };
-    const subscription = await registration.pushManager.subscribe(options);
-    console.log(JSON.stringify(subscription));
-  } catch (err) {
-    console.log("Error", new Error(err));
-  }
+  // try {
+  //   const applicationServerKey = urlB64ToUint8Array(
+  //     "BK7vkqUTCCJa_crRPyl8VfMzgEFKHgEChiPrHdMqNbvsfamOGREF5iZD5lLk7zSI_aGLLrjeXN41ZcLxnGUE7y8"
+  //   );
+  //   const options = { applicationServerKey, userVisibleOnly: true };
+  //   const subscription = await registration.pushManager.subscribe(options);
+  //   console.log(JSON.stringify(subscription));
+  // } catch (err) {
+  //   console.log("Error", new Error(err));
+  // }
 }
