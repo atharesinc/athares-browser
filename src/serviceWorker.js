@@ -21,10 +21,7 @@ const isLocalhost = Boolean(
 );
 
 export function register(config) {
-  if (
-    // process.env.NODE_ENV === 'production' &&
-    "serviceWorker" in navigator
-  ) {
+  if (process.env.NODE_ENV === "production" && "serviceWorker" in navigator) {
     // The URL constructor is available in all browsers that support SW.
     const publicUrl = new URL(process.env.PUBLIC_URL, window.location.href);
     if (publicUrl.origin !== window.location.origin) {
@@ -33,22 +30,7 @@ export function register(config) {
       // serve assets; see https://github.com/facebook/create-react-app/issues/2374
       return;
     }
-    window.addEventListener("fetch", function(event) {
-      // console.log("Request -->", event.request.url);
 
-      //To tell browser to evaluate the result of event
-      event.respondWith(
-        caches
-          .match(event.request) //To match current request with cached request it
-          .then(function(response) {
-            //If response found return it, else fetch again.
-            return response || fetch(event.request);
-          })
-          .catch(function(error) {
-            console.error("Error: ", error);
-          })
-      );
-    });
     window.addEventListener("load", () => {
       const swUrl = `${process.env.PUBLIC_URL}/service-worker.js`;
 
@@ -75,47 +57,77 @@ export function register(config) {
 function registerValidSW(swUrl, config) {
   navigator.serviceWorker
     .register(swUrl)
-    .then(registration => {
-      registration.onupdatefound = () => {
-        const installingWorker = registration.installing;
-        if (installingWorker == null) {
-          return;
+    .then(reg => {
+      var serviceWorker;
+      if (reg.installing) {
+        serviceWorker = reg.installing;
+        // console.log('Service worker installing');
+      } else if (reg.waiting) {
+        serviceWorker = reg.waiting;
+        // console.log('Service worker installed & waiting');
+      } else if (reg.active) {
+        serviceWorker = reg.active;
+        // console.log('Service worker active');
+      }
+
+      if (serviceWorker) {
+        // console.log("sw current state", serviceWorker.state);
+        if (serviceWorker.state === "activated") {
+          //If push subscription wasnt done yet have to do here
+          // console.log("sw already activated - Do watever needed here");
         }
-        installingWorker.onstatechange = () => {
-          if (installingWorker.state === "installed") {
-            if (navigator.serviceWorker.controller) {
-              // At this point, the updated precached content has been fetched,
-              // but the previous service worker will still serve the older
-              // content until all client tabs are closed.
-              console.log(
-                "New content is available and will be used when all " +
-                  "tabs for this page are closed. See http://bit.ly/CRA-PWA."
-              );
-
-              // Execute callback
-              if (config && config.onUpdate) {
-                config.onUpdate(registration);
-              }
-            } else {
-              // At this point, everything has been precached.
-              // It's the perfect time to display a
-              // "Content is cached for offline use." message.
-              console.log("Content is cached for offline use.");
-
-              // Execute callback
-              if (config && config.onSuccess) {
-                config.onSuccess(registration);
-              }
-            }
-          }
-        };
-      };
+        serviceWorker.addEventListener("statechange", e => {
+          stateChange(e, reg);
+        });
+        serviceWorker.addEventListener("fetch", fetchHandler);
+        // serviceWorker.addEventListener("push", e => {
+        //   pushHandler(e, reg);
+        // });
+      }
     })
     .catch(error => {
       console.error("Error during service worker registration:", error);
     });
 }
 
+function stateChange(e, reg) {
+  // console.log("sw statechange : ", e.target.state);
+  if (e.target.state === "activated") {
+    // use pushManger for subscribing here.
+    success(reg);
+  }
+}
+// function pushHandler(event, reg) {
+//   if (event.data) {
+//     console.log("Push event!! ", event.data);
+//     showLocalNotification("New Message", event.data.text(), reg);
+//   } else {
+//     console.log("Push event but no data");
+//   }
+// }
+// const showLocalNotification = (title, body, reg) => {
+//   const options = {
+//     body
+//     // here you can add more properties like icon, image, vibrate, etc.
+//   };
+//   reg.showNotification(title, options);
+// };
+
+function fetchHandler(event) {
+  console.log("Request -->", event.request.url);
+  //To tell browser to evaluate the result of event
+  event.respondWith(
+    caches
+      .match(event.request) //To match current request with cached request it
+      .then(function(response) {
+        //If response found return it, else fetch again.
+        return response || fetch(event.request);
+      })
+      .catch(function(error) {
+        console.error("Error: ", error);
+      })
+  );
+}
 function checkValidServiceWorker(swUrl, config) {
   // Check if the service worker can be found. If it can't reload the page.
   fetch(swUrl)
@@ -146,8 +158,42 @@ function checkValidServiceWorker(swUrl, config) {
 
 export function unregister() {
   if ("serviceWorker" in navigator) {
-    navigator.serviceWorker.ready.then(registration => {
-      registration.unregister();
+    return new Promise(resolve => {
+      navigator.serviceWorker.ready.then(registration => {
+        registration.unregister();
+        resolve(true);
+      });
     });
+  }
+  return false;
+}
+
+// urlB64ToUint8Array is a magic function that will encode the base64 public key
+// to Array buffer which is needed by the subscription option
+const urlB64ToUint8Array = base64String => {
+  const padding = "=".repeat((4 - (base64String.length % 4)) % 4);
+  const base64 = (base64String + padding)
+    .replace(/\-/g, "+")
+    .replace(/_/g, "/");
+  const rawData = atob(base64);
+  const outputArray = new Uint8Array(rawData.length);
+  for (let i = 0; i < rawData.length; ++i) {
+    outputArray[i] = rawData.charCodeAt(i);
+  }
+  return outputArray;
+};
+
+async function success(registration) {
+  //// register our push thing?
+
+  try {
+    const applicationServerKey = urlB64ToUint8Array(
+      "BK7vkqUTCCJa_crRPyl8VfMzgEFKHgEChiPrHdMqNbvsfamOGREF5iZD5lLk7zSI_aGLLrjeXN41ZcLxnGUE7y8"
+    );
+    const options = { applicationServerKey, userVisibleOnly: true };
+    const subscription = await registration.pushManager.subscribe(options);
+    console.log(JSON.stringify(subscription));
+  } catch (err) {
+    console.log("Error", new Error(err));
   }
 }

@@ -13,7 +13,8 @@ import {
   CREATE_CHANNEL,
   CREATE_KEY,
   CREATE_MESSAGE,
-  ADD_USER_TO_CHANNEL
+  ADD_USER_TO_CHANNEL,
+  CREATE_WEB_SUB
 } from "../../../graphql/mutations";
 import { graphql, compose } from "react-apollo";
 import uploadToIPFS from "../../../utils/uploadToIPFS";
@@ -50,6 +51,7 @@ class CreateDM extends Component {
   updateProgress = (prog, length) => {
     console.log(prog / length);
   };
+
   submit = async (text = "", file = null) => {
     let { selectedUsers } = this.state;
     let { data } = this.props;
@@ -186,6 +188,7 @@ function mapStateToProps(state) {
 
 export default connect(mapStateToProps)(
   compose(
+    graphql(CREATE_WEB_SUB, { name: "createWebSub" }),
     graphql(CREATE_MESSAGE, { name: "createMessage" }),
     graphql(ADD_USER_TO_CHANNEL, { name: "addUserToChannel" }),
     graphql(CREATE_CHANNEL, { name: "createChannel" }),

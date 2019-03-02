@@ -1,5 +1,5 @@
-# projectId: cjrucg3gz1obq0149g3vd7nxh
-# version: 14
+# projectId: cjsnjseb412wz0192x4ivxr1l
+# version: 8
 
 type Amendment @model {
   circle: Circle! @relation(name: "CircleOnAmendments")
@@ -11,11 +11,12 @@ type Amendment @model {
   updatedAt: DateTime!
 }
 
-type Invite @model {
+type WebPushSubscription @model {
   id: ID! @isUnique
-  inviter: User! @relation(name: "UserOnInviter")
-  hasAccepted: Boolean!
-  circle: Circle! @relation(name: "InviteOnCircle")
+  subscription: Json!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  user: User! @relation(name: "UserOnSubs")
 }
 
 type Channel @model {
@@ -37,13 +38,13 @@ type Circle @model {
   createdAt: DateTime!
   icon: String!
   id: ID! @isUnique
+  invites: [Invite!]! @relation(name: "InviteOnCircle")
   name: String! @isUnique
   notices: [Notice!]! @relation(name: "CircleOnNotices")
   preamble: String!
   revisions: [Revision!]! @relation(name: "CircleOnRevisions")
   updatedAt: DateTime!
   users: [User!]! @relation(name: "UserOnCircles")
-  invites: [Invite!]! @relation(name: "InviteOnCircle")
 }
 
 type File @model {
@@ -55,6 +56,13 @@ type File @model {
   size: Int!
   updatedAt: DateTime!
   url: String! @isUnique
+}
+
+type Invite @model {
+  circle: Circle! @relation(name: "InviteOnCircle")
+  hasAccepted: Boolean!
+  id: ID! @isUnique
+  inviter: User! @relation(name: "UserOnInviter")
 }
 
 type Key @model {
@@ -76,12 +84,12 @@ type Mailer @model {
 type Message @model {
   channel: Channel! @relation(name: "ChannelOnMessages")
   createdAt: DateTime!
+  file: String
+  fileName: String
   id: ID! @isUnique
   text: String!
   updatedAt: DateTime!
   user: User! @relation(name: "UserOnMessages")
-  file: String
-  fileName: String
 }
 
 type Notice @model {
@@ -117,6 +125,7 @@ type User @model {
   firstName: String!
   icon: String! @defaultValue(value: "img/user-default.png")
   id: ID! @isUnique
+  inviterTo: [Invite!]! @relation(name: "UserOnInviter")
   keys: [Key!]! @relation(name: "UserOnKeys")
   lastName: String!
   messages: [Message!]! @relation(name: "UserOnMessages")
@@ -128,7 +137,7 @@ type User @model {
   uname: String @isUnique
   updatedAt: DateTime!
   votes: [Vote!]! @relation(name: "UserOnVotes")
-  inviterTo: [Invite!]! @relation(name: "UserOnInviter")
+  webSubs: [WebPushSubscription!]! @relation(name: "UserOnSubs")
 }
 
 type Vote @model {

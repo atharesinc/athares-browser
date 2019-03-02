@@ -21,7 +21,7 @@ class DMSettings extends Component {
           <FeatherIcon icon="x" onClick={this.close} className="pointer" />
         </div>
         {/* Various Settings */}
-        <Scrollbars style={{ width: "100vw", height: "90vh" }}>
+        <Scrollbars style={{ width: "100%", height: "90vh" }}>
           <AddUserToDM />
           <LeaveDM />
         </Scrollbars>

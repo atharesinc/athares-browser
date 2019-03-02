@@ -27,6 +27,10 @@ export const SUB_TO_DMS_BY_USER = gql`
     ) {
       node {
         id
+        user {
+          id
+          firstName
+        }
         channel {
           id
         }

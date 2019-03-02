@@ -123,10 +123,10 @@ class AddUserToDM extends Component {
               <span className="f6 white-50">You can't add any more users</span>
             )}
           </div>
-          <FeatherIcon className="w2 h2 w3-ns h3-ns" icon="user-plus" />
+          <FeatherIcon className="w2 h2 h3-ns" icon="user-plus" />
         </div>
         {this.props.showAddMoreUsers && (
-          <div className="flex flex-row justify-between items-start">
+          <div className="flex flex-row justify-between items-center">
             <AddMoreUsers
               selectedUsers={this.state.selectedUsers || []}
               existingUsers={users || []}
@@ -134,7 +134,7 @@ class AddUserToDM extends Component {
             />
             <FeatherIcon
               icon="plus"
-              className="white w3 w2-ns h-100 bg-theme-blue pv1 ph2 pointer"
+              className="white w3 h-100 bg-theme-blue pv1 ph2 pointer"
               onClick={this.submit}
             />
           </div>

@@ -382,3 +382,15 @@ export const GET_USERS_BY_CHANNEL_ID = gql`
     }
   }
 `;
+
+export const GET_WEB_SUBS = gql`
+  query getWebSubs($id: ID!) {
+    User(id: $id) {
+      id
+      webSubs {
+        id
+        subscription
+      }
+    }
+  }
+`;

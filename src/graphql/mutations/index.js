@@ -312,3 +312,17 @@ export const UPDATE_CHANNEL_NAME = gql`
     }
   }
 `;
+export const CREATE_WEB_SUB = gql`
+  mutation($sub: Json!, $user: ID!) {
+    createWebPushSubscription(subscription: $sub, userId: $user) {
+      id
+    }
+  }
+`;
+export const DELETE_WEB_SUB = gql`
+  mutation($id: ID!) {
+    deleteWebPushSubscription(id: $id) {
+      id
+    }
+  }
+`;

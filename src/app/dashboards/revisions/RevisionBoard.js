@@ -176,7 +176,7 @@ const Board = ({ title, revisions, circleID, user }) => {
             <Link to={`/app/circle/${circleID}/add/amendment`}>
               <div className="random-button transparent-hover-white mb2">
                 <FeatherIcon icon="plus" className="pr2" />
-                <span>Create Revision</span>
+                <div className="h-100">Create Revision</div>
               </div>
             </Link>
           )}

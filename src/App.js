@@ -18,6 +18,7 @@ import DesktopLayout from "./app/DesktopLayout";
 import MobileLayout from "./app/MobileLayout";
 import RevisionMonitor from "./components/RevisionMonitor";
 import ChannelUpdateMonitor from "./components/ChannelUpdateMonitor";
+// import ServiceWorkerMonitor from "./components/ServiceWorkerMonitor";
 import Invite from "./invite";
 import Head from "./head";
 
@@ -29,10 +30,8 @@ import { connect } from "react-redux";
 import { pull } from "./store/state/reducers";
 import * as sync from "./store/state/actions";
 import LoadingBar from "react-redux-loading-bar";
+import * as serviceWorker from "./serviceWorker";
 
-// web worker stuff
-// import worker from "./workers/listener-worker";
-// import WebWorker from "./workers/WebWorker";
 import { SIGNIN_USER } from "./graphql/mutations";
 import { graphql } from "react-apollo";
 
@@ -43,6 +42,8 @@ class App extends PureComponent {
     this.state = {
       width: window.innerWidth
     };
+    this.serviceWorker = serviceWorker;
+    this.serviceWorker.register();
   }
   updateWidth = () => {
     this.setState({

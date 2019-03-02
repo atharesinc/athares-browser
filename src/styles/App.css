@@ -462,6 +462,7 @@ input[type="phone"],
   box-shadow: none;
   width: 100% !important;
   text-align: center;
+  height: 1em;
 }
 .react-tags__search-input {
   width: 100%;
@@ -1682,6 +1683,7 @@ a:visited {
   }
   #channels-list {
     height: calc(100% - 3em);
+    font-size: 1.4em;
   }
   .revision-board {
     min-width: 80%;
