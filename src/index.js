@@ -11,6 +11,7 @@ import { loadingBarReducer } from "react-redux-loading-bar";
 import { ApolloProvider } from "react-apollo";
 import { ApolloClient } from "apollo-client";
 import { link, cache } from "./graphql";
+import * as serviceWorker from "./serviceWorker";
 
 const client = new ApolloClient({
   link,
@@ -34,3 +35,4 @@ ReactDOM.render(
   </ApolloProvider>,
   document.getElementById("root")
 );
+serviceWorker.unregister();
