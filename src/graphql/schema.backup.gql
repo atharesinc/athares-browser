@@ -1,5 +1,5 @@
 # projectId: cjsnjseb412wz0192x4ivxr1l
-# version: 8
+# version: 9
 
 type Amendment @model {
   circle: Circle! @relation(name: "CircleOnAmendments")
@@ -11,12 +11,22 @@ type Amendment @model {
   updatedAt: DateTime!
 }
 
-type WebPushSubscription @model {
+type UserPref @model {
   id: ID! @isUnique
-  subscription: Json!
-  createdAt: DateTime!
-  updatedAt: DateTime!
-  user: User! @relation(name: "UserOnSubs")
+  user: User! @relation(name: "UserOnPref")
+  maySendMarketingEmail: Boolean! @defaultValue(value: true)
+  userDisabled: Boolean! @defaultValue(value: false)
+}
+
+type CirclePermission @model {
+  id: ID! @isUnique
+  user: User! @relation(name: "UserOnCirclePermissions")
+  circle: Circle! @relation(name: "CircleOnPermissions")
+  revisions: Boolean!
+  amendments: Boolean!
+  useEmail: Boolean!
+  usePush: Boolean!
+  useSMS: Boolean!
 }
 
 type Channel @model {
@@ -45,6 +55,7 @@ type Circle @model {
   revisions: [Revision!]! @relation(name: "CircleOnRevisions")
   updatedAt: DateTime!
   users: [User!]! @relation(name: "UserOnCircles")
+  circlePermissions: [CirclePermission!]! @relation(name: "CircleOnPermissions")
 }
 
 type File @model {
@@ -137,7 +148,9 @@ type User @model {
   uname: String @isUnique
   updatedAt: DateTime!
   votes: [Vote!]! @relation(name: "UserOnVotes")
-  webSubs: [WebPushSubscription!]! @relation(name: "UserOnSubs")
+  prefs: UserPref @relation(name: "UserOnPref")
+  circlePermissions: [CirclePermission!]!
+    @relation(name: "UserOnCirclePermissions")
 }
 
 type Vote @model {
