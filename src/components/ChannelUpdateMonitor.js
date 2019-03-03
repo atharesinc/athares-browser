@@ -1,10 +1,10 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { pull } from "../store/state/reducers";
-import { GET_DMS_BY_USER } from "../graphql/queries";
-import { SUB_TO_DMS_BY_USER } from "../graphql/subscriptions";
+import { GET_ALL_USERS_CIRCLES_CHANNELS } from "../graphql/queries";
+import { SUB_TO_ALL_CIRCLES_CHANNELS } from "../graphql/subscriptions";
 import { Query, graphql } from "react-apollo";
-import { updateDMs, addUnreadDM } from "../store/state/actions";
+import { updateChannels, addUnreadChannel } from "../store/state/actions";
 
 class ChannelUpdateMonitor extends Component {
   constructor() {
@@ -13,78 +13,45 @@ class ChannelUpdateMonitor extends Component {
   }
   componentDidUpdate(prevProps) {
     if (
-      this.props.getDMs.User &&
-      this.props.getDMs.User !== prevProps.getDMs.User
+      this.props.getAllMyChannels.User &&
+      this.props.getAllMyChannels.User !== prevProps.getAllMyChannels.User
     ) {
-      let { channels } = this.props.getDMs.User;
-      let dms = channels.map(c => c.id);
-      // set the user's current DMs
-      this.props.dispatch(updateDMs(dms));
-    }
-    if (
-      prevProps.unreadDMs.length > this.props.unreadDMs.length ||
-      this.props.unreadDMs.length === 0
-    ) {
-      clearInterval(this.toggleTitle);
-      document.title = "Athares";
+      let { circles } = this.props.getAllMyChannels.User;
+      let channels = circles.map(c => c.channels).flat(1);
+
+      channels = channels.map(c => c.id);
+      // set the user's current channels
+      this.props.dispatch(updateChannels(channels));
     }
   }
-  playAudio = () => {
-    let audio = new Audio("/img/job-done.mp3");
-    audio.volume = 0.2;
-    audio.play();
-  };
   _subToMore = subscribeToMore => {
     subscribeToMore({
-      document: SUB_TO_DMS_BY_USER,
-      variables: { ids: this.props.dms || [] },
+      document: SUB_TO_ALL_CIRCLES_CHANNELS,
+      variables: { ids: this.props.channels || [] },
       updateQuery: (prev, { subscriptionData }) => {
         let updatedChannel = subscriptionData.data.Message.node.channel.id;
         if (subscriptionData.data.Message.node.user.id === this.props.user) {
           return prev;
         }
-        this.playAudio();
-        if (this.props.activeChannel === updatedChannel) {
-          // auditory cue that a new message has been created
-          return prev;
-        } else {
-          if (this.props.dms.findIndex(dm => dm === updatedChannel) !== -1) {
-            this.props.dispatch(addUnreadDM(updatedChannel));
-            // flash title and play sound to get user's attention
-            this.flashTab(subscriptionData.data.Message.node.user.firstName);
+        if (this.props.activeChannel !== updatedChannel) {
+          if (
+            this.props.channels.findIndex(ch => ch === updatedChannel) !== -1
+          ) {
+            this.props.dispatch(addUnreadChannel(updatedChannel));
           }
           return prev;
         }
       }
     });
   };
-  flashTab = firstName => {
-    clearInterval(this.toggleTitle);
-    let prevTitle = `(${this.props.unreadDMs.length}) New Message!`;
-    let newTitle = `(${
-      this.props.unreadDMs.length
-    }) ${firstName} sent a message`;
-    document.title = newTitle;
-
-    this.toggleTitle = setInterval(() => {
-      switch (document.title) {
-        case newTitle:
-          document.title = prevTitle;
-          break;
-        case prevTitle:
-          document.title = newTitle;
-          break;
-        default:
-          document.title = prevTitle;
-      }
-    }, 1500);
-    // this.toggleTitle;
-  };
   render() {
     return (
-      <Query query={GET_DMS_BY_USER} variables={{ id: this.props.user || "" }}>
+      <Query
+        query={GET_ALL_USERS_CIRCLES_CHANNELS}
+        variables={{ id: this.props.user || "" }}
+      >
         {({ subscribeToMore }) => {
-          if (this.props.getDMs.User) {
+          if (this.props.getAllMyChannels.User) {
             this._subToMore(subscribeToMore);
           }
           return null;
@@ -97,13 +64,13 @@ function mapStateToProps(state) {
   return {
     user: pull(state, "user"),
     activeChannel: pull(state, "activeChannel"),
-    dms: pull(state, "dms"),
-    unreadDMs: pull(state, "unreadDMs")
+    channels: pull(state, "channels"),
+    unreadChannels: pull(state, "unreadChannels")
   };
 }
 export default connect(mapStateToProps)(
-  graphql(GET_DMS_BY_USER, {
-    name: "getDMs",
+  graphql(GET_ALL_USERS_CIRCLES_CHANNELS, {
+    name: "getAllMyChannels",
     options: ({ user }) => ({ variables: { id: user || "" } })
   })(ChannelUpdateMonitor)
 );

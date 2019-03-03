@@ -60,7 +60,7 @@ const ChannelLabel = props => {
 
   return (
     <div
-      className={`channel-group-label ${active} ${
+      className={`channel-group-label white-50 ${active} ${
         !["Channels", "Governance", "Direct Messages"].includes(props.name)
           ? "channel-wrapper"
           : "ttu tracked f7"

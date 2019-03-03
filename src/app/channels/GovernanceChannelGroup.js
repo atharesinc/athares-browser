@@ -3,7 +3,6 @@ import { Link } from "react-router-dom";
 import { pull } from "../../store/state/reducers";
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
-import { Scrollbars } from "react-custom-scrollbars";
 
 /*
     A Group of Governance Channels
@@ -20,21 +19,12 @@ const GovernanceChannelGroup = ({ activeCircle, location, ...props }) => {
       >
         {props.name}
       </div>
-      {/* <Scrollbars
-        style={{
-          width: "100%",
-          height: "calc(100vh /3)",
-          paddingLeft: "1em"
-        }}
-        flex={1}
-        autoHide
-        autoHideTimeout={1000}
-        autoHideDuration={200}
-        universal={true}
-      > */}
+
       <Link to={`/app/circle/${activeCircle}/constitution`}>
         <div
-          className={`channel-group-label ${docsActive ? "active-bg" : ""}`}
+          className={`channel-group-label white-50 ${
+            docsActive ? "active-bg" : ""
+          }`}
           style={{ borderBottom: "none" }}
         >
           Constitution
@@ -42,7 +32,9 @@ const GovernanceChannelGroup = ({ activeCircle, location, ...props }) => {
       </Link>
       <Link to={`/app/circle/${activeCircle}/revisions`}>
         <div
-          className={`channel-group-label ${revActive ? "active-bg" : ""}`}
+          className={`channel-group-label white-50 ${
+            revActive ? "active-bg" : ""
+          }`}
           style={{ borderBottom: "none" }}
         >
           Polls
@@ -50,14 +42,15 @@ const GovernanceChannelGroup = ({ activeCircle, location, ...props }) => {
       </Link>
       <Link to={`/app/circle/${activeCircle}/news`}>
         <div
-          className={`channel-group-label ${newsActive ? "active-bg" : ""}`}
+          className={`channel-group-label white-50 ${
+            newsActive ? "active-bg" : ""
+          } flex flex-row justify-between items center`}
           style={{ borderBottom: "none" }}
         >
-          <span>News</span>{" "}
-          <span className="bg-theme-light br-pill pv1 ph2">Coming Soon</span>
+          <div>News</div>
+          <div className="bg-theme-light br-pill pv1 ph2">Coming Soon</div>
         </div>
       </Link>
-      {/* </Scrollbars> */}
     </div>
   );
 };

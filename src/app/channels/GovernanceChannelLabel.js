@@ -19,7 +19,7 @@ const GovernanceChannelLabel = props => {
       : "";
   return (
     <div
-      className={`channel-group-label ${active}`}
+      className={`channel-group-label white-50  ${active}`}
       onClick={setActiveChannel}
       style={hasBorder(props.name)}
     >

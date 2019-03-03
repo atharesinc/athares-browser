@@ -8,7 +8,8 @@ import { pull } from "../../../store/state/reducers";
 import {
   updateChannel,
   updateRevision,
-  updateCircle
+  updateCircle,
+  removeUnreadChannel
 } from "../../../store/state/actions";
 // import { updateDesc, updateTitle } from "../../../store/head/actions";
 import { connect } from "react-redux";
@@ -44,12 +45,21 @@ class Chat extends Component {
       this.props.dispatch(updateRevision(null));
       return;
     }
+    if (this.props.activeChannel) {
+      this.props.dispatch(removeUnreadChannel(this.props.match.params.id));
+    }
   }
   componentDidUpdate(prevProps) {
     // if current url doesn't match internal state, update state to match url
     if (this.props.match.params.id !== this.props.activeChannel) {
       this.props.dispatch(updateChannel(this.props.match.params.id));
-      return;
+      this.props.dispatch(removeUnreadChannel(this.props.match.params.id));
+    }
+    if (
+      this.props.activeChannel &&
+      this.props.activeChannel !== prevProps.activeChannel
+    ) {
+      this.props.dispatch(removeUnreadChannel(this.props.match.params.id));
     }
   }
   scrollToBottom = () => {

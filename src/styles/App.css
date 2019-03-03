@@ -784,7 +784,6 @@ input[type="phone"],
 }
 
 .channel-group-label {
-  color: #ffffff50;
   width: 100%;
   border-bottom: 1px solid #ffffff80;
   padding: 0.25em 1em;
@@ -1423,7 +1422,7 @@ a:visited {
 #search-input-wrapper {
   background: #2f3242;
   color: #fff;
-  height: 2.5em;
+  height: 3em;
   display: flex;
   flex-direction: row;
   justify-content: flex-start;
@@ -1467,11 +1466,12 @@ a:visited {
   border-bottom: 1px solid #565656;
   transition: all 0.25s ease;
   color: #5a6181;
-  height: 2.5em;
+  height: 3em;
   display: flex;
   flex-direction: row;
   justify-content: left;
   align-items: center;
+  font-size: 1.1em;
 }
 .suggestion-item-user {
   display: flex;
@@ -1683,7 +1683,7 @@ a:visited {
   }
   #channels-list {
     height: calc(100% - 3em);
-    font-size: 1.4em;
+    font-size: 1.2em;
   }
   .revision-board {
     min-width: 80%;

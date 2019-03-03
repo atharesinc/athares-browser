@@ -23,13 +23,37 @@ export const SUB_TO_MESSAGES_BY_CHANNEL_ID = gql`
 export const SUB_TO_DMS_BY_USER = gql`
   subscription subtoDMs($ids: [ID!]!) {
     Message(
-      filter: { mutation_in: CREATED, node: { channel: { id_in: $ids } } }
+      filter: {
+        mutation_in: CREATED
+        node: { channel: { AND: { id_in: $ids, channelType: "dm" } } }
+      }
     ) {
       node {
         id
         user {
           id
           firstName
+        }
+        channel {
+          id
+        }
+      }
+    }
+  }
+`;
+
+export const SUB_TO_ALL_CIRCLES_CHANNELS = gql`
+  subscription subToCallCirclesChannel($ids: [ID!]!) {
+    Message(
+      filter: {
+        mutation_in: CREATED
+        node: { channel: { AND: { id_in: $ids, channelType: "group" } } }
+      }
+    ) {
+      node {
+        id
+        user {
+          id
         }
         channel {
           id

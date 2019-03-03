@@ -394,3 +394,17 @@ export const GET_WEB_SUBS = gql`
     }
   }
 `;
+
+export const GET_ALL_USERS_CIRCLES_CHANNELS = gql`
+  query getAllMyChannels($id: ID!) {
+    User(id: $id) {
+      id
+      circles {
+        id
+        channels {
+          id
+        }
+      }
+    }
+  }
+`;

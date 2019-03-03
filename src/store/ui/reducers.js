@@ -3,7 +3,8 @@ const initialState = {
   dmSettings: false,
   showAddMoreUsers: false,
   searchParams: "",
-  showInstall: false
+  showInstall: false,
+  isOnline: false
 };
 
 export default function reduce(state = initialState, action = {}) {
@@ -26,6 +27,8 @@ export default function reduce(state = initialState, action = {}) {
       return { ...state, showInstall: false };
     case "SHOW_INSTALL_APP":
       return { ...state, showInstall: true };
+    case "UPDATE_ONLINE_STATUS":
+      return { ...state, isOnline: action.isOnline };
     default:
       return { ...initialState };
   }

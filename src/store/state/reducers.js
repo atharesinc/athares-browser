@@ -6,6 +6,7 @@ const initialState = {
   pub: null,
   circles: [],
   channels: [],
+  unreadChannels: [],
   revisions: [],
   votes: [],
   users: [],
@@ -30,10 +31,14 @@ export default function reduce(state = initialState, action = {}) {
       return { ...state, activeRevision: action.revision };
     case "UPDATE_DMS":
       return { ...state, dms: action.dms };
+    case "UPDATE_CHANNELS_LIST":
+      return { ...state, channels: action.channels };
     case "ADD_UNREAD_DM":
       return { ...state, unreadDMs: action.dms };
     case "REMOVE_UNREAD_DM":
       return { ...state, unreadDMs: action.dms };
+    case "UPDATE_UNREAD_CHANNEL_MSGS":
+      return { ...state, unreadChannels: action.channels };
     case "LOGOUT":
       return { ...initialState };
     default:

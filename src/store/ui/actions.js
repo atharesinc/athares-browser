@@ -48,3 +48,9 @@ export function showInstall() {
     dispatch({ type: "SHOW_INSTALL_APP" });
   };
 }
+
+export function updateOnlineStatus(isOnline) {
+  return async dispatch => {
+    dispatch({ type: "UPDATE_ONLINE_STATUS", isOnline });
+  };
+}

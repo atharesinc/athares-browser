@@ -1,7 +1,6 @@
 import React from "react";
 import Channel from "./Channel";
 import ChannelLabel from "./ChannelLabel";
-import { Scrollbars } from "react-custom-scrollbars";
 
 /*
     A Group of Channels. This acts as the iterator for individual channels
@@ -20,18 +19,7 @@ const ChannelGroup = props => {
           activeChannel={props.activeChannel}
         />
       ) : null}
-      {/* <Scrollbars
-        style={{
-          width: "100%",
-          height: "calc(100vh /3)",
-          paddingLeft: "1em"
-        }}
-        flex={1}
-        autoHide
-        autoHideTimeout={1000}
-        autoHideDuration={200}
-        universal={true}
-      > */}
+
       {props.channels.map((channel, i) => (
         <Channel
           key={i}
@@ -40,7 +28,6 @@ const ChannelGroup = props => {
           user={props.user}
         />
       ))}
-      {/* </Scrollbars> */}
     </div>
   );
 };

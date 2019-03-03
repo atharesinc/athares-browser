@@ -36,7 +36,13 @@ class Channels extends Component {
     this.props.history.push(`/app/circle/${this.props.activeCircle}/settings`);
   };
   render() {
-    let { activeChannel, activeCircle, getDMsByUser, unreadDMs } = this.props;
+    let {
+      activeChannel,
+      activeCircle,
+      getDMsByUser,
+      unreadDMs,
+      unreadChannels
+    } = this.props;
     let user = null;
     let circle = null;
     let channels = [];
@@ -64,6 +70,10 @@ class Channels extends Component {
           if (data.Circle) {
             circle = data.Circle;
             channels = circle.channels;
+            channels = channels.map(ch => ({
+              unread: unreadChannels.includes(ch.id),
+              ...ch
+            }));
           }
           if (circle) {
             return (
@@ -184,7 +194,8 @@ function mapStateToProps(state) {
     user: pull(state, "user"),
     activeCircle: pull(state, "activeCircle"),
     activeChannel: pull(state, "activeChannel"),
-    unreadDMs: pull(state, "unreadDMs")
+    unreadDMs: pull(state, "unreadDMs"),
+    unreadChannels: pull(state, "unreadChannels")
   };
 }
 
