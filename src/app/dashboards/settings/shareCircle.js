@@ -72,7 +72,7 @@ class ShareCircle extends Component {
             );
           }
           return (
-            <div className="pa2 bb b--white-70">
+            <div className="pa2 pv3 bb b--white-70">
               <article className="mb3">
                 <time className="f4 lh-title white">Share Circle</time>
               </article>

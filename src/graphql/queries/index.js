@@ -408,3 +408,19 @@ export const GET_ALL_USERS_CIRCLES_CHANNELS = gql`
     }
   }
 `;
+
+export const GET_CIRCLE_PREFS_FOR_USER = gql`
+  query($user: ID!, $circle: ID!) {
+    User(id: $user) {
+      id
+      circlePermissions(filter: { circle: { id: $circle } }) {
+        id
+        amendments
+        revisions
+        useSMS
+        usePush
+        useEmail
+      }
+    }
+  }
+`;

@@ -9,7 +9,11 @@ import { pull } from "../store/state/reducers";
 import { showLoading, hideLoading } from "react-redux-loading-bar";
 import defaultUser from "../portal/defaultUser.json";
 import sha from "simple-hash-browser";
-import { CREATE_USER, SIGNIN_USER } from "../graphql/mutations";
+import {
+  CREATE_USER,
+  SIGNIN_USER,
+  CREATE_USER_PREF
+} from "../graphql/mutations";
 import { graphql, compose } from "react-apollo";
 import { pair } from "simple-asym-crypto";
 import SimpleCrypto from "simple-crypto-js";
@@ -42,7 +46,7 @@ class MiniRegister extends PureComponent {
       return false;
     }
 
-    let { createUser, signinUser } = this.props;
+    let { createUser, signinUser, createUserPref } = this.props;
     let { firstName, lastName, password, email } = this.state;
 
     let hashedToken = await sha(password);
@@ -73,7 +77,11 @@ class MiniRegister extends PureComponent {
           signinUser: { token, user }
         }
       } = res;
-
+      await createUserPref({
+        variables: {
+          id: user.id
+        }
+      });
       //store in redux
       window.localStorage.setItem("ATHARES_ALIAS", email);
       window.localStorage.setItem("ATHARES_HASH", hashedToken);
@@ -179,7 +187,6 @@ function mapStateToProps(state) {
 
 export default compose(
   graphql(SIGNIN_USER, { name: "signinUser" }),
-  graphql(CREATE_USER, {
-    name: "createUser"
-  })
+  graphql(CREATE_USER, { name: "createUser" }),
+  graphql(CREATE_USER_PREF, { name: "createUserPref" })
 )(connect(mapStateToProps)(withRouter(MiniRegister)));

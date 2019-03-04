@@ -7,8 +7,11 @@ import swal from "sweetalert";
 import FeatherIcon from "feather-icons-react";
 import { Link } from "react-router-dom";
 import { updateDesc, updateTitle } from "../../../store/head/actions";
-import { graphql } from "react-apollo";
-import { ADD_USER_TO_CIRCLE } from "../../../graphql/mutations";
+import { graphql, compose } from "react-apollo";
+import {
+  ADD_USER_TO_CIRCLE,
+  CREATE_CIRCLE_PERMISSION
+} from "../../../graphql/mutations";
 // import { GET_USERS_BY_CIRCLE_ID} from "../../../graphql/queries";
 
 class addUser extends Component {
@@ -45,7 +48,7 @@ class addUser extends Component {
       selectedUsers: items
     });
   };
-  onSubmit = e => {
+  onSubmit = async e => {
     e.preventDefault();
     // add each user to circle
     let { selectedUsers } = this.state;
@@ -61,6 +64,16 @@ class addUser extends Component {
           }
         });
       });
+
+      let newPermissions = selectedUsers.map(user => {
+        this.props.createCirclePerm({
+          variables: {
+            user: user.id,
+            circle: this.props.activeCircle
+          }
+        });
+      });
+      await Promise.all(newPermissions);
       Promise.all(invites).then(() => {
         swal(
           `${selectedUsers.length > 1 ? "Users Added" : "User Added"}`,
@@ -141,5 +154,8 @@ function mapStateToProps(state) {
 }
 
 export default connect(mapStateToProps)(
-  graphql(ADD_USER_TO_CIRCLE, { name: "addUserToCircle" })(addUser)
+  compose(
+    graphql(ADD_USER_TO_CIRCLE, { name: "addUserToCircle" })(addUser),
+    graphql(CREATE_CIRCLE_PERMISSION, { name: "createCirclePerm" })
+  )
 );

@@ -62,7 +62,7 @@ class LeaveCircle extends Component {
             );
           }
           return (
-            <div className="mv2 pa2 ba b--red">
+            <div className="mv3 pa2 pv3 ba b--red">
               <article className="mb3">
                 <time className="f4 lh-title white">
                   Leave the Circle {circle.name}

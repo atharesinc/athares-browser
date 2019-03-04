@@ -75,6 +75,7 @@ export const CREATE_CIRCLE = gql`
 `;
 
 // use this with creating circle or when inviting users
+// we also create a permission object for this circle and user
 export const ADD_USER_TO_CIRCLE = gql`
   mutation addCircleToUser($circle: ID!, $user: ID!) {
     addToUserOnCircles(circlesCircleId: $circle, usersUserId: $user) {
@@ -322,6 +323,94 @@ export const CREATE_WEB_SUB = gql`
 export const DELETE_WEB_SUB = gql`
   mutation($id: ID!) {
     deleteWebPushSubscription(id: $id) {
+      id
+    }
+  }
+`;
+
+/* User Permissions */
+export const CREATE_USER_PREF = gql`
+  mutation createUserPref($id: ID!) {
+    createUserPref(
+      maySendMarketingEmail: true
+      userDisabled: false
+      userId: $id
+    ) {
+      id
+    }
+  }
+`;
+
+export const CREATE_CIRCLE_PERMISSION = gql`
+  mutation($circle: ID!, $user: ID!) {
+    createCirclePermission(
+      amendments: true
+      revisions: true
+      useEmail: true
+      usePush: false
+      useSMS: false
+      circleId: $circle
+      userId: $user
+    ) {
+      id
+    }
+  }
+`;
+
+export const UPDATE_AMENDEMENT_PERMISSION_FOR_CIRCLE = gql`
+  mutation($flag: Boolean!, $id: ID!) {
+    updateCirclePermission(id: $id, amendments: $flag) {
+      id
+      amendments
+    }
+  }
+`;
+
+export const UPDATE_REVISION_PERMISSION_FOR_CIRCLE = gql`
+  mutation($flag: Boolean!, $id: ID!) {
+    updateCirclePermission(id: $id, revisions: $flag) {
+      id
+      revisions
+    }
+  }
+`;
+
+export const UPDATE_EMAIL_PERMISSION_FOR_CIRCLE = gql`
+  mutation($flag: Boolean!, $id: ID!) {
+    updateCirclePermission(id: $id, useEmail: $flag) {
+      id
+      useEmail
+    }
+  }
+`;
+
+export const UPDATE_PUSH_PERMISSION_FOR_CIRCLE = gql`
+  mutation($flag: Boolean!, $id: ID!) {
+    updateCirclePermission(id: $id, usePush: $flag) {
+      id
+      usePush
+    }
+  }
+`;
+export const UPDATE_SMS_PERMISSION_FOR_CIRCLE = gql`
+  mutation($flag: Boolean!, $id: ID!) {
+    updateCirclePermission(id: $id, useSMS: $flag) {
+      id
+      useSMS
+    }
+  }
+`;
+export const UPDATE_ALLOW_MARKETING_EMAIL = gql`
+  mutation($id: ID!, $flag: Boolean!) {
+    updateUserPref(id: $id, maySendMarketingEmail: $flag) {
+      id
+    }
+  }
+`;
+
+export const DELETE_CIRCLE_PERMISSION = gql`
+  mutation($id: ID!) {
+    deleteCirclePermission(id: $id) {
       id
     }
   }

@@ -5,8 +5,9 @@ import { updateCircle } from "../../../store/state/actions";
 import swal from "sweetalert";
 import FeatherIcon from "feather-icons-react";
 import { Link } from "react-router-dom";
-import LeaveCircle from "./leaveCircle";
-import ShareCircle from "./shareCircle";
+import LeaveCircle from "./LeaveCircle";
+import ShareCircle from "./ShareCircle";
+import CirclePrefs from "./CirclePrefs";
 import ScrollBars from "react-custom-scrollbars";
 
 class Settings extends Component {
@@ -52,6 +53,7 @@ class Settings extends Component {
     this.props.history.push(`/app`);
   };
   render() {
+    let { user, activeCircle } = this.props;
     return (
       <div id="revisions-wrapper">
         <div className="flex ph2 mobile-nav">
@@ -76,6 +78,7 @@ class Settings extends Component {
             universal={true}
           >
             <ShareCircle />
+            <CirclePrefs user={user} activeCircle={activeCircle} />
             <LeaveCircle />
           </ScrollBars>
         </div>
