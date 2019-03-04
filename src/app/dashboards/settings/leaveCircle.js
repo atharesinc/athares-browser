@@ -4,9 +4,15 @@ import { pull } from "../../../store/state/reducers";
 import { updateCircle } from "../../../store/state/actions";
 import Loader from "../../../components/Loader";
 import swal from "sweetalert";
-import { DELETE_USER_FROM_CIRCLE } from "../../../graphql/mutations";
-import { GET_CIRCLE_NAME_BY_ID } from "../../../graphql/queries";
-import { graphql, Query } from "react-apollo";
+import {
+  DELETE_USER_FROM_CIRCLE,
+  DELETE_CIRCLE_PERMISSION
+} from "../../../graphql/mutations";
+import {
+  GET_CIRCLE_NAME_BY_ID,
+  GET_CIRCLE_PREFS_FOR_USER
+} from "../../../graphql/queries";
+import { graphql, Query, compose } from "react-apollo";
 import { withRouter } from "react-router-dom";
 
 class LeaveCircle extends Component {
@@ -26,23 +32,36 @@ class LeaveCircle extends Component {
         cancel: "Not yet",
         confirm: true
       }
-    }).then(async value => {
-      if (value === true) {
-        this.props.deleteUserFomCircle({
-          variables: {
-            user,
-            circle: activeCircle
-          }
-        });
-        swal(
-          "Removed From Circle",
-          `You have left this Circle. You will have to be re-invited to participate at a later time.`,
-          "warning"
-        );
-        this.props.dispatch(updateCircle(null));
-        this.props.history.push(`/app`);
-      }
-    });
+    })
+      .then(async value => {
+        if (value === true) {
+          console.log(this.props);
+          let { id } = this.props.getCirclePrefs.User.circlePermissions[0];
+
+          this.props.deleteCirclePermission({
+            variables: {
+              id
+            }
+          });
+          this.props.deleteUserFomCircle({
+            variables: {
+              user,
+              circle: activeCircle
+            }
+          });
+          swal(
+            "Removed From Circle",
+            `You have left this Circle. You will have to be re-invited to participate at a later time.`,
+            "warning"
+          );
+          this.props.dispatch(updateCircle(null));
+          this.props.history.push(`/app`);
+        }
+      })
+      .catch(err => {
+        console.error(err);
+        swal("Error", "There was an error leaving the Circle.", "error");
+      });
   };
   back = () => {
     this.props.history.push(`/app`);
@@ -99,6 +118,17 @@ function mapStateToProps(state) {
   };
 }
 
-export default graphql(DELETE_USER_FROM_CIRCLE, {
-  name: "deleteUserFomCircle"
-})(connect(mapStateToProps)(withRouter(LeaveCircle)));
+export default connect(mapStateToProps)(
+  compose(
+    graphql(GET_CIRCLE_PREFS_FOR_USER, {
+      name: "getCirclePrefs",
+      options: ({ user, activeCircle }) => ({
+        variables: { user: user || "", circle: activeCircle || "" }
+      })
+    }),
+    graphql(DELETE_USER_FROM_CIRCLE, {
+      name: "deleteUserFomCircle"
+    }),
+    graphql(DELETE_CIRCLE_PERMISSION, { name: "deleteCirclePermission" })
+  )(withRouter(LeaveCircle))
+);
