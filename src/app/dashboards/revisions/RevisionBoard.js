@@ -8,7 +8,6 @@ import {
   updateRevision,
   updateCircle
 } from "../../../store/state/actions";
-// import { updateDesc, updateTitle } from "../../../store/head/actions";
 import { pull } from "../../../store/state/reducers";
 import { connect } from "react-redux";
 import FeatherIcon from "feather-icons-react";
@@ -29,12 +28,9 @@ class RevisionBoard extends Component {
     if (this.props.activeCircle) {
       this.props.dispatch(updateChannel(null));
     } else {
-      console.log(this.props.match);
       this.props.dispatch(updateChannel(null));
       this.props.dispatch(updateRevision(null));
       this.props.dispatch(updateCircle(this.props.match.params.id));
-      // this.props.dispatch(updateDesc(circle.preamble));
-      // this.props.dispatch(updateTitle(circle.name + ' - Revisions'));
     }
   }
 

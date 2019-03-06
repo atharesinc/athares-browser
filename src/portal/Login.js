@@ -12,7 +12,6 @@ import {
 import { validateLogin } from "../utils/validators";
 import { pull } from "../store/state/reducers";
 import { connect } from "react-redux";
-import { updateDesc, updateTitle } from "../store/head/actions";
 import { showLoading, hideLoading } from "react-redux-loading-bar";
 import Loader from "../components/Loader";
 import sha from "simple-hash-browser";
@@ -36,9 +35,6 @@ class Login extends Component {
       this.props.dispatch(updateChannel(null));
       this.props.dispatch(updateCircle(null));
       this.props.dispatch(updateRevision(null));
-      // Update meta tags
-      this.props.dispatch(updateDesc("Log in to Athares"));
-      this.props.dispatch(updateTitle("Athares - Login"));
     }
   }
   tryLogin = async e => {

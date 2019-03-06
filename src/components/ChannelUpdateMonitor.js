@@ -7,10 +7,6 @@ import { Query, graphql } from "react-apollo";
 import { updateChannels, addUnreadChannel } from "../store/state/actions";
 
 class ChannelUpdateMonitor extends Component {
-  constructor() {
-    super();
-    this.toggleTitle = null;
-  }
   componentDidUpdate(prevProps) {
     if (
       this.props.getAllMyChannels.User &&

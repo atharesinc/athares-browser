@@ -11,7 +11,6 @@ import {
   updateCircle,
   removeUnreadChannel
 } from "../../../store/state/actions";
-// import { updateDesc, updateTitle } from "../../../store/head/actions";
 import { connect } from "react-redux";
 import { CREATE_MESSAGE } from "../../../graphql/mutations";
 import { SUB_TO_MESSAGES_BY_CHANNEL_ID } from "../../../graphql/subscriptions";

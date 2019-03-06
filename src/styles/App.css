@@ -1422,7 +1422,7 @@ a:visited {
 #search-input-wrapper {
   background: #2f3242;
   color: #fff;
-  height: 3em;
+  height: 10vh;
   display: flex;
   flex-direction: row;
   justify-content: flex-start;

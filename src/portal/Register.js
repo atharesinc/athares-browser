@@ -12,7 +12,6 @@ import {
 } from "../store/state/actions";
 import { connect } from "react-redux";
 import { pull } from "../store/state/reducers";
-import { updateDesc, updateTitle } from "../store/head/actions";
 import { showLoading, hideLoading } from "react-redux-loading-bar";
 import defaultUser from "./defaultUser.json";
 import Loader from "../components/Loader";
@@ -46,13 +45,6 @@ class Register extends PureComponent {
       this.props.dispatch(updateChannel(null));
       this.props.dispatch(updateCircle(null));
       this.props.dispatch(updateRevision(null));
-      // Update meta tags
-      this.props.dispatch(
-        updateDesc(
-          "Register with Athares, the only government platform committed to 100% transparency and secured with blockchain technology."
-        )
-      );
-      this.props.dispatch(updateTitle("Athares - Register"));
     }
   }
   tryRegister = async e => {

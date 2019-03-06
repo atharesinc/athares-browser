@@ -6,15 +6,13 @@ import { updateCircle } from "../../../store/state/actions";
 import swal from "sweetalert";
 import FeatherIcon from "feather-icons-react";
 import { Link } from "react-router-dom";
-import { updateDesc, updateTitle } from "../../../store/head/actions";
 import { graphql, compose } from "react-apollo";
 import {
   ADD_USER_TO_CIRCLE,
   CREATE_CIRCLE_PERMISSION
 } from "../../../graphql/mutations";
-// import { GET_USERS_BY_CIRCLE_ID} from "../../../graphql/queries";
 
-class addUser extends Component {
+class AddUser extends Component {
   constructor(props) {
     super(props);
 
@@ -28,7 +26,6 @@ class addUser extends Component {
     }
   }
   componentDidMount() {
-    this._isMounted = true;
     if (!this.props.user) {
       this.props.history.replace("/app");
     }
@@ -38,9 +35,6 @@ class addUser extends Component {
     ) {
       this.props.dispatch(updateCircle(this.props.match.params.id));
     }
-    // Update meta tags
-    this.props.dispatch(updateDesc("Invite users to this circle."));
-    this.props.dispatch(updateTitle("Invite Users"));
   }
 
   updateList = items => {
@@ -66,7 +60,7 @@ class addUser extends Component {
       });
 
       let newPermissions = selectedUsers.map(user => {
-        this.props.createCirclePerm({
+        return this.props.createCirclePerm({
           variables: {
             user: user.id,
             circle: this.props.activeCircle
@@ -130,8 +124,8 @@ class addUser extends Component {
             </div>
           </article>
           <div id="comment-desc" className="f6 white-60">
-            After pressing "Invite", the recipient(s) may be added automatically
-            to this circle.
+            After pressing "Invite Users", the recipient(s) will be added
+            automatically to this circle.
             <br />
             <br />
             Invitations aren't subject to democratic process.
@@ -155,7 +149,7 @@ function mapStateToProps(state) {
 
 export default connect(mapStateToProps)(
   compose(
-    graphql(ADD_USER_TO_CIRCLE, { name: "addUserToCircle" })(addUser),
+    graphql(ADD_USER_TO_CIRCLE, { name: "addUserToCircle" }),
     graphql(CREATE_CIRCLE_PERMISSION, { name: "createCirclePerm" })
-  )
+  )(AddUser)
 );

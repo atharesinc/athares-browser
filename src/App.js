@@ -21,9 +21,7 @@ import ChannelUpdateMonitor from "./components/ChannelUpdateMonitor";
 import DMUpdateMonitor from "./components/DMUpdateMonitor";
 import OnlineMonitor from "./components/OnlineMonitor";
 import Invite from "./invite";
-import Head from "./head";
 
-// import Loader from "./app/Loader";
 import throttle from "lodash.throttle";
 import { TweenMax } from "gsap";
 
@@ -139,8 +137,6 @@ class App extends PureComponent {
         {this.props.user && <ChannelUpdateMonitor />}
         {this.props.user && <DMUpdateMonitor />}
         <div className="wrapper high-img" id="main-layout">
-          <Head />
-
           <div id="desktop-wrapper-outer" className="wrapper">
             <div className="wrapper grey-screen" id="desktop-wrapper">
               <AnimatedSwitch

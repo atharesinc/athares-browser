@@ -10,7 +10,6 @@ import {
   updateChannel,
   updateRevision
 } from "../../../store/state/actions";
-// import { updateDesc, updateTitle } from "../../../store/head/actions";
 import { GET_AMENDMENTS_FROM_CIRCLE_ID } from "../../../graphql/queries";
 import { Query } from "react-apollo";
 
@@ -38,8 +37,6 @@ class Constitution extends PureComponent {
       this.props.dispatch(updateCircle(circleID));
       this.props.dispatch(updateChannel(null));
       this.props.dispatch(updateRevision(null));
-      // this.props.dispatch(updateDesc(circle.preamble));
-      // this.props.dispatch(updateTitle(circle.name + " - Constitution"));
     }
   }
 

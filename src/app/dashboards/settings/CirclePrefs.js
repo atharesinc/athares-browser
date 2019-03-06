@@ -21,39 +21,33 @@ class CirclePrefs extends Component {
   }
 
   updateAmendmentPref = async checked => {
-    let { id, amendments } = this.props.data.User.circlePermissions[0];
-    console.log(checked, amendments, id);
+    let { id } = this.props.data.User.circlePermissions[0];
 
-    let res = await this.props.updateAmendmentPref({
+    await this.props.updateAmendmentPref({
       variables: {
         id,
         flag: checked
       }
     });
-    console.log(res);
   };
   updateRevisionPref = async checked => {
-    let { id, revisions } = this.props.data.User.circlePermissions[0];
-    console.log(checked, revisions, id);
+    let { id } = this.props.data.User.circlePermissions[0];
 
-    let res = await this.props.updateRevisionPref({
+    await this.props.updateRevisionPref({
       variables: {
         id,
         flag: checked
       }
     });
-    console.log(res);
   };
   updateEmailPref = async checked => {
-    let { id, useEmail } = this.props.data.User.circlePermissions[0];
-    console.log(checked, useEmail, id);
-    let res = await this.props.updateEmailPref({
+    let { id } = this.props.data.User.circlePermissions[0];
+    await this.props.updateEmailPref({
       variables: {
         id,
         flag: checked
       }
     });
-    console.log(res);
   };
 
   render() {
@@ -70,7 +64,6 @@ class CirclePrefs extends Component {
       );
     }
     let perm = user.circlePermissions[0];
-    console.log(perm);
     return (
       <div className="mv3 pa2">
         <article className="mb3">

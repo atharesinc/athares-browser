@@ -26,7 +26,7 @@ class ChannelUpdateMonitor extends Component {
       this.props.unreadDMs.length === 0
     ) {
       clearInterval(this.toggleTitle);
-      document.title = "Athares";
+      document.title = "Athares Distributed Democracy";
     }
   }
   playAudio = () => {

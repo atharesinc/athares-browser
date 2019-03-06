@@ -1,9 +1,7 @@
 import React, { Component } from "react";
-// import DashboardLink from "./DashboardLink";
 import { Link } from "react-router-dom";
 import { connect } from "react-redux";
 import { pull } from "../../../store/state/reducers";
-import { updateDesc, updateTitle } from "../../../store/head/actions";
 import {
   updateCircle,
   updateChannel,
@@ -56,7 +54,6 @@ class Dashboard extends Component {
     }
     this.props.dispatch(updateChannel(null));
     this.props.dispatch(updateRevision(null));
-    this.updateMeta();
   }
   componentDidUpdate(prevProps, prevState) {
     let circleId = this.props.location.pathname.match(
@@ -69,21 +66,8 @@ class Dashboard extends Component {
       if (this.props.activeCircle !== circleId) {
         this.props.dispatch(updateCircle(circleId));
       }
-      this.updateMeta();
-    }
-    if (this.props.activeCircle !== prevProps.activeCircle) {
-      this.updateMeta();
     }
   }
-  updateMeta = () => {
-    if (this.props.getCircle.Circle) {
-      // console.log(this.props.getCircle.Circle);
-      // update meta data
-      let { Circle: circle } = this.props.getCircle;
-      this.props.dispatch(updateTitle(circle.name));
-      this.props.dispatch(updateDesc(circle.preamble));
-    }
-  };
   render() {
     return (
       <div

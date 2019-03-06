@@ -344,10 +344,10 @@ export const CREATE_USER_PREF = gql`
 export const CREATE_CIRCLE_PERMISSION = gql`
   mutation($circle: ID!, $user: ID!) {
     createCirclePermission(
-      amendments: true
-      revisions: true
-      useEmail: true
-      usePush: false
+      amendments: false
+      revisions: false
+      useEmail: false
+      usePush: true
       useSMS: false
       circleId: $circle
       userId: $user
