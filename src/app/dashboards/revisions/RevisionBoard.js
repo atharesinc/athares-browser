@@ -38,7 +38,6 @@ class RevisionBoard extends Component {
     let { activeCircle, user } = this.props;
     let circle = null;
     let allRevisions = [];
-    console.log(this.props);
     return (
       <Query
         query={GET_REVISIONS_FROM_CIRCLE_ID}

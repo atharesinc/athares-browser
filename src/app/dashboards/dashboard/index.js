@@ -7,11 +7,13 @@ import {
   updateChannel,
   updateRevision
 } from "../../../store/state/actions";
-import { Query, graphql } from "react-apollo";
+import { Query, graphql, compose } from "react-apollo";
 import {
-  GET_ALL_NOTICES,
+  GET_CIRCLE_NOTICES,
   GET_CHANNELS_BY_CIRCLE_ID
 } from "../../../graphql/queries";
+import Scrollbars from "react-custom-scrollbars";
+import CircleNotice from "./CircleNotice";
 
 class Dashboard extends Component {
   constructor(props) {
@@ -22,26 +24,6 @@ class Dashboard extends Component {
   }
 
   componentDidMount() {
-    // fetch('https://github.com/repos/atharesinc/athares-browser/commits')
-    //     .then(data => data.json)
-    //     .then(data => {
-    //         let news = data.map(
-    //             ({
-    //                 base_commit: {
-    //                     commit: { message }
-    //                 }
-    //             }) => {
-    //                 let newsItem = {
-    //                     message: message.replace(/.+:\s(.*)/gi, '$1')
-    //                 };
-    //                 return newsItem;
-    //             }
-    //         );
-    //         console.log(news);
-    //     })
-    //     .catch(err => {
-    //         console.error("Couldn't connect to Github API");
-    //     });
     let circleId = this.props.location.pathname.match(
       /\/circle\/([a-zA-Z0-9]{25})/
     );
@@ -112,27 +94,40 @@ class Dashboard extends Component {
           <div className="bg-white-20 mt2 pv3 w-100 ph4 ttu tracked">
             Athares News
           </div>
-          <Query query={GET_ALL_NOTICES}>
-            {({ loading, error, data }) => {
-              if (error) {
-                return <p>Error - Couldn't reach news server.</p>;
-              }
-              if (loading || data.allNotices.length === 0) {
+          <Scrollbars style={{ width: "100%", height: "50vh" }}>
+            <Query
+              query={GET_CIRCLE_NOTICES}
+              variables={{ id: this.props.activeCircle || "" }}
+            >
+              {({ loading, error, data: { Circle } }) => {
+                let notices = null;
+                if (error) {
+                  return (
+                    <div className="bg-white-10 pv3 w-100 ph4 ttu tracked tc">
+                      Unable to reach news server
+                    </div>
+                  );
+                }
+                if (loading) {
+                  return (
+                    <div className="bg-white-10 pv3 w-100 ph4 ttu tracked tc">
+                      Fetching News...
+                    </div>
+                  );
+                }
+                if (Circle) {
+                  return Circle.notices.map(notice => (
+                    <CircleNotice key={notice.id} notice={notice} />
+                  ));
+                }
                 return (
                   <div className="bg-white-10 pv3 w-100 ph4 ttu tracked tc">
-                    No News Available
+                    No news available
                   </div>
                 );
-              } else {
-                return data.allNotices.map(notice => (
-                  <div className="bg-white-10 pv2 w-100 ph4" key={notice.id}>
-                    <h3>{notice.title}</h3>
-                    <p className="">{notice.text}</p>
-                  </div>
-                ));
-              }
-            }}
-          </Query>
+              }}
+            </Query>
+          </Scrollbars>
         </div>
       </div>
     );

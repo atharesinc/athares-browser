@@ -436,3 +436,17 @@ export const GET_USER_PREF_BY_ID = gql`
     }
   }
 `;
+
+export const GET_CIRCLE_NOTICES = gql`
+  query($id: ID!) {
+    Circle(id: $id) {
+      id
+      notices(orderBy: createdAt_DESC) {
+        id
+        title
+        text
+        createdAt
+      }
+    }
+  }
+`;
