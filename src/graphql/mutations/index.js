@@ -404,6 +404,7 @@ export const UPDATE_ALLOW_MARKETING_EMAIL = gql`
   mutation($id: ID!, $flag: Boolean!) {
     updateUserPref(id: $id, maySendMarketingEmail: $flag) {
       id
+      maySendMarketingEmail
     }
   }
 `;

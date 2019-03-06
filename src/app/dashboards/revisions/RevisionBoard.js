@@ -38,6 +38,7 @@ class RevisionBoard extends Component {
     let { activeCircle, user } = this.props;
     let circle = null;
     let allRevisions = [];
+    console.log(this.props);
     return (
       <Query
         query={GET_REVISIONS_FROM_CIRCLE_ID}
@@ -61,9 +62,9 @@ class RevisionBoard extends Component {
                 }}
               >
                 <h1 className="ma3 lh-title white">Revisions</h1>
-                <small className="f6 white-80 db mb4 ml3-l">
+                <div className="f6 white-80 db mb4 ml3-l">
                   Review proposed legislation and changes to existing laws
-                </small>
+                </div>
 
                 <Loader />
               </div>
@@ -110,6 +111,16 @@ class RevisionBoard extends Component {
                 style={{ height: "10vh" }}
               >
                 Review proposed legislation and changes to existing laws
+                <br />
+                <br />
+                {this.props.user && (
+                  <Link
+                    to={this.props.match.url.replace("revisions", "settings")}
+                    className="dim ba br-pill bg-theme pv1 ph2 mt2"
+                  >
+                    Subscribe to Revisions
+                  </Link>
+                )}
               </small>
               <div id="revision-board-wrapper">
                 <Scrollbars

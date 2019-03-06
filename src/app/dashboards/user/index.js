@@ -47,22 +47,7 @@ class User extends Component {
             };
           }
           const { match } = this.props;
-          //   if (loading) {
-          //     return (
-          //       <div
-          //         id="dashboard-wrapper"
-          //         style={{
-          //           justifyContent: "center"
-          //         }}
-          //         className="pa2"
-          //       >
-          //         <Loader />
-          //         <h1 className="mb3 mt0 lh-title mt4 f3 f2-ns">
-          //           Getting User Information!
-          //         </h1>
-          //       </div>
-          //     );
-          //   }
+
           return (
             <Switch>
               <Route
