@@ -13,8 +13,7 @@ import {
   CREATE_CHANNEL,
   CREATE_KEY,
   CREATE_MESSAGE,
-  ADD_USER_TO_CHANNEL,
-  CREATE_WEB_SUB
+  ADD_USER_TO_CHANNEL
 } from "../../../graphql/mutations";
 import { graphql, compose } from "react-apollo";
 import uploadToIPFS from "../../../utils/uploadToIPFS";
@@ -188,7 +187,6 @@ function mapStateToProps(state) {
 
 export default connect(mapStateToProps)(
   compose(
-    graphql(CREATE_WEB_SUB, { name: "createWebSub" }),
     graphql(CREATE_MESSAGE, { name: "createMessage" }),
     graphql(ADD_USER_TO_CHANNEL, { name: "addUserToChannel" }),
     graphql(CREATE_CHANNEL, { name: "createChannel" }),
