@@ -10,6 +10,7 @@ import {
 } from "../graphql/mutations";
 import { GET_ACTIVE_REVISIONS_BY_USER_ID } from "../graphql/queries";
 import { compose, graphql } from "react-apollo";
+import sha from "simple-hash-browser";
 
 let checkItemsTimer = null;
 
@@ -95,6 +96,14 @@ class App extends Component {
         moment().valueOf() >= moment(thisRevision.expires).valueOf()) ||
       supportVotes.length >= thisRevision.voterThreshold
     ) {
+      // create a separate unique identifier to make sure our new amendment doesn't get created twice
+      let hash = await sha(
+        JSON.stringify({
+          id: thisRevision.id,
+          title: thisRevision.title,
+          text: thisRevision.newText
+        })
+      );
       if (thisRevision.amendment) {
         await this.props.updateAmendment({
           variables: {
@@ -102,7 +111,8 @@ class App extends Component {
             title: thisRevision.title,
             text: thisRevision.newText,
             revision: thisRevision.id,
-            circle: thisRevision.circle
+            circle: thisRevision.circle,
+            hash
           }
         });
         this.getNext();
@@ -112,7 +122,8 @@ class App extends Component {
             title: thisRevision.title,
             text: thisRevision.newText,
             revision: thisRevision.id,
-            circle: thisRevision.circle
+            circle: thisRevision.circle,
+            hash
           }
         });
         this.getNext();

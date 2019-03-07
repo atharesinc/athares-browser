@@ -193,12 +193,18 @@ export const CREATE_AMENDMENT_FROM_REVISION = gql`
     $revision: ID!
     $title: String!
     $circle: ID!
+    $hash: String!
   ) {
     updateRevision(id: $revision, passed: true) {
       passed
       id
     }
-    createAmendment(text: $text, title: $title, circleId: $circle) {
+    createAmendment(
+      text: $text
+      title: $title
+      circleId: $circle
+      hash: $hash
+    ) {
       id
       title
     }
@@ -211,12 +217,13 @@ export const UPDATE_AMENDMENT_FROM_REVISION = gql`
     $revision: ID!
     $title: String!
     $amendment: ID!
+    $hash: String!
   ) {
     updateRevision(id: $revision, passed: true) {
       passed
       id
     }
-    updateAmendment(text: $text, title: $title, id: $amendment) {
+    updateAmendment(text: $text, title: $title, id: $amendment, hash: $hash) {
       id
       title
     }
