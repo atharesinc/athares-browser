@@ -131,7 +131,7 @@ class CreateAmendment extends Component {
             >
               <article className="cf">
                 <time className="f7 ttu tracked white-80">
-                  Draft a new piece of legislation for {activeCircle.name}
+                  Draft a new piece of legislation for {data.Circle.name}
                 </time>
                 <div className="fn mt4">
                   <div className="measure mb4">
