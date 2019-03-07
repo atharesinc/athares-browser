@@ -162,7 +162,7 @@ class RevisionBoard extends Component {
 
 const Board = ({ title, revisions, circleID, user }) => {
   return (
-    <div className="w-100 w-50-ns pa2 revision-board">
+    <div className="w-100 w-50-ns pa2 revision-board h-100-ns">
       <div className="bb b--white pa2 mb2">
         <div className="white">{title}</div>
       </div>
@@ -173,12 +173,12 @@ const Board = ({ title, revisions, circleID, user }) => {
           justifyContent: "flex-start",
           alignItems: "center",
           width: "100%",
-          height: "28em"
+          height: "100%"
         }}
       >
         <Scrollbars
           style={{
-            height: "28em",
+            height: "100%",
             minHeight: "11.5em"
           }}
           autoHide

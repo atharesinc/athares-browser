@@ -9,7 +9,39 @@ light-alt: #0cb1ff50 (accent when transparent)
 
 */
 
-* {
+/* * {
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: rgba(255, 255, 255, 0);
+} */
+
+/* div,
+input,
+textarea,
+button,
+i,
+p,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+article,
+header,
+ul,
+li, */
+svg
+/* header,
+footer,
+main,
+nav,
+td,
+th,
+tr,
+table,
+fieldset,
+aside,
+section { */ {
   box-sizing: border-box;
   -webkit-tap-highlight-color: rgba(255, 255, 255, 0);
 }
@@ -1687,6 +1719,7 @@ a:visited {
   }
   .revision-board {
     min-width: 80%;
+    height: 95%;
   }
   #revision-board-wrapper {
     padding: 0;
