@@ -106,7 +106,7 @@ class RevisionBoard extends Component {
                 <h2 className="ma3 lh-title white">Revisions</h2>
               </div>
               <small
-                className="f6 white-80 db mb2 ml3-l mobile-nav ph2"
+                className="f6 white-80 db mb2 ml3-l ph2"
                 style={{ height: "10vh" }}
               >
                 Review proposed legislation and changes to existing laws
