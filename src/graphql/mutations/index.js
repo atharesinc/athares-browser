@@ -359,6 +359,7 @@ export const CREATE_USER_PREF = gql`
   }
 `;
 
+/* not used directly, but occurrs when adding a user to a circle */
 export const CREATE_CIRCLE_PERMISSION = gql`
   mutation($circle: ID!, $user: ID!) {
     createCirclePermission(

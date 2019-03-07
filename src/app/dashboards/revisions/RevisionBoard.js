@@ -177,6 +177,10 @@ const Board = ({ title, revisions, circleID, user }) => {
             height: "28em",
             minHeight: "11.5em"
           }}
+          autoHide
+          autoHideTimeout={1000}
+          autoHideDuration={200}
+          universal={true}
         >
           {title === "New Revisions" && user && (
             <Link to={`/app/circle/${circleID}/add/amendment`}>

@@ -9,11 +9,7 @@ import swal from "sweetalert";
 import { Scrollbars } from "react-custom-scrollbars";
 import FeatherIcon from "feather-icons-react";
 import { Link } from "react-router-dom";
-import {
-  CREATE_CIRCLE,
-  ADD_USER_TO_CIRCLE,
-  CREATE_CIRCLE_PERMISSION
-} from "../../../graphql/mutations";
+import { CREATE_CIRCLE, ADD_USER_TO_CIRCLE } from "../../../graphql/mutations";
 import { compose, graphql } from "react-apollo";
 
 class createCircleBoard extends Component {
@@ -120,12 +116,6 @@ class createCircleBoard extends Component {
     newCircle.id = newCircleRes.data.createCircle.id;
 
     await this.props.addCircleToUser({
-      variables: {
-        user: this.props.user,
-        circle: newCircle.id
-      }
-    });
-    await this.props.createCirclePerm({
       variables: {
         user: this.props.user,
         circle: newCircle.id
@@ -295,6 +285,5 @@ function mapStateToProps(state) {
 
 export default compose(
   graphql(CREATE_CIRCLE, { name: "createCircle" }),
-  graphql(ADD_USER_TO_CIRCLE, { name: "addCircleToUser" }),
-  graphql(CREATE_CIRCLE_PERMISSION, { name: "createCirclePerm" })
+  graphql(ADD_USER_TO_CIRCLE, { name: "addCircleToUser" })
 )(connect(mapStateToProps)(createCircleBoard));
