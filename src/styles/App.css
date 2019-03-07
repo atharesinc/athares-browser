@@ -982,7 +982,7 @@ input[type="phone"],
   margin: 0.5em;
   margin-top: 0;
   border: 1px solid #ffffff80;
-  word-break: break-all;
+  overflow-wrap: break-word;
 }
 
 .my-msg {
