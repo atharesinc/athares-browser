@@ -7,13 +7,9 @@ import {
   updateChannel,
   updateRevision
 } from "../../../store/state/actions";
-import { Query, graphql, compose } from "react-apollo";
-import {
-  GET_CIRCLE_NOTICES,
-  GET_CHANNELS_BY_CIRCLE_ID
-} from "../../../graphql/queries";
-import Scrollbars from "react-custom-scrollbars";
-import CircleNotice from "./CircleNotice";
+import { graphql } from "react-apollo";
+import { GET_CHANNELS_BY_CIRCLE_ID } from "../../../graphql/queries";
+import NoticeBoard from "./NoticeBoard";
 
 class Dashboard extends Component {
   constructor(props) {
@@ -94,40 +90,7 @@ class Dashboard extends Component {
           <div className="bg-white-20 mt2 pv3 w-100 ph4 ttu tracked">
             Athares News
           </div>
-          <Scrollbars style={{ width: "100%", height: "50vh" }}>
-            <Query
-              query={GET_CIRCLE_NOTICES}
-              variables={{ id: this.props.activeCircle || "" }}
-            >
-              {({ loading, error, data: { Circle } }) => {
-                let notices = null;
-                if (error) {
-                  return (
-                    <div className="bg-white-10 pv3 w-100 ph4 ttu tracked tc">
-                      Unable to reach news server
-                    </div>
-                  );
-                }
-                if (loading) {
-                  return (
-                    <div className="bg-white-10 pv3 w-100 ph4 ttu tracked tc">
-                      Fetching News...
-                    </div>
-                  );
-                }
-                if (Circle) {
-                  return Circle.notices.map(notice => (
-                    <CircleNotice key={notice.id} notice={notice} />
-                  ));
-                }
-                return (
-                  <div className="bg-white-10 pv3 w-100 ph4 ttu tracked tc">
-                    No news available
-                  </div>
-                );
-              }}
-            </Query>
-          </Scrollbars>
+          <NoticeBoard activeCircle={this.props.activeCircle} />
         </div>
       </div>
     );

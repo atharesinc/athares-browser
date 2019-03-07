@@ -122,7 +122,7 @@ let stages = [
   {
     product: "Athares Core",
     desc: "The Direct Democracy Platform",
-    status: "IN PROGRESS",
+    status: "COMPLETE",
     objectives: [
       "Create government circles",
       "Draft amendments",
@@ -135,7 +135,7 @@ let stages = [
   {
     product: "Unyielding Heirophant",
     desc: "Peer-Reviewed Public Broadcasting",
-    status: "COMING SOON",
+    status: "IN PROGRESS",
     objectives: [
       "Press and media module",
       "Non-profit membership media organization",
@@ -173,5 +173,11 @@ let stages = [
       "Taxation module and provision for Circles",
       "Private enterprise API"
     ]
+  },
+  {
+    product: "Truth and Reconciliation",
+    desc: "Just getting started",
+    status: "COMING SOON",
+    objectives: ["Mars?"]
   }
 ];
