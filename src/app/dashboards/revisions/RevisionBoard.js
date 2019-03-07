@@ -127,6 +127,10 @@ class RevisionBoard extends Component {
                     height: "80vh",
                     width: "100%"
                   }}
+                  autoHide
+                  autoHideTimeout={1000}
+                  autoHideDuration={200}
+                  universal={true}
                 >
                   <Board
                     revisions={newRevisions}
