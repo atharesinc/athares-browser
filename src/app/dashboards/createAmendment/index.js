@@ -8,7 +8,7 @@ import { pull } from "../../../store/state/reducers";
 import { updateRevision } from "../../../store/state/actions";
 import FeatherIcon from "feather-icons-react";
 import swal from "sweetalert";
-
+import sha from "simple-hash-browser";
 import { compose, graphql } from "react-apollo";
 import { CREATE_REVISION, CREATE_VOTE } from "../../../graphql/mutations";
 import { GET_AMENDMENTS_FROM_CIRCLE_ID } from "../../../graphql/queries";
@@ -67,10 +67,19 @@ class CreateAmendment extends Component {
           .format(),
         voterThreshold: Math.round(numUsers / 2)
       };
-
+      let hash = await sha(
+        JSON.stringify({
+          title: newRevision.title,
+          text: newRevision.newText,
+          circle: newRevision.circle,
+          expires: newRevision.expires,
+          voterThreshold: newRevision.voterThreshold
+        })
+      );
       let newRevisionRes = await this.props.createRevision({
         variables: {
-          ...newRevision
+          ...newRevision,
+          hash
         }
       });
 
@@ -94,12 +103,17 @@ class CreateAmendment extends Component {
         `/app/circle/${this.props.activeCircle}/revisions/${newRevision.id}`
       );
     } catch (err) {
-      console.log(err);
-      swal(
-        "Error",
-        "There was an error connecting to the Athares network. Please try again later.",
-        "error"
-      );
+      if (
+        !err.message.includes("unique constraint would be violated") ||
+        !err.message.includes("hash")
+      ) {
+        console.log(err);
+        swal(
+          "Error",
+          "There was an error connecting to the Athares network. Please try again later.",
+          "error"
+        );
+      }
     }
   };
   clearError = () => {

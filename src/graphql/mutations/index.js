@@ -165,6 +165,7 @@ export const CREATE_REVISION = gql`
     $amendment: ID
     $expires: DateTime!
     $voterThreshold: Int!
+    $hash: String!
   ) {
     createRevision(
       newText: $newText
@@ -175,6 +176,7 @@ export const CREATE_REVISION = gql`
       amendmentId: $amendment
       expires: $expires
       voterThreshold: $voterThreshold
+      hash: $hash
     ) {
       id
     }
