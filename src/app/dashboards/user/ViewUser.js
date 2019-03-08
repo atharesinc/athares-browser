@@ -42,7 +42,7 @@ class ViewUser extends React.Component {
       stats,
       data: { User: userPref }
     } = this.props;
-    if (loading) {
+    if (loading || !userPref || !user) {
       return (
         <div id="dashboard-wrapper">
           <Loader />

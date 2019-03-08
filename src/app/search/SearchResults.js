@@ -37,7 +37,7 @@ const SearchResults = ({
         <Section
           search={searchParams}
           data={amendments}
-          searchOn={"name"}
+          searchOn={"title"}
           title="amendments"
         />
       )}

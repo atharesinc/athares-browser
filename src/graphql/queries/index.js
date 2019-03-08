@@ -301,6 +301,7 @@ export const SEARCH_ALL = gql`
       id
       name
       description
+      createdAt
       circle {
         id
         name
@@ -313,6 +314,7 @@ export const SEARCH_ALL = gql`
       id
       title
       newText
+      createdAt
       circle {
         id
         name
@@ -325,6 +327,7 @@ export const SEARCH_ALL = gql`
       id
       title
       text
+      createdAt
       circle {
         id
         name

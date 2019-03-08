@@ -2,6 +2,7 @@ import React from "react";
 import { withRouter } from "react-router-dom";
 import { closeSearch, clearSearch } from "../../store/ui/actions";
 import { connect } from "react-redux";
+import moment from "moment";
 
 const Section = props => {
   let { data } = props;
@@ -43,6 +44,7 @@ const Section = props => {
   if (props.search.trim() === "" || data.length === 0) {
     return null;
   }
+
   return (
     <div id="suggestion-items-wrapper">
       <div className="suggestion-header">{props.title.toUpperCase()}</div>
@@ -67,8 +69,17 @@ const Section = props => {
                   {item.uname && <span>- {item.uname}</span>}{" "}
                 </div>
               ) : (
-                item[props.searchOn] +
-                (props.title !== "circles" ? " - " + item.circle.name : "")
+                <div className="flex flex-column justify-around h-100">
+                  <div>
+                    {item[props.searchOn] +
+                      (props.title !== "circles"
+                        ? " - " + item.circle.name
+                        : "")}
+                  </div>
+                  {props.title !== "circles" && (
+                    <div className="f7">{moment(item.createdAt).fromNow()}</div>
+                  )}
+                </div>
               )}
             </div>
           );
