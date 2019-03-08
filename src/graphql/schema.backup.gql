@@ -1,5 +1,5 @@
-# projectId: cjsnjseb412wz0192x4ivxr1l
-# version: 9
+# projectId: cjrucg3gz1obq0149g3vd7nxh
+# version: 41
 
 type Amendment @model {
   circle: Circle! @relation(name: "CircleOnAmendments")
@@ -9,6 +9,7 @@ type Amendment @model {
   text: String!
   title: String!
   updatedAt: DateTime!
+  hash: String! @isUnique
 }
 
 type UserPref @model {
@@ -126,6 +127,7 @@ type Revision @model {
   updatedAt: DateTime!
   voterThreshold: Int!
   votes: [Vote!]! @relation(name: "RevisionOnVotes")
+  hash: String! @isUnique
 }
 
 type User @model {
