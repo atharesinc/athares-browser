@@ -6,7 +6,8 @@ import moment from "moment";
 import {
   CREATE_AMENDMENT_FROM_REVISION,
   DENY_REVISION,
-  UPDATE_AMENDMENT_FROM_REVISION
+  UPDATE_AMENDMENT_FROM_REVISION,
+  UPDATE_AMENDMENT_FROM_REVISION_AND_DELETE
 } from "../graphql/mutations";
 import { GET_ACTIVE_REVISIONS_BY_USER_ID } from "../graphql/queries";
 import { compose, graphql } from "react-apollo";
@@ -82,7 +83,6 @@ class App extends Component {
   // see if it has passed and becomes an amendment or fails and lives in infamy
   checkIfPass = async ({ circleId, revisionId }) => {
     let revisions = this.getAllRevisions();
-
     let thisRevision = revisions.find(r => r.id === revisionId);
     // get the votes for this revision in this circle
     let { votes } = thisRevision;
@@ -91,42 +91,55 @@ class App extends Component {
     // // it passes because the majority of votes has been reached after the expiry period
     // OR enough people have voted before the expiration that the remaining voters couldn't over turn the vote
     // but this doesn't seem fair and won't come up logically, I think...
+
     if (
       (supportVotes.length > votes.length / 2 &&
         moment().valueOf() >= moment(thisRevision.expires).valueOf()) ||
       supportVotes.length >= thisRevision.voterThreshold
     ) {
-      // create a separate unique identifier to make sure our new amendment doesn't get created twice
-      let hash = await sha(
-        JSON.stringify({
-          id: thisRevision.id,
-          title: thisRevision.title,
-          text: thisRevision.newText
-        })
-      );
-      if (thisRevision.amendment) {
-        await this.props.updateAmendment({
+      // if this revision is a repeal, update the revision like in updateAmendment but also delete amendment
+      if (thisRevision.repeal === true) {
+        await this.props.deleteAmendment({
           variables: {
-            amendment: thisRevision.amendment.id,
-            title: thisRevision.title,
-            text: thisRevision.newText,
             revision: thisRevision.id,
-            circle: thisRevision.circle,
-            hash
+            amendment: thisRevision.amendment.id
           }
         });
         this.getNext();
       } else {
-        await this.props.createAmendmentFromRevision({
-          variables: {
+        // create a separate unique identifier to make sure our new amendment doesn't get created twice
+
+        let hash = await sha(
+          JSON.stringify({
+            id: thisRevision.id,
             title: thisRevision.title,
-            text: thisRevision.newText,
-            revision: thisRevision.id,
-            circle: thisRevision.circle,
-            hash
-          }
-        });
-        this.getNext();
+            text: thisRevision.newText
+          })
+        );
+        if (thisRevision.amendment) {
+          await this.props.updateAmendment({
+            variables: {
+              amendment: thisRevision.amendment.id,
+              title: thisRevision.title,
+              text: thisRevision.newText,
+              revision: thisRevision.id,
+              circle: thisRevision.circle,
+              hash
+            }
+          });
+          this.getNext();
+        } else {
+          await this.props.createAmendmentFromRevision({
+            variables: {
+              title: thisRevision.title,
+              text: thisRevision.newText,
+              revision: thisRevision.id,
+              circle: thisRevision.circle,
+              hash
+            }
+          });
+          this.getNext();
+        }
       }
     } else {
       // it fails and we ignore it forever
@@ -149,6 +162,9 @@ function mapStateToProps(state) {
 }
 export default connect(mapStateToProps)(
   compose(
+    graphql(UPDATE_AMENDMENT_FROM_REVISION_AND_DELETE, {
+      name: "deleteAmendment"
+    }),
     graphql(UPDATE_AMENDMENT_FROM_REVISION, { name: "updateAmendment" }),
     graphql(CREATE_AMENDMENT_FROM_REVISION, {
       name: "createAmendmentFromRevision"

@@ -29,9 +29,7 @@ class ViewRevision extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      mode: 0,
-      revision: null,
-      backer: null
+      mode: 0
     };
     this._isMounted = false;
   }
@@ -118,13 +116,17 @@ class ViewRevision extends Component {
               <h2 className="ma3 lh-title white">{title}</h2>
             </div>
             <Scrollbars style={{ height: "90vh", width: "100%" }}>
-              <RevisionHeader title={title} isNew={false} />
+              <RevisionHeader
+                title={title}
+                isNew={false}
+                isRepeal={revision.repeal}
+              />
 
               {hasVoted && <HasVoted vote={hasVoted} />}
               <div className="bg-theme ma2 ma4-ns">
                 <RevisionStatus {...revision} support={support} />
                 <DiffSection {...revision} mode={this.state.mode} />
-                {revision.amendment && (
+                {revision.amendment && revision.repeal === false && (
                   <ToggleDiffBar
                     mode={this.state.mode}
                     toggle={this.toggleMode}

@@ -26,6 +26,43 @@ class Amendment extends React.Component {
       text: this.props.text
     });
   };
+  repeal = () => {
+    try {
+      swal(
+        "Are you sure you'd like to repeal this amendment?\n\nBy starting the repeal process, you will create a revision with the intention of permanently deleting this amendment.",
+        {
+          buttons: {
+            cancel: "Back",
+            confirm: "Yes, Repeal"
+          }
+        }
+      ).then(async value => {
+        if (value === true) {
+          const { activeCircle, circle, user } = this.props;
+          const { title, text, id } = this.props.amendment;
+
+          let numUsers = circle.users.length;
+          let newRevision = {
+            circle: activeCircle,
+            user: user,
+            title,
+            oldText: null,
+            newText: text,
+            expires: moment()
+              .add(Math.max(this.customSigm(numUsers), 61), "s")
+              .format(),
+            voterThreshold: Math.round(numUsers / 2),
+            amendment: id,
+            repeal: true
+          };
+          this.createRevision(newRevision);
+        }
+      });
+    } catch (err) {
+      console.error(new Error(err));
+      swal("Error", "There was an error in the repeal process", "error");
+    }
+  };
   toggleEdit = e => {
     if (e.target.className !== "editMask" && this.state.editMode) {
       return false;
@@ -56,21 +93,23 @@ class Amendment extends React.Component {
     const { title, text, id } = this.props.amendment;
 
     let numUsers = circle.users.length;
+    let newRevision = {
+      circle: activeCircle,
+      user: user,
+      title,
+      oldText: text,
+      newText: this.state.text.trim(),
+      expires: moment()
+        .add(Math.max(this.customSigm(numUsers), 61), "s")
+        .format(),
+      voterThreshold: Math.round(numUsers / 2),
+      amendment: id
+    };
+    this.createRevision(newRevision);
+  };
 
+  createRevision = async newRevision => {
     try {
-      let newRevision = {
-        circle: activeCircle,
-        user: user,
-        title,
-        oldText: text,
-        newText: this.state.text.trim(),
-        expires: moment()
-          .add(Math.max(this.customSigm(numUsers), 61), "s")
-          .format(),
-        voterThreshold: Math.round(numUsers / 2),
-        amendment: id
-      };
-
       let hash = await sha(
         JSON.stringify({
           title: newRevision.title,
@@ -90,8 +129,6 @@ class Amendment extends React.Component {
 
       newRevision.id = newRevisionRes.data.createRevision.id;
 
-      console.log(newRevisionRes);
-
       const newVote = {
         circle: this.props.activeCircle,
         revision: newRevision.id,
@@ -99,12 +136,11 @@ class Amendment extends React.Component {
         support: true
       };
 
-      let newVoteRes = await this.props.createVote({
+      await this.props.createVote({
         variables: {
           ...newVote
         }
       });
-      console.log(newVoteRes);
 
       this.props.dispatch(updateRevision(newRevision.id));
 
@@ -138,6 +174,7 @@ class Amendment extends React.Component {
             amendment={this.props.amendment}
             toggleEdit={this.toggleEdit}
             text={text}
+            repeal={this.repeal}
           />
         ) : (
           <AmendmentView

@@ -136,6 +136,7 @@ export const GET_REVISION_BY_ID = gql`
       circle {
         id
       }
+      repeal
       title
       oldText
       newText
@@ -175,6 +176,7 @@ export const GET_REVISIONS_FROM_CIRCLE_ID = gql`
           id
           icon
         }
+        repeal
         expires
         voterThreshold
         id
@@ -199,6 +201,7 @@ export const GET_ACTIVE_REVISIONS_BY_USER_ID = gql`
       circles {
         id
         revisions {
+          repeal
           expires
           passed
           voterThreshold
@@ -313,7 +316,6 @@ export const SEARCH_ALL = gql`
     ) {
       id
       title
-      newText
       createdAt
       circle {
         id

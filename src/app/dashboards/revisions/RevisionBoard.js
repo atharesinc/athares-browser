@@ -213,6 +213,7 @@ const RevisionCard = ({
   votes,
   title,
   id,
+  repeal,
   ...props
 }) => {
   const support = votes.filter(({ support }) => support).length;
@@ -233,12 +234,14 @@ const RevisionCard = ({
             <div
               //  f7 pa1 br-pill ph2 bw1 ba lh-solid bg-none
               className={`f7 pa1 br-pill bw1 ba ph2 lh-solid ${
-                amendment !== null
+                repeal
+                  ? "light-red b--light-red"
+                  : amendment !== null
                   ? "theme-blue b--theme-blue"
                   : "light-green b--light-green"
               }`}
             >
-              {amendment !== null ? "REVISION" : "NEW"}
+              {repeal ? "REPEAL" : amendment !== null ? "REVISION" : "NEW"}
             </div>
             <small>
               <span className="light-green">+{support}</span> /{" "}

@@ -166,6 +166,7 @@ export const CREATE_REVISION = gql`
     $expires: DateTime!
     $voterThreshold: Int!
     $hash: String!
+    $repeal: Boolean!
   ) {
     createRevision(
       newText: $newText
@@ -177,6 +178,7 @@ export const CREATE_REVISION = gql`
       expires: $expires
       voterThreshold: $voterThreshold
       hash: $hash
+      repeal: $repeal
     ) {
       id
     }
@@ -243,10 +245,30 @@ export const UPDATE_AMENDMENT_FROM_REVISION = gql`
   }
 `;
 
+export const UPDATE_AMENDMENT_FROM_REVISION_AND_DELETE = gql`
+  mutation createAmendmentFromRevsion($revision: ID!, $amendment: ID!) {
+    updateRevision(id: $revision, passed: true) {
+      passed
+      id
+    }
+    deleteAmendment(id: $amendment) {
+      id
+    }
+  }
+`;
+
 export const DENY_REVISION = gql`
   mutation denyRevision($id: ID!) {
     updateRevision(id: $id, passed: false) {
       passed
+      id
+    }
+  }
+`;
+
+export const DELETE_AMENDMENT = gql`
+  mutation deleteAmendment($id: ID!) {
+    deleteAmendment(id: $id) {
       id
     }
   }

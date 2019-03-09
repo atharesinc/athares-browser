@@ -1,8 +1,8 @@
 import React from "react";
 import { withRouter, Link } from "react-router-dom";
 
-const RevisionStatus = ({ amendment, support, votes, circle }) => {
-  if (amendment) {
+const RevisionStatus = ({ amendment, support, votes, circle, repeal }) => {
+  if (amendment && repeal === false) {
     return (
       <div
         className={`f6 bg-theme-light white-80 mv0 pa2 flex flex-column flex-row-ns justify-start justify-between-ns items-start items-center-ns`}
@@ -19,6 +19,22 @@ const RevisionStatus = ({ amendment, support, votes, circle }) => {
           #{amendment.id}
         </Link>
         <small className="mb2 mb0-ns popIn">
+          <span className="light-green">+{support}</span> /{" "}
+          <span className="red">-{votes.length - support}</span>
+        </small>
+      </div>
+    );
+  } else if (amendment && repeal === true) {
+    return (
+      <div
+        className={`f6 bg-theme-light white-80 mv0 pa2 flex direction-row justify-between items-center`}
+      >
+        <div
+          className={`f7 pa1 black-80 br-pill b--red bg-red ph2 bw1 ba lh-solid bg-none`}
+        >
+          REPEAL
+        </div>
+        <small className="popIn">
           <span className="light-green">+{support}</span> /{" "}
           <span className="red">-{votes.length - support}</span>
         </small>
