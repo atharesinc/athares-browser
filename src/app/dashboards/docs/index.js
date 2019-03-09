@@ -12,6 +12,7 @@ import {
 } from "../../../store/state/actions";
 import { GET_AMENDMENTS_FROM_CIRCLE_ID } from "../../../graphql/queries";
 import { Query } from "react-apollo";
+import { SUB_TO_CIRCLES_AMENDMENTS } from "../../../graphql/subscriptions";
 
 import FeatherIcon from "feather-icons-react";
 
@@ -39,7 +40,45 @@ class Constitution extends PureComponent {
       this.props.dispatch(updateRevision(null));
     }
   }
-
+  _subToMore = subscribeToMore => {
+    subscribeToMore({
+      document: SUB_TO_CIRCLES_AMENDMENTS,
+      variables: { id: this.props.activeCircle || "" },
+      updateQuery: (prev, { subscriptionData }) => {
+        let {
+          previousValues,
+          mutation,
+          node: amendment
+        } = subscriptionData.data.Amendment;
+        switch (mutation) {
+          case "CREATED":
+            let ind = prev.Circle.amendments.findIndex(
+              a => a.id === amendment.id
+            );
+            // if the new node isn't in the data set
+            if (ind === -1) {
+              prev.Circle.amendments = [...prev.Circle.amendments, amendment];
+            }
+            break;
+          case "UPDATED":
+            let index = prev.Circle.amendments.findIndex(
+              a => a.id === amendment.id
+            );
+            prev.Circle.amendments[index] = amendment;
+            break;
+          case "DELETED":
+            let i = prev.Circle.amendments.findIndex(
+              a => a.id === previousValues.id
+            );
+            prev.Circle.amendments.splice(i, 1);
+            break;
+          default:
+            break;
+        }
+        return prev;
+      }
+    });
+  };
   render() {
     let { user } = this.props;
     let circle = null;
@@ -51,10 +90,11 @@ class Constitution extends PureComponent {
         variables={{ id: this.props.activeCircle || "" }}
         pollInterval={60000}
       >
-        {({ loading, err, data }) => {
+        {({ data, subscribeToMore }) => {
           if (data.Circle) {
             circle = data.Circle;
             amendments = data.Circle.amendments;
+            this._subToMore(subscribeToMore);
           }
           if (circle) {
             return (

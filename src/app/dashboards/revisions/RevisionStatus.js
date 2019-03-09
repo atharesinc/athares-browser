@@ -24,7 +24,7 @@ const RevisionStatus = ({ amendment, support, votes, circle, repeal }) => {
         </small>
       </div>
     );
-  } else if (amendment && repeal === true) {
+  } else if (repeal === true) {
     return (
       <div
         className={`f6 bg-theme-light white-80 mv0 pa2 flex direction-row justify-between items-center`}

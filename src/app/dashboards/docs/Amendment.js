@@ -103,7 +103,8 @@ class Amendment extends React.Component {
         .add(Math.max(this.customSigm(numUsers), 61), "s")
         .format(),
       voterThreshold: Math.round(numUsers / 2),
-      amendment: id
+      amendment: id,
+      repeal: false
     };
     this.createRevision(newRevision);
   };

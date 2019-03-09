@@ -62,3 +62,26 @@ export const SUB_TO_ALL_CIRCLES_CHANNELS = gql`
     }
   }
 `;
+
+export const SUB_TO_CIRCLES_AMENDMENTS = gql`
+  subscription($id: ID!) {
+    Amendment(
+      filter: {
+        mutation_in: [CREATED, UPDATED, DELETED]
+        node: { circle: { id: $id } }
+      }
+    ) {
+      previousValues {
+        id
+      }
+      mutation
+      node {
+        id
+        title
+        text
+        createdAt
+        updatedAt
+      }
+    }
+  }
+`;
