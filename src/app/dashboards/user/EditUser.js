@@ -179,34 +179,34 @@ class EditUser extends Component {
     }
     return (
       <div id="dashboard-wrapper">
-        <Scrollbars
-          style={{ width: "100%", height: "100%" }}
-          autoHide
-          autoHideTimeout={1000}
-          autoHideDuration={200}
-          universal={true}
+        <form
+          className="pa2 pa4-ns white wrapper"
+          onSubmit={this.onSubmit}
+          id="update-user-form"
         >
-          <form
-            className="pa4 white wrapper"
-            onSubmit={this.onSubmit}
-            id="update-user-form"
-          >
-            <article className="cf">
-              <div
-                className="w-100 row-center"
-                style={{
-                  justifyContent: "space-between",
-                  flexDirection: "row-reverse"
-                }}
+          <article className="cf">
+            <div
+              className="w-100 row-center"
+              style={{
+                justifyContent: "space-between",
+                flexDirection: "row"
+              }}
+            >
+              <Link
+                className="f6 link dim br-pill ba bw1 ph3 pv2 dib white"
+                to="/app/user"
               >
-                <Link
-                  className="f6 link dim br-pill ba bw1 ph3 pv2 ml4-ns ml2 dib white"
-                  to="/app/user"
-                >
-                  BACK
-                </Link>
-                <h1 className="mv0 lh-title">Edit Info</h1>
-              </div>
+                BACK
+              </Link>
+              <h1 className="mv0 lh-title">Edit Info</h1>
+            </div>
+            <Scrollbars
+              style={{ width: "100%", height: "80vh" }}
+              autoHide
+              autoHideTimeout={1000}
+              autoHideDuration={200}
+              universal={true}
+            >
               <header className="fn fl-ns w-50-ns pr4-ns">
                 <ImageUpload
                   onSet={this.changeImage}
@@ -344,15 +344,15 @@ class EditUser extends Component {
                   />
                 </div>
               </div>
-            </article>
+            </Scrollbars>
+          </article>
 
-            {!this.state.editMode && (
-              <button id="create-circle-button" className="btn" type="submit">
-                SAVE
-              </button>
-            )}
-          </form>
-        </Scrollbars>
+          {!this.state.editMode && (
+            <button id="create-circle-button" className="btn" type="submit">
+              SAVE
+            </button>
+          )}
+        </form>
       </div>
     );
   }
