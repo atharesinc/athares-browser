@@ -154,7 +154,7 @@ class MenuWrapper extends Component {
                 </Link>
                 <Link
                   className="flex items-center lh-copy ph3 h3 bb b--white-10 dim"
-                  to="policy"
+                  to="/policy"
                 >
                   <FeatherIcon
                     className="w2 h2 w3-ns h3-ns pa3-ns pa0"
