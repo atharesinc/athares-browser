@@ -62,7 +62,8 @@ class DMInviteList extends Component {
               .map(s => ({ name: s.firstName + " " + s.lastName, ...s }));
           }
           return (
-            <div className="wrapper black">
+            <div className="wrapper">
+              <div className="white mh3">To:</div>
               <ReactTags
                 tags={this.props.selectedUsers}
                 suggestions={suggestions}
@@ -70,7 +71,9 @@ class DMInviteList extends Component {
                 handleAddition={this.addition}
                 handleInputChange={this.inputChange}
                 placeholder={
-                  this.props.shouldPlaceholder ? "Enter a name" : " "
+                  this.props.shouldPlaceholder || suggestions.length === 0
+                    ? "Enter a name"
+                    : " "
                 }
                 autofocus={true}
                 tagComponent={TagComponent}

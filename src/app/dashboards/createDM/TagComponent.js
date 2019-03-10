@@ -9,11 +9,11 @@ const TagComponent = props => {
       onClick={props.onDelete}
     >
       <img src={props.tag.icon} alt="" className="tag-icon" />{" "}
-      {/* {window.idth < 993 && (
+      {window.innerWidth > 992 && (
         <span className={props.classNames.selectedTagName}>
           {props.tag.name}
         </span>
-      )} */}
+      )}
     </button>
   );
 };

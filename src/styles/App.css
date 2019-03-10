@@ -442,6 +442,7 @@ input[type="phone"],
   justify-content: flex-start;
   flex-direction: row;
   width: 100%;
+  align-items: center;
 }
 
 .react-tags__search {
@@ -493,7 +494,7 @@ input[type="phone"],
   color: #ffffff;
   box-shadow: none;
   width: 100% !important;
-  text-align: center;
+  text-align: left;
   height: 1em;
 }
 .react-tags__search-input {

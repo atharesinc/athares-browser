@@ -162,7 +162,7 @@ class CreateDM extends Component {
             <FeatherIcon icon="chevron-left" className="white db dn-ns" />
           </Link>
           <DMInviteList
-            shouldPlaceholder={this.state.selectedUsers.length === 0}
+            shouldPlaceholder={selectedUsers.length === 0}
             updateList={this.updateList}
             selectedUsers={selectedUsers}
           />
