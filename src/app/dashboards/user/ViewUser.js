@@ -75,11 +75,12 @@ class ViewUser extends React.Component {
               {user.firstName + " " + user.lastName}
             </h1>
             <div
-              className="br-100 pa1 br-pill ba bw2 w4 h4 center"
+              className="br-100 pa1 br-pill ba bw2 w4 h4 center pointer"
               style={{
                 background: `url(${user.icon}) center no-repeat`,
                 backgroundSize: "cover"
               }}
+              onClick={this.toEdit}
             />
           </header>
           <a
@@ -102,37 +103,38 @@ class ViewUser extends React.Component {
         >
           <ul className="list ph2 ph4-ns pv2 ma2 w-100 center">
             <h1>Info</h1>
-            <li className="flex items-center lh-copy pa3 ph0-l bb b--white-30">
+            <li
+              className="flex items-center lh-copy pa3 ph0-l bb b--white-30 pointer"
+              onClick={this.toEdit}
+            >
               <FeatherIcon className="w2 h2 w2-ns h2-ns pa1" icon="phone" />
               <div className="pl3 flex-auto">
-                <span className="f6 db white-70">Phone</span>
+                <span className="f6 db white">Phone</span>
               </div>
-              <div>
-                <div className="f6 link white-70">
-                  {user.phone || "Not set"}
-                </div>
-              </div>
+              <div className="f6 link white">{user.phone || "Not set"}</div>
             </li>
-            <li className="flex items-center lh-copy pa3 ph0-l bb b--white-30">
+            <li
+              className="flex items-center lh-copy pa3 ph0-l bb b--white-30 pointer"
+              onClick={this.toEdit}
+            >
               <FeatherIcon className="w2 h2 w2-ns h2-ns pa1" icon="at-sign" />
               <div className="pl3 flex-auto">
-                <span className="f6 db white-70">Email</span>
+                <span className="f6 db white">Email</span>
               </div>
               <div>
-                <div className="f6 link white-70">
-                  {user.email || "Not set"}
-                </div>
+                <div className="f6 link white">{user.email || "Not set"}</div>
               </div>
             </li>
-            <li className="flex items-center lh-copy pa3 ph0-l bb b--white-30">
-              <FeatherIcon className="w2 h2 w2-ns h2-ns pa1" icon="link" />
+            <li
+              className="flex items-center lh-copy pa3 ph0-l bb b--white-30 pointer"
+              onClick={this.toEdit}
+            >
+              <FeatherIcon className="w2 h2 w2-ns h2-ns pa1" icon="hash" />
               <div className="pl3 flex-auto">
-                <span className="f6 db white-70">Unique Name</span>
+                <span className="f6 db white">Unique Name</span>
               </div>
               <div>
-                <div className="f6 link white-70">
-                  {user.uname || "Not set"}
-                </div>
+                <div className="f6 link white">{user.uname || "Not set"}</div>
               </div>
             </li>
           </ul>
