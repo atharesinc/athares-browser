@@ -181,6 +181,10 @@ export const CREATE_REVISION = gql`
       repeal: $repeal
     ) {
       id
+      passed
+      amendment {
+        id
+      }
     }
   }
 `;
@@ -455,6 +459,14 @@ export const UPDATE_ALLOW_MARKETING_EMAIL = gql`
 export const DELETE_CIRCLE_PERMISSION = gql`
   mutation($id: ID!) {
     deleteCirclePermission(id: $id) {
+      id
+    }
+  }
+`;
+
+export const ADD_REVISION_TO_AMENDMENT = gql`
+  mutation($revision: ID!, $amendment: ID!, $title: String!) {
+    updateAmendment(revisionId: $revision, id: $amendment, title: $title) {
       id
     }
   }

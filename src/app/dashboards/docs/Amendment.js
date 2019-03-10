@@ -8,7 +8,11 @@ import { withRouter } from "react-router-dom";
 import swal from "sweetalert";
 import { pull } from "../../../store/state/reducers";
 import { compose, graphql } from "react-apollo";
-import { CREATE_REVISION, CREATE_VOTE } from "../../../graphql/mutations";
+import {
+  CREATE_REVISION,
+  CREATE_VOTE,
+  ADD_REVISION_TO_AMENDMENT
+} from "../../../graphql/mutations";
 import sha from "simple-hash-browser";
 
 class Amendment extends React.Component {
@@ -128,6 +132,13 @@ class Amendment extends React.Component {
         }
       });
 
+      await this.props.addNewRevisionToAmendment({
+        variables: {
+          revision: newRevisionRes.data.createRevision.id,
+          amendment: this.props.amendment.id,
+          title: newRevision.title
+        }
+      });
       newRevision.id = newRevisionRes.data.createRevision.id;
 
       const newVote = {
@@ -165,24 +176,28 @@ class Amendment extends React.Component {
   }
   render() {
     const { text, editMode } = this.state;
+    const { amendment, activeCircle } = this.props;
+    const hasOutstandingRevision =
+      amendment.revision !== null && amendment.revision.passed === null;
     return (
       <div>
-        {editMode ? (
+        {editMode && hasOutstandingRevision === false ? (
           <AmendmentEdit
             save={this.save}
             cancel={this.cancel}
             update={this.update}
-            amendment={this.props.amendment}
+            amendment={amendment}
             toggleEdit={this.toggleEdit}
             text={text}
             repeal={this.repeal}
           />
         ) : (
           <AmendmentView
-            amendment={this.props.amendment}
+            amendment={amendment}
             toggleEdit={this.toggleEdit}
             text={text}
             editable={this.props.editable}
+            circle={activeCircle}
           />
         )}
       </div>
@@ -197,5 +212,6 @@ function mapStateToProps(state) {
 }
 export default compose(
   graphql(CREATE_REVISION, { name: "createRevision" }),
-  graphql(CREATE_VOTE, { name: "createVote" })
+  graphql(CREATE_VOTE, { name: "createVote" }),
+  graphql(ADD_REVISION_TO_AMENDMENT, { name: "addNewRevisionToAmendment" })
 )(withRouter(connect(mapStateToProps)(Amendment)));

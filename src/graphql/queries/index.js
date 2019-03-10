@@ -124,6 +124,10 @@ export const GET_AMENDMENTS_FROM_CIRCLE_ID = gql`
         text
         createdAt
         updatedAt
+        revision {
+          id
+          passed
+        }
       }
     }
   }

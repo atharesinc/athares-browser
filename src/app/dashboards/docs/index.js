@@ -88,7 +88,7 @@ class Constitution extends PureComponent {
       <Query
         query={GET_AMENDMENTS_FROM_CIRCLE_ID}
         variables={{ id: this.props.activeCircle || "" }}
-        pollInterval={60000}
+        fetchPolicy={"cache-and-network"}
       >
         {({ data, subscribeToMore }) => {
           if (data.Circle) {
@@ -122,12 +122,12 @@ class Constitution extends PureComponent {
                   <div className="f6 mt3 mb4">{circle.preamble}</div>
                   <Scrollbars style={{ width: "100%", height: "70vh" }}>
                     {amendments &&
-                      amendments.map((section, i) => (
+                      amendments.map((amendment, i) => (
                         <Amendment
                           key={i}
                           editable={user !== null}
                           updateItem={this.updateItem}
-                          amendment={section}
+                          amendment={amendment}
                           addSub={this.addSub}
                           circle={circle}
                           user={user}

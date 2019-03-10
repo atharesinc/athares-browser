@@ -79,6 +79,10 @@ export const SUB_TO_CIRCLES_AMENDMENTS = gql`
         id
         title
         text
+        revision {
+          passed
+          id
+        }
         createdAt
         updatedAt
       }
