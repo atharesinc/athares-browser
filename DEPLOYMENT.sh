@@ -10,3 +10,4 @@ date +%Y-%m-%dT%H:%M:%S > build/version.txt
 aws s3 sync ./build s3://athares-browser --delete --exclude '.DS_Store'
 aws s3 cp s3://athares-browser/service-worker.js s3://athares-browser/service-worker.js --metadata-directive REPLACE --cache-control max-age=0,no-cache,no-store,must-revalidate --content-type application/javascript --acl public-read
 aws s3 cp s3://athares-browser/index.html s3://athares-browser/index.html --metadata-directive REPLACE --cache-control max-age=0,no-cache,no-store,must-revalidate --content-type text/html --acl public-read
+aws s3 cp s3://athares-browser/manifest.webmanifest s3://athares-browser/manifest.webmanifest --metadata-directive REPLACE --cache-control max-age=0,no-cache,no-store,must-revalidate --content-type application/json --acl public-read
