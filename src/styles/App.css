@@ -56,7 +56,7 @@ body {
   font-family: "SpaceGrotesk";
   font-style: normal;
   font-weight: normal;
-  font-display: swap;
+  font-display: block;
   src: local("SpaceGrotesk"),
     url("/fonts/SpaceGrotesk/SpaceGrotesk-SemiBold.otf") format("opentype"),
     url("/fonts/SpaceGrotesk/SpaceGrotesk-SemiBold.woff") format("woff"),

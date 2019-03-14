@@ -37,6 +37,7 @@
     "react-autosize-textarea": "^3.0.2",
     "react-avatar-editor": "^11.0.2",
     "react-burger-menu": "^2.4.2",
+    "react-cookie-consent": "^2.2.2",
     "react-countdown-clock": "^2.5.0",
     "react-custom-scrollbars": "^4.2.1",
     "react-diff": "^0.0.7",

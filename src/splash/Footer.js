@@ -1,8 +1,29 @@
 import React from "react";
+import CookieConsent from "react-cookie-consent";
+import { Link } from "react-router-dom";
 
 const Footer = props => {
   return (
     <footer className="pa4 pv2-ns ph4 black-70 bt b--black-10 sans-serif bg-white">
+      <CookieConsent
+        location="bottom"
+        buttonText="OK"
+        style={{ background: "#2B373B" }}
+        buttonStyle={{
+          color: "#2f3242",
+          fontSize: "13px",
+          background: "#00dffc"
+        }}
+        expires={1}
+        acceptOnScroll={true}
+        hideOnAccept={true}
+      >
+        Athares uses cookies to enhance the user experience. We do not serve ads
+        and we do not distribute user data.{" "}
+        <Link to="/policy" className="theme blue">
+          Privacy Policy
+        </Link>
+      </CookieConsent>
       {/* <section className='cf mb5'>
                 <div className='mb4 mb0-ns w-100 w-50-l fr'>
                     <h3 className='f3 f1-m lh-title mv0'>
