@@ -46,6 +46,11 @@ class CreateAmendment extends Component {
   customSigm = x => {
     return 604800 / (1 + Math.pow(Math.E, -1 * (x - 10))) / 2;
   };
+  // a minimum number of users in a circle must have voted on a revision to ratify it
+  // this prevents someone from sneaking in a revision where only one person votes to support and no one rejects it
+  ratifiedThreshold = n => {
+    return Math.floor(0.4 / (1 + Math.pow(Math.E, -1 * n * 0.2)));
+  };
   onSubmit = async e => {
     e.preventDefault();
     // validate & trim fields
@@ -65,7 +70,7 @@ class CreateAmendment extends Component {
         expires: moment()
           .add(Math.max(this.customSigm(numUsers), 61), "s")
           .format(),
-        voterThreshold: Math.round(numUsers / 2),
+        voterThreshold: Math.floor(numUsers * this.ratifiedThreshold(numUsers)),
         repeal: false
       };
       let hash = await sha(

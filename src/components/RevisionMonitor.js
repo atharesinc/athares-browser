@@ -89,13 +89,12 @@ class App extends Component {
 
     let supportVotes = votes.filter(v => v.support === true);
     // // it passes because the majority of votes has been reached after the expiry period
-    // OR enough people have voted before the expiration that the remaining voters couldn't over turn the vote
-    // but this doesn't seem fair and won't come up logically, I think...
+    // AND enough people have voted to be representative of the population for a fair referendum
 
     if (
-      (supportVotes.length > votes.length / 2 &&
-        moment().valueOf() >= moment(thisRevision.expires).valueOf()) ||
-      supportVotes.length >= thisRevision.voterThreshold
+      supportVotes.length > votes.length / 2 &&
+      moment().valueOf() >= moment(thisRevision.expires).valueOf() &&
+      votes.length >= thisRevision.voterThreshold
     ) {
       // if this revision is a repeal, update the revision like in updateAmendment but also delete amendment
       if (thisRevision.repeal === true) {

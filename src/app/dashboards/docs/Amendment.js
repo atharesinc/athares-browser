@@ -55,7 +55,9 @@ class Amendment extends React.Component {
             expires: moment()
               .add(Math.max(this.customSigm(numUsers), 61), "s")
               .format(),
-            voterThreshold: Math.round(numUsers / 2),
+            voterThreshold: Math.round(
+              numUsers * this.ratifiedThreshold(numUsers)
+            ),
             amendment: id,
             repeal: true
           };
@@ -87,6 +89,11 @@ class Amendment extends React.Component {
   customSigm = x => {
     return 604800 / (1 + Math.pow(Math.E, -1 * (x - 10))) / 2;
   };
+  // a minimum number of users in a circle must have voted on a revision to ratify it
+  // this prevents someone from sneaking in a revision where only one person votes to support and no one rejects it
+  ratifiedThreshold = n => {
+    return Math.floor(0.4 / (1 + Math.pow(Math.E, -1 * n * 0.2)));
+  };
   save = async () => {
     // can be undefined if no changes
     if (this.props.amendment.text.trim() === this.state.text) {
@@ -106,7 +113,7 @@ class Amendment extends React.Component {
       expires: moment()
         .add(Math.max(this.customSigm(numUsers), 61), "s")
         .format(),
-      voterThreshold: Math.round(numUsers / 2),
+      voterThreshold: Math.round(numUsers * this.ratifiedThreshold(numUsers)),
       amendment: id,
       repeal: false
     };
