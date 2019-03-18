@@ -70,7 +70,7 @@ class CreateAmendment extends Component {
         expires: moment()
           .add(Math.max(this.customSigm(numUsers), 61), "s")
           .format(),
-        voterThreshold: Math.floor(numUsers * this.ratifiedThreshold(numUsers)),
+        voterThreshold: Math.round(numUsers * this.ratifiedThreshold(numUsers)),
         repeal: false
       };
       let hash = await sha(
