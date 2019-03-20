@@ -20,8 +20,8 @@ const Footer = props => {
       >
         Athares uses cookies to enhance the user experience. We do not serve ads
         and we do not distribute user data.{" "}
-        <Link to="/policy" className="theme blue">
-          Privacy Policy
+        <Link to="/policy">
+          <div className="theme-blue">Privacy Policy</div>
         </Link>
       </CookieConsent>
       {/* <section className='cf mb5'>
