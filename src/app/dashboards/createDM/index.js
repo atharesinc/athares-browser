@@ -57,9 +57,11 @@ class CreateDM extends Component {
     if (!data.User) {
       return false;
     }
-    if (selectedUsers.length === 0) {
-      return false;
-    }
+    // We're going to allow users to have no recipients because they always get added to a channel on creation
+    // This defaults to a "just you" channel but they can later add users if they like
+    // if (selectedUsers.length === 0) {
+    //   return false;
+    // }
     if (text.trim().length === 0 && file === null) {
       return false;
     }

@@ -59,7 +59,10 @@ class DMInviteList extends Component {
             suggestions = allUsers
               .filter(s => selectedUsers.findIndex(su => su.id === s.id) === -1)
               .filter(s => s.id !== this.props.user)
-              .map(s => ({ name: s.firstName + " " + s.lastName, ...s }));
+              .map(s => ({
+                name: s.firstName + " " + s.lastName + " - @" + s.uname,
+                ...s
+              }));
           }
           return (
             <div className="wrapper">

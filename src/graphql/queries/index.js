@@ -241,6 +241,7 @@ export const SEARCH_FOR_USER = gql`
       id
       firstName
       lastName
+      uname
       icon
       pub
     }
