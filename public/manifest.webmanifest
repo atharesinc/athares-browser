@@ -1,13 +1,13 @@
 {
   "short_name": "Athares",
   "name": "Athares Distributed Democracy Platform",
-  "start_url": "/",
+  "start_url": "/login",
   "display": "standalone",
   "theme_color": "#FFFFFF",
   "background_color": "#FFFFFF",
   "lang": "en-US",
   "orientation": "portrait",
-  "description": "Athares lets you create and maintain organizations with equality.",
+  "description": "Athares lets you create and maintain organizations with democracy.",
   "icons": [
     {
       "src": "./pwa/icon-72x72.png",
