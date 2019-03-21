@@ -2,7 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import FeatherIcon from "feather-icons-react";
 
-const BottomNav = ({ show, activeCircle }) => {
+const BottomNav = ({ show, activeCircle, belongsToCircle }) => {
   // ask the user to log in
   if (!show) {
     return (
@@ -30,6 +30,15 @@ const BottomNav = ({ show, activeCircle }) => {
       >
         <div className="white-50">Select a Circle</div>
       </div>
+    );
+  }
+  // user is logged in and viewing a valid circle, but doesn't belong to it
+  if (show && belongsToCircle !== true) {
+    return (
+      <div
+        className="w-100 v-mid bg-theme-dark flex flex-row justify-start items-center pv2 ph3"
+        id="bottom-nav-no-hover"
+      />
     );
   }
   // user is logged in and able to add a user to a defined circle

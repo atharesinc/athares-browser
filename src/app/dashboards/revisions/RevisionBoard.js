@@ -11,8 +11,11 @@ import {
 import { pull } from "../../../store/state/reducers";
 import { connect } from "react-redux";
 import FeatherIcon from "feather-icons-react";
-import { GET_REVISIONS_FROM_CIRCLE_ID } from "../../../graphql/queries";
-import { Query } from "react-apollo";
+import {
+  GET_REVISIONS_FROM_CIRCLE_ID,
+  IS_USER_IN_CIRCLE
+} from "../../../graphql/queries";
+import { Query, graphql } from "react-apollo";
 
 class RevisionBoard extends Component {
   constructor(props) {
@@ -35,16 +38,17 @@ class RevisionBoard extends Component {
   }
 
   render() {
-    let { activeCircle, user } = this.props;
+    let { activeCircle, user, isUserInCircle } = this.props;
     let circle = null;
     let allRevisions = [];
+    let belongsToCircle = false;
     return (
       <Query
         query={GET_REVISIONS_FROM_CIRCLE_ID}
         variables={{ id: this.props.activeCircle || "" }}
         pollInterval={10000}
       >
-        {({ loading, err, data }) => {
+        {({ data }) => {
           if (data.Circle) {
             circle = data.Circle;
             allRevisions = data.Circle.revisions;
@@ -68,6 +72,13 @@ class RevisionBoard extends Component {
                 <Loader />
               </div>
             );
+          }
+          if (
+            isUserInCircle.allCircles &&
+            isUserInCircle.allCircles.length !== 0 &&
+            isUserInCircle.allCircles[0].id === activeCircle
+          ) {
+            belongsToCircle = true;
           }
           allRevisions = allRevisions.map(r => {
             return {
@@ -112,7 +123,7 @@ class RevisionBoard extends Component {
                 Review proposed legislation and changes to existing laws
                 <br />
                 <br />
-                {this.props.user && (
+                {this.props.user && belongsToCircle && (
                   <Link
                     to={this.props.match.url.replace("revisions", "settings")}
                     className="dim ba br-pill bg-theme pv1 ph2 mt2"
@@ -137,6 +148,7 @@ class RevisionBoard extends Component {
                     title={"New Revisions"}
                     circleID={activeCircle}
                     user={user}
+                    belongsToCircle={belongsToCircle}
                   />
                   <Board
                     revisions={recentlyPassed}
@@ -160,7 +172,13 @@ class RevisionBoard extends Component {
   }
 }
 
-const Board = ({ title, revisions, circleID, user }) => {
+const Board = ({
+  title,
+  revisions,
+  circleID,
+  user,
+  belongsToCircle = false
+}) => {
   return (
     <div className="w-100 w-50-ns pa2 revision-board h-100-ns">
       <div className="bb b--white pa2 mb2">
@@ -186,7 +204,7 @@ const Board = ({ title, revisions, circleID, user }) => {
           autoHideDuration={200}
           universal={true}
         >
-          {title === "New Revisions" && user && (
+          {title === "New Revisions" && user && belongsToCircle && (
             <Link to={`/app/circle/${circleID}/add/amendment`}>
               <div className="random-button transparent-hover-white mb2">
                 <FeatherIcon icon="plus" className="pr2" />
@@ -282,4 +300,13 @@ function mapStateToProps(state) {
   };
 }
 
-export default withRouter(connect(mapStateToProps)(RevisionBoard));
+export default withRouter(
+  connect(mapStateToProps)(
+    graphql(IS_USER_IN_CIRCLE, {
+      name: "isUserInCircle",
+      options: ({ activeCircle, user }) => ({
+        variables: { circle: activeCircle || "", user: user || "" }
+      })
+    })(RevisionBoard)
+  )
+);

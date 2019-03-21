@@ -22,7 +22,10 @@ import { graphql, compose } from "react-apollo";
 
 import { CREATE_VOTE, UPDATE_VOTE } from "../../../graphql/mutations";
 
-import { GET_REVISION_BY_ID } from "../../../graphql/queries";
+import {
+  GET_REVISION_BY_ID,
+  IS_USER_IN_CIRCLE
+} from "../../../graphql/queries";
 import swal from "sweetalert";
 
 class ViewRevision extends Component {
@@ -52,7 +55,16 @@ class ViewRevision extends Component {
     });
   };
   vote = async support => {
-    let { activeRevision, data } = this.props;
+    let { activeRevision, data, isUserInCircle, activeCircle } = this.props;
+
+    // make sure the user belongs to this circle
+    if (
+      !isUserInCircle ||
+      !isUserInCircle.allCircles ||
+      isUserInCircle.allCircles[0].id !== activeCircle
+    ) {
+      return false;
+    }
     if (data.Revision) {
       const { votes, ...revision } = data.Revision;
       // If the user attempts to vote after the revision expires, stop and return;
@@ -91,9 +103,17 @@ class ViewRevision extends Component {
   };
   render() {
     let revision = null;
-    const { data } = this.props;
+    let belongsToCircle = false;
+    const { data, isUserInCircle, activeCircle } = this.props;
 
-    if (data.Revision) {
+    if (data.Revision && isUserInCircle) {
+      if (
+        isUserInCircle.allCircles &&
+        isUserInCircle.allCircles.length !== 0 &&
+        isUserInCircle.allCircles[0].id === activeCircle
+      ) {
+        belongsToCircle = true;
+      }
       revision = data.Revision;
       const { newText, title, votes } = revision;
 
@@ -137,7 +157,7 @@ class ViewRevision extends Component {
                   support={support}
                   hasExpired={hasExpired}
                 />
-                {this.props.user && !hasExpired && (
+                {this.props.user && !hasExpired && belongsToCircle && (
                   <VoteButtons vote={this.vote} />
                 )}{" "}
               </div>
@@ -145,7 +165,7 @@ class ViewRevision extends Component {
           </div>
         );
       } else {
-        /* Represents a new legislation without precedent; Show single panel */
+        /* Represents a new revision; Show single panel */
         return (
           <div id="revisions-wrapper">
             <div className="flex ph2 mobile-nav">
@@ -180,7 +200,7 @@ class ViewRevision extends Component {
                   hasExpired={hasExpired}
                   checkIfPass={this.checkIfPass}
                 />
-                {this.props.user && !hasExpired && (
+                {this.props.user && !hasExpired && belongsToCircle && (
                   <VoteButtons vote={this.vote} />
                 )}
               </div>
@@ -210,6 +230,12 @@ export default connect(mapStateToProps)(
   compose(
     graphql(CREATE_VOTE, { name: "createVote" }),
     graphql(UPDATE_VOTE, { name: "updateVote" }),
+    graphql(IS_USER_IN_CIRCLE, {
+      name: "isUserInCircle",
+      options: ({ activeCircle, user }) => ({
+        variables: { circle: activeCircle || "", user: user || "" }
+      })
+    }),
     graphql(GET_REVISION_BY_ID, {
       options: ({ activeRevision }) => ({
         variables: { id: activeRevision || "" },

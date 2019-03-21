@@ -17,6 +17,7 @@ const ChannelGroup = props => {
           activeCircle={props.activeCircle}
           isTop={true}
           activeChannel={props.activeChannel}
+          belongsToCircle={props.belongsToCircle}
         />
       ) : null}
 

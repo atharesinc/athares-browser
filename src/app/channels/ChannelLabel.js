@@ -32,11 +32,13 @@ const ChannelLabel = props => {
           </Link>
         );
       }
-      return (
-        <Link to={`/app/circle/${id}/new/channel`}>
-          <FeatherIcon icon="plus" className="dim" />
-        </Link>
-      );
+      if (props.belongsToCircle === true) {
+        return (
+          <Link to={`/app/circle/${id}/new/channel`}>
+            <FeatherIcon icon="plus" className="dim" />
+          </Link>
+        );
+      }
     }
     return null;
   };

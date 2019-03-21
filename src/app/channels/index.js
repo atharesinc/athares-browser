@@ -4,13 +4,14 @@ import GovernanceChannelGroup from "./GovernanceChannelGroup";
 import { Link } from "react-router-dom";
 import { connect } from "react-redux";
 import { pull } from "../../store/state/reducers";
-import BottomNav from "./BottomNav";
+import BottomNav from "../../components/BottomNav";
 import FeatherIcon from "feather-icons-react";
 import {
   GET_CHANNELS_BY_CIRCLE_ID,
-  GET_DMS_BY_USER
+  GET_DMS_BY_USER,
+  IS_USER_IN_CIRCLE
 } from "../../graphql/queries";
-import { Query, graphql } from "react-apollo";
+import { Query, graphql, compose } from "react-apollo";
 import { updateCircle } from "../../store/state/actions";
 import Search from "../search";
 import Scrollbars from "react-custom-scrollbars";
@@ -41,12 +42,15 @@ class Channels extends Component {
       activeCircle,
       getDMsByUser,
       unreadDMs,
-      unreadChannels
+      unreadChannels,
+      isUserInCircle
     } = this.props;
+    let belongsToCircle = false;
     let user = null;
     let circle = null;
     let channels = [];
     let dms = [];
+    // get channel data, if any
     if (getDMsByUser.User && getDMsByUser.User.channels) {
       dms = getDMsByUser.User.channels.map(dm => ({
         unread: unreadDMs.includes(dm.id),
@@ -58,6 +62,14 @@ class Channels extends Component {
         firstName: user.firstName,
         lastName: user.lastName
       };
+      // see if the user actually belongs to this circle
+      if (
+        isUserInCircle.allCircles &&
+        isUserInCircle.allCircles.length !== 0 &&
+        isUserInCircle.allCircles[0].id === activeCircle
+      ) {
+        belongsToCircle = true;
+      }
     }
     const mobile = window.innerWidth < 993;
     return (
@@ -80,7 +92,7 @@ class Channels extends Component {
               <div id="channels-wrapper">
                 <div id="circle-name">
                   {circle.name}
-                  {user && (
+                  {user && belongsToCircle && (
                     <FeatherIcon
                       icon="more-vertical"
                       className="white"
@@ -107,6 +119,7 @@ class Channels extends Component {
                       name={"Governance"}
                     />
                     <ChannelGroup
+                      belongsToCircle={belongsToCircle}
                       style={style.channels}
                       channelType={"group"}
                       activeChannel={activeChannel}
@@ -125,7 +138,11 @@ class Channels extends Component {
                     />
                   </Scrollbars>
                 </div>
-                <BottomNav show={!!user} activeCircle={activeCircle} />
+                <BottomNav
+                  show={!!user}
+                  belongsToCircle={belongsToCircle}
+                  activeCircle={activeCircle}
+                />
               </div>
             );
           } else {
@@ -167,7 +184,11 @@ class Channels extends Component {
                     user={user}
                   />
                 </div>
-                <BottomNav show={!!user} activeCircle={activeCircle} />
+                <BottomNav
+                  show={!!user}
+                  belongsToCircle={belongsToCircle}
+                  activeCircle={activeCircle}
+                />
               </div>
             );
           }
@@ -200,11 +221,19 @@ function mapStateToProps(state) {
 }
 
 export default connect(mapStateToProps)(
-  graphql(GET_DMS_BY_USER, {
-    name: "getDMsByUser",
-    options: ({ user }) => ({
-      pollInterval: 5000,
-      variables: { id: user || "" }
+  compose(
+    graphql(IS_USER_IN_CIRCLE, {
+      name: "isUserInCircle",
+      options: ({ activeCircle, user }) => ({
+        variables: { circle: activeCircle || "", user: user || "" }
+      })
+    }),
+    graphql(GET_DMS_BY_USER, {
+      name: "getDMsByUser",
+      options: ({ user }) => ({
+        pollInterval: 5000,
+        variables: { id: user || "" }
+      })
     })
-  })(Channels)
+  )(Channels)
 );

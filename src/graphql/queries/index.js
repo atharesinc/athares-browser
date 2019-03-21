@@ -460,3 +460,14 @@ export const GET_CIRCLE_NOTICES = gql`
     }
   }
 `;
+
+export const IS_USER_IN_CIRCLE = gql`
+  query($circle: ID!, $user: ID!) {
+    allCircles(
+      filter: { AND: [{ id: $circle }, { users_some: { id: $user } }] }
+      first: 1
+    ) {
+      id
+    }
+  }
+`;
