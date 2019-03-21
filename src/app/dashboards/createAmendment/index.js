@@ -49,7 +49,7 @@ class CreateAmendment extends Component {
   // a minimum number of users in a circle must have voted on a revision to ratify it
   // this prevents someone from sneaking in a revision where only one person votes to support and no one rejects it
   ratifiedThreshold = n => {
-    return Math.floor(0.4 / (1 + Math.pow(Math.E, -1 * n * 0.2)));
+    return 0.4 / (1 + Math.pow(Math.E, -1 * n * 0.2));
   };
   onSubmit = async e => {
     e.preventDefault();
