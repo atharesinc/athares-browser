@@ -161,7 +161,7 @@ class CreateDM extends Component {
       <div id="chat-wrapper">
         <div id="create-dm-channel">
           <Link to="/app">
-            <FeatherIcon icon="chevron-left" className="white db dn-ns" />
+            <FeatherIcon icon="chevron-left" className="white db dn-l" />
           </Link>
           <DMInviteList
             shouldPlaceholder={selectedUsers.length === 0}

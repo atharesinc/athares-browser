@@ -58,9 +58,13 @@ class DMInviteList extends Component {
             // filter out names that don't meet criteria and filter out alreadys selected users
             suggestions = allUsers
               .filter(s => selectedUsers.findIndex(su => su.id === s.id) === -1)
-              .filter(s => s.id !== this.props.user)
+              // .filter(s => s.id !== this.props.user)
               .map(s => ({
-                name: s.firstName + " " + s.lastName + " - @" + s.uname,
+                name:
+                  s.firstName +
+                  " " +
+                  s.lastName +
+                  (s.uname ? " - @" + s.uname : ""),
                 ...s
               }));
           }
