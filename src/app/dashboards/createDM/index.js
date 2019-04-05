@@ -62,6 +62,11 @@ class CreateDM extends Component {
     // if (selectedUsers.length === 0) {
     //   return false;
     // }
+    // if the user addresses themselves, remove them because they'll get added anyway
+    let userIndex = selectedUsers.findIndex(u => u.id === this.props.user);
+    if (userIndex !== -1) {
+      selectedUsers.splice(userIndex, 1);
+    }
     if (text.trim().length === 0 && file === null) {
       return false;
     }
