@@ -20,7 +20,7 @@ class Forgot extends Component {
         let token = Math.random()
           .toString(16)
           .replace(".", "")
-          .substring(0, 6);
+          .substring(0, 8);
         let res = await this.props.createResetRequest({
           variables: {
             token,

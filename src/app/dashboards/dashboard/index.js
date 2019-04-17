@@ -10,6 +10,7 @@ import {
 import { graphql } from "react-apollo";
 import { GET_CHANNELS_BY_CIRCLE_ID } from "../../../graphql/queries";
 import NoticeBoard from "./NoticeBoard";
+import FeatherIcon from "feather-icons-react";
 
 class Dashboard extends Component {
   constructor(props) {
@@ -50,20 +51,36 @@ class Dashboard extends Component {
     return (
       <div
         id="dashboard-wrapper"
-        className="horizontal pa3"
+        className="horizontal pa3 pt0"
         style={{
           display: "block"
         }}
       >
+        <div className="flex mobile-nav">
+          <Link to="/app" className="flex justify-center items-center">
+            <FeatherIcon
+              icon="chevron-left"
+              className="white db dn-l"
+              onClick={this.back}
+            />
+          </Link>
+          <div
+            className="contain bg-center w4 pa2 mb2 dn-l"
+            style={{
+              backgroundImage: "url(/img/Athares-type-large-white.png)",
+              height: "3rem"
+            }}
+          />
+        </div>
         <div
-          className="contain bg-center h4 pa2 mb2"
+          className="contain bg-center h4 pa2 mb2 dn db-l"
           style={{
             backgroundImage: "url(/img/Athares-type-large-white.png)",
             height: "3rem",
             margin: "2em auto"
           }}
         />
-        <div className="f7 ttu tracked white-80 mb3">
+        <div className="f7 ttu tracked white-80 mb3 tr-m tr-s">
           Distributed Democracy Platform
         </div>
         <div className="mw9 center">

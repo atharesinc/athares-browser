@@ -10,10 +10,11 @@ import { withRouter } from "react-router-dom";
 import swal from "sweetalert";
 import FeatherIcon from "feather-icons-react";
 import sha from "simple-hash-browser";
+import Loader from "../components/Loader";
 
 class Reset extends Component {
   state = {
-    loading: true,
+    loading: false,
     code: "",
     password: "",
     showReset: false
@@ -37,14 +38,14 @@ class Reset extends Component {
       return false;
     }
     let { code } = this.state;
-    code = code.trim();
+    code = code.trim().toLowerCase();
 
     let { token, id } = this.props.data.ResetRequest;
     if (id !== this.props.match.params.id) {
       console.log("uhh...");
       return false;
     }
-    if (code.trim() === "") {
+    if (code === "") {
       return false;
     }
     if ((await sha(code)) !== token) {
@@ -55,13 +56,18 @@ class Reset extends Component {
     });
   };
   resetPassword = async () => {
-    const { password, code } = this.state;
+    await this.setState({
+      loading: true
+    });
+    let { password, code } = this.state;
     const { id, token } = this.props.data.ResetRequest;
     const { User } = this.props.getUser;
 
     if (id !== this.props.match.params.id) {
       return false;
     }
+    code = code.trim().toLowerCase();
+
     if ((await sha(code)) !== token) {
       return false;
     }
@@ -86,14 +92,20 @@ class Reset extends Component {
         localStorage.setItem("ATHARES_HASH", hashedPass);
       }
       this.props.history.push("/login");
+      await this.setState({
+        loading: false
+      });
     } catch (err) {
       console.error(new Error(err));
       swal("Error", "Unable to update password at this time.", "error");
+      await this.setState({
+        loading: false
+      });
     }
   };
   updateCode = e => {
     this.setState({
-      code: e.currentTarget.value
+      code: e.currentTarget.value.toUpperCase()
     });
   };
   updatePassword = e => {
@@ -102,7 +114,7 @@ class Reset extends Component {
     });
   };
   render() {
-    const { code, showReset, password } = this.state;
+    const { code, showReset, password, loading } = this.state;
     return (
       <Fragment>
         <div id="portal-header">
@@ -118,7 +130,11 @@ class Reset extends Component {
           />
         </div>
 
-        {showReset === false ? (
+        {loading ? (
+          <div className="w-100 w-50-l flex flex-column justify-around items-center">
+            <Loader />
+          </div>
+        ) : showReset === false ? (
           <Fragment>
             <div className="w-100 w-50-l flex flex-column justify-around items-center">
               <p className="portal-text">

@@ -48,7 +48,12 @@ const GovernanceChannelGroup = ({ activeCircle, location, ...props }) => {
           style={{ borderBottom: "none" }}
         >
           <div>News</div>
-          <div className="bg-theme-light br-pill pv1 ph2">Coming Soon</div>
+          <div
+            className="bg-theme-light br-pill pv1 ph2"
+            style={{ textIndent: "initial" }}
+          >
+            Coming Soon
+          </div>
         </div>
       </Link>
     </div>

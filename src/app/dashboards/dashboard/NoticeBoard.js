@@ -2,14 +2,24 @@ import React, { Component } from "react";
 import { GET_CIRCLE_NOTICES } from "../../../graphql/queries";
 import CircleNotice from "./CircleNotice";
 import { graphql } from "react-apollo";
-import { FixedSizeList as List } from "react-window";
+import Scrollbars from "react-custom-scrollbars";
+import ReactDOM from "react-dom";
 
 class NoticeBoard extends Component {
-  row = ({ index }) => {
-    const { notices } = this.props.data.Circle;
-    return <CircleNotice key={notices[index].id} notice={notices[index]} />;
+  state = {
+    wrapperHeight: 300
   };
+  componentDidMount() {
+    let wrapper = ReactDOM.findDOMNode(this).getBoundingClientRect();
+    console.log(wrapper);
+
+    wrapper &&
+      this.setState({
+        wrapperHeight: window.innerHeight - wrapper.top
+      });
+  }
   render() {
+    const { wrapperHeight } = this.state;
     const {
       loading,
       error,
@@ -29,16 +39,24 @@ class NoticeBoard extends Component {
         </div>
       );
     }
-    if (Circle) {
+    if (Circle && Circle.notices.length !== 0) {
+      console.log(Circle.notices);
       return (
-        <List
-          height={300}
-          itemCount={Circle.notices.length}
-          itemSize={300}
-          width={this.props.width}
+        <Scrollbars
+          id="circle-news-wrapper"
+          style={{
+            width: "100%",
+            height: wrapperHeight
+          }}
+          autoHide
+          autoHideTimeout={1000}
+          autoHideDuration={200}
+          universal={true}
         >
-          {this.row}
-        </List>
+          {Circle.notices.map(notice => (
+            <CircleNotice key={notice.id} notice={notice} />
+          ))}
+        </Scrollbars>
       );
     }
     return (
