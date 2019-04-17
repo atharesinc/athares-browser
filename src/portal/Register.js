@@ -91,27 +91,37 @@ class Register extends PureComponent {
 
       const {
         data: {
-          signinUser: { token, user }
+          signinUser: { token, userId }
         }
       } = res;
       await createUserPref({
         variables: {
-          id: user.id
+          id: userId
         }
       });
       //store in redux
       window.localStorage.setItem("ATHARES_ALIAS", email);
       window.localStorage.setItem("ATHARES_HASH", hashedToken);
       window.localStorage.setItem("ATHARES_TOKEN", token);
-      this.props.dispatch(updateUser(user.id));
+      this.props.dispatch(updateUser(userId));
       this.props.dispatch(updatePub(hashedToken));
 
       this.props.history.push("/app");
       this.props.dispatch(hideLoading());
       await this.setState({ loading: false });
     } catch (err) {
+      this.props.dispatch(hideLoading());
+      await this.setState({ loading: false });
       console.log(err);
-      swal("Error", err.message, "error");
+      if (err.message.indexOf("Field name = email") !== -1) {
+        swal(
+          "Error",
+          "A user already exists with this email address.",
+          "error"
+        );
+      } else {
+        swal("Error", err.message, "error");
+      }
     }
   };
   updateInfo = () => {

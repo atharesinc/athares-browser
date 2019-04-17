@@ -74,26 +74,30 @@ class MiniRegister extends PureComponent {
 
       const {
         data: {
-          signinUser: { token, user }
+          signinUser: { token, userId }
         }
       } = res;
       await createUserPref({
         variables: {
-          id: user.id
+          id: userId
         }
       });
       //store in redux
       window.localStorage.setItem("ATHARES_ALIAS", email);
       window.localStorage.setItem("ATHARES_HASH", hashedToken);
       window.localStorage.setItem("ATHARES_TOKEN", token);
-      this.props.dispatch(updateUser(user.id));
+      this.props.dispatch(updateUser(userId));
       this.props.dispatch(updatePub(hashedToken));
 
       this.props.dispatch(hideLoading());
       await this.setState({ loading: false });
     } catch (err) {
-      console.log(err);
-      swal("Error", err.message, "error");
+      if (err.message.indexOf("Invalid Credentials") !== -1) {
+        swal("Error", "Invalid Credentials", "error");
+      } else {
+        swal("Error", err.message, "error");
+      }
+      this.props.dispatch(hideLoading());
       await this.setState({ loading: false });
     }
   };

@@ -240,7 +240,10 @@ input[type="phone"],
   width: 63%;
   cursor: pointer;
 }
-
+#forgot-button {
+  font-size: 0.7em;
+  width: 63%;
+}
 .switch-portal {
   font-size: 0.7em;
   color: #ffffff;
@@ -1889,7 +1892,8 @@ a:visited {
     margin: 0;
   }
   #register-button,
-  #login-button {
+  #login-button,
+  #forgot-button {
     font-size: 0.9em;
   }
   .switch-portal {

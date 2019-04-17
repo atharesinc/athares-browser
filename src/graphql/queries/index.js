@@ -26,6 +26,14 @@ export const GET_USER_BY_ID = gql`
   }
 `;
 
+export const GET_USER_BY_EMAIL = gql`
+  query($email: String!) {
+    User(email: $email) {
+      id
+    }
+  }
+`;
+
 export const GET_USER_BY_ID_ALL = gql`
   query getUserByIdAll($id: ID!) {
     User(id: $id) {
@@ -270,6 +278,17 @@ export const GET_DMS_BY_USER = gql`
         name
         channelType
       }
+    }
+  }
+`;
+
+export const GET_RESET_REQUEST = gql`
+  query($id: ID!) {
+    ResetRequest(id: $id) {
+      id
+      token
+      email
+      createdAt
     }
   }
 `;

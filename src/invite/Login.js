@@ -46,7 +46,7 @@ class MiniLogin extends Component {
 
       const {
         data: {
-          signinUser: { token, user }
+          signinUser: { token, userId }
         }
       } = res;
 
@@ -54,14 +54,17 @@ class MiniLogin extends Component {
       window.localStorage.setItem("ATHARES_ALIAS", email);
       window.localStorage.setItem("ATHARES_HASH", hashedToken);
       window.localStorage.setItem("ATHARES_TOKEN", token);
-      this.props.dispatch(updateUser(user.id));
+      this.props.dispatch(updateUser(userId));
       this.props.dispatch(updatePub(hashedToken));
       this.props.dispatch(hideLoading());
       await this.setState({ loading: false });
     } catch (err) {
-      console.error(new Error(err));
+      if (err.message.indexOf("Invalid Credentials") !== -1) {
+        swal("Error", "Invalid Credentials", "error");
+      } else {
+        swal("Error", err.message, "error");
+      }
       this.props.dispatch(hideLoading());
-      swal("Error", err.message, "error");
       await this.setState({ loading: false });
     }
   };

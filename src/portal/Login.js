@@ -63,7 +63,7 @@ class Login extends Component {
 
       const {
         data: {
-          signinUser: { token, user }
+          signinUser: { token, userId }
         }
       } = res;
 
@@ -72,16 +72,19 @@ class Login extends Component {
       window.localStorage.setItem("ATHARES_HASH", hashedToken);
       window.localStorage.setItem("ATHARES_TOKEN", token);
 
-      this.props.dispatch(updateUser(user.id));
+      this.props.dispatch(updateUser(userId));
       this.props.dispatch(updatePub(hashedToken));
       this.props.dispatch(hideLoading());
       this.setState({ loading: false });
       this.props.history.push("/app");
     } catch (err) {
-      console.log(err);
+      if (err.message.indexOf("Invalid Credentials") !== -1) {
+        swal("Error", "Invalid Credentials", "error");
+      } else {
+        swal("Error", err.message, "error");
+      }
       this.props.dispatch(hideLoading());
-      swal("Error", err.message, "error");
-      this.setState({ loading: false });
+      await this.setState({ loading: false });
     }
   };
   updateInfo = () => {
@@ -152,13 +155,23 @@ class Login extends Component {
             >
               LOGIN
             </button>
+            <Link
+              to="forgot"
+              className="mb2 w-100 flex items-center justify-center pointer"
+            >
+              <button
+                id="forgot-button"
+                className="f6 link glow br-pill ph3 pv2 bg-theme mb2 dib white pointer"
+                tabIndex="4"
+              >
+                FORGOT PASSWORD
+              </button>
+            </Link>
             <Link to="register">
-              {" "}
               <div className="switch-portal">I want to register</div>
             </Link>
             <Link to="policy">
               <div className="white-70 dim ph4 pv2 f6">
-                {" "}
                 By logging in you acknowledge that you agree to the Terms of Use
                 and have read the Privacy Policy.
               </div>

@@ -10,6 +10,8 @@ import { AnimatedSwitch } from "react-router-transition";
 import SplashPage from "./splash/landing";
 import Roadmap from "./splash/roadmap";
 import Login from "./portal/Login";
+import Reset from "./portal/Reset";
+import Forgot from "./portal/Forgot";
 import Register from "./portal/Register";
 import About from "./splash/about";
 import NoMatch from "./404";
@@ -70,10 +72,10 @@ class App extends PureComponent {
 
         const {
           data: {
-            signinUser: { token, user }
+            signinUser: { token, userId }
           }
         } = res;
-        this.props.dispatch(sync.updateUser(user.id));
+        this.props.dispatch(sync.updateUser(userId));
         this.props.dispatch(sync.updatePub(hash));
         window.localStorage.setItem("ATHARES_TOKEN", token);
       } catch (err) {
@@ -149,6 +151,15 @@ class App extends PureComponent {
                   exact
                   path="/login"
                   render={props => <Login {...props} />}
+                />
+                <Route
+                  path="/reset/:id"
+                  render={props => <Reset {...props} />}
+                />
+                <Route
+                  exact
+                  path="/forgot"
+                  render={props => <Forgot {...props} />}
                 />
                 <Route
                   exact
