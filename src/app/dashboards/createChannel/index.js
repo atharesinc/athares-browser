@@ -201,10 +201,8 @@ class CreateChannel extends Component {
                     </div>
                   </article>
                   <div id="comment-desc" className="f6 white-80">
-                    By pressing "Create Channel" you will create a new
-                    government with a the above name and description. After this
-                    point, all changes must be made through the democratic
-                    revision process.
+                    By pressing "Create Channel" you will create a new channel
+                    within {circle.name}.
                   </div>
                   <button
                     id="create-circle-button"

@@ -256,9 +256,7 @@ class createCircleBoard extends Component {
             </article>
             <div id="comment-desc" className="f6 white-80">
               By pressing "Create Circle" you will create a new government with
-              a the above name, preamble, and the selected image. After this
-              point, all changes must be made through the democratic revision
-              process.
+              a the above name, preamble, and the selected image.
             </div>
             {!this.state.editMode && (
               <button
