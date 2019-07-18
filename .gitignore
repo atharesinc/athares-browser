@@ -25,3 +25,4 @@ aws-restricted-key.js
 .vscode
 # DEPLOYMENT.sh
 package-lock.json 
+yarn.lock
