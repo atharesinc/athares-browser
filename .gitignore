@@ -24,3 +24,4 @@ yarn-error.log*
 aws-restricted-key.js
 .vscode
 # DEPLOYMENT.sh
+package-lock.json 
