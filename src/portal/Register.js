@@ -22,7 +22,7 @@ import {
   CREATE_USER_PREF
 } from "../graphql/mutations";
 import { graphql, compose } from "react-apollo";
-import { pair } from "simple-asym-crypto";
+import { pair } from "src/utils/crypto";
 import SimpleCrypto from "simple-crypto-js";
 
 class Register extends PureComponent {

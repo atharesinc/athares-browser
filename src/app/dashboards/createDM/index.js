@@ -6,7 +6,7 @@ import { Link, withRouter } from "react-router-dom";
 import FeatherIcon from "feather-icons-react";
 import { pull } from "../../../store/state/reducers";
 import { connect } from "react-redux";
-import { encrypt } from "simple-asym-crypto";
+import { encrypt } from "../../../utils/crypto";
 import SimpleCrypto from "simple-crypto-js";
 import { GET_USER_BY_ID } from "../../../graphql/queries";
 import {
@@ -16,7 +16,7 @@ import {
   ADD_USER_TO_CHANNEL
 } from "../../../graphql/mutations";
 import { graphql, compose } from "react-apollo";
-import uploadToIPFS from "../../../utils/uploadToIPFS";
+import { uploadToAWS } from "src/utils/upload";
 import swal from "sweetalert";
 
 class CreateDM extends Component {
@@ -129,7 +129,7 @@ class CreateDM extends Component {
       await Promise.all(promiseList2);
 
       let url =
-        file === null ? null : await uploadToIPFS(file, this.updateProgress);
+        file === null ? null : await uploadToAWS(file, this.updateProgress);
       if (file) {
         fetch(file);
       }

@@ -17,7 +17,7 @@ import { SUB_TO_MESSAGES_BY_CHANNEL_ID } from "../../../graphql/subscriptions";
 import { GET_MESSAGES_FROM_CHANNEL_ID } from "../../../graphql/queries";
 import { compose, graphql, Query } from "react-apollo";
 import swal from "sweetalert";
-import uploadToIPFS from "../../../utils/uploadToIPFS";
+import { uploadToAWS } from "src/utils/upload";
 
 class Chat extends Component {
   constructor() {
@@ -87,7 +87,7 @@ class Chat extends Component {
 
     try {
       let url =
-        file === null ? null : await uploadToIPFS(file, this.updateProgress);
+        file === null ? null : await uploadToAWS(file, this.updateProgress);
       if (file) {
         fetch(url);
       }
