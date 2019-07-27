@@ -17,7 +17,7 @@ import { SUB_TO_MESSAGES_BY_CHANNEL_ID } from "../../../graphql/subscriptions";
 import { GET_MESSAGES_FROM_CHANNEL_ID } from "../../../graphql/queries";
 import { compose, graphql, Query } from "react-apollo";
 import swal from "sweetalert";
-import { uploadToAWS } from "src/utils/upload";
+import { uploadToAWS } from "utils/upload";
 
 class Chat extends Component {
   constructor() {

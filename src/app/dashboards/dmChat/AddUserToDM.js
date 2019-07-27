@@ -15,7 +15,7 @@ import {
   UPDATE_CHANNEL_NAME
 } from "../../../graphql/mutations";
 import SimpleCrypto from "simple-crypto-js";
-import { decrypt, encrypt } from "src/utils/crypto";
+import { decrypt, encrypt } from "utils/crypto";
 import swal from "sweetalert";
 
 const pullUI = require("../../../store/ui/reducers").pull;

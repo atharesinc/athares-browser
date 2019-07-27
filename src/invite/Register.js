@@ -15,7 +15,7 @@ import {
   CREATE_USER_PREF
 } from "../graphql/mutations";
 import { graphql, compose } from "react-apollo";
-import { pair } from "src/utils/crypto";
+import { pair } from "utils/crypto";
 import SimpleCrypto from "simple-crypto-js";
 
 class MiniRegister extends PureComponent {

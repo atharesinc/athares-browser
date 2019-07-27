@@ -16,7 +16,7 @@ import {
   ADD_USER_TO_CHANNEL
 } from "../../../graphql/mutations";
 import { graphql, compose } from "react-apollo";
-import { uploadToAWS } from "src/utils/upload";
+import { uploadToAWS } from "utils/upload";
 import swal from "sweetalert";
 
 class CreateDM extends Component {

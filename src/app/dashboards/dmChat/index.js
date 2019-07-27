@@ -8,7 +8,7 @@ import { Link } from "react-router-dom";
 import { pull } from "../../../store/state/reducers";
 import { updateChannel, removeUnreadDM } from "../../../store/state/actions";
 import { connect } from "react-redux";
-import { decrypt } from "src/utils/crypto";
+import { decrypt } from "utils/crypto";
 import SimpleCrypto from "simple-crypto-js";
 import { CREATE_MESSAGE } from "../../../graphql/mutations";
 import {
@@ -17,7 +17,7 @@ import {
 } from "../../../graphql/queries";
 import { SUB_TO_MESSAGES_BY_CHANNEL_ID } from "../../../graphql/subscriptions";
 import { compose, graphql, Query } from "react-apollo";
-import { uploadToAWS } from "src/utils/upload";
+import { uploadToAWS } from "utils/upload";
 import swal from "sweetalert";
 import { openDMSettings } from "../../../store/ui/actions";
 const pullUI = require("../../../store/ui/reducers").pull;

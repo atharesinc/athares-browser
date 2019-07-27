@@ -1,3 +1,5 @@
+import { RNS3 } from "react-native-aws3";
+
 let API_KEYS = null;
 
 export async function uploadToAWS(file) {
