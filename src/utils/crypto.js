@@ -12,7 +12,7 @@ export function sha(text) {
 /** Generate and store keypair */
 export function pair() {
   return fetch(
-    'https://m2nx3qjlb2.execute-api.us-east-1.amazonaws.com/dev/
+    'https://m2nx3qjlb2.execute-api.us-east-1.amazonaws.com/dev/',
   ).then(res => {
     return res.json();
   });
