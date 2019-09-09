@@ -6,11 +6,13 @@ This is the public repository for the Athares web client. It contains all Athare
 
 To get started developing on athares-browser, type the following commands into your terminal.
 
-```
+```bash
 git clone https://github.com/atharesinc/athares-browser.git
 cd athares-browser && yarn install
-yarn start
+touch .env
 ```
+
+In the newly created .env file paste in the environment variables from the secure shared repo, save the file and run `yarn start`
 
 You can also use `npm` if you prefer, both options work the same in this case.
 

@@ -11,9 +11,7 @@ export function sha(text) {
 
 /** Generate and store keypair */
 export function pair() {
-  return fetch(
-    'https://m2nx3qjlb2.execute-api.us-east-1.amazonaws.com/dev/',
-  ).then(res => {
+  return fetch(`${process.env.REACT_APP_AUTH_API}/pair`).then(res => {
     return res.json();
   });
 }

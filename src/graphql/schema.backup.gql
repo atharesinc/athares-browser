@@ -1,33 +1,15 @@
-# projectId: cjrucg3gz1obq0149g3vd7nxh
-# version: 41
+# projectId: cjsnjseb412wz0192x4ivxr1l
+# version: 132
 
 type Amendment @model {
   circle: Circle! @relation(name: "CircleOnAmendments")
   createdAt: DateTime!
+  hash: String! @isUnique
   id: ID! @isUnique
   revision: Revision @relation(name: "AmendmentOnRevision")
   text: String!
   title: String!
   updatedAt: DateTime!
-  hash: String! @isUnique
-}
-
-type UserPref @model {
-  id: ID! @isUnique
-  user: User! @relation(name: "UserOnPref")
-  maySendMarketingEmail: Boolean! @defaultValue(value: true)
-  userDisabled: Boolean! @defaultValue(value: false)
-}
-
-type CirclePermission @model {
-  id: ID! @isUnique
-  user: User! @relation(name: "UserOnCirclePermissions")
-  circle: Circle! @relation(name: "CircleOnPermissions")
-  revisions: Boolean!
-  amendments: Boolean!
-  useEmail: Boolean!
-  usePush: Boolean!
-  useSMS: Boolean!
 }
 
 type Channel @model {
@@ -46,6 +28,7 @@ type Channel @model {
 type Circle @model {
   amendments: [Amendment!]! @relation(name: "CircleOnAmendments")
   channels: [Channel!]! @relation(name: "CircleOnChannels")
+  circlePermissions: [CirclePermission!]! @relation(name: "CircleOnPermissions")
   createdAt: DateTime!
   icon: String!
   id: ID! @isUnique
@@ -56,7 +39,17 @@ type Circle @model {
   revisions: [Revision!]! @relation(name: "CircleOnRevisions")
   updatedAt: DateTime!
   users: [User!]! @relation(name: "UserOnCircles")
-  circlePermissions: [CirclePermission!]! @relation(name: "CircleOnPermissions")
+}
+
+type CirclePermission @model {
+  amendments: Boolean!
+  circle: Circle! @relation(name: "CircleOnPermissions")
+  id: ID! @isUnique
+  revisions: Boolean!
+  useEmail: Boolean!
+  usePush: Boolean!
+  useSMS: Boolean!
+  user: User! @relation(name: "UserOnCirclePermissions")
 }
 
 type File @model {
@@ -119,22 +112,25 @@ type Revision @model {
   circle: Circle! @relation(name: "CircleOnRevisions")
   createdAt: DateTime!
   expires: DateTime!
+  hash: String! @isUnique
   id: ID! @isUnique
   newText: String!
   oldText: String
   passed: Boolean
+  repeal: Boolean!
   title: String!
   updatedAt: DateTime!
   voterThreshold: Int!
   votes: [Vote!]! @relation(name: "RevisionOnVotes")
-  hash: String! @isUnique
 }
 
 type User @model {
   channels: [Channel!]! @relation(name: "UsersOnChannels")
+  circlePermissions: [CirclePermission!]!
+    @relation(name: "UserOnCirclePermissions")
   circles: [Circle!]! @relation(name: "UserOnCircles")
   createdAt: DateTime!
-  email: String @isUnique
+  email: String! @isUnique
   firstName: String!
   icon: String! @defaultValue(value: "img/user-default.png")
   id: ID! @isUnique
@@ -142,17 +138,22 @@ type User @model {
   keys: [Key!]! @relation(name: "UserOnKeys")
   lastName: String!
   messages: [Message!]! @relation(name: "UserOnMessages")
-  password: String
+  password: String!
   phone: String @isUnique
+  prefs: UserPref @relation(name: "UserOnPref")
   priv: String!
   pub: String!
   revisions: [Revision!]! @relation(name: "UserOnRevisions")
   uname: String @isUnique
   updatedAt: DateTime!
   votes: [Vote!]! @relation(name: "UserOnVotes")
-  prefs: UserPref @relation(name: "UserOnPref")
-  circlePermissions: [CirclePermission!]!
-    @relation(name: "UserOnCirclePermissions")
+}
+
+type UserPref @model {
+  id: ID! @isUnique
+  maySendMarketingEmail: Boolean! @defaultValue(value: true)
+  user: User! @relation(name: "UserOnPref")
+  userDisabled: Boolean! @defaultValue(value: false)
 }
 
 type Vote @model {
@@ -162,4 +163,12 @@ type Vote @model {
   support: Boolean
   updatedAt: DateTime!
   user: User! @relation(name: "UserOnVotes")
+}
+
+type ResetRequest @model {
+  id: ID! @isUnique
+  updatedAt: DateTime!
+  createdAt: DateTime!
+  email: String!
+  token: String!
 }
