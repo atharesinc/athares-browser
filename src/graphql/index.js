@@ -13,6 +13,7 @@ let uri =
 const httpLink = new HttpLink({
   uri,
 });
+
 const wsUri =
   process.env.NODE_ENV === 'production'
     ? process.env.REACT_APP_PROD_GQL_WS_URL

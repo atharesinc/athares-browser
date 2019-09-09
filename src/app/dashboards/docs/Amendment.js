@@ -1,19 +1,19 @@
-import React from "react";
-import AmendmentEdit from "./AmendmentEdit";
-import AmendmentView from "./AmendmentView";
-import moment from "moment";
-import { updateRevision } from "../../../store/state/actions";
-import { connect } from "react-redux";
-import { withRouter } from "react-router-dom";
-import swal from "sweetalert";
-import { pull } from "../../../store/state/reducers";
-import { compose, graphql } from "react-apollo";
+import React from 'react';
+import AmendmentEdit from './AmendmentEdit';
+import AmendmentView from './AmendmentView';
+import moment from 'moment';
+import { updateRevision } from '../../../store/state/actions';
+import { connect } from 'react-redux';
+import { withRouter } from 'react-router-dom';
+import swal from 'sweetalert';
+import { pull } from '../../../store/state/reducers';
+import { compose, graphql } from 'react-apollo';
 import {
   CREATE_REVISION,
   CREATE_VOTE,
-  ADD_REVISION_TO_AMENDMENT
-} from "../../../graphql/mutations";
-import sha from "simple-hash-browser";
+  ADD_REVISION_TO_AMENDMENT,
+} from '../../../graphql/mutations';
+import sha from 'simple-hash-browser';
 
 class Amendment extends React.Component {
   constructor(props) {
@@ -21,13 +21,13 @@ class Amendment extends React.Component {
 
     this.state = {
       editMode: false,
-      text: this.props.text
+      text: this.props.text,
     };
   }
   cancel = () => {
     this.setState({
       editMode: false,
-      text: this.props.text
+      text: this.props.text,
     });
   };
   repeal = () => {
@@ -36,10 +36,10 @@ class Amendment extends React.Component {
         "Are you sure you'd like to repeal this amendment?\n\nBy starting the repeal process, you will create a revision with the intention of permanently deleting this amendment.",
         {
           buttons: {
-            cancel: "Back",
-            confirm: "Yes, Repeal"
-          }
-        }
+            cancel: 'Back',
+            confirm: 'Yes, Repeal',
+          },
+        },
       ).then(async value => {
         if (value === true) {
           const { activeCircle, circle, user } = this.props;
@@ -53,33 +53,33 @@ class Amendment extends React.Component {
             oldText: null,
             newText: text,
             expires: moment()
-              .add(Math.max(this.customSigm(numUsers), 61), "s")
+              .add(Math.max(this.customSigm(numUsers), 61), 's')
               .format(),
             voterThreshold: Math.round(
-              numUsers * this.ratifiedThreshold(numUsers)
+              numUsers * this.ratifiedThreshold(numUsers),
             ),
             amendment: id,
-            repeal: true
+            repeal: true,
           };
           this.createRevision(newRevision);
         }
       });
     } catch (err) {
       console.error(new Error(err));
-      swal("Error", "There was an error in the repeal process", "error");
+      swal('Error', 'There was an error in the repeal process', 'error');
     }
   };
   toggleEdit = e => {
-    if (e.target.className !== "editMask" && this.state.editMode) {
+    if (e.target.className !== 'editMask' && this.state.editMode) {
       return false;
     }
     this.setState({
-      editMode: !this.state.editMode
+      editMode: !this.state.editMode,
     });
   };
   update = text => {
     this.setState({
-      text: text
+      text: text,
     });
   };
   addSub = () => {
@@ -111,11 +111,11 @@ class Amendment extends React.Component {
       oldText: text,
       newText: this.state.text.trim(),
       expires: moment()
-        .add(Math.max(this.customSigm(numUsers), 61), "s")
+        .add(Math.max(this.customSigm(numUsers), 61), 's')
         .format(),
       voterThreshold: Math.round(numUsers * this.ratifiedThreshold(numUsers)),
       amendment: id,
-      repeal: false
+      repeal: false,
     };
     this.createRevision(newRevision);
   };
@@ -128,23 +128,23 @@ class Amendment extends React.Component {
           text: newRevision.newText,
           circle: newRevision.circle,
           expires: newRevision.expires,
-          voterThreshold: newRevision.voterThreshold
-        })
+          voterThreshold: newRevision.voterThreshold,
+        }),
       );
 
       let newRevisionRes = await this.props.createRevision({
         variables: {
           ...newRevision,
-          hash
-        }
+          hash,
+        },
       });
 
       await this.props.addNewRevisionToAmendment({
         variables: {
           revision: newRevisionRes.data.createRevision.id,
           amendment: this.props.amendment.id,
-          title: newRevision.title
-        }
+          title: newRevision.title,
+        },
       });
       newRevision.id = newRevisionRes.data.createRevision.id;
 
@@ -152,27 +152,27 @@ class Amendment extends React.Component {
         circle: this.props.activeCircle,
         revision: newRevision.id,
         user: this.props.user,
-        support: true
+        support: true,
       };
 
       await this.props.createVote({
         variables: {
-          ...newVote
-        }
+          ...newVote,
+        },
       });
 
       this.props.dispatch(updateRevision(newRevision.id));
 
       this.props.history.push(
-        `/app/circle/${this.props.activeCircle}/revisions/${newRevision.id}`
+        `/app/circle/${this.props.activeCircle}/revisions/${newRevision.id}`,
       );
     } catch (err) {
       if (
-        !err.message.includes("unique constraint would be violated") ||
-        !err.message.includes("hash")
+        !err.message.includes('unique constraint would be violated') ||
+        !err.message.includes('hash')
       ) {
-        console.log(err);
-        swal("Error", err.message, "error");
+        console.error(new Error(err));
+        swal('Error', err.message, 'error');
       }
     }
   };
@@ -213,12 +213,12 @@ class Amendment extends React.Component {
 }
 function mapStateToProps(state) {
   return {
-    user: pull(state, "user"),
-    activeCircle: pull(state, "activeCircle")
+    user: pull(state, 'user'),
+    activeCircle: pull(state, 'activeCircle'),
   };
 }
 export default compose(
-  graphql(CREATE_REVISION, { name: "createRevision" }),
-  graphql(CREATE_VOTE, { name: "createVote" }),
-  graphql(ADD_REVISION_TO_AMENDMENT, { name: "addNewRevisionToAmendment" })
+  graphql(CREATE_REVISION, { name: 'createRevision' }),
+  graphql(CREATE_VOTE, { name: 'createVote' }),
+  graphql(ADD_REVISION_TO_AMENDMENT, { name: 'addNewRevisionToAmendment' }),
 )(withRouter(connect(mapStateToProps)(Amendment)));

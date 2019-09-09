@@ -1,25 +1,27 @@
-import React from "react";
-import FeatherIcon from "feather-icons-react";
+import React from 'react';
+import FeatherIcon from 'feather-icons-react';
 
-const FileMessage = ({ file, fileName }) => (
-  <a href={file} target="_blank" rel="noopener noreferrer">
-    <div
-      style={{ height: "6rem", width: "8rem" }}
-      className="ma2 mb0 ba bg-theme-light b--white-70 flex flex-column justify-center items-center"
-    >
-      <FeatherIcon icon="file-text" className="ma2" />
+const FileMessage = ({ file, fileName, ...rest }) => {
+  return (
+    <a href={file} target='_blank' rel='noopener noreferrer'>
       <div
-        className="f6 white-70"
-        style={{
-          width: "calc(100 % - 1em)",
-          textOverflow: "ellipsis",
-          overflow: "hidden"
-        }}
+        style={{ height: '6rem', width: '8rem' }}
+        className='ma2 mb0 ba bg-theme-light b--white-70 flex flex-column justify-center items-center'
       >
-        {fileName}
+        <FeatherIcon icon='file-text' className='ma2' />
+        <div
+          className='f6 white-70'
+          style={{
+            width: 'calc(100 % - 1em)',
+            textOverflow: 'ellipsis',
+            overflow: 'hidden',
+          }}
+        >
+          {fileName}
+        </div>
       </div>
-    </div>
-  </a>
-);
+    </a>
+  );
+};
 
 export default FileMessage;

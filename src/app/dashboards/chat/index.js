@@ -1,23 +1,23 @@
-import React, { Component } from "react";
-import ChatWindow from "../../../components/ChatWindow";
-import ChatInput from "../../../components/ChatInput";
-import Loader from "../../../components/Loader";
-import FeatherIcon from "feather-icons-react";
-import { Link } from "react-router-dom";
-import { pull } from "../../../store/state/reducers";
+import React, { Component } from 'react';
+import ChatWindow from '../../../components/ChatWindow';
+import ChatInput from '../../../components/ChatInput';
+import Loader from '../../../components/Loader';
+import FeatherIcon from 'feather-icons-react';
+import { Link } from 'react-router-dom';
+import { pull } from '../../../store/state/reducers';
 import {
   updateChannel,
   updateRevision,
   updateCircle,
-  removeUnreadChannel
-} from "../../../store/state/actions";
-import { connect } from "react-redux";
-import { CREATE_MESSAGE } from "../../../graphql/mutations";
-import { SUB_TO_MESSAGES_BY_CHANNEL_ID } from "../../../graphql/subscriptions";
-import { GET_MESSAGES_FROM_CHANNEL_ID } from "../../../graphql/queries";
-import { compose, graphql, Query } from "react-apollo";
-import swal from "sweetalert";
-import { uploadToAWS } from "utils/upload";
+  removeUnreadChannel,
+} from '../../../store/state/actions';
+import { connect } from 'react-redux';
+import { CREATE_MESSAGE } from '../../../graphql/mutations';
+import { SUB_TO_MESSAGES_BY_CHANNEL_ID } from '../../../graphql/subscriptions';
+import { GET_MESSAGES_FROM_CHANNEL_ID } from '../../../graphql/queries';
+import { compose, graphql, Query } from 'react-apollo';
+import swal from 'sweetalert';
+import { uploadToAWS } from 'utils/upload';
 
 class Chat extends Component {
   constructor() {
@@ -26,13 +26,13 @@ class Chat extends Component {
       messages: [],
       user: null,
       channel: null,
-      uploadInProgress: false
+      uploadInProgress: false,
     };
     this._isMounted = false;
   }
   componentDidMount() {
     const circleId = this.props.match.url.match(
-      /app\/circle\/(.+)\/channel/
+      /app\/circle\/(.+)\/channel/,
     )[1];
 
     if (circleId) {
@@ -62,7 +62,7 @@ class Chat extends Component {
     }
   }
   scrollToBottom = () => {
-    let chatBox = document.getElementById("chat-window-scroller");
+    let chatBox = document.getElementById('chat-window-scroller');
     if (chatBox) {
       /* scroll to bottom */
       chatBox = chatBox.firstElementChild;
@@ -72,65 +72,63 @@ class Chat extends Component {
   updateChannel = () => {
     this.props.dispatch(updateChannel(null));
   };
-  updateProgress = (prog, length) => {
-    console.log(prog / length);
-  };
 
   submit = async (text, file = null) => {
-    let chatInput = document.getElementById("chat-input");
+    let chatInput = document.getElementById('chat-input');
 
     if (file) {
       await this.setState({
-        uploadInProgress: true
+        uploadInProgress: true,
       });
     }
 
     try {
-      let url =
-        file === null ? null : await uploadToAWS(file, this.updateProgress);
+      let url = file === null ? null : await uploadToAWS(file);
+
       if (file) {
         fetch(url);
       }
+
       let newMessage = {
         text: text.trim(),
         channel: this.props.activeChannel,
         user: this.props.user,
-        file: url,
-        fileName: file !== null ? file.name : null
+        file: url.url,
+        fileName: file !== null ? file.name : null,
       };
 
       let newMessageRes = await this.props.createMessage({
         variables: {
-          ...newMessage
-        }
+          ...newMessage,
+        },
       });
 
       newMessage.id = newMessageRes.data.createMessage.id;
 
       /* clear textbox */
-      chatInput.value = "";
-      chatInput.setAttribute("rows", 1);
+      chatInput.value = '';
+      chatInput.setAttribute('rows', 1);
       await this.setState({
-        uploadInProgress: false
+        uploadInProgress: false,
       });
       /* scroll to bottom */
       this.scrollToBottom();
     } catch (err) {
       this.setState({
-        uploadInProgress: false
+        uploadInProgress: false,
       });
       console.error(new Error(err));
       swal(
-        "Error",
-        "We were unable to send your message, please try again later",
-        "error"
+        'Error',
+        'We were unable to send your message, please try again later',
+        'error',
       );
     }
   };
   _subToMore = subscribeToMore => {
     subscribeToMore({
       document: SUB_TO_MESSAGES_BY_CHANNEL_ID,
-      variables: { id: this.props.activeChannel || "" },
+      variables: { id: this.props.activeChannel || '' },
       updateQuery: (prev, { subscriptionData }) => {
         // this.props.getChannelMessages.refetch({
         //   id: activeChannel
@@ -142,7 +140,7 @@ class Chat extends Component {
         }
 
         return prev;
-      }
+      },
     });
   };
   render() {
@@ -153,7 +151,7 @@ class Chat extends Component {
     return (
       <Query
         query={GET_MESSAGES_FROM_CHANNEL_ID}
-        variables={{ id: this.props.activeChannel || "" }}
+        variables={{ id: this.props.activeChannel || '' }}
         onCompleted={this.scrollToBottom}
       >
         {({ data, subscribeToMore }) => {
@@ -165,19 +163,19 @@ class Chat extends Component {
 
           if (channel) {
             return (
-              <div id="chat-wrapper">
-                <div id="current-channel">
-                  <Link to="/app">
+              <div id='chat-wrapper'>
+                <div id='current-channel'>
+                  <Link to='/app'>
                     <FeatherIcon
-                      icon="chevron-left"
-                      className="white db dn-l"
+                      icon='chevron-left'
+                      className='white db dn-l'
                       onClick={this.updateChannel}
                     />
                   </Link>
                   <div>{channel.name}</div>
                   <div
-                    className="f6 dn db-ns"
-                    style={{ background: "none", color: "#FFFFFF80" }}
+                    className='f6 dn db-ns'
+                    style={{ background: 'none', color: '#FFFFFF80' }}
                   >
                     {channel.description}
                   </div>
@@ -197,9 +195,9 @@ class Chat extends Component {
             );
           } else {
             return (
-              <div id="chat-wrapper" style={{ justifyContent: "center" }}>
+              <div id='chat-wrapper' style={{ justifyContent: 'center' }}>
                 <Loader />
-                <h1 className="mb3 mt0 lh-title mt4 f3 f2-ns">
+                <h1 className='mb3 mt0 lh-title mt4 f3 f2-ns'>
                   Getting Messages
                 </h1>
               </div>
@@ -213,12 +211,12 @@ class Chat extends Component {
 
 function mapStateToProps(state) {
   return {
-    user: pull(state, "user"),
-    activeChannel: pull(state, "activeChannel"),
-    activeCircle: pull(state, "activeCircle")
+    user: pull(state, 'user'),
+    activeChannel: pull(state, 'activeChannel'),
+    activeCircle: pull(state, 'activeCircle'),
   };
 }
 
-export default compose(graphql(CREATE_MESSAGE, { name: "createMessage" }))(
-  connect(mapStateToProps)(Chat)
+export default compose(graphql(CREATE_MESSAGE, { name: 'createMessage' }))(
+  connect(mapStateToProps)(Chat),
 );

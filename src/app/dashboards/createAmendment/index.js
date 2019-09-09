@@ -1,44 +1,44 @@
-import React, { Component } from "react";
-import ErrorSwap from "../../../utils/ErrorSwap";
-import Loader from "../../../components/Loader";
-import { withRouter, Link } from "react-router-dom";
-import { Scrollbars } from "react-custom-scrollbars";
-import { connect } from "react-redux";
-import { pull } from "../../../store/state/reducers";
-import { updateRevision } from "../../../store/state/actions";
-import FeatherIcon from "feather-icons-react";
-import swal from "sweetalert";
-import sha from "simple-hash-browser";
-import { compose, graphql } from "react-apollo";
-import { CREATE_REVISION, CREATE_VOTE } from "../../../graphql/mutations";
-import { GET_AMENDMENTS_FROM_CIRCLE_ID } from "../../../graphql/queries";
-import moment from "moment";
+import React, { Component } from 'react';
+import ErrorSwap from '../../../utils/ErrorSwap';
+import Loader from '../../../components/Loader';
+import { withRouter, Link } from 'react-router-dom';
+import { Scrollbars } from 'react-custom-scrollbars';
+import { connect } from 'react-redux';
+import { pull } from '../../../store/state/reducers';
+import { updateRevision } from '../../../store/state/actions';
+import FeatherIcon from 'feather-icons-react';
+import swal from 'sweetalert';
+import sha from 'simple-hash-browser';
+import { compose, graphql } from 'react-apollo';
+import { CREATE_REVISION, CREATE_VOTE } from '../../../graphql/mutations';
+import { GET_AMENDMENTS_FROM_CIRCLE_ID } from '../../../graphql/queries';
+import moment from 'moment';
 
 class CreateAmendment extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      name: "",
-      amendment: "",
+      name: '',
+      amendment: '',
       isTaken: false,
-      loading: false
+      loading: false,
     };
   }
   componentDidMount() {
     // verify this circle is real and that the user is logged in, but for now...
     if (!this.props.user || !this.props.activeCircle) {
-      this.props.history.replace("/app");
+      this.props.history.replace('/app');
     }
   }
   updateName = e => {
     this.setState({
-      name: e.target.value.substring(0, 51)
+      name: e.target.value.substring(0, 51),
     });
   };
   updateAmend = e => {
     this.setState({
-      amendment: e.target.innerText
+      amendment: e.target.innerText,
     });
   };
   // the longest a revision must persist before votes are counted is 7 days ( many users), the shortest is about 30 seconds (1 user)
@@ -57,7 +57,7 @@ class CreateAmendment extends Component {
     // ???
     await this.setState({ loading: true });
     let {
-      data: { Circle: circle }
+      data: { Circle: circle },
     } = this.props;
 
     let numUsers = circle.users.length;
@@ -68,10 +68,10 @@ class CreateAmendment extends Component {
         title: this.state.name,
         newText: this.state.amendment.trim(),
         expires: moment()
-          .add(Math.max(this.customSigm(numUsers), 61), "s")
+          .add(Math.max(this.customSigm(numUsers), 61), 's')
           .format(),
         voterThreshold: Math.round(numUsers * this.ratifiedThreshold(numUsers)),
-        repeal: false
+        repeal: false,
       };
       let hash = await sha(
         JSON.stringify({
@@ -79,14 +79,14 @@ class CreateAmendment extends Component {
           text: newRevision.newText,
           circle: newRevision.circle,
           expires: newRevision.expires,
-          voterThreshold: newRevision.voterThreshold
-        })
+          voterThreshold: newRevision.voterThreshold,
+        }),
       );
       let newRevisionRes = await this.props.createRevision({
         variables: {
           ...newRevision,
-          hash
-        }
+          hash,
+        },
       });
 
       newRevision.id = newRevisionRes.data.createRevision.id;
@@ -94,37 +94,37 @@ class CreateAmendment extends Component {
       const newVote = {
         revision: newRevision.id,
         user: this.props.user,
-        support: true
+        support: true,
       };
 
       await this.props.createVote({
         variables: {
-          ...newVote
-        }
+          ...newVote,
+        },
       });
 
       this.props.dispatch(updateRevision(newRevision.id));
 
       this.props.history.push(
-        `/app/circle/${this.props.activeCircle}/revisions/${newRevision.id}`
+        `/app/circle/${this.props.activeCircle}/revisions/${newRevision.id}`,
       );
     } catch (err) {
       if (
-        !err.message.includes("unique constraint would be violated") ||
-        !err.message.includes("hash")
+        !err.message.includes('unique constraint would be violated') ||
+        !err.message.includes('hash')
       ) {
-        console.log(err);
+        console.error(new Error(err));
         swal(
-          "Error",
-          "There was an error connecting to the Athares network. Please try again later.",
-          "error"
+          'Error',
+          'There was an error connecting to the Athares network. Please try again later.',
+          'error',
         );
       }
     }
   };
   clearError = () => {
     this.setState({
-      isTaken: false
+      isTaken: false,
     });
   };
   render() {
@@ -132,37 +132,37 @@ class CreateAmendment extends Component {
 
     if (activeCircle && data.Circle) {
       return (
-        <div id="revisions-wrapper">
-          <div className="flex db-ns ph2 h10">
-            <Link to="/app" className="flex justify-center items-center">
+        <div id='revisions-wrapper'>
+          <div className='flex db-ns ph2 h10'>
+            <Link to='/app' className='flex justify-center items-center'>
               <FeatherIcon
-                icon="chevron-left"
-                className="white db dn-l"
+                icon='chevron-left'
+                className='white db dn-l'
                 onClick={this.back}
               />
             </Link>
-            <h2 className="ma3 lh-title white">Create Amendment</h2>
+            <h2 className='ma3 lh-title white'>Create Amendment</h2>
           </div>
-          <Scrollbars style={{ height: "85vh", width: "100%" }}>
+          <Scrollbars style={{ height: '85vh', width: '100%' }}>
             <form
-              className="pa2 pa4-ns white wrapper"
+              className='pa2 pa4-ns white wrapper'
               onSubmit={this.onSubmit}
-              id="create-circle-form"
+              id='create-circle-form'
             >
-              <article className="cf">
-                <time className="f7 ttu tracked white-80">
+              <article className='cf'>
+                <time className='f7 ttu tracked white-80'>
                   Draft a new piece of legislation for {data.Circle.name}
                 </time>
-                <div className="fn mt4">
-                  <div className="measure mb4">
-                    <label htmlFor="name" className="f6 b db mb2">
+                <div className='fn mt4'>
+                  <div className='measure mb4'>
+                    <label htmlFor='name' className='f6 b db mb2'>
                       Name
                     </label>
                     <input
-                      id="name"
-                      className="input-reset ba pa2 mb2 db w-100 ghost"
-                      type="text"
-                      aria-describedby="name-desc"
+                      id='name'
+                      className='input-reset ba pa2 mb2 db w-100 ghost'
+                      type='text'
+                      aria-describedby='name-desc'
                       required
                       value={this.state.name}
                       onChange={this.updateName}
@@ -170,28 +170,28 @@ class CreateAmendment extends Component {
                     <ErrorSwap
                       condition={!this.state.isTaken}
                       normal={
-                        <small id="name-desc" className="f6 white-80 db mb2">
+                        <small id='name-desc' className='f6 white-80 db mb2'>
                           Provide a name for your new amendment.
                         </small>
                       }
                       error={
-                        <small id="name-desc" className="f6 red db mb2">
+                        <small id='name-desc' className='f6 red db mb2'>
                           Amendment must have a name
                         </small>
                       }
                     />
                   </div>
-                  <div className="mv4">
-                    <label htmlFor="comment" className="f6 b db mb2">
+                  <div className='mv4'>
+                    <label htmlFor='comment' className='f6 b db mb2'>
                       Amendment
                     </label>
                     <Scrollbars
                       style={{
-                        maxHeight: "11.5rem",
-                        width: "100%"
+                        maxHeight: '11.5rem',
+                        width: '100%',
                       }}
                       autoHeight
-                      className="ghost mb2"
+                      className='ghost mb2'
                     >
                       <div
                         contentEditable={true}
@@ -204,13 +204,13 @@ class CreateAmendment extends Component {
                     <ErrorSwap
                       condition={!this.state.isTaken}
                       normal={
-                        <small id="comment-desc" className="f6 white-80">
+                        <small id='comment-desc' className='f6 white-80'>
                           Draft your amendment. What do you want to add to your
                           government?
                         </small>
                       }
                       error={
-                        <small id="name-desc" className="f6 red db mb2">
+                        <small id='name-desc' className='f6 red db mb2'>
                           You can't submit an empty amendment.
                         </small>
                       }
@@ -218,7 +218,7 @@ class CreateAmendment extends Component {
                   </div>
                 </div>
               </article>
-              <div id="comment-desc" className="f6 white-80">
+              <div id='comment-desc' className='f6 white-80'>
                 Pressing "Draft Amendment" will create a new revision for this
                 amendment. Drafts must first be ratified by a minimum electorate
                 of Circle members, and then must be approved with a majority of
@@ -226,9 +226,9 @@ class CreateAmendment extends Component {
                 removed by the owner at any point before ratification.
               </div>
               <button
-                id="create-circle-button"
-                className="btn mt4"
-                type="submit"
+                id='create-circle-button'
+                className='btn mt4'
+                type='submit'
               >
                 Draft Amendment
               </button>
@@ -239,11 +239,11 @@ class CreateAmendment extends Component {
     } else {
       return (
         <div
-          id="dashboard-wrapper"
+          id='dashboard-wrapper'
           style={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center"
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
           }}
         >
           <Loader />
@@ -255,21 +255,21 @@ class CreateAmendment extends Component {
 
 function mapStateToProps(state) {
   return {
-    user: pull(state, "user"),
-    activeCircle: pull(state, "activeCircle"),
-    activeRevision: pull(state, "activeRevision")
+    user: pull(state, 'user'),
+    activeCircle: pull(state, 'activeCircle'),
+    activeRevision: pull(state, 'activeRevision'),
   };
 }
 export default connect(mapStateToProps)(
   compose(
-    graphql(CREATE_REVISION, { name: "createRevision" }),
-    graphql(CREATE_VOTE, { name: "createVote" }),
+    graphql(CREATE_REVISION, { name: 'createRevision' }),
+    graphql(CREATE_VOTE, { name: 'createVote' }),
     graphql(GET_AMENDMENTS_FROM_CIRCLE_ID, {
       options: ({ activeCircle }) => ({
         variables: {
-          id: activeCircle
-        }
-      })
-    })
-  )(withRouter(CreateAmendment))
+          id: activeCircle,
+        },
+      }),
+    }),
+  )(withRouter(CreateAmendment)),
 );
