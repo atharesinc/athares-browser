@@ -9,7 +9,7 @@ import { updateRevision } from '../../../store/state/actions';
 import FeatherIcon from 'feather-icons-react';
 import swal from 'sweetalert';
 import sha from 'simple-hash-browser';
-import {  graphql } from 'react-apollo';
+import { graphql } from 'react-apollo';
 import compose from 'lodash.flowright';
 import { CREATE_REVISION, CREATE_VOTE } from '../../../graphql/mutations';
 import { GET_AMENDMENTS_FROM_CIRCLE_ID } from '../../../graphql/queries';
@@ -129,7 +129,7 @@ class CreateAmendment extends Component {
     });
   };
   render() {
-    let { activeCircle, data } = this.props;
+    let { activeCircle, data = {} } = this.props;
 
     if (activeCircle && data.Circle) {
       return (

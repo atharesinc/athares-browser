@@ -80,7 +80,7 @@ class Channels extends Component {
         variables={{ id: this.props.activeCircle || '' }}
         pollInterval={3000}
       >
-        {({ data }) => {
+        {({ data = {} }) => {
           if (data.Circle) {
             circle = data.Circle;
             channels = circle.channels;

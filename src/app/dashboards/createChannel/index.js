@@ -13,7 +13,7 @@ import {
   ADD_CHANNEL_TO_CIRCLE,
 } from '../../../graphql/mutations';
 import { GET_CIRCLE_NAME_BY_ID } from '../../../graphql/queries';
-import {  graphql, Query } from 'react-apollo';
+import { graphql, Query } from 'react-apollo';
 import compose from 'lodash.flowright';
 
 class CreateChannel extends Component {
@@ -101,7 +101,7 @@ class CreateChannel extends Component {
         query={GET_CIRCLE_NAME_BY_ID}
         variables={{ id: this.props.activeCircle || '' }}
       >
-        {({ loading, err, data }) => {
+        {({ loading, err, data = {} }) => {
           if (data) {
             circle = data.Circle;
           }

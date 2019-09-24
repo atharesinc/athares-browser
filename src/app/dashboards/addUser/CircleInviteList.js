@@ -1,23 +1,23 @@
-import React, { Component } from "react";
-import ReactTags from "react-tag-autocomplete";
-import TagComponent from "./TagComponent";
-import { connect } from "react-redux";
-import { pull } from "../../../store/state/reducers";
+import React, { Component } from 'react';
+import ReactTags from 'react-tag-autocomplete';
+import TagComponent from './TagComponent';
+import { connect } from 'react-redux';
+import { pull } from '../../../store/state/reducers';
 import {
   SEARCH_FOR_USER,
-  GET_USERS_BY_CIRCLE_ID
-} from "../../../graphql/queries";
-import {  graphql, Query } from "react-apollo";
+  GET_USERS_BY_CIRCLE_ID,
+} from '../../../graphql/queries';
+import { graphql, Query } from 'react-apollo';
 import compose from 'lodash.flowright';
 
 class CircleInviteList extends Component {
   state = {
-    search: ""
+    search: '',
   };
   delete = i => {
     // returns the index of the selected user we'd like to remove
     let updatedListOfSelections = this.props.selectedUsers.filter(
-      (u, it) => i !== it
+      (u, it) => i !== it,
     );
     this.props.updateList(updatedListOfSelections);
   };
@@ -26,7 +26,7 @@ class CircleInviteList extends Component {
       return;
     }
     this.setState({
-      search: input
+      search: input,
     });
   };
   addition = user => {
@@ -40,9 +40,9 @@ class CircleInviteList extends Component {
     return (
       <Query
         query={SEARCH_FOR_USER}
-        variables={{ text: this.state.search || "s7d9f87vs69d8fv7" }}
+        variables={{ text: this.state.search || 's7d9f87vs69d8fv7' }}
       >
-        {({ data: { allUsers } }) => {
+        {({ data: { allUsers = [] } = {} }) => {
           // filter data.suggestions by users that are in selectedUsers list
           if (
             this.state.search.trim().length >= 1 &&
@@ -55,14 +55,14 @@ class CircleInviteList extends Component {
             suggestions = allUsers
               .filter(
                 s =>
-                  getUsers.Circle.users.findIndex(su => su.id === s.id) === -1
+                  getUsers.Circle.users.findIndex(su => su.id === s.id) === -1,
               )
               .filter(s => selectedUsers.findIndex(su => su.id === s.id) === -1)
               .filter(s => s.id !== this.props.user)
-              .map(s => ({ name: s.firstName + " " + s.lastName, ...s }));
+              .map(s => ({ name: s.firstName + ' ' + s.lastName, ...s }));
           }
           return (
-            <div className="wrapper black">
+            <div className='wrapper black'>
               <ReactTags
                 tags={this.props.selectedUsers}
                 suggestions={suggestions}
@@ -71,8 +71,8 @@ class CircleInviteList extends Component {
                 handleInputChange={this.inputChange}
                 placeholder={
                   this.props.shouldPlaceholder
-                    ? "Type the name of a person"
-                    : " "
+                    ? 'Type the name of a person'
+                    : ' '
                 }
                 autofocus={true}
                 tagComponent={TagComponent}
@@ -87,15 +87,17 @@ class CircleInviteList extends Component {
 
 function mapStateToProps(state) {
   return {
-    user: pull(state, "user"),
-    activeCircle: pull(state, "activeCircle")
+    user: pull(state, 'user'),
+    activeCircle: pull(state, 'activeCircle'),
   };
 }
 export default connect(mapStateToProps)(
   compose(
     graphql(GET_USERS_BY_CIRCLE_ID, {
-      name: "getUsers",
-      options: ({ activeCircle }) => ({ variables: { id: activeCircle || "" } })
-    })
-  )(CircleInviteList)
+      name: 'getUsers',
+      options: ({ activeCircle }) => ({
+        variables: { id: activeCircle || '' },
+      }),
+    }),
+  )(CircleInviteList),
 );

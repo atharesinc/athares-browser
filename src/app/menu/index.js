@@ -75,7 +75,7 @@ class MenuWrapper extends Component {
         variables={{ id: props.userId || '' }}
         pollInterval={30000}
       >
-        {({ data }) => {
+        {({ data = {} }) => {
           let user = null;
           if (data.User) {
             user = data.User;

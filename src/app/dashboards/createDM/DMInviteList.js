@@ -1,20 +1,20 @@
-import React, { Component } from "react";
-import ReactTags from "react-tag-autocomplete";
-import TagComponent from "./TagComponent";
-import swal from "sweetalert";
-import { connect } from "react-redux";
-import { pull } from "../../../store/state/reducers";
-import { SEARCH_FOR_USER } from "../../../graphql/queries";
-import { Query } from "react-apollo";
+import React, { Component } from 'react';
+import ReactTags from 'react-tag-autocomplete';
+import TagComponent from './TagComponent';
+import swal from 'sweetalert';
+import { connect } from 'react-redux';
+import { pull } from '../../../store/state/reducers';
+import { SEARCH_FOR_USER } from '../../../graphql/queries';
+import { Query } from 'react-apollo';
 
 class DMInviteList extends Component {
   state = {
-    search: ""
+    search: '',
   };
   delete = i => {
     // returns the index of the selected user we'd like to remove
     let updatedListOfSelections = this.props.selectedUsers.filter(
-      (u, it) => i !== it
+      (u, it) => i !== it,
     );
     this.props.updateList(updatedListOfSelections);
   };
@@ -23,7 +23,7 @@ class DMInviteList extends Component {
       return;
     }
     this.setState({
-      search: input
+      search: input,
     });
   };
   addition = user => {
@@ -32,9 +32,9 @@ class DMInviteList extends Component {
       this.props.updateList(newSelectedList);
     } else {
       swal(
-        "Sorry",
-        "Private groups are limited to 6 members, maybe try creating a Circle?",
-        "warning"
+        'Sorry',
+        'Private groups are limited to 6 members, maybe try creating a Circle?',
+        'warning',
       );
       return;
     }
@@ -45,9 +45,9 @@ class DMInviteList extends Component {
     return (
       <Query
         query={SEARCH_FOR_USER}
-        variables={{ text: this.state.search || "s7d9f87vs69d8fv7" }}
+        variables={{ text: this.state.search || 's7d9f87vs69d8fv7' }}
       >
-        {({ data: { allUsers } }) => {
+        {({ data: { allUsers = [] } }) => {
           // filter data.suggestions by users that are in selectedUsers list
           if (
             this.state.search.trim().length >= 1 &&
@@ -62,15 +62,15 @@ class DMInviteList extends Component {
               .map(s => ({
                 name:
                   s.firstName +
-                  " " +
+                  ' ' +
                   s.lastName +
-                  (s.uname ? " - @" + s.uname : ""),
-                ...s
+                  (s.uname ? ' - @' + s.uname : ''),
+                ...s,
               }));
           }
           return (
-            <div className="wrapper">
-              <div className="white mh3">To:</div>
+            <div className='wrapper'>
+              <div className='white mh3'>To:</div>
               <ReactTags
                 tags={this.props.selectedUsers}
                 suggestions={suggestions}
@@ -79,8 +79,8 @@ class DMInviteList extends Component {
                 handleInputChange={this.inputChange}
                 placeholder={
                   this.props.shouldPlaceholder || suggestions.length === 0
-                    ? "Enter a name"
-                    : " "
+                    ? 'Enter a name'
+                    : ' '
                 }
                 autofocus={true}
                 tagComponent={TagComponent}
@@ -95,7 +95,7 @@ class DMInviteList extends Component {
 
 function mapStateToProps(state) {
   return {
-    user: pull(state, "user")
+    user: pull(state, 'user'),
   };
 }
 export default connect(mapStateToProps)(DMInviteList);

@@ -15,7 +15,7 @@ import { connect } from 'react-redux';
 import { CREATE_MESSAGE } from '../../../graphql/mutations';
 import { SUB_TO_MESSAGES_BY_CHANNEL_ID } from '../../../graphql/subscriptions';
 import { GET_MESSAGES_FROM_CHANNEL_ID } from '../../../graphql/queries';
-import {  graphql, Query } from 'react-apollo';
+import { graphql, Query } from 'react-apollo';
 import compose from 'lodash.flowright';
 import swal from 'sweetalert';
 import { uploadToAWS } from 'utils/upload';
@@ -155,7 +155,7 @@ class Chat extends Component {
         variables={{ id: this.props.activeChannel || '' }}
         onCompleted={this.scrollToBottom}
       >
-        {({ data, subscribeToMore }) => {
+        {({ data = {}, subscribeToMore }) => {
           if (data.Channel) {
             this._subToMore(subscribeToMore);
             channel = data.Channel;

@@ -16,7 +16,7 @@ import {
   GET_USER_KEYS,
 } from '../../../graphql/queries';
 import { SUB_TO_MESSAGES_BY_CHANNEL_ID } from '../../../graphql/subscriptions';
-import {  graphql, Query } from 'react-apollo';
+import { graphql, Query } from 'react-apollo';
 import compose from 'lodash.flowright';
 import { uploadToAWS } from 'utils/upload';
 import swal from 'sweetalert';
@@ -221,7 +221,7 @@ class DMChat extends Component {
         variables={{ id: this.props.activeChannel || '' }}
         onCompleted={this.scrollToBottom}
       >
-        {({ data, subscribeToMore }) => {
+        {({ data = {}, subscribeToMore }) => {
           if (data.Channel) {
             this._subToMore(subscribeToMore);
             channel = data.Channel;
