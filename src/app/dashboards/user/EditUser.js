@@ -12,6 +12,7 @@ import { pull } from '../../../store/state/reducers';
 import { hideLoading } from 'react-redux-loading-bar';
 import { UPDATE_USER } from '../../../graphql/mutations';
 import { graphql } from 'react-apollo';
+import { uploadToAWS } from 'utils/upload';
 
 class EditUser extends Component {
   constructor(props) {
@@ -83,6 +84,28 @@ class EditUser extends Component {
       };
     });
   };
+  b64toBlob = (b64Data, sliceSize = 512) => {
+    const block = b64Data.split(';');
+    // get the real base64 content of the file
+    const realData = block[1].split(',')[1];
+    const byteCharacters = atob(realData);
+    var byteArrays = [];
+
+    for (var offset = 0; offset < byteCharacters.length; offset += sliceSize) {
+      var slice = byteCharacters.slice(offset, offset + sliceSize);
+
+      var byteNumbers = new Array(slice.length);
+      for (var i = 0; i < slice.length; i++) {
+        byteNumbers[i] = slice.charCodeAt(i);
+      }
+
+      var byteArray = new Uint8Array(byteNumbers);
+
+      byteArrays.push(byteArray);
+    }
+
+    return new Blob(byteArrays, { type: 'image/png' });
+  };
   onSubmit = async e => {
     e.preventDefault();
     if (this.state.editMode) {
@@ -99,9 +122,13 @@ class EditUser extends Component {
     if (this.state.icon instanceof Blob) {
       base64Large = await this.convertBlobToBase64(base64Large);
     }
-
     // create a reasonable image from whatever was uploaded
     let base64Small = await this.shrinkBase64(base64Large);
+
+    // finally create a file to be uploaded to aws or wherever
+    const finalImage = this.b64toBlob(base64Small);
+
+    let { url } = await uploadToAWS(finalImage);
 
     try {
       // create circle
@@ -110,14 +137,10 @@ class EditUser extends Component {
         lastName: this.state.lastName,
         phone: this.state.phone,
         uname: this.state.uname,
-        icon: base64Small,
+        icon: url,
       };
 
       // Update the user by merging in changes
-
-      //   let user = this.props.gun.user();
-
-      //   user.get("profile").put(updatedUser);
 
       await this.props.updateUser({
         variables: {
@@ -135,6 +158,9 @@ class EditUser extends Component {
       this.props.history.push('/app/user');
     } catch (err) {
       console.error(new Error(err));
+      this.setState({
+        loading: false,
+      });
     }
   };
   shrinkBase64 = base64String => {
