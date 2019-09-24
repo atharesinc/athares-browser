@@ -18,7 +18,8 @@ import { pull } from "../../../store/state/reducers";
 import { connect } from "react-redux";
 import { withRouter, Link } from "react-router-dom";
 import FeatherIcon from "feather-icons-react";
-import { graphql, compose } from "react-apollo";
+import { graphql } from "react-apollo";
+import compose from 'lodash.flowright'
 
 import { CREATE_VOTE, UPDATE_VOTE } from "../../../graphql/mutations";
 

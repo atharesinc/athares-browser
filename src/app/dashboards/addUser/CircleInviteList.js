@@ -7,7 +7,8 @@ import {
   SEARCH_FOR_USER,
   GET_USERS_BY_CIRCLE_ID
 } from "../../../graphql/queries";
-import { compose, graphql, Query } from "react-apollo";
+import {  graphql, Query } from "react-apollo";
+import compose from 'lodash.flowright';
 
 class CircleInviteList extends Component {
   state = {

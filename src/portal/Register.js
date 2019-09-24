@@ -21,7 +21,8 @@ import {
   SIGNIN_USER,
   CREATE_USER_PREF,
 } from '../graphql/mutations';
-import { graphql, compose } from 'react-apollo';
+import { graphql } from 'react-apollo';
+import compose from 'lodash.flowright'
 import { pair } from 'utils/crypto';
 import SimpleCrypto from 'simple-crypto-js';
 

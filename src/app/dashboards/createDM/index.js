@@ -15,7 +15,8 @@ import {
   CREATE_MESSAGE,
   ADD_USER_TO_CHANNEL,
 } from '../../../graphql/mutations';
-import { graphql, compose } from 'react-apollo';
+import { graphql } from 'react-apollo';
+import compose from 'lodash.flowright'
 import { uploadToAWS } from 'utils/upload';
 import swal from 'sweetalert';
 

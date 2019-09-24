@@ -7,7 +7,8 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import swal from 'sweetalert';
 import { pull } from '../../../store/state/reducers';
-import { compose, graphql } from 'react-apollo';
+import {  graphql } from 'react-apollo';
+import compose from 'lodash.flowright';
 import {
   CREATE_REVISION,
   CREATE_VOTE,

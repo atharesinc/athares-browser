@@ -6,7 +6,8 @@ import { updateCircle } from "../../../store/state/actions";
 import swal from "sweetalert";
 import FeatherIcon from "feather-icons-react";
 import { Link } from "react-router-dom";
-import { graphql, compose } from "react-apollo";
+import { graphql } from "react-apollo";
+import compose from 'lodash.flowright'
 import { ADD_USER_TO_CIRCLE } from "../../../graphql/mutations";
 
 class AddUser extends Component {

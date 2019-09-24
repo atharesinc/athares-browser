@@ -8,7 +8,8 @@ import {
   UPDATE_SMS_PERMISSION_FOR_CIRCLE
 } from "../../../graphql/mutations";
 import { GET_CIRCLE_PREFS_FOR_USER } from "../../../graphql/queries";
-import { compose, graphql } from "react-apollo";
+import {  graphql } from "react-apollo";
+import compose from 'lodash.flowright';
 import Switch from "react-switch";
 import { withRouter } from "react-router-dom";
 

@@ -10,7 +10,8 @@ import { Scrollbars } from "react-custom-scrollbars";
 import FeatherIcon from "feather-icons-react";
 import { Link } from "react-router-dom";
 import { CREATE_CIRCLE, ADD_USER_TO_CIRCLE } from "../../../graphql/mutations";
-import { compose, graphql } from "react-apollo";
+import {  graphql } from "react-apollo";
+import compose from 'lodash.flowright';
 
 class createCircleBoard extends Component {
   constructor(props) {

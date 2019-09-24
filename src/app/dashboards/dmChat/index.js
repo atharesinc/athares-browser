@@ -16,7 +16,8 @@ import {
   GET_USER_KEYS,
 } from '../../../graphql/queries';
 import { SUB_TO_MESSAGES_BY_CHANNEL_ID } from '../../../graphql/subscriptions';
-import { compose, graphql, Query } from 'react-apollo';
+import {  graphql, Query } from 'react-apollo';
+import compose from 'lodash.flowright';
 import { uploadToAWS } from 'utils/upload';
 import swal from 'sweetalert';
 import { openDMSettings } from '../../../store/ui/actions';

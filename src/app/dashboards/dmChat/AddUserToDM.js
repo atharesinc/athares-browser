@@ -1,5 +1,6 @@
 import React, { Component, Fragment } from "react";
-import { graphql, compose } from "react-apollo";
+import { graphql } from "react-apollo";
+import compose from 'lodash.flowright'
 import { connect } from "react-redux";
 import { pull } from "../../../store/state/reducers";
 import { toggleAddUsers } from "../../../store/ui/actions";

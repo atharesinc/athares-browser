@@ -7,7 +7,8 @@ import { Scrollbars } from 'react-custom-scrollbars';
 import { connect } from 'react-redux';
 import { pull } from '../../../store/state/reducers';
 import { showLoading, hideLoading } from 'react-redux-loading-bar';
-import { graphql, compose } from 'react-apollo';
+import { graphql } from 'react-apollo';
+import compose from 'lodash.flowright'
 import Switch from 'react-switch';
 import { UPDATE_ALLOW_MARKETING_EMAIL } from '../../../graphql/mutations';
 import { GET_USER_PREF_BY_ID } from '../../../graphql/queries';

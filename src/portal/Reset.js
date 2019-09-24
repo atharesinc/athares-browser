@@ -5,7 +5,8 @@ import {
 } from "../graphql/mutations";
 import { GET_RESET_REQUEST, GET_USER_BY_EMAIL } from "../graphql/queries";
 import moment from "moment";
-import { graphql, compose } from "react-apollo";
+import { graphql } from "react-apollo";
+import compose from 'lodash.flowright'
 import { withRouter } from "react-router-dom";
 import swal from "sweetalert";
 import FeatherIcon from "feather-icons-react";
