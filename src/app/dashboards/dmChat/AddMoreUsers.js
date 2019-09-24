@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import ReactTags from 'react-tag-autocomplete';
-import TagComponent from './TagComponent';
+import TagComponent from '../../../components/TagComponent';
 import { connect } from 'react-redux';
 import { pull } from '../../../store/state/reducers';
 import { SEARCH_FOR_USER } from '../../../graphql/queries';
@@ -47,7 +47,10 @@ class AddMoreUsers extends Component {
               .filter(s => existingUsers.findIndex(su => su.id === s.id) === -1)
               .filter(s => selectedUsers.findIndex(su => su.id === s.id) === -1)
               .filter(s => s.id !== user)
-              .map(s => ({ name: s.firstName + ' ' + s.lastName, ...s }));
+              .map(s => ({
+                name: s.firstName + ' ' + s.lastName + ' - ' + s.email,
+                ...s,
+              }));
           }
           return (
             <div className='w-100 h-30 black'>
