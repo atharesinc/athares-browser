@@ -12,7 +12,10 @@ import sha from 'simple-hash-browser';
 import { graphql } from 'react-apollo';
 import compose from 'lodash.flowright';
 import { CREATE_REVISION, CREATE_VOTE } from '../../../graphql/mutations';
-import { GET_AMENDMENTS_FROM_CIRCLE_ID } from '../../../graphql/queries';
+import {
+  GET_AMENDMENTS_FROM_CIRCLE_ID,
+  DOES_AMENDMENT_EXIST,
+} from '../../../graphql/queries';
 import moment from 'moment';
 
 class CreateAmendment extends Component {
@@ -24,6 +27,7 @@ class CreateAmendment extends Component {
       amendment: '',
       isTaken: false,
       loading: false,
+      isEmpty: false,
     };
   }
   componentDidMount() {
@@ -35,6 +39,7 @@ class CreateAmendment extends Component {
   updateName = e => {
     this.setState({
       name: e.target.value.substring(0, 51),
+      isTaken: false,
     });
   };
   updateAmend = e => {
@@ -56,6 +61,7 @@ class CreateAmendment extends Component {
     e.preventDefault();
     // validate & trim fields
     // ???
+
     await this.setState({ loading: true });
     let {
       data: { Circle: circle },
@@ -63,6 +69,26 @@ class CreateAmendment extends Component {
 
     let numUsers = circle.users.length;
     try {
+      // make sure this circle doesnt already have an amendment by the same name
+      const {
+        data: { allAmendments },
+        error,
+      } = await this.props.doesAmendmentExistInCircle.refetch({
+        circleId: this.props.activeCircle,
+        title: this.state.name,
+      });
+
+      if (allAmendments.length !== 0) {
+        this.setState({ isTaken: true });
+        return false;
+      }
+
+      // make sure the amendment isn't empty
+      if (this.state.amendment.trim() === '') {
+        this.setState({ isEmpty: true });
+        return false;
+      }
+
       let newRevision = {
         circle: this.props.activeCircle,
         user: this.props.user,
@@ -177,7 +203,7 @@ class CreateAmendment extends Component {
                       }
                       error={
                         <small id='name-desc' className='f6 red db mb2'>
-                          Amendment must have a name
+                          Amendment name must be unique to this Circle
                         </small>
                       }
                     />
@@ -203,7 +229,7 @@ class CreateAmendment extends Component {
                       />
                     </Scrollbars>
                     <ErrorSwap
-                      condition={!this.state.isTaken}
+                      condition={!this.state.isEmpty}
                       normal={
                         <small id='comment-desc' className='f6 white-80'>
                           Draft your amendment. What do you want to add to your
@@ -226,13 +252,15 @@ class CreateAmendment extends Component {
                 votes. Amendment drafts are publicly accessible, but can be
                 removed by the owner at any point before ratification.
               </div>
-              <button
-                id='create-circle-button'
-                className='btn mt4'
-                type='submit'
-              >
-                Draft Amendment
-              </button>
+              {this.state.amendment.trim() !== '' && !this.state.isTaken && (
+                <button
+                  id='create-circle-button'
+                  className='btn mt4'
+                  type='submit'
+                >
+                  Draft Amendment
+                </button>
+              )}
             </form>
           </Scrollbars>
         </div>
@@ -263,6 +291,15 @@ function mapStateToProps(state) {
 }
 export default connect(mapStateToProps)(
   compose(
+    graphql(DOES_AMENDMENT_EXIST, {
+      name: 'doesAmendmentExistInCircle',
+      options: ({ activeCircle }) => ({
+        variables: {
+          circleId: activeCircle,
+          title: '',
+        },
+      }),
+    }),
     graphql(CREATE_REVISION, { name: 'createRevision' }),
     graphql(CREATE_VOTE, { name: 'createVote' }),
     graphql(GET_AMENDMENTS_FROM_CIRCLE_ID, {

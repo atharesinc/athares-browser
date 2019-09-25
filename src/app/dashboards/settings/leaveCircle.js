@@ -36,7 +36,6 @@ class LeaveCircle extends Component {
     })
       .then(async value => {
         if (value === true) {
-          console.log(this.props);
           let { id } = this.props.getCirclePrefs.User.circlePermissions[0];
 
           this.props.deleteCirclePermission({

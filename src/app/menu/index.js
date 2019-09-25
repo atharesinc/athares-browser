@@ -34,10 +34,10 @@ class MenuWrapper extends Component {
     window.removeEventListener('appinstalled', this.preventAnotherInstall);
   }
   preventAnotherInstall = () => {
-    console.log('User has added the app');
+    // console.log('User has added the app');
   };
   enableInstall = e => {
-    console.log('able to add to desktop');
+    // console.log('able to add to desktop');
     // Prevent Chrome 67 and earlier from automatically showing the prompt
     e.preventDefault();
     // Stash the event so it can be triggered later.

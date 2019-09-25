@@ -491,3 +491,12 @@ export const IS_USER_IN_CIRCLE = gql`
     }
   }
 `;
+
+export const DOES_AMENDMENT_EXIST = gql`
+  query doesAmendmentExistInCircle($title: String!, $circleId: ID!) {
+    allAmendments(filter: { title: $title, circle: { id: $circleId } }) {
+      id
+      title
+    }
+  }
+`;

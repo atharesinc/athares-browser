@@ -73,15 +73,6 @@ class CreateChannel extends Component {
 
       const { id, name } = newChannelRes.data.createChannel;
 
-      // let res = await this.props.addChannelToCircle({
-      //   variables: {
-      //     circle: this.props.activeCircle,
-      //     channel: newChannel.id,
-      //   },
-      // });
-
-      // let { name } = res.data.addToCircleOnChannels.circleCircle;
-
       swal(
         'Channel Created',
         `${this.state.name} has been created in ${name}.`,

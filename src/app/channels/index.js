@@ -45,13 +45,11 @@ class Channels extends Component {
       document: SUB_TO_CIRCLES_CHANNELS,
       variables: { id: this.props.activeCircle || '' },
       updateQuery: (prev, { subscriptionData }) => {
-        console.log(prev, subscriptionData);
         if (!subscriptionData.data) {
           return prev;
         }
         let newChannel = subscriptionData.data.Channel.node;
         if (!prev.Circle.channels.find(c => c.id === newChannel.id)) {
-          console.log('gotta add this here channel');
           return {
             Circle: {
               ...prev.Circle,
@@ -59,7 +57,6 @@ class Channels extends Component {
             },
           };
         } else {
-          console.log('oi bruv no need to udpate');
           return prev;
         }
       },
