@@ -67,28 +67,29 @@ class CreateChannel extends Component {
       let newChannelRes = await this.props.createChannel({
         variables: {
           ...newChannel,
+          circleId: this.props.activeCircle,
         },
       });
 
-      newChannel.id = newChannelRes.data.createChannel.id;
+      const { id, name } = newChannelRes.data.createChannel;
 
-      let res = await this.props.addChannelToCircle({
-        variables: {
-          circle: this.props.activeCircle,
-          channel: newChannel.id,
-        },
-      });
+      // let res = await this.props.addChannelToCircle({
+      //   variables: {
+      //     circle: this.props.activeCircle,
+      //     channel: newChannel.id,
+      //   },
+      // });
 
-      let { name } = res.data.addToCircleOnChannels.circleCircle;
+      // let { name } = res.data.addToCircleOnChannels.circleCircle;
 
       swal(
         'Channel Created',
         `${this.state.name} has been created in ${name}.`,
         'success',
       );
-      this.props.dispatch(updateChannel(newChannel.id));
+      this.props.dispatch(updateChannel(id));
       this.props.history.push(
-        `/app/circle/${this.props.activeCircle}/channel/${newChannel.id}`,
+        `/app/circle/${this.props.activeCircle}/channel/${id}`,
       );
     } catch (err) {
       console.error(new Error(err));

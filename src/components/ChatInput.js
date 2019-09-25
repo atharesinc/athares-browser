@@ -54,12 +54,6 @@ export default class ChatInput extends PureComponent {
     });
   };
 
-  // submit
-  // -- desktop
-  // -- shift held
-
-  // new line
-  // -- mobile
   submitHandler = e => {
     if (e.key === 'Enter') {
       let mobile = window.innerWidth < 993;
@@ -80,7 +74,8 @@ export default class ChatInput extends PureComponent {
       return false;
     } else {
       // send the message to parent
-      this.props.submit(this.state.input, this.state.file);
+      let realFile = document.getElementById('fileTextUpload').files[0];
+      this.props.submit(this.state.input, realFile);
       this.setState({
         input: '',
         showFilePreview: false,
@@ -90,12 +85,14 @@ export default class ChatInput extends PureComponent {
       });
       let chatInput = document.getElementById('chat-input');
       chatInput.focus();
+      chatInput.value = '';
     }
   };
   onChange = async e => {
     const imgs = ['gif', 'png', 'jpg', 'jpeg', 'bmp'];
     let file = e.currentTarget.files[0];
     let extension = file.name.match(/\.(.{1,4})$/i)[1];
+
     if (
       file.type.includes('image/') &&
       imgs.findIndex(i => i === extension.toLowerCase()) !== -1
@@ -106,6 +103,7 @@ export default class ChatInput extends PureComponent {
         fileIsImage: true,
         loadingImage: true,
       });
+
       this.getImagePreview(file);
     } else {
       await this.setState({
@@ -133,14 +131,14 @@ export default class ChatInput extends PureComponent {
     }
   };
 
-  dataURItoBlob = dataURI => {
-    var binary = atob(dataURI.split(',')[1]);
-    var array = [];
-    for (var i = 0; i < binary.length; i++) {
-      array.push(binary.charCodeAt(i));
-    }
-    return new Blob([new Uint8Array(array)], { type: 'image/jpg' });
-  };
+  // dataURItoBlob = dataURI => {
+  //   var binary = atob(dataURI.split(',')[1]);
+  //   var array = [];
+  //   for (var i = 0; i < binary.length; i++) {
+  //     array.push(binary.charCodeAt(i));
+  //   }
+  //   return new Blob([new Uint8Array(array)], { type: 'image/jpg' });
+  // };
   getImagePreview = async () => {
     let { file } = this.state;
     let that = this;

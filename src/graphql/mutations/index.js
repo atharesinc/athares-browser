@@ -1,4 +1,4 @@
-import gql from "graphql-tag";
+import gql from 'graphql-tag';
 
 export const CREATE_USER = gql`
   mutation CREATE_USER(
@@ -116,13 +116,16 @@ export const CREATE_CHANNEL = gql`
     $name: String!
     $description: String
     $channelType: String!
+    $circleId: ID!
   ) {
     createChannel(
       channelType: $channelType
       name: $name
       description: $description
+      circleId: $circleId
     ) {
       id
+      name
     }
   }
 `;

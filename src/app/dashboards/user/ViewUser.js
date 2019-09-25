@@ -8,7 +8,7 @@ import { connect } from 'react-redux';
 import { pull } from '../../../store/state/reducers';
 import { showLoading, hideLoading } from 'react-redux-loading-bar';
 import { graphql } from 'react-apollo';
-import compose from 'lodash.flowright'
+import compose from 'lodash.flowright';
 import Switch from 'react-switch';
 import { UPDATE_ALLOW_MARKETING_EMAIL } from '../../../graphql/mutations';
 import { GET_USER_PREF_BY_ID } from '../../../graphql/queries';
@@ -45,7 +45,12 @@ class ViewUser extends React.Component {
     } = this.props;
     if (loading || !userPref || !user) {
       return (
-        <div id='dashboard-wrapper'>
+        <div
+          id='dashboard-wrapper'
+          style={{
+            justifyContent: 'center',
+          }}
+        >
           <Loader />
         </div>
       );

@@ -94,7 +94,7 @@ class Chat extends Component {
         text: text.trim(),
         channel: this.props.activeChannel,
         user: this.props.user,
-        file: url.url,
+        file: file !== null ? url.url : null,
         fileName: file !== null ? file.name : null,
       };
 
@@ -131,16 +131,20 @@ class Chat extends Component {
       document: SUB_TO_MESSAGES_BY_CHANNEL_ID,
       variables: { id: this.props.activeChannel || '' },
       updateQuery: (prev, { subscriptionData }) => {
-        // this.props.getChannelMessages.refetch({
-        //   id: activeChannel
-        // });
+        if (!subscriptionData.data) {
+          return prev;
+        }
         let newMsg = subscriptionData.data.Message.node;
         if (!prev.Channel.messages.find(m => m.id === newMsg.id)) {
-          // merge new messages into prev.messages
-          prev.Channel.messages = [...prev.Channel.messages, newMsg];
+          return {
+            Channel: {
+              ...prev.Channel,
+              messages: [...prev.Channel.messages, newMsg],
+            },
+          };
+        } else {
+          return prev;
         }
-
-        return prev;
       },
     });
   };

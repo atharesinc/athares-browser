@@ -1,7 +1,7 @@
 import React from 'react';
 
 const ImageMessage = ({ file, fileName }) => (
-  <div className='w-50 ma2 mb0'>
+  <div className='w-50'>
     <img src={file} alt={fileName || 'file'} />
   </div>
 );

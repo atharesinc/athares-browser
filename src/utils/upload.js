@@ -3,7 +3,13 @@ import { RNS3 } from 'react-native-aws3';
 let API_KEYS = null;
 
 export async function uploadToAWS(file) {
-  file.name = createUUID();
+  // file.name = createUUID() + '.' + getExtension(file.type);
+  const myNewFile = new File(
+    [file],
+    createUUID() + '.' + getExtension(file.type),
+    { type: file.type },
+  );
+
   try {
     let keys =
       API_KEYS ||
@@ -20,7 +26,7 @@ export async function uploadToAWS(file) {
       successActionStatus: 201,
     };
 
-    let response = await RNS3.put(file, options);
+    let response = await RNS3.put(myNewFile, options);
     if (response.status !== 201) {
       return { error: 'Failed to upload image to S3' };
     }
@@ -40,7 +46,10 @@ function createUUID() {
   ) {
     var r = (dt + Math.random() * 16) % 16 | 0;
     dt = Math.floor(dt / 16);
-    return (c == 'x' ? r : (r & 0x3) | 0x8).toString(16);
+    return (c === 'x' ? r : (r & 0x3) | 0x8).toString(16);
   });
   return uuid;
+}
+function getExtension(type) {
+  return type.split('/')[1];
 }

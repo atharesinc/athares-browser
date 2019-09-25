@@ -11,6 +11,8 @@ import {
   GET_DMS_BY_USER,
   IS_USER_IN_CIRCLE,
 } from '../../graphql/queries';
+import { SUB_TO_CIRCLES_CHANNELS } from 'graphql/subscriptions';
+
 import { Query, graphql } from 'react-apollo';
 import compose from 'lodash.flowright';
 
@@ -37,6 +39,31 @@ class Channels extends Component {
   }
   goToOptions = () => {
     this.props.history.push(`/app/circle/${this.props.activeCircle}/settings`);
+  };
+  _subToMore = subscribeToMore => {
+    subscribeToMore({
+      document: SUB_TO_CIRCLES_CHANNELS,
+      variables: { id: this.props.activeCircle || '' },
+      updateQuery: (prev, { subscriptionData }) => {
+        console.log(prev, subscriptionData);
+        if (!subscriptionData.data) {
+          return prev;
+        }
+        let newChannel = subscriptionData.data.Channel.node;
+        if (!prev.Circle.channels.find(c => c.id === newChannel.id)) {
+          console.log('gotta add this here channel');
+          return {
+            Circle: {
+              ...prev.Circle,
+              channels: [...prev.Circle.channels, newChannel],
+            },
+          };
+        } else {
+          console.log('oi bruv no need to udpate');
+          return prev;
+        }
+      },
+    });
   };
   render() {
     let {
@@ -78,10 +105,11 @@ class Channels extends Component {
       <Query
         query={GET_CHANNELS_BY_CIRCLE_ID}
         variables={{ id: this.props.activeCircle || '' }}
-        pollInterval={3000}
+        // pollInterval={3000}
       >
-        {({ data = {} }) => {
+        {({ data = {}, subscribeToMore }) => {
           if (data.Circle) {
+            this._subToMore(subscribeToMore);
             circle = data.Circle;
             channels = circle.channels;
             channels = channels.map(ch => ({

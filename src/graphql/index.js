@@ -24,6 +24,9 @@ const wsLink = new WebSocketLink({
   uri: wsUri,
   options: {
     reconnect: true,
+    connectionParams: {
+      authToken: 'Bearer ' + localStorage.getItem('ATHARES_TOKEN') || '',
+    },
   },
 });
 

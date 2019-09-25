@@ -1,4 +1,4 @@
-import gql from "graphql-tag";
+import gql from 'graphql-tag';
 
 export const SUB_TO_MESSAGES_BY_CHANNEL_ID = gql`
   subscription subToMessages($id: ID!) {
@@ -85,6 +85,23 @@ export const SUB_TO_CIRCLES_AMENDMENTS = gql`
         }
         createdAt
         updatedAt
+      }
+    }
+  }
+`;
+export const SUB_TO_CIRCLES_CHANNELS = gql`
+  subscription($id: ID!) {
+    Channel(
+      filter: {
+        mutation_in: [CREATED, UPDATED, DELETED]
+        node: { circle: { id: $id } }
+      }
+    ) {
+      node {
+        id
+        name
+        channelType
+        createdAt
       }
     }
   }
