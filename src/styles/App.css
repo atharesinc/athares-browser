@@ -113,7 +113,8 @@ input:focus,
 button:focus,
 input[type='submit']:focus,
 textarea:focus {
-  box-shadow: 0 0 1em #0cb1ff;
+  animation: focusIn 0.4s 1 0s ease;
+  outline: 3px solid #00dffc;
 }
 
 /* Stupid apple styling */
@@ -1469,7 +1470,7 @@ a:visited {
 .transparent-input {
   background: transparent;
   border: none;
-  color: #00deff;
+  color: #00dffc;
   margin-left: 1em;
 }
 .transparent-input:focus {
@@ -2196,4 +2197,54 @@ a:visited {
 
 .slideInFromLeft {
   animation: slideInFromLeft 0.25s 1 0s linear;
+}
+
+/* focus */
+
+@keyframes focusIn {
+  0% {
+    box-shadow: 0 0 10em #00dffc50;
+  }
+  51% {
+    box-shadow: 0 0 1em #00dffc;
+  }
+  86% {
+    outline: 1px solid #00dffc;
+  }
+  100% {
+    outline: 3px solid #00dffc;
+  }
+}
+
+@-webkit-keyframes focusIn {
+  0% {
+    box-shadow: 0 0 10em #00dffc50;
+  }
+  51% {
+    box-shadow: 0 0 1em #00dffc;
+  }
+  86% {
+    outline: 1px solid #00dffc;
+  }
+  100% {
+    outline: 3px solid #00dffc;
+  }
+}
+@-moz-keyframes focusIn {
+  0% {
+    box-shadow: 0 0 10em #00dffc50;
+  }
+  51% {
+    box-shadow: 0 0 1em #00dffc;
+  }
+  86% {
+    outline: 1px solid #00dffc;
+  }
+  100% {
+    outline: 3px solid #00dffc;
+  }
+}
+
+.focus-in {
+  animation: focusIn 0.5s 1 0s ease;
 }

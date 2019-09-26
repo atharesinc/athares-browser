@@ -47,7 +47,7 @@ class DMInviteList extends Component {
         query={SEARCH_FOR_USER}
         variables={{ text: this.state.search || 's7d9f87vs69d8fv7' }}
       >
-        {({ data: { allUsers = [] } }) => {
+        {({ data: { allUsers = [] } = {} }) => {
           // filter data.suggestions by users that are in selectedUsers list
           if (
             this.state.search.trim().length >= 1 &&
