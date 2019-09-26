@@ -72,7 +72,7 @@ class LeaveCircle extends Component {
         query={GET_CIRCLE_NAME_BY_ID}
         variables={{ id: this.props.activeCircle }}
       >
-        {({ loading, data: { Circle: circle } }) => {
+        {({ loading, data: { Circle: circle } = {} }) => {
           if (loading) {
             return (
               <div className='w-100 flex justify-center items-center'>
