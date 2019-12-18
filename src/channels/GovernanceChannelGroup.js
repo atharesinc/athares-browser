@@ -52,7 +52,7 @@ const GovernanceChannelGroup = ({ activeCircle, location, ...props }) => {
             className="bg-theme-light br-pill pv1 ph2"
             style={{ textIndent: "initial" }}
           >
-            Coming Soon
+            Beta
           </div>
         </div>
       </Link>

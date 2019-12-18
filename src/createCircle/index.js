@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import ImageUpload from "../components/imageUpload";
+import ImageUpload from "../components/ImageUpload";
 import ErrorSwap from "../utils/ErrorSwap";
 import { connect } from "react-redux";
 import { pull } from "../store/state/reducers";

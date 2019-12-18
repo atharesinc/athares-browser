@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import ImageUpload from "../components/imageUpload";
+import ImageUpload from "../components/ImageUpload";
 import ErrorSwap from "../utils/ErrorSwap";
 import Phone from "react-phone-number-input";
 import "react-phone-number-input/rrui.css";

@@ -1,18 +1,18 @@
-import React, { PureComponent } from 'react';
-import TextareaAutosize from 'react-autosize-textarea';
-import FeatherIcon from 'feather-icons-react';
-import Loader from './Loader';
+import React, { PureComponent } from "react";
+import TextareaAutosize from "react-autosize-textarea";
+import FeatherIcon from "feather-icons-react";
+import Loader from "./Loader";
 // import emojer from "emojer";
 // import EXIF from "exif-js";
-import { Picker } from 'emoji-mart';
-var loadImage = require('blueimp-load-image-npm');
+import { Picker } from "emoji-mart";
+var loadImage = require("blueimp-load-image-npm");
 
 export default class ChatInput extends PureComponent {
   constructor() {
     super();
 
     this.state = {
-      input: '',
+      input: "",
       showFilePreview: false,
       file: null,
       fileIsImage: false,
@@ -20,88 +20,104 @@ export default class ChatInput extends PureComponent {
       showEmoji: false,
       rotate: 0,
       extension: null,
+      filePreview: null
     };
   }
   componentDidMount() {
-    window.addEventListener('click', this.hideEmojis);
+    window.addEventListener("click", this.hideEmojis);
   }
   componentWillUnmount() {
-    window.removeEventListener('click', this.hideEmojis);
+    window.removeEventListener("click", this.hideEmojis);
   }
   hideEmojis = e => {
     if (this.state.showEmoji === false) {
       return;
     }
-    if (e.target.closest('.emoji-mart') !== null) {
+    if (e.target.closest(".emoji-mart") !== null) {
       return;
     }
-    if (e.target.closest('#emoji-trigger') !== null) {
+    if (e.target.closest("#emoji-trigger") !== null) {
       return;
     }
-    if (e.target.closest('.emoji-mart') === null) {
+    if (e.target.closest(".emoji-mart") === null) {
       this.setState({
-        showEmoji: false,
+        showEmoji: false
       });
     }
   };
   changeText = () => {
-    let chatInput = document.getElementById('chat-input');
+    let chatInput = document.getElementById("chat-input");
+    if (this.state.input.trim() === "" && chatInput.value.trim() === "") {
+      return false;
+    }
     this.setState({ input: chatInput.value });
   };
   toggleEmoji = e => {
     this.setState({
-      showEmoji: !this.state.showEmoji,
+      showEmoji: !this.state.showEmoji
     });
   };
 
   submitHandler = e => {
-    if (e.key === 'Enter') {
-      let mobile = window.innerWidth < 993;
-      if (e.shiftKey === false && mobile === false) {
-        this.submit();
-      } else if (e.shiftKey === true && mobile === false) {
-        // e.preventDefault();
-        // console.log("newLine");
-      } else if (mobile === true) {
-        // console.log("newLine - mobile");
-      } else {
-        this.submit();
-      }
-    }
-  };
-  submit = () => {
-    if (this.state.input.trim() === '' && this.state.file === null) {
+    if (e.key !== "Enter") {
       return false;
-    } else {
-      // send the message to parent
-      let realFile = document.getElementById('fileTextUpload').files[0];
-      this.props.submit(this.state.input, realFile);
-      this.setState({
-        input: '',
-        showFilePreview: false,
-        file: null,
-        fileIsImage: false,
-        loadingImage: false,
-      });
-      let chatInput = document.getElementById('chat-input');
-      chatInput.focus();
-      chatInput.value = '';
     }
+    let mobile = window.innerWidth < 993;
+
+    if (e.shiftKey === false && mobile === false) {
+      if (this.state.input.trim() === "" && this.state.file === null) {
+        return false;
+      }
+      this.submit();
+      return;
+    }
+    if (e.shiftKey === true && mobile === false) {
+      console.log("desktop and using shift", e.shiftKey);
+      return false;
+    }
+
+    if (mobile === true) {
+      return false;
+    }
+
+    this.submit();
+  };
+  submit = async () => {
+    if (this.state.input.trim() === "" && this.state.file === null) {
+      return false;
+    }
+    // send the message to parent
+    let realFile = document.getElementById("fileTextUpload").files[0];
+    this.props.submit(this.state.input, realFile);
+    await this.setState({
+      input: "",
+      showFilePreview: false,
+      file: null,
+      filePreview: null,
+      fileIsImage: false,
+      loadingImage: false
+    });
+    document.getElementById("fileTextUpload").value = "";
+
+    let chatInput = document.getElementById("chat-input");
+    chatInput.focus();
+    chatInput.value = "";
+    console.log(this.state);
   };
   onChange = async e => {
-    const imgs = ['gif', 'png', 'jpg', 'jpeg', 'bmp'];
+    const imgs = ["gif", "png", "jpg", "jpeg", "bmp"];
     let file = e.currentTarget.files[0];
     let extension = file.name.match(/\.(.{1,4})$/i)[1];
 
     if (
-      file.type.includes('image/') &&
+      file.type.includes("image/") &&
       imgs.findIndex(i => i === extension.toLowerCase()) !== -1
     ) {
       await this.setState({
         showFilePreview: true,
         file,
         fileIsImage: true,
-        loadingImage: true,
+        loadingImage: true
       });
 
       this.getImagePreview(file);
@@ -109,7 +125,7 @@ export default class ChatInput extends PureComponent {
       await this.setState({
         showFilePreview: true,
         file,
-        fileIsImage: false,
+        fileIsImage: false
       });
     }
   };
@@ -120,14 +136,14 @@ export default class ChatInput extends PureComponent {
       }
       return (
         <img
-          className='mw4 mr2'
+          className="mw4 mr2"
           style={{ transform: this.state.rotate }}
           src={this.state.filePreview}
           alt={this.state.file.name}
         />
       );
     } else {
-      return <FeatherIcon icon='file-text' />;
+      return <FeatherIcon icon="file-text" />;
     }
   };
 
@@ -145,7 +161,7 @@ export default class ChatInput extends PureComponent {
     loadImage.parseMetaData(file, function(data) {
       let ori = 0;
       if (data.exif) {
-        ori = data.exif.get('Orientation');
+        ori = data.exif.get("Orientation");
       }
       loadImage(
         file,
@@ -157,7 +173,7 @@ export default class ChatInput extends PureComponent {
               that.setState({
                 loadingImage: false,
                 filePreview: reader.result,
-                file: blob,
+                file: blob
               });
             };
             reader.readAsDataURL(blob);
@@ -167,8 +183,8 @@ export default class ChatInput extends PureComponent {
           meta: true,
           canvas: true,
           orientation: ori,
-          maxWidth: 600,
-        },
+          maxWidth: 600
+        }
       );
     });
   };
@@ -176,105 +192,105 @@ export default class ChatInput extends PureComponent {
     this.setState({
       showFilePreview: false,
       file: null,
-      fileIsImage: false,
+      fileIsImage: false
     });
   };
   selectEmoji = emoji => {
     this.setState({
-      input: this.state.input + emoji.native,
+      input: this.state.input + emoji.native
     });
   };
   render() {
     let { showFilePreview, fileIsImage, file, showEmoji } = this.state;
     let mobile = window.innerWidth < 993;
-    let width = mobile ? '100%' : '300px';
+    let width = mobile ? "100%" : "300px";
     return (
-      <div id='chat-input-wrapper'>
+      <div id="chat-input-wrapper">
         {/* new stuff below */}
         {this.props.uploadInProgress && (
           <div
-            className='w-100 flex flex-row justify-start items-center ph2 bg-theme-light openDown'
+            className="w-100 flex flex-row justify-start items-center ph2 bg-theme-light openDown"
             style={{
-              height: '3em',
-              position: 'absolute',
-              bottom: '10vh',
+              height: "3em",
+              position: "absolute",
+              bottom: "10vh"
             }}
           >
-            <FeatherIcon className='spin white' icon='loader' />
-            <div className='ml2 f6 white-70'>
-              {file ? file.name : 'Sending'}
+            <FeatherIcon className="spin white" icon="loader" />
+            <div className="ml2 f6 white-70">
+              {file ? file.name : "Sending"}
             </div>
           </div>
         )}
         {showEmoji && (
           <Picker
-            native='true'
-            title={''}
+            native="true"
+            title={""}
             showPreview={false}
             onSelect={this.selectEmoji}
             style={{
               width,
-              position: 'absolute',
-              bottom: '10vh',
+              position: "absolute",
+              bottom: "10vh"
             }}
           />
         )}
         <div
-          className='w-100 flex flex-row justify-start items-center ph2 bg-theme-light openDown'
+          className="w-100 flex flex-row justify-start items-center ph2 bg-theme-light openDown"
           style={{
-            height: showFilePreview ? (fileIsImage ? '5em' : '3em') : 0,
-            overflow: showFilePreview ? 'normal' : 'hidden',
-            position: 'absolute',
-            bottom: '10vh',
+            height: showFilePreview ? (fileIsImage ? "5em" : "3em") : 0,
+            overflow: showFilePreview ? "normal" : "hidden",
+            position: "absolute",
+            bottom: "10vh"
           }}
         >
           <input
-            style={{ height: 0, width: 0, visibility: 'hidden' }}
-            type='file'
-            name='file'
-            id='fileTextUpload'
+            style={{ height: 0, width: 0, visibility: "hidden" }}
+            type="file"
+            name="file"
+            id="fileTextUpload"
             onChange={this.onChange}
           />
           {showFilePreview ? this.shouldRenderImage() : null}
-          {file && <div className='ml2 f6 white-70'>{file.name}</div>}
+          {file && <div className="ml2 f6 white-70">{file.name}</div>}
         </div>
 
         {/* end new stuff */}
-        <div className='flex flex-row items-start justify-start'>
-          <div id='chat-util-icons'>
+        <div className="flex flex-row items-start justify-start">
+          <div id="chat-util-icons">
             {/* This should be a smile but feather-icons-react is behind :\ */}
             <div
-              className='chat-util-icon'
-              id='emoji-trigger'
+              className="chat-util-icon"
+              id="emoji-trigger"
               onClick={this.toggleEmoji}
             >
-              <FeatherIcon icon='star' />
+              <FeatherIcon icon="star" />
             </div>
-            <label htmlFor={'fileTextUpload'}>
-              <div className='chat-util-icon'>
-                <FeatherIcon icon='paperclip' />
+            <label htmlFor={"fileTextUpload"}>
+              <div className="chat-util-icon">
+                <FeatherIcon icon="paperclip" />
               </div>
             </label>
           </div>
           <TextareaAutosize
             rows={1}
-            // maxRows={mobile ? 3 : 5}
-            id='chat-input'
+            maxRows={10}
+            id="chat-input"
             value={this.state.input}
-            placeholder='Enter Message'
+            placeholder="Enter Message"
             onKeyDown={this.submitHandler}
             onChange={this.changeText}
-            tabIndex='1'
-            style={{ minHeight: '10vh', maxHeight: '30vh', height: 'auto' }}
+            tabIndex="1"
+            // style={{ minHeight: "10vh", maxHeight: "30vh", height: "auto" }}
           />
           {window.innerWidth < 993 && (
             <div
-              id='chat-util-icons'
-              className='mobile-chat-bar'
-              style={{ width: '3em' }}
+              id="chat-util-icons"
+              className="mobile-chat-bar"
+              style={{ width: "3em" }}
             >
-              <div className='chat-util-icon' onClick={this.submit}>
-                <FeatherIcon icon='send' />
+              <div className="chat-util-icon" onClick={this.submit}>
+                <FeatherIcon icon="send" />
               </div>
             </div>
           )}
