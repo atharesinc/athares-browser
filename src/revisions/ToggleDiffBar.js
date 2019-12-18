@@ -1,4 +1,4 @@
-import React from "react";
+import React from "reactn";
 import FeatherIcon from "feather-icons-react";
 
 const ToggleDiffBar = ({ toggle, mode }) => {

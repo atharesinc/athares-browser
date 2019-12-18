@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 import ErrorSwap from '../utils/ErrorSwap';
 import Loader from '../components/Loader';
 import { withRouter, Link } from 'react-router-dom';
@@ -18,9 +18,8 @@ import {
 } from '../graphql/queries';
 import moment from 'moment';
 
-class CreateAmendment extends Component {
-  constructor(props) {
-    super(props);
+function CreateAmendment (){
+  
 
     this.state = {
       name: '',
@@ -29,20 +28,24 @@ class CreateAmendment extends Component {
       loading: false,
       isEmpty: false,
     };
-  }
-  componentDidMount() {
+  
+useEffect(()=>{
+ componentMount();
+}, [])
+
+const componentMount =    => {
     // verify this circle is real and that the user is logged in, but for now...
-    if (!this.props.user || !this.props.activeCircle) {
-      this.props.history.replace('/app');
+    if (!props.user || !props.activeCircle) {
+      props.history.replace('/app');
     }
   }
-  updateName = e => {
+  const updateName = e => {
     this.setState({
       name: e.target.value.substring(0, 51),
       isTaken: false,
     });
   };
-  updateAmend = e => {
+  const updateAmend = e => {
     this.setState({
       amendment: e.target.innerText,
     });
@@ -57,7 +60,7 @@ class CreateAmendment extends Component {
   ratifiedThreshold = n => {
     return 0.4 / (1 + Math.pow(Math.E, -1 * n * 0.2));
   };
-  onSubmit = async e => {
+  const onSubmit = async e => {
     e.preventDefault();
     // validate & trim fields
     // ???
@@ -65,7 +68,7 @@ class CreateAmendment extends Component {
     await this.setState({ loading: true });
     let {
       data: { Circle: circle },
-    } = this.props;
+    } = props;
 
     let numUsers = circle.users.length;
     try {
@@ -73,8 +76,8 @@ class CreateAmendment extends Component {
       const {
         data: { allAmendments },
         error,
-      } = await this.props.doesAmendmentExistInCircle.refetch({
-        circleId: this.props.activeCircle,
+      } = await props.doesAmendmentExistInCircle.refetch({
+        circleId: props.activeCircle,
         title: this.state.name,
       });
 
@@ -90,8 +93,8 @@ class CreateAmendment extends Component {
       }
 
       let newRevision = {
-        circle: this.props.activeCircle,
-        user: this.props.user,
+        circle: props.activeCircle,
+        user: props.user,
         title: this.state.name,
         newText: this.state.amendment.trim(),
         expires: moment()
@@ -109,7 +112,7 @@ class CreateAmendment extends Component {
           voterThreshold: newRevision.voterThreshold,
         }),
       );
-      let newRevisionRes = await this.props.createRevision({
+      let newRevisionRes = await props.createRevision({
         variables: {
           ...newRevision,
           hash,
@@ -120,20 +123,20 @@ class CreateAmendment extends Component {
 
       const newVote = {
         revision: newRevision.id,
-        user: this.props.user,
+        user: props.user,
         support: true,
       };
 
-      await this.props.createVote({
+      await props.createVote({
         variables: {
           ...newVote,
         },
       });
 
-      this.props.dispatch(updateRevision(newRevision.id));
+      props.dispatch(updateRevision(newRevision.id));
 
-      this.props.history.push(
-        `/app/circle/${this.props.activeCircle}/revisions/${newRevision.id}`,
+      props.history.push(
+        `/app/circle/${props.activeCircle}/revisions/${newRevision.id}`,
       );
     } catch (err) {
       if (
@@ -149,13 +152,13 @@ class CreateAmendment extends Component {
       }
     }
   };
-  clearError = () => {
+  const clearError = () => {
     this.setState({
       isTaken: false,
     });
   };
-  render() {
-    let { activeCircle, data = {} } = this.props;
+  
+    let { activeCircle, data = {} } = props;
 
     if (activeCircle && data.Circle) {
       return (

@@ -1,4 +1,4 @@
-import React, { PureComponent, Fragment } from "react";
+import React, { useState, useEffect, Fragment } from "reactn";
 import "tachyons";
 import "./styles/App.css";
 import "./styles/swaloverride.css";
@@ -27,7 +27,7 @@ import Invite from "./invite";
 import throttle from "lodash.throttle";
 import { TweenMax } from "gsap";
 
-import { connect } from "react-redux";
+
 import { pull } from "./store/state/reducers";
 import * as sync from "./store/state/actions";
 import LoadingBar from "react-redux-loading-bar";
@@ -35,26 +35,33 @@ import LoadingBar from "react-redux-loading-bar";
 import { SIGNIN_USER } from "./graphql/mutations";
 import { graphql } from "react-apollo";
 
-class App extends PureComponent {
-  constructor(props) {
-    super(props);
+function App() {
+  const [width, setWidth] = useState(window.innerWidth);
 
-    this.state = {
-      width: window.innerWidth
-    };
-  }
-  updateWidth = () => {
-    this.setState({
-      width: window.innerWidth
-    });
+  const updateWidth = () => {
+    setWidth(window.innerWidth);
   };
-  componentDidUpdate() {
-    this.routeFix();
-  }
-  async componentDidMount() {
+
+  useEffect(() => {
+    routeFix();
+  });
+
+  // didMount
+  useEffect(() => {
+    componentMount();
+    return () => {
+      window.addEventListener("resize", throttle(updateWidth, 1000));
+      document.getElementById("root").addEventListener("mousemove", e => {
+        e.stopPropogation();
+        e.preventDefault();
+      });
+    };
+  }, []);
+
+  const componentMount = async () => {
     // check if user could log in
     if (
-      !this.props.user &&
+      !props.user &&
       localStorage.getItem("ATHARES_ALIAS") &&
       localStorage.getItem("ATHARES_HASH")
     ) {
@@ -63,7 +70,7 @@ class App extends PureComponent {
       let hash = localStorage.getItem("ATHARES_HASH");
 
       try {
-        const res = await this.props.signinUser({
+        const res = await props.signinUser({
           variables: {
             email: alias,
             password: hash
@@ -75,40 +82,34 @@ class App extends PureComponent {
             signinUser: { token, userId }
           }
         } = res;
-        this.props.dispatch(sync.updateUser(userId));
-        this.props.dispatch(sync.updatePub(hash));
+        props.dispatch(sync.updateUser(userId));
+        props.dispatch(sync.updatePub(hash));
         window.localStorage.setItem("ATHARES_TOKEN", token);
       } catch (err) {
         console.error(new Error(err));
         // there was some sort of error auto-logging in, clear localStorage and redux just in case
-        this.props.dispatch(sync.logout());
+        props.dispatch(sync.logout());
       }
     }
-    window.addEventListener("resize", throttle(this.updateWidth, 1000));
-    this.routeFix();
-  }
+    window.addEventListener("resize", throttle(updateWidth, 1000));
+    routeFix();
+  };
 
-  routeFix = () => {
+  const routeFix = () => {
     document
       .getElementById("root")
-      .addEventListener("mousemove", this.parallaxApp, true);
+      .addEventListener("mousemove", parallaxApp, true);
     document.getElementById("root").style.overflow = "hidden";
   };
-  parallaxApp = e => {
-    if (this.state.width < 992) {
+  const parallaxApp = e => {
+    if (width < 992) {
       return false;
     }
-    this.parallaxIt(e, "#desktop-wrapper-outer", 30, "#main-layout");
-    this.parallaxIt(e, "#main-layout", -30, "#main-layout");
+    parallaxIt(e, "#desktop-wrapper-outer", 30, "#main-layout");
+    parallaxIt(e, "#main-layout", -30, "#main-layout");
   };
-  componentWillUnmount() {
-    window.addEventListener("resize", throttle(this.updateWidth, 1000));
-    document.getElementById("root").addEventListener("mousemove", e => {
-      e.stopPropogation();
-      e.preventDefault();
-    });
-  }
-  parallaxIt = (e, target, movement, rootElement) => {
+
+  const parallaxIt = (e, target, movement, rootElement) => {
     var $this = document.querySelector(rootElement);
     var relX = e.pageX - $this.offsetLeft;
     var relY = e.pageY - $this.offsetTop;
@@ -121,79 +122,74 @@ class App extends PureComponent {
     });
   };
 
-  render() {
-    return (
-      <Fragment>
-        <LoadingBar
-          style={{
-            height: "0.2em",
-            backgroundColor: "#00DFFC",
-            boxShadow: "0 0 0.5em #00DFFC",
-            zIndex: 1,
-            position: "fixed"
-          }}
-          showFastActions
-        />
-        <OnlineMonitor />
-        <RevisionMonitor />
-        {this.props.user && <ChannelUpdateMonitor />}
-        {this.props.user && <DMUpdateMonitor />}
-        <div className="wrapper high-img" id="main-layout">
-          <div id="desktop-wrapper-outer" className="wrapper">
-            <div className="wrapper grey-screen" id="desktop-wrapper">
-              <AnimatedSwitch
-                atEnter={{ opacity: 0 }}
-                atLeave={{ opacity: 0 }}
-                atActive={{ opacity: 1 }}
-                className="wrapper switch-wrapper"
-              >
-                <Route
-                  exact
-                  path="/login"
-                  render={props => <Login {...props} />}
-                />
-                <Route
-                  path="/reset/:id"
-                  render={props => <Reset {...props} />}
-                />
-                <Route
-                  exact
-                  path="/forgot"
-                  render={props => <Forgot {...props} />}
-                />
-                <Route
-                  exact
-                  path="/register"
-                  render={props => <Register {...props} />}
-                />
-                <Route exact path="/" render={() => <SplashPage />} />
-                <Route exact path="/roadmap" render={() => <Roadmap />} />
-                <Route exact path="/about" render={() => <About />} />
-                <Route exact path="/policy" render={() => <Policy />} />
-                <Route
-                  path="/app"
-                  render={props =>
-                    this.state.width >= 992 ? (
-                      <DesktopLayout {...props} />
-                    ) : (
-                      <MobileLayout {...props} />
-                    )
-                  }
-                />
-                <Route
-                  exact
-                  path="/invite/:id"
-                  render={props => <Invite {...props} />}
-                />
-                {/* <Route exact path="/test" component={Test} /> */}
-                <Route render={() => <NoMatch />} />
-              </AnimatedSwitch>
-            </div>
+  return (
+    <Fragment>
+      <LoadingBar
+        style={{
+          height: "0.2em",
+          backgroundColor: "#00DFFC",
+          boxShadow: "0 0 0.5em #00DFFC",
+          zIndex: 1,
+          position: "fixed"
+        }}
+        showFastActions
+      />
+      <OnlineMonitor />
+      <RevisionMonitor />
+      {props.user && <ChannelUpdateMonitor />}
+      {props.user && <DMUpdateMonitor />}
+      <div className="wrapper high-img" id="main-layout">
+        <div id="desktop-wrapper-outer" className="wrapper">
+          <div className="wrapper grey-screen" id="desktop-wrapper">
+            <AnimatedSwitch
+              atEnter={{ opacity: 0 }}
+              atLeave={{ opacity: 0 }}
+              atActive={{ opacity: 1 }}
+              className="wrapper switch-wrapper"
+            >
+              <Route
+                exact
+                path="/login"
+                render={props => <Login {...props} />}
+              />
+              <Route path="/reset/:id" render={props => <Reset {...props} />} />
+              <Route
+                exact
+                path="/forgot"
+                render={props => <Forgot {...props} />}
+              />
+              <Route
+                exact
+                path="/register"
+                render={props => <Register {...props} />}
+              />
+              <Route exact path="/" render={() => <SplashPage />} />
+              <Route exact path="/roadmap" render={() => <Roadmap />} />
+              <Route exact path="/about" render={() => <About />} />
+              <Route exact path="/policy" render={() => <Policy />} />
+              <Route
+                path="/app"
+                render={props =>
+                  state.width >= 992 ? (
+                    <DesktopLayout {...props} />
+                  ) : (
+                    <MobileLayout {...props} />
+                  )
+                }
+              />
+              <Route
+                exact
+                path="/invite/:id"
+                render={props => <Invite {...props} />}
+              />
+              {/* <Route exact path="/test" component={Test} /> */}
+              <Route render={() => <NoMatch />} />
+            </AnimatedSwitch>
           </div>
         </div>
-      </Fragment>
-    );
-  }
+      </div>
+    </Fragment>
+  );
 }
 
 function mapStateToProps(state) {

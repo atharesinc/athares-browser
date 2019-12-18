@@ -1,4 +1,4 @@
-import React from "react";
+import React from "reactn";
 import Diff from "react-stylable-diff-common";
 import { Scrollbars } from "react-custom-scrollbars";
 
@@ -44,7 +44,6 @@ const DiffSection = ({ oldText, newText, mode }) => {
           <div className="pa3 white pre-wrap lh-copy">{newText}</div>
         </Scrollbars>
       );
-  }
 };
 
 export default DiffSection;

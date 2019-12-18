@@ -1,4 +1,4 @@
-import React, { Fragment, Component } from "react";
+import React, { Fragment, Component } from "reactn";
 import FeatherIcon from "feather-icons-react";
 import swal from "sweetalert";
 import { Link, withRouter } from "react-router-dom";
@@ -11,34 +11,37 @@ import {
 } from "../store/state/actions";
 import { validateLogin } from "../utils/validators";
 import { pull } from "../store/state/reducers";
-import { connect } from "react-redux";
+
 import { showLoading, hideLoading } from "react-redux-loading-bar";
 import Loader from "../components/Loader";
 import sha from "simple-hash-browser";
 import { SIGNIN_USER } from "../graphql/mutations";
 import { graphql } from "react-apollo";
 
-class Login extends Component {
-  constructor(props) {
-    super(props);
+function Login (){
+  
     this.state = {
       password: "",
       email: "",
       loading: false
     };
-  }
+  
 
-  componentDidMount() {
-    if (this.props.user) {
-      this.props.history.replace("/app");
+useEffect(()=>{
+ componentMount();
+}, [])
+
+const componentMount =    => {
+    if (props.user) {
+      props.history.replace("/app");
     } else {
-      this.props.dispatch(updateChannel(null));
-      this.props.dispatch(updateCircle(null));
-      this.props.dispatch(updateRevision(null));
+      props.dispatch(updateChannel(null));
+      props.dispatch(updateCircle(null));
+      props.dispatch(updateRevision(null));
     }
   }
-  tryLogin = async e => {
-    this.props.dispatch(showLoading());
+  const tryLogin = async e => {
+    props.dispatch(showLoading());
     e.preventDefault();
     await this.setState({ loading: true });
     const isValid = validateLogin({ ...this.state });
@@ -46,10 +49,10 @@ class Login extends Component {
     if (isValid !== undefined) {
       swal("Error", isValid[Object.keys(isValid)[0]][0], "error");
       this.setState({ loading: false });
-      this.props.dispatch(hideLoading());
+      props.dispatch(hideLoading());
       return false;
     }
-    const { signinUser } = this.props;
+    const { signinUser } = props;
     let { password, email } = this.state;
     try {
       let hashedToken = await sha(password);
@@ -72,22 +75,22 @@ class Login extends Component {
       window.localStorage.setItem("ATHARES_HASH", hashedToken);
       window.localStorage.setItem("ATHARES_TOKEN", token);
 
-      this.props.dispatch(updateUser(userId));
-      this.props.dispatch(updatePub(hashedToken));
-      this.props.dispatch(hideLoading());
+      props.dispatch(updateUser(userId));
+      props.dispatch(updatePub(hashedToken));
+      props.dispatch(hideLoading());
       this.setState({ loading: false });
-      this.props.history.push("/app");
+      props.history.push("/app");
     } catch (err) {
       if (err.message.indexOf("Invalid Credentials") !== -1) {
         swal("Error", "Invalid Credentials", "error");
       } else {
         swal("Error", err.message, "error");
       }
-      this.props.dispatch(hideLoading());
+      props.dispatch(hideLoading());
       await this.setState({ loading: false });
     }
   };
-  updateInfo = () => {
+  const updateInfo = () => {
     this.setState({
       password: document.getElementById("loginPassword").value,
       email: document.getElementById("loginEmail").value
@@ -96,7 +99,7 @@ class Login extends Component {
   shouldComponentUpdate(nextProps, nextState) {
     return nextState !== this.state;
   }
-  render() {
+  
     const { email, password, loading } = this.state;
     return (
       <Fragment>
@@ -180,7 +183,6 @@ class Login extends Component {
         )}
       </Fragment>
     );
-  }
 }
 
 function mapStateToProps(state) {

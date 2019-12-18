@@ -1,13 +1,13 @@
-import React from "react";
+import React, { useGlobal } from "reactn";
 import { Link } from "react-router-dom";
-import { pull } from "../store/state/reducers";
-import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 
 /*
     A Group of Governance Channels
     */
-const GovernanceChannelGroup = ({ activeCircle, location, ...props }) => {
+const GovernanceChannelGroup = ({ location, ...props }) => {
+  const [activeCircle] = useGlobal("activeCircle");
+
   const docsActive = /circle\/.+\/(constitution)/.test(location.pathname);
   const revActive = /circle\/.+\/(revisions)/.test(location.pathname);
   const newsActive = /circle\/.+\/(news)/.test(location.pathname);
@@ -60,9 +60,4 @@ const GovernanceChannelGroup = ({ activeCircle, location, ...props }) => {
   );
 };
 
-function mapStateToProps(state) {
-  return {
-    activeCircle: pull(state, "activeCircle")
-  };
-}
-export default withRouter(connect(mapStateToProps)(GovernanceChannelGroup));
+export default withRouter(GovernanceChannelGroup);

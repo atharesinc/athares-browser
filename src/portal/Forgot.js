@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from "react";
+import React, { Component, Fragment } from "reactn";
 import { CREATE_RESET_REQUEST } from "../graphql/mutations";
 import { graphql } from "react-apollo";
 import { withRouter } from "react-router-dom";
@@ -6,12 +6,12 @@ import swal from "sweetalert";
 import FeatherIcon from "feather-icons-react";
 import Loader from "../components/Loader";
 
-class Forgot extends Component {
+function Forgot (){
   state = {
     loading: false,
     email: ""
   };
-  requestReset = async () => {
+  const requestReset = async () => {
     await this.setState({ loading: true });
     let { email } = this.state;
 
@@ -21,7 +21,7 @@ class Forgot extends Component {
           .toString(16)
           .replace(".", "")
           .substring(0, 8);
-        let res = await this.props.createResetRequest({
+        let res = await props.createResetRequest({
           variables: {
             token,
             email
@@ -38,7 +38,7 @@ class Forgot extends Component {
           email: ""
         });
 
-        this.props.history.push("/reset/" + id);
+        props.history.push("/reset/" + id);
       } catch (err) {
         console.error(new Error(err));
         await this.setState({ loading: false });
@@ -46,12 +46,12 @@ class Forgot extends Component {
       }
     }
   };
-  updateInfo = e => {
+  const updateInfo = e => {
     this.setState({
       email: e.currentTarget.value
     });
   };
-  render() {
+  
     const { email, loading } = this.state;
     return (
       <Fragment>
@@ -101,7 +101,6 @@ class Forgot extends Component {
         )}
       </Fragment>
     );
-  }
 }
 
 export default withRouter(

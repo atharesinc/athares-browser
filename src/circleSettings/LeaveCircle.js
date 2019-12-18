@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import { pull } from '../store/state/reducers';
 import { updateCircle } from '../store/state/actions';
@@ -16,17 +16,21 @@ import { graphql, Query } from 'react-apollo';
 import compose from 'lodash.flowright';
 import { withRouter } from 'react-router-dom';
 
-class LeaveCircle extends Component {
-  componentDidMount() {
+function LeaveCircle (){
+useEffect(()=>{
+ componentMount();
+}, [])
+
+const componentMount =    => {
     // verify this circle is real and that the user is logged in, but for now...
-    if (!this.props.user || !this.props.activeCircle) {
-      this.props.history.replace('/app');
+    if (!props.user || !props.activeCircle) {
+      props.history.replace('/app');
     }
   }
 
-  leaveCircle = e => {
+  const leaveCircle = e => {
     e.preventDefault();
-    let { activeCircle, user } = this.props;
+    let { activeCircle, user } = props;
 
     swal("Are you sure you'd like to leave this Circle?", {
       buttons: {
@@ -36,14 +40,14 @@ class LeaveCircle extends Component {
     })
       .then(async value => {
         if (value === true) {
-          let { id } = this.props.getCirclePrefs.User.circlePermissions[0];
+          let { id } = props.getCirclePrefs.User.circlePermissions[0];
 
-          this.props.deleteCirclePermission({
+          props.deleteCirclePermission({
             variables: {
               id,
             },
           });
-          this.props.deleteUserFomCircle({
+          props.deleteUserFomCircle({
             variables: {
               user,
               circle: activeCircle,
@@ -54,8 +58,8 @@ class LeaveCircle extends Component {
             `You have left this Circle. You will have to be re-invited to participate at a later time.`,
             'warning',
           );
-          this.props.dispatch(updateCircle(null));
-          this.props.history.push(`/app`);
+          props.dispatch(updateCircle(null));
+          props.history.push(`/app`);
         }
       })
       .catch(err => {
@@ -63,14 +67,14 @@ class LeaveCircle extends Component {
         swal('Error', 'There was an error leaving the Circle.', 'error');
       });
   };
-  back = () => {
-    this.props.history.push(`/app`);
+  const back = () => {
+    props.history.push(`/app`);
   };
-  render() {
+  
     return (
       <Query
         query={GET_CIRCLE_NAME_BY_ID}
-        variables={{ id: this.props.activeCircle }}
+        variables={{ id: props.activeCircle }}
       >
         {({ loading, data: { Circle: circle } = {} }) => {
           if (loading) {
@@ -108,7 +112,6 @@ class LeaveCircle extends Component {
         }}
       </Query>
     );
-  }
 }
 
 function mapStateToProps(state) {

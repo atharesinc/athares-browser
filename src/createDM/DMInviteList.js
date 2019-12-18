@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 import ReactTags from 'react-tag-autocomplete';
 import TagComponent from '../components/TagComponent';
 import swal from 'sweetalert';
@@ -7,29 +7,29 @@ import { pull } from '../store/state/reducers';
 import { SEARCH_FOR_USER } from '../graphql/queries';
 import { Query } from 'react-apollo';
 
-class DMInviteList extends Component {
+function DMInviteList (){
   state = {
     search: '',
   };
-  delete = i => {
+  const delete = i => {
     // returns the index of the selected user we'd like to remove
-    let updatedListOfSelections = this.props.selectedUsers.filter(
+    let updatedListOfSelections = props.selectedUsers.filter(
       (u, it) => i !== it,
     );
-    this.props.updateList(updatedListOfSelections);
+    props.updateList(updatedListOfSelections);
   };
-  inputChange = input => {
-    if (this.props.selectedUsers.length >= 6) {
+  const inputChange = input => {
+    if (props.selectedUsers.length >= 6) {
       return;
     }
     this.setState({
       search: input,
     });
   };
-  addition = user => {
-    if (this.props.selectedUsers.length < 6) {
-      const newSelectedList = [...this.props.selectedUsers, user];
-      this.props.updateList(newSelectedList);
+  const addition = user => {
+    if (props.selectedUsers.length < 6) {
+      const newSelectedList = [...props.selectedUsers, user];
+      props.updateList(newSelectedList);
     } else {
       swal(
         'Sorry',
@@ -39,8 +39,8 @@ class DMInviteList extends Component {
       return;
     }
   };
-  render() {
-    let { selectedUsers } = this.props;
+  
+    let { selectedUsers } = props;
     let suggestions = [];
     return (
       <Query
@@ -58,7 +58,7 @@ class DMInviteList extends Component {
             // filter out names that don't meet criteria and filter out alreadys selected users
             suggestions = allUsers
               .filter(s => selectedUsers.findIndex(su => su.id === s.id) === -1)
-              // .filter(s => s.id !== this.props.user)
+              // .filter(s => s.id !== props.user)
               .map(s => ({
                 name: s.firstName + ' ' + s.lastName + ' - ' + s.email,
                 ...s,
@@ -68,13 +68,13 @@ class DMInviteList extends Component {
             <div className='wrapper'>
               <div className='white mh3'>To:</div>
               <ReactTags
-                tags={this.props.selectedUsers}
+                tags={props.selectedUsers}
                 suggestions={suggestions}
                 handleDelete={this.delete}
                 handleAddition={this.addition}
                 handleInputChange={this.inputChange}
                 placeholder={
-                  this.props.shouldPlaceholder || suggestions.length === 0
+                  props.shouldPlaceholder || suggestions.length === 0
                     ? 'Enter a name'
                     : ' '
                 }
@@ -86,7 +86,6 @@ class DMInviteList extends Component {
         }}
       </Query>
     );
-  }
 }
 
 function mapStateToProps(state) {

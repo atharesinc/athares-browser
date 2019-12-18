@@ -1,24 +1,24 @@
-import React, { Component } from "react";
+import React, { useState } from "reactn";
 import Circle from "./Circle";
 import { withRouter } from "react-router-dom";
 import { Scrollbars } from "react-custom-scrollbars";
 import { pull } from "../store/state/reducers";
 import { updateCircle } from "../store/state/actions";
-import { connect } from "react-redux";
+
 import { GET_CIRCLES_BY_USER_ID } from "../graphql/queries";
 import { Query } from "react-apollo";
 
-class OtherCircles extends Component {
+function OtherCircles (){
   setActive = id => {
-    this.props.dispatch(updateCircle(id));
-    this.props.history.push(`/app/circle/${id}`);
+    props.dispatch(updateCircle(id));
+    props.history.push(`/app/circle/${id}`);
   };
-  render() {
+  
     let circles = [];
     return (
       <Query
         query={GET_CIRCLES_BY_USER_ID}
-        variables={{ id: this.props.user || "" }}
+        variables={{ id: props.user || "" }}
         pollInterval={3000}
       >
         {({ loading, err, data = {} }) => {
@@ -39,7 +39,7 @@ class OtherCircles extends Component {
                   <Circle
                     key={circle.id}
                     {...circle}
-                    isActive={circle.id === this.props.activeCircle}
+                    isActive={circle.id === props.activeCircle}
                     selectCircle={this.setActive}
                   />
                 ))}
@@ -49,7 +49,6 @@ class OtherCircles extends Component {
         }}
       </Query>
     );
-  }
 }
 
 function mapStateToProps(state) {

@@ -1,21 +1,21 @@
-import React, { PureComponent } from "react";
+import React, { useState  } from "reactn";
 import Footer from "../Footer";
 import Navbar from "../Navbar";
 import FAQ from "./FAQ";
 import { Scrollbars } from "react-custom-scrollbars";
-import { connect } from "react-redux";
 
-class About extends PureComponent {
+
+function About (){
   state = {
     scrolled: false,
     top: 0
   };
-  handleUpdate = ({ scrollTop }) => {
+  const handleUpdate = ({ scrollTop }) => {
     if (this.state.top !== scrollTop) {
       this.setState({ scrolled: scrollTop > 100, top: scrollTop });
     }
   };
-  render() {
+  
     return (
       <Scrollbars
         style={{ width: "100vw", height: "100vh", overflowX: "hidden" }}
@@ -52,7 +52,6 @@ class About extends PureComponent {
         </div>
       </Scrollbars>
     );
-  }
 }
 function mapStateToProps(state) {
   return {};

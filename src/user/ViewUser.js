@@ -13,36 +13,40 @@ import Switch from 'react-switch';
 import { UPDATE_ALLOW_MARKETING_EMAIL } from '../graphql/mutations';
 import { GET_USER_PREF_BY_ID } from '../graphql/queries';
 
-class ViewUser extends React.Component {
-  componentDidMount() {
-    if (!this.props.userId) {
-      this.props.history.replace('/app');
+function ViewUser (){
+useEffect(()=>{
+ componentMount();
+}, [])
+
+const componentMount =    => {
+    if (!props.userId) {
+      props.history.replace('/app');
     }
   }
-  toEdit = () => {
-    this.props.dispatch(showLoading());
-    this.props.history.push('/app/user/edit');
+  const toEdit = () => {
+    props.dispatch(showLoading());
+    props.history.push('/app/user/edit');
   };
   componentWillUnmount() {
-    this.props.dispatch(hideLoading());
+    props.dispatch(hideLoading());
   }
-  updatePref = async checked => {
-    let { id } = this.props.data.User.prefs;
+  const updatePref = async checked => {
+    let { id } = props.data.User.prefs;
 
-    await this.props.updateMarketingEmail({
+    await props.updateMarketingEmail({
       variables: {
         id,
         flag: checked,
       },
     });
   };
-  render() {
+  
     const {
       loading,
       user,
       stats,
       data: { User: userPref },
-    } = this.props;
+    } = props;
     if (loading || !userPref || !user) {
       return (
         <div
@@ -196,7 +200,6 @@ class ViewUser extends React.Component {
         </Scrollbars>
       </div>
     );
-  }
 }
 
 function mapStateToProps(state) {

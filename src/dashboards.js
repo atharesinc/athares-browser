@@ -1,4 +1,4 @@
-import React from "react";
+import React from "reactn";
 import GroupChat from "./chat";
 import DM from "./dmChat";
 import CreateCircle from "./createCircle";

@@ -1,8 +1,8 @@
-import React from "react";
+import React from "reactn";
 import { Line } from "rc-progress";
 import { Link } from "react-router-dom";
 
-class Distributed extends React.PureComponent {
+function Distributed (){
 	constructor(props) {
 		super();
 
@@ -10,7 +10,11 @@ class Distributed extends React.PureComponent {
 			percent: 0
 		};
 	}
-	componentDidMount() {
+useEffect(()=>{
+ componentMount();
+}, [])
+
+const componentMount = 	 => {
 		window.addEventListener(
 			"scroll",
 
@@ -26,7 +30,7 @@ class Distributed extends React.PureComponent {
 			true
 		);
 	}
-	animateProgress = () => {
+	const animateProgress = () => {
 		if (!this.isInViewport()) {
 			return false;
 		}
@@ -35,14 +39,14 @@ class Distributed extends React.PureComponent {
 		});
 		window.removeEventListener("scroll", this.animateProgress, true);
 	};
-	isInViewport = () => {
+	const isInViewport = () => {
 		let rect = document
 			.getElementById("distributed-meter")
 			.getBoundingClientRect();
 		let html = document.documentElement;
 		return rect.bottom <= html.clientHeight;
 	};
-	render() {
+	
 		return (
 			<header
 				className="sans-serif grey-screen"

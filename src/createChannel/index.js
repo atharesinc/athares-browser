@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 import ErrorSwap from '../utils/ErrorSwap';
 import { connect } from 'react-redux';
 import { pull } from '../store/state/reducers';
@@ -16,9 +16,8 @@ import { GET_CIRCLE_NAME_BY_ID } from '../graphql/queries';
 import { graphql, Query } from 'react-apollo';
 import compose from 'lodash.flowright';
 
-class CreateChannel extends Component {
-  constructor(props) {
-    super(props);
+function CreateChannel (){
+  
 
     this.state = {
       name: '',
@@ -27,26 +26,30 @@ class CreateChannel extends Component {
       activeCircle: null,
       loading: false,
     };
-  }
-  componentDidMount() {
+  
+useEffect(()=>{
+ componentMount();
+}, [])
+
+const componentMount =    => {
     // verify this circle is real and that the user is logged in, but for now...
-    if (!this.props.user || !this.props.activeCircle) {
-      this.props.history.replace('/app');
+    if (!props.user || !props.activeCircle) {
+      props.history.replace('/app');
     }
   }
-  updateName = e => {
+  const updateName = e => {
     const name = e.target.value.substring(0, 51);
     this.setState({
       name,
       isTaken: false,
     });
   };
-  updateDesc = e => {
+  const updateDesc = e => {
     this.setState({
       description: e.target.value.substring(0, 301),
     });
   };
-  onSubmit = async e => {
+  const onSubmit = async e => {
     e.preventDefault();
     if (this.state.name.trim().length === 0) {
       return false;
@@ -64,10 +67,10 @@ class CreateChannel extends Component {
     };
 
     try {
-      let newChannelRes = await this.props.createChannel({
+      let newChannelRes = await props.createChannel({
         variables: {
           ...newChannel,
-          circleId: this.props.activeCircle,
+          circleId: props.activeCircle,
         },
       });
 
@@ -78,20 +81,20 @@ class CreateChannel extends Component {
         `${this.state.name} has been created in ${name}.`,
         'success',
       );
-      this.props.dispatch(updateChannel(id));
-      this.props.history.push(
-        `/app/circle/${this.props.activeCircle}/channel/${id}`,
+      props.dispatch(updateChannel(id));
+      props.history.push(
+        `/app/circle/${props.activeCircle}/channel/${id}`,
       );
     } catch (err) {
       console.error(new Error(err));
     }
   };
-  render() {
+  
     let circle = null;
     return (
       <Query
         query={GET_CIRCLE_NAME_BY_ID}
-        variables={{ id: this.props.activeCircle || '' }}
+        variables={{ id: props.activeCircle || '' }}
       >
         {({ loading, err, data = {} }) => {
           if (data) {
@@ -154,7 +157,7 @@ class CreateChannel extends Component {
                         <ErrorSwap
                           condition={
                             !this.state.isTaken ||
-                            this.props.checkIfNameUnique.Circle.channels
+                            props.checkIfNameUnique.Circle.channels
                               .length !== 0
                           }
                           normal={
@@ -211,7 +214,6 @@ class CreateChannel extends Component {
         }}
       </Query>
     );
-  }
 }
 
 function mapStateToProps(state) {

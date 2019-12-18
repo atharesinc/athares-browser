@@ -1,31 +1,34 @@
-import React, { Component } from "react";
+import React, { useState } from "reactn";
 import { pushRotate as Menu } from "react-burger-menu";
 import { Link } from "react-router-dom";
 import FeatherIcon from "feather-icons-react";
 import { logout } from "../store/state/actions";
 import { hideInstall, showInstall } from "../store/ui/actions";
-import { connect } from "react-redux";
+
 import { pull } from "../store/state/reducers";
 import { Query } from "react-apollo";
 import { GET_USER_BY_ID } from "../graphql/queries";
 const pullUI = require("../store/ui/reducers").pull;
 
-class MenuWrapper extends Component {
-  constructor() {
-    super();
+function MenuWrapper (){
+  
     this.deferredPrompt = null;
-  }
-  logoutUser = async () => {
-    this.props.dispatch(logout());
+  
+  const logoutUser = async () => {
+    props.dispatch(logout());
     sessionStorage.clear();
 
     window.localStorage.removeItem("ATHARES_ALIAS");
     window.localStorage.removeItem("ATHARES_TOKEN");
     window.localStorage.removeItem("ATHARES_HASH");
 
-    this.props.toggleMenu();
+    props.toggleMenu();
   };
-  componentDidMount() {
+useEffect(()=>{
+ componentMount();
+}, [])
+
+const componentMount =    => {
     window.addEventListener("beforeinstallprompt", this.enableInstall);
     window.addEventListener("appinstalled", this.preventAnotherInstall);
   }
@@ -33,28 +36,28 @@ class MenuWrapper extends Component {
     window.removeEventListener("beforeinstallprompt", this.enableInstall);
     window.removeEventListener("appinstalled", this.preventAnotherInstall);
   }
-  preventAnotherInstall = () => {
+  const preventAnotherInstall = () => {
     // console.log('User has added the app');
   };
-  enableInstall = e => {
+  const enableInstall = e => {
     // console.log('able to add to desktop');
     // Prevent Chrome 67 and earlier from automatically showing the prompt
     e.preventDefault();
     // Stash the event so it can be triggered later.
     this.deferredPrompt = e;
     // Update UI notify the user they can add to home screen
-    this.props.dispatch(showInstall());
+    props.dispatch(showInstall());
   };
-  alsoToggleMenu = () => {
-    this.props.toggleMenu();
+  const alsoToggleMenu = () => {
+    props.toggleMenu();
   };
-  install = () => {
+  const install = () => {
     // if (!this.deferredPrompt) {
     //   console.log(this.deferredPrompt, "not installable");
     //   return false;
     // }
     // hide our user interface that shows our A2HS button
-    // this.props.dispatch(hideInstall());
+    // props.dispatch(hideInstall());
     // // Show the prompt
     // this.deferredPrompt.prompt();
     // // Wait for the user to respond to the prompt
@@ -67,8 +70,8 @@ class MenuWrapper extends Component {
     //   this.deferredPrompt = null;
     // });
   };
-  render() {
-    let { isOpen, history, isMenuOpen, ...props } = this.props;
+  
+    let { isOpen, history, isMenuOpen, ...props } = props;
     return (
       <Query
         query={GET_USER_BY_ID}
@@ -217,7 +220,6 @@ class MenuWrapper extends Component {
         }}
       </Query>
     );
-  }
 }
 
 function mapStateToProps(state) {

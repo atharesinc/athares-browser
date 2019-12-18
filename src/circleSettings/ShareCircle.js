@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import { pull } from '../store/state/reducers';
 import Loader from '../components/Loader';
@@ -13,27 +13,31 @@ let urlBase =
   process.env.NODE_ENV === 'development'
     ? 'http://localhost:3000/invite/'
     : 'https://www.athares.us/invite/';
-class ShareCircle extends Component {
+function ShareCircle (){
   state = {
     loading: false,
     link: null,
   };
-  componentDidMount() {
+useEffect(()=>{
+ componentMount();
+}, [])
+
+const componentMount =    => {
     // verify this circle is real and that the user is logged in, but for now...
-    if (!this.props.user || !this.props.activeCircle) {
-      this.props.history.replace('/app');
+    if (!props.user || !props.activeCircle) {
+      props.history.replace('/app');
     }
   }
 
-  generateLink = async () => {
-    let { user, activeCircle } = this.props;
+  const generateLink = async () => {
+    let { user, activeCircle } = props;
     await this.setState({
       loading: true,
       link: null,
     });
 
     try {
-      let link = await this.props.createInvite({
+      let link = await props.createInvite({
         variables: {
           inviter: user,
           circle: activeCircle,
@@ -54,14 +58,14 @@ class ShareCircle extends Component {
       swal('Error', 'Unable to generate invite link.', 'error');
     }
   };
-  back = () => {
-    this.props.history.push(`/app`);
+  const back = () => {
+    props.history.push(`/app`);
   };
-  render() {
+  
     return (
       <Query
         query={GET_CIRCLE_NAME_BY_ID}
-        variables={{ id: this.props.activeCircle }}
+        variables={{ id: props.activeCircle }}
       >
         {({ loading, data: { Circle: circle } = {} }) => {
           if (loading) {
@@ -106,7 +110,6 @@ class ShareCircle extends Component {
         }}
       </Query>
     );
-  }
 }
 
 function mapStateToProps(state) {

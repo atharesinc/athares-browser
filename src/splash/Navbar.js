@@ -1,12 +1,16 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 
-export default class Navbar extends Component {
-    componentDidMount() {
+export default function Navbar (){
+useEffect(()=>{
+ componentMount();
+}, [])
+
+const componentMount =      => {
         window.addEventListener('scroll', this.animateBackground, true);
     }
-    animateBackground = () => {
-        const h = this.props.scrolled;
+    const animateBackground = () => {
+        const h = props.scrolled;
         document.getElementById('splash-nav').style.background = h
             ? '#FFFFFF'
             : 'transparent';
@@ -14,8 +18,8 @@ export default class Navbar extends Component {
     componentWillUnmount() {
         window.removeEventListener('scroll', this.animateBackground, true);
     }
-    render() {
-        const { scrolled } = this.props;
+    
+        const { scrolled } = props;
 
         const logo = scrolled
                 ? '/img/Athares-owl-logo-large-black.png'

@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 import swal from 'sweetalert';
 import { graphql } from 'react-apollo';
 import compose from 'lodash.flowright';
@@ -14,9 +14,9 @@ import { GET_USERS_BY_CHANNEL_ID } from '../graphql/queries';
 import { closeDMSettings } from '../store/ui/actions';
 import { withRouter } from 'react-router-dom';
 
-class LeaveDM extends Component {
+function LeaveDM (){
   leave = () => {
-    let { activeChannel, user, updateChannelName } = this.props;
+    let { activeChannel, user, updateChannelName } = props;
 
     try {
       swal("Are you sure you'd like to leave this Channel?", {
@@ -27,7 +27,7 @@ class LeaveDM extends Component {
       }).then(async value => {
         if (value === true) {
           // real quick, get the existing channel's name, and remove our name from it
-          let channelName = this.props.getUsers.Channel.users
+          let channelName = props.getUsers.Channel.users
             .filter(u => u.id !== user)
             .map(u => u.firstName + ' ' + u.lastName)
             .join(', ');
@@ -38,7 +38,7 @@ class LeaveDM extends Component {
               name: channelName,
             },
           });
-          let res = await this.props.deleteUserFromDM({
+          let res = await props.deleteUserFromDM({
             variables: {
               user,
               channel: activeChannel,
@@ -46,7 +46,7 @@ class LeaveDM extends Component {
           });
           let { id } = res.data.removeFromUsersOnChannels.usersUser.keys[0];
 
-          await this.props.deleteUserKey({
+          await props.deleteUserKey({
             variables: {
               id,
             },
@@ -57,9 +57,9 @@ class LeaveDM extends Component {
             `You have left this channel. You will have to be re-invited to participate at a later time.`,
             'warning',
           );
-          this.props.dispatch(updateChannel(null));
-          this.props.dispatch(closeDMSettings());
-          this.props.history.push(`/app`);
+          props.dispatch(updateChannel(null));
+          props.dispatch(closeDMSettings());
+          props.history.push(`/app`);
         }
       });
     } catch (err) {
@@ -67,7 +67,7 @@ class LeaveDM extends Component {
       swal('Error', 'There was an error leaving this channel.', 'error');
     }
   };
-  render() {
+  
     return (
       <div className='pa3 ba b--red'>
         <article className='mb3'>
@@ -90,7 +90,6 @@ class LeaveDM extends Component {
         </button>
       </div>
     );
-  }
 }
 function mapStateToProps(state) {
   return {

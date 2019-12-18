@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import { pull } from '../store/state/reducers';
 import { updateCircle } from '../store/state/actions';
@@ -10,21 +10,25 @@ import ShareCircle from './ShareCircle';
 import CirclePrefs from './CirclePrefs';
 import ScrollBars from 'react-custom-scrollbars';
 
-class Settings extends Component {
-  componentDidMount() {
+function Settings (){
+useEffect(()=>{
+ componentMount();
+}, [])
+
+const componentMount =    => {
     // verify this circle is real and that the user is logged in, but for now...
-    if (!this.props.user || !this.props.activeCircle) {
-      this.props.history.replace('/app');
+    if (!props.user || !props.activeCircle) {
+      props.history.replace('/app');
     }
   }
   componentDidUpdate() {
-    if (!this.props.user || !this.props.activeCircle) {
-      this.props.history.replace('/app');
+    if (!props.user || !props.activeCircle) {
+      props.history.replace('/app');
     }
   }
-  leaveCircle = e => {
+  const leaveCircle = e => {
     e.preventDefault();
-    let { activeCircle, user } = this.props;
+    let { activeCircle, user } = props;
 
     swal("Are you sure you'd like to leave this Circle?", {
       buttons: {
@@ -33,7 +37,7 @@ class Settings extends Component {
       },
     }).then(async value => {
       if (value === true) {
-        this.props.deleteUserFomCircle({
+        props.deleteUserFomCircle({
           variables: {
             user,
             circle: activeCircle,
@@ -44,16 +48,16 @@ class Settings extends Component {
           `You have left this Circle. You will have to be re-invited to participate at a later time.`,
           'warning',
         );
-        this.props.dispatch(updateCircle(null));
-        this.props.history.push(`/app`);
+        props.dispatch(updateCircle(null));
+        props.history.push(`/app`);
       }
     });
   };
-  back = () => {
-    this.props.history.push(`/app`);
+  const back = () => {
+    props.history.push(`/app`);
   };
-  render() {
-    let { user, activeCircle } = this.props;
+  
+    let { user, activeCircle } = props;
     return (
       <div id='revisions-wrapper'>
         <div className='flex ph2 mobile-nav'>
@@ -84,7 +88,6 @@ class Settings extends Component {
         </div>
       </div>
     );
-  }
 }
 
 function mapStateToProps(state) {

@@ -1,7 +1,7 @@
-import React from "react";
+import React from "reactn";
 import { withRouter } from "react-router-dom";
 import { closeSearch, clearSearch } from "../store/ui/actions";
-import { connect } from "react-redux";
+
 import moment from "moment";
 
 const Section = props => {

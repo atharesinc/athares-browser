@@ -1,4 +1,4 @@
-import React from "react";
+import React from "reactn";
 import ReactAvatarEditor from "react-avatar-editor";
 import Dropzone from "react-dropzone";
 import Loader from "./Loader";
@@ -7,11 +7,10 @@ import "rc-slider/assets/index.css";
 import EXIF from "exif-js";
 import swal from "sweetalert";
 
-export default class ImageUpload extends React.Component {
-  constructor(props) {
-    super(props);
+export default function ImageUpload (){
+  
     this.state = {
-      image: this.props.defaultImage,
+      image: props.defaultImage,
       width:
         parseFloat(getComputedStyle(document.getElementById("root")).fontSize) *
         15,
@@ -19,24 +18,24 @@ export default class ImageUpload extends React.Component {
         parseFloat(getComputedStyle(document.getElementById("root")).fontSize) *
         15,
       editMode: false,
-      finalImage: this.props.defaultImage,
+      finalImage: props.defaultImage,
       loading: false,
       scale: 1,
       rotate: 0
     };
-  }
+  
 
-  handleDrop = dropped => {
+  const handleDrop = dropped => {
     this.setState({ image: dropped[0] });
   };
-  toggleEdit = () => {
-    if (this.props.editMode) {
-      this.props.editMode(!this.state.editMode);
+  const toggleEdit = () => {
+    if (props.editMode) {
+      props.editMode(!this.state.editMode);
     }
     this.setState({ editMode: !this.state.editMode });
   };
-  rotate = (angle = 90) => {};
-  onClickSave = async () => {
+  const rotate = (angle = 90) => {};
+  const onClickSave = async () => {
     try {
       if (this.editor) {
         // This returns a HTMLCanvasElement, it can be made into a data URL or a blob,
@@ -53,8 +52,8 @@ export default class ImageUpload extends React.Component {
         this.setState(
           { finalImage: imageURL, editMode: false, loading: false },
           () => {
-            this.props.onSet(blob);
-            this.props.editMode(false);
+            props.onSet(blob);
+            props.editMode(false);
           }
         );
         // If you want the image resized to the canvas size (also a HTMLCanvasElement)
@@ -64,7 +63,7 @@ export default class ImageUpload extends React.Component {
       throw new Error(err);
     }
   };
-  dataURItoBlob = dataURI => {
+  const dataURItoBlob = dataURI => {
     var binary = atob(dataURI.split(",")[1]);
     var array = [];
     for (var i = 0; i < binary.length; i++) {
@@ -72,7 +71,7 @@ export default class ImageUpload extends React.Component {
     }
     return new Blob([new Uint8Array(array)], { type: "image/jpg" });
   };
-  isValidFile = fileType => {
+  const isValidFile = fileType => {
     const type = /\/(.+)$/.exec(fileType)[1];
 
     const switcher = {
@@ -84,7 +83,7 @@ export default class ImageUpload extends React.Component {
     return switcher[type] === true;
   };
 
-  onChange = () => {
+  const onChange = () => {
     let file = document.getElementById("imgFile").files[0];
     if (!this.isValidFile(file.type)) {
       swal(
@@ -123,13 +122,13 @@ export default class ImageUpload extends React.Component {
       });
     };
   };
-  sliderChange = pos => {
+  const sliderChange = pos => {
     this.setState({
       scale: 1 + pos / 100
     });
   };
-  setEditorRef = editor => (this.editor = editor);
-  render() {
+  const setEditorRef = editor => (this.editor = editor);
+  
     let tempImage = this.state.image;
 
     if (!this.state.editMode) {
@@ -273,5 +272,4 @@ export default class ImageUpload extends React.Component {
         </small>
       </div>
     );
-  }
 }

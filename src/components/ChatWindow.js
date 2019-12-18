@@ -1,4 +1,4 @@
-import React from "react";
+import React from "reactn";
 import Message from "./Message";
 import { Scrollbars } from "react-custom-scrollbars";
 

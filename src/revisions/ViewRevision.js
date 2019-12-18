@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 import RevisionHeader from './RevisionHeader';
 import RevisionStats from './RevisionStats';
 import VoteButtons from './VoteButtons';
@@ -29,34 +29,37 @@ import {
 } from '../graphql/queries';
 import swal from 'sweetalert';
 
-class ViewRevision extends Component {
-  constructor(props) {
-    super(props);
+function ViewRevision (){
+  
     this.state = {
       mode: 0,
     };
     this._isMounted = false;
-  }
-  componentDidMount() {
+  
+useEffect(()=>{
+ componentMount();
+}, [])
+
+const componentMount =    => {
     if (
-      !this.props.activeRevision ||
-      this.props.activeRevision !== this.props.match.params.id
+      !props.activeRevision ||
+      props.activeRevision !== props.match.params.id
     ) {
-      this.props.dispatch(updateRevision(this.props.match.params.id));
-      this.props.dispatch(
-        updateCircle(this.props.match.url.match(/circle\/(.+)\/rev/)[1]),
+      props.dispatch(updateRevision(props.match.params.id));
+      props.dispatch(
+        updateCircle(props.match.url.match(/circle\/(.+)\/rev/)[1]),
       );
-      this.props.dispatch(updateChannel(null));
+      props.dispatch(updateChannel(null));
     }
   }
 
-  toggleMode = num => {
+  const toggleMode = num => {
     this.setState({
       mode: num,
     });
   };
-  vote = async support => {
-    let { activeRevision, data, isUserInCircle, activeCircle } = this.props;
+  const vote = async support => {
+    let { activeRevision, data, isUserInCircle, activeCircle } = props;
 
     // make sure the user belongs to this circle
     if (
@@ -73,11 +76,11 @@ class ViewRevision extends Component {
         return false;
       }
 
-      const hasVoted = votes.find(({ user: { id } }) => id === this.props.user);
+      const hasVoted = votes.find(({ user: { id } }) => id === props.user);
       try {
         if (hasVoted) {
           // update this user's existing vote
-          await this.props.updateVote({
+          await props.updateVote({
             variables: {
               vote: hasVoted.id,
               support,
@@ -85,10 +88,10 @@ class ViewRevision extends Component {
           });
         } else {
           // create a new vote, this user hasn't voted yet
-          this.props.createVote({
+          props.createVote({
             variables: {
               revision: activeRevision,
-              user: this.props.user,
+              user: props.user,
               support,
             },
           });
@@ -99,13 +102,13 @@ class ViewRevision extends Component {
       }
     }
   };
-  checkIfPass = () => {
+  const checkIfPass = () => {
     this.forceUpdate();
   };
-  render() {
+  
     let revision = null;
     let belongsToCircle = false;
-    const { data = {}, isUserInCircle, activeCircle } = this.props;
+    const { data = {}, isUserInCircle, activeCircle } = props;
 
     if (data.Revision && isUserInCircle) {
       if (
@@ -119,7 +122,7 @@ class ViewRevision extends Component {
       const { newText, title, votes } = revision;
 
       const support = votes.filter(({ support }) => support).length;
-      const hasVoted = votes.find(({ user: { id } }) => id === this.props.user);
+      const hasVoted = votes.find(({ user: { id } }) => id === props.user);
       const hasExpired =
         moment().valueOf() >= moment(revision.expires).valueOf();
       if (revision.amendment) {
@@ -158,7 +161,7 @@ class ViewRevision extends Component {
                   support={support}
                   hasExpired={hasExpired}
                 />
-                {this.props.user && !hasExpired && belongsToCircle && (
+                {props.user && !hasExpired && belongsToCircle && (
                   <VoteButtons vote={this.vote} />
                 )}{' '}
               </div>
@@ -201,7 +204,7 @@ class ViewRevision extends Component {
                   hasExpired={hasExpired}
                   checkIfPass={this.checkIfPass}
                 />
-                {this.props.user && !hasExpired && belongsToCircle && (
+                {props.user && !hasExpired && belongsToCircle && (
                   <VoteButtons vote={this.vote} />
                 )}
               </div>

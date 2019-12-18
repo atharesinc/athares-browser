@@ -1,4 +1,4 @@
-import React from "react";
+import React from "reactn";
 import { Link } from "react-router-dom";
 import moment from "moment";
 import ReactCountdownClock from "react-countdown-clock";

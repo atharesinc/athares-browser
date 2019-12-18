@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { useState } from "reactn";
 import ChatWindow from "../components/ChatWindow";
 import ChatInput from "../components/ChatInput";
 import DMSettings from "./DMSettings";
@@ -7,7 +7,7 @@ import FeatherIcon from "feather-icons-react";
 import { Link } from "react-router-dom";
 import { pull } from "../store/state/reducers";
 import { updateChannel, removeUnreadDM } from "../store/state/actions";
-import { connect } from "react-redux";
+
 import { decrypt } from "utils/crypto";
 import SimpleCrypto from "simple-crypto-js";
 import { CREATE_MESSAGE } from "../graphql/mutations";
@@ -23,9 +23,8 @@ import swal from "sweetalert";
 import { openDMSettings } from "../store/ui/actions";
 const pullUI = require("../store/ui/reducers").pull;
 
-class DMChat extends Component {
-  constructor(props) {
-    super(props);
+function DMChat (){
+  
 
     this.state = {
       cryptoEnabled: false,
@@ -33,32 +32,36 @@ class DMChat extends Component {
       uploadInProgress: false
     };
     this.simpleCrypto = new SimpleCrypto("nope");
-  }
-  async componentDidMount() {
-    if (this.props.user === null) {
-      this.props.history.push("/app");
+  
+useEffect(()=>{
+ componentMount();
+}, [])
+
+const componentMount =   async  => {
+    if (props.user === null) {
+      props.history.push("/app");
     }
 
     // Make sure activeChannel is set
     if (
-      this.props.activeChannel === null ||
-      this.props.activeChannel !== this.props.match.params.id
+      props.activeChannel === null ||
+      props.activeChannel !== props.match.params.id
     ) {
-      this.props.dispatch(updateChannel(this.props.match.params.id));
+      props.dispatch(updateChannel(props.match.params.id));
     }
-    if (this.props.activeChannel) {
-      this.props.dispatch(removeUnreadDM(this.props.activeChannel));
+    if (props.activeChannel) {
+      props.dispatch(removeUnreadDM(props.activeChannel));
     }
-    if (this.props.getUserKeys.User) {
+    if (props.getUserKeys.User) {
       try {
         let hashed = window.localStorage.getItem("ATHARES_HASH");
         let simpleCryptoForUserPriv = new SimpleCrypto(hashed);
         const userPriv = simpleCryptoForUserPriv.decrypt(
-          this.props.getUserKeys.User.priv
+          props.getUserKeys.User.priv
         );
 
         let decryptedChannelSecret = await decrypt(
-          this.props.getUserKeys.User.keys[0].key,
+          props.getUserKeys.User.keys[0].key,
           userPriv
         );
 
@@ -74,22 +77,22 @@ class DMChat extends Component {
 
   async componentDidUpdate(prevProps) {
     if (
-      this.props.activeChannel &&
-      this.props.activeChannel !== prevProps.activeChannel
+      props.activeChannel &&
+      props.activeChannel !== prevProps.activeChannel
     ) {
-      this.props.dispatch(removeUnreadDM(this.props.activeChannel));
+      props.dispatch(removeUnreadDM(props.activeChannel));
     }
-    if (prevProps.getUserKeys.User !== this.props.getUserKeys.User) {
+    if (prevProps.getUserKeys.User !== props.getUserKeys.User) {
       try {
         let hashed = window.localStorage.getItem("ATHARES_HASH");
         let simpleCryptoForUserPriv = new SimpleCrypto(hashed);
 
         let userPriv = simpleCryptoForUserPriv.decrypt(
-          this.props.getUserKeys.User.priv
+          props.getUserKeys.User.priv
         );
 
         let decryptedChannelSecret = await decrypt(
-          this.props.getUserKeys.User.keys[0].key,
+          props.getUserKeys.User.keys[0].key,
           userPriv
         );
 
@@ -102,7 +105,7 @@ class DMChat extends Component {
       }
     }
   }
-  scrollToBottom = () => {
+  const scrollToBottom = () => {
     let chatBox = document.getElementById("chat-window-scroller");
     if (chatBox) {
       /* scroll to bottom */
@@ -111,7 +114,7 @@ class DMChat extends Component {
     }
   };
 
-  submit = async (text, file = null) => {
+  const submit = async (text, file = null) => {
     if (text.trim() === "" && file === null) {
       return false;
     }
@@ -120,7 +123,7 @@ class DMChat extends Component {
         uploadInProgress: true
       });
     }
-    let { user, activeChannel: channel } = this.props;
+    let { user, activeChannel: channel } = props;
     try {
       let url = file === null ? null : await uploadToAWS(file);
 
@@ -132,7 +135,7 @@ class DMChat extends Component {
         file: url ? this.simpleCrypto.encrypt(url.url) : "",
         fileName: file !== null ? file.name : null
       };
-      this.props.createMessage({
+      props.createMessage({
         variables: {
           ...newMessage
         }
@@ -158,18 +161,18 @@ class DMChat extends Component {
       );
     }
   };
-  updateChannel = () => {
-    this.props.dispatch(updateChannel(null));
+  const updateChannel = () => {
+    props.dispatch(updateChannel(null));
   };
-  normalizeName = name => {
+  const normalizeName = name => {
     let retval = name
       .split(", ")
       .filter(
         n =>
           n !==
-          this.props.getUserKeys.User.firstName +
+          props.getUserKeys.User.firstName +
             " " +
-            this.props.getUserKeys.User.lastName
+            props.getUserKeys.User.lastName
       );
     if (retval.length === 0) {
       return name;
@@ -192,7 +195,7 @@ class DMChat extends Component {
   _subToMore = subscribeToMore => {
     subscribeToMore({
       document: SUB_TO_MESSAGES_BY_CHANNEL_ID,
-      variables: { id: this.props.activeChannel || "" },
+      variables: { id: props.activeChannel || "" },
       updateQuery: (prev, { subscriptionData }) => {
         if (!subscriptionData.data) {
           return prev;
@@ -211,18 +214,18 @@ class DMChat extends Component {
       }
     });
   };
-  showDMSettings = () => {
-    this.props.dispatch(openDMSettings());
+  const showDMSettings = () => {
+    props.dispatch(openDMSettings());
   };
-  render() {
-    let { getUserKeys } = this.props;
+  
+    let { getUserKeys } = props;
     let channel = null,
       messages = [],
       user = null;
     return (
       <Query
         query={GET_MESSAGES_FROM_CHANNEL_ID}
-        variables={{ id: this.props.activeChannel || "" }}
+        variables={{ id: props.activeChannel || "" }}
         onCompleted={this.scrollToBottom}
       >
         {({ data = {}, subscribeToMore }) => {
@@ -266,7 +269,7 @@ class DMChat extends Component {
                   submit={this.submit}
                   uploadInProgress={this.state.uploadInProgress}
                 />
-                {this.props.dmSettings && <DMSettings />}
+                {props.dmSettings && <DMSettings />}
               </div>
             );
           } else {
@@ -279,7 +282,6 @@ class DMChat extends Component {
         }}
       </Query>
     );
-  }
 }
 
 function mapStateToProps(state) {

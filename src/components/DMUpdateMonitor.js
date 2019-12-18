@@ -1,35 +1,34 @@
-import React, { Component } from "react";
-import { connect } from "react-redux";
+import React, { useState } from "reactn";
+
 import { pull } from "../store/state/reducers";
 import { GET_DMS_BY_USER } from "../graphql/queries";
 import { SUB_TO_DMS_BY_USER } from "../graphql/subscriptions";
 import { Query, graphql } from "react-apollo";
 import { updateDMs, addUnreadDM } from "../store/state/actions";
 
-class ChannelUpdateMonitor extends Component {
-  constructor() {
-    super();
+function ChannelUpdateMonitor (){
+  
     this.toggleTitle = null;
-  }
+  
   componentDidUpdate(prevProps) {
     if (
-      this.props.getDMs.User &&
-      this.props.getDMs.User !== prevProps.getDMs.User
+      props.getDMs.User &&
+      props.getDMs.User !== prevProps.getDMs.User
     ) {
-      let { channels } = this.props.getDMs.User;
+      let { channels } = props.getDMs.User;
       let dms = channels.map(c => c.id);
       // set the user's current DMs
-      this.props.dispatch(updateDMs(dms));
+      props.dispatch(updateDMs(dms));
     }
     if (
-      prevProps.unreadDMs.length > this.props.unreadDMs.length ||
-      this.props.unreadDMs.length === 0
+      prevProps.unreadDMs.length > props.unreadDMs.length ||
+      props.unreadDMs.length === 0
     ) {
       clearInterval(this.toggleTitle);
       document.title = "Athares Distributed Democracy";
     }
   }
-  playAudio = () => {
+  const playAudio = () => {
     let audio = new Audio("/img/job-done.mp3");
     audio.volume = 0.2;
     audio.play();
@@ -37,19 +36,19 @@ class ChannelUpdateMonitor extends Component {
   _subToMore = subscribeToMore => {
     subscribeToMore({
       document: SUB_TO_DMS_BY_USER,
-      variables: { ids: this.props.dms || [] },
+      variables: { ids: props.dms || [] },
       updateQuery: (prev, { subscriptionData }) => {
         let updatedChannel = subscriptionData.data.Message.node.channel.id;
-        if (subscriptionData.data.Message.node.user.id === this.props.user) {
+        if (subscriptionData.data.Message.node.user.id === props.user) {
           return prev;
         }
         this.playAudio();
-        if (this.props.activeChannel === updatedChannel) {
+        if (props.activeChannel === updatedChannel) {
           // auditory cue that a new message has been created
           return prev;
         } else {
-          if (this.props.dms.findIndex(dm => dm === updatedChannel) !== -1) {
-            this.props.dispatch(addUnreadDM(updatedChannel));
+          if (props.dms.findIndex(dm => dm === updatedChannel) !== -1) {
+            props.dispatch(addUnreadDM(updatedChannel));
             // flash title and play sound to get user's attention
             this.flashTab(subscriptionData.data.Message.node.user.firstName);
           }
@@ -58,11 +57,11 @@ class ChannelUpdateMonitor extends Component {
       }
     });
   };
-  flashTab = firstName => {
+  const flashTab = firstName => {
     clearInterval(this.toggleTitle);
-    let prevTitle = `(${this.props.unreadDMs.length}) New Message!`;
+    let prevTitle = `(${props.unreadDMs.length}) New Message!`;
     let newTitle = `(${
-      this.props.unreadDMs.length
+      props.unreadDMs.length
     }) ${firstName} sent a message`;
     document.title = newTitle;
 
@@ -80,18 +79,17 @@ class ChannelUpdateMonitor extends Component {
     }, 1500);
     // this.toggleTitle;
   };
-  render() {
+  
     return (
-      <Query query={GET_DMS_BY_USER} variables={{ id: this.props.user || "" }}>
+      <Query query={GET_DMS_BY_USER} variables={{ id: props.user || "" }}>
         {({ subscribeToMore }) => {
-          if (this.props.getDMs.User) {
+          if (props.getDMs.User) {
             this._subToMore(subscribeToMore);
           }
           return null;
         }}
       </Query>
     );
-  }
 }
 function mapStateToProps(state) {
   return {

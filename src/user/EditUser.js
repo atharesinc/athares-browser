@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { useState } from "reactn";
 import ImageUpload from "../components/ImageUpload";
 import ErrorSwap from "../utils/ErrorSwap";
 import Phone from "react-phone-number-input";
@@ -7,16 +7,15 @@ import "react-phone-number-input/style.css";
 import { Link, withRouter } from "react-router-dom";
 import Loader from "../components/Loader";
 import { Scrollbars } from "react-custom-scrollbars";
-import { connect } from "react-redux";
+
 import { pull } from "../store/state/reducers";
 import { hideLoading } from "react-redux-loading-bar";
 import { UPDATE_USER } from "../graphql/mutations";
 import { graphql } from "react-apollo";
 import { uploadToAWS } from "utils/upload";
 
-class EditUser extends Component {
-  constructor(props) {
-    super(props);
+function EditUser (){
+  
     this.state = {
       id: null,
       icon: "",
@@ -30,54 +29,58 @@ class EditUser extends Component {
       editMode: false,
       hasEditedImage: false
     };
-  }
-  async componentDidMount() {
-    if (!this.props.userId) {
-      this.props.history.replace("/app");
+  
+useEffect(()=>{
+ componentMount();
+}, [])
+
+const componentMount =   async  => {
+    if (!props.userId) {
+      props.history.replace("/app");
     }
-    this.props.dispatch(hideLoading());
+    props.dispatch(hideLoading());
     await this.setState({
-      ...this.props.user,
+      ...props.user,
       loading: false
     });
   }
   componentWillUnmount() {
-    this.props.dispatch(hideLoading());
+    props.dispatch(hideLoading());
   }
-  editMode = bool => {
+  const editMode = bool => {
     this.setState({
       editMode: bool,
       hasEditedImage: true
     });
   };
-  changeImage = imageUrl => {
+  const changeImage = imageUrl => {
     this.setState({
       icon: imageUrl
     });
   };
-  updateFirstName = e => {
+  const updateFirstName = e => {
     this.setState({
       firstName: e.target.value.substring(0, 51)
     });
   };
-  updateLastName = e => {
+  const updateLastName = e => {
     this.setState({
       lastName: e.target.value.substring(0, 51)
     });
   };
-  updateUsername = e => {
+  const updateUsername = e => {
     this.setState({
       uname: e.target.value.substring(0, 100),
       unameTaken: false
     });
   };
-  updatePhone = number => {
+  const updatePhone = number => {
     this.setState({
       phone: number,
       phoneTaken: false
     });
   };
-  convertBlobToBase64 = blob => {
+  const convertBlobToBase64 = blob => {
     return new Promise(resolve => {
       let reader = new FileReader();
       reader.readAsDataURL(blob);
@@ -86,7 +89,7 @@ class EditUser extends Component {
       };
     });
   };
-  b64toBlob = (b64Data, sliceSize = 512) => {
+  const b64toBlob = (b64Data, sliceSize = 512) => {
     const block = b64Data.split(";");
     // get the real base64 content of the file
     const realData = block[1].split(",")[1];
@@ -108,7 +111,7 @@ class EditUser extends Component {
 
     return new Blob(byteArrays, { type: "image/png" });
   };
-  onSubmit = async e => {
+  const onSubmit = async e => {
     e.preventDefault();
     if (this.state.editMode) {
       return false;
@@ -125,7 +128,7 @@ class EditUser extends Component {
         lastName: this.state.lastName || "",
         phone: this.state.phone || "",
         uname: this.state.uname || "",
-        icon: this.props.user.icon
+        icon: props.user.icon
       };
       console.log(updatedUser);
 
@@ -149,9 +152,9 @@ class EditUser extends Component {
       }
       // Update the user by merging in changes
 
-      await this.props.updateUser({
+      await props.updateUser({
         variables: {
-          id: this.props.userId,
+          id: props.userId,
           ...updatedUser
         }
       });
@@ -162,7 +165,7 @@ class EditUser extends Component {
         unameTaken: false
       });
 
-      this.props.history.push("/app/user");
+      props.history.push("/app/user");
     } catch (err) {
       console.error(new Error(err));
       this.setState({
@@ -170,7 +173,7 @@ class EditUser extends Component {
       });
     }
   };
-  shrinkBase64 = base64String => {
+  const shrinkBase64 = base64String => {
     return new Promise(resolve => {
       var img = document.createElement("img");
       img.crossOrigin = "anonymous";
@@ -189,13 +192,13 @@ class EditUser extends Component {
       img.src = base64String;
     });
   };
-  clearError = () => {
+  const clearError = () => {
     this.setState({
       phoneTaken: false,
       unameTaken: false
     });
   };
-  render() {
+  
     if (this.state.loading || this.state.id === null) {
       return (
         <div
@@ -388,7 +391,6 @@ class EditUser extends Component {
         </form>
       </div>
     );
-  }
 }
 
 function mapStateToProps(state) {

@@ -1,4 +1,4 @@
-import React, { Fragment, PureComponent } from 'react';
+import React, { Fragment, useState  } from 'react';
 import FeatherIcon from 'feather-icons-react';
 import { validateRegister } from '../utils/validators';
 import { Link, withRouter } from 'react-router-dom';
@@ -26,9 +26,8 @@ import compose from 'lodash.flowright'
 import { pair } from 'utils/crypto';
 import SimpleCrypto from 'simple-crypto-js';
 
-class Register extends PureComponent {
-  constructor(props) {
-    super(props);
+function Register (){
+  
 
     this.state = {
       firstName: '',
@@ -37,20 +36,24 @@ class Register extends PureComponent {
       email: '',
       loading: false,
     };
-  }
+  
 
-  componentDidMount() {
-    if (this.props.user) {
-      this.props.history.replace('/app');
+useEffect(()=>{
+ componentMount();
+}, [])
+
+const componentMount =    => {
+    if (props.user) {
+      props.history.replace('/app');
     } else {
-      this.props.dispatch(updateChannel(null));
-      this.props.dispatch(updateCircle(null));
-      this.props.dispatch(updateRevision(null));
+      props.dispatch(updateChannel(null));
+      props.dispatch(updateCircle(null));
+      props.dispatch(updateRevision(null));
     }
   }
-  tryRegister = async e => {
+  const tryRegister = async e => {
     e.preventDefault();
-    this.props.dispatch(showLoading());
+    props.dispatch(showLoading());
     await this.setState({ loading: true });
 
     const isValid = validateRegister({
@@ -59,12 +62,12 @@ class Register extends PureComponent {
 
     if (isValid !== undefined) {
       swal('Error', isValid[Object.keys(isValid)[0]][0], 'error');
-      this.props.dispatch(showLoading());
+      props.dispatch(showLoading());
       await this.setState({ loading: false });
       return false;
     }
 
-    let { createUser, signinUser, createUserPref } = this.props;
+    let { createUser, signinUser, createUserPref } = props;
     let { firstName, lastName, password, email } = this.state;
 
     let hashedToken = await sha(password);
@@ -104,14 +107,14 @@ class Register extends PureComponent {
       window.localStorage.setItem('ATHARES_ALIAS', email);
       window.localStorage.setItem('ATHARES_HASH', hashedToken);
       window.localStorage.setItem('ATHARES_TOKEN', token);
-      this.props.dispatch(updateUser(userId));
-      this.props.dispatch(updatePub(hashedToken));
+      props.dispatch(updateUser(userId));
+      props.dispatch(updatePub(hashedToken));
 
-      this.props.history.push('/app');
-      this.props.dispatch(hideLoading());
+      props.history.push('/app');
+      props.dispatch(hideLoading());
       await this.setState({ loading: false });
     } catch (err) {
-      this.props.dispatch(hideLoading());
+      props.dispatch(hideLoading());
       await this.setState({ loading: false });
       console.error(new Error(err));
       if (err.message.indexOf('Field name = email') !== -1) {
@@ -125,7 +128,7 @@ class Register extends PureComponent {
       }
     }
   };
-  updateInfo = () => {
+  const updateInfo = () => {
     this.setState({
       firstName: document.getElementById('registerFirstName').value,
       lastName: document.getElementById('registerLastName').value,
@@ -133,7 +136,7 @@ class Register extends PureComponent {
       email: document.getElementById('registerEmail').value,
     });
   };
-  render() {
+  
     const { firstName, lastName, email, password, loading } = this.state;
     return (
       <Fragment>
@@ -236,7 +239,6 @@ class Register extends PureComponent {
         )}
       </Fragment>
     );
-  }
 }
 
 function mapStateToProps(state) {

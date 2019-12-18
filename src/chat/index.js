@@ -1,17 +1,16 @@
-import React, { Component } from "react";
+import React, { useState } from "reactn";
 import ChatWindow from "../components/ChatWindow";
 import ChatInput from "../components/ChatInput";
 import Loader from "../components/Loader";
 import FeatherIcon from "feather-icons-react";
 import { Link } from "react-router-dom";
-import { pull } from "../store/state/reducers";
 import {
   updateChannel,
   updateRevision,
   updateCircle,
   removeUnreadChannel
 } from "../store/state/actions";
-import { connect } from "react-redux";
+
 import { CREATE_MESSAGE } from "../graphql/mutations";
 import { SUB_TO_MESSAGES_BY_CHANNEL_ID } from "../graphql/subscriptions";
 import { GET_MESSAGES_FROM_CHANNEL_ID } from "../graphql/queries";
@@ -20,49 +19,49 @@ import compose from "lodash.flowright";
 import swal from "sweetalert";
 import { uploadToAWS } from "utils/upload";
 
-class Chat extends Component {
-  constructor() {
-    super();
-    this.state = {
-      messages: [],
-      user: null,
-      channel: null,
-      uploadInProgress: false
-    };
-    this._isMounted = false;
-  }
-  componentDidMount() {
-    const circleId = this.props.match.url.match(
+function Chat (){
+  
+      const [uploadInProgress, setUploadInProgress] = useState( false)
+    const [user] = useGlobal("user"),
+    const [activeChannel, setActiveChannel] = useGlobal("activeChannel"),
+    const [activeCircle, setActiveCircle] = useGlobal("activeCircle")
+  
+useEffect(()=>{
+ componentMount();
+}, [])
+
+const componentMount =  ()  => {
+    const circleId = props.match.url.match(
       /app\/circle\/(.+)\/channel/
     )[1];
 
     if (circleId) {
-      this.props.dispatch(updateCircle(circleId));
+      setActiveCircle(circleId);
     }
 
-    if (!this.props.activeChannel) {
-      this.props.dispatch(updateChannel(this.props.match.params.id));
-      this.props.dispatch(updateRevision(null));
+    if (!activeChannel) {
+      setActiveChannel(props.match.params.id);
+     setRevision(null);
       return;
     }
-    if (this.props.activeChannel) {
-      this.props.dispatch(removeUnreadChannel(this.props.match.params.id));
-    }
+    // if (activeChannel) {
+    //   props.dispatch(removeUnreadChannel(props.match.params.id));
+    // }
   }
   componentDidUpdate(prevProps) {
     // if current url doesn't match internal state, update state to match url
-    if (this.props.match.params.id !== this.props.activeChannel) {
-      this.props.dispatch(updateChannel(this.props.match.params.id));
-      this.props.dispatch(removeUnreadChannel(this.props.match.params.id));
+    if (props.match.params.id !== props.activeChannel) {
+     setActiveChannel(props.match.params.id);
+      // props.dispatch(removeUnreadChannel(props.match.params.id));
     }
     if (
-      this.props.activeChannel &&
-      this.props.activeChannel !== prevProps.activeChannel
+      activeChannel &&
+      activeChannel !== prevProps.activeChannel
     ) {
-      this.props.dispatch(removeUnreadChannel(this.props.match.params.id));
+      dispatch(removeUnreadChannel(props.match.params.id));
     }
   }
-  scrollToBottom = () => {
+  const scrollToBottom = () => {
     let chatBox = document.getElementById("chat-window-scroller");
     if (chatBox) {
       /* scroll to bottom */
@@ -70,17 +69,15 @@ class Chat extends Component {
       chatBox.scrollTop = chatBox.scrollHeight;
     }
   };
-  updateChannel = () => {
-    this.props.dispatch(updateChannel(null));
+  const updateChannel = () => {
+    props.dispatch(updateChannel(null));
   };
 
-  submit = async (text, file = null) => {
+  const submit = async (text, file = null) => {
     let chatInput = document.getElementById("chat-input");
 
     if (file) {
-      await this.setState({
-        uploadInProgress: true
-      });
+      setUploadInProgress(true)
     }
 
     try {
@@ -92,13 +89,13 @@ class Chat extends Component {
 
       let newMessage = {
         text: text.trim(),
-        channel: this.props.activeChannel,
-        user: this.props.user,
+        channel: props.activeChannel,
+        user: props.user,
         file: file !== null ? url.url : null,
         fileName: file !== null ? file.name : null
       };
 
-      let newMessageRes = await this.props.createMessage({
+      let newMessageRes = await props.createMessage({
         variables: {
           ...newMessage
         }
@@ -109,15 +106,12 @@ class Chat extends Component {
       /* clear textbox */
       chatInput.value = "";
       chatInput.setAttribute("rows", 1);
-      await this.setState({
-        uploadInProgress: false
-      });
+      setUploadInProgress(false)
+
       /* scroll to bottom */
       this.scrollToBottom();
     } catch (err) {
-      this.setState({
-        uploadInProgress: false
-      });
+     setUploadInProgress(false)
       console.error(new Error(err));
       swal(
         "Error",
@@ -129,7 +123,7 @@ class Chat extends Component {
   _subToMore = subscribeToMore => {
     subscribeToMore({
       document: SUB_TO_MESSAGES_BY_CHANNEL_ID,
-      variables: { id: this.props.activeChannel || "" },
+      variables: { id: props.activeChannel || "" },
       updateQuery: (prev, { subscriptionData }) => {
         if (!subscriptionData.data) {
           return prev;
@@ -148,15 +142,15 @@ class Chat extends Component {
       }
     });
   };
-  render() {
+  
     let channel = null;
     let messages = [];
-    let { user } = this.props;
+    let { user } = props;
 
     return (
       <Query
         query={GET_MESSAGES_FROM_CHANNEL_ID}
-        variables={{ id: this.props.activeChannel || "" }}
+        variables={{ id: props.activeChannel || "" }}
         onCompleted={this.scrollToBottom}
       >
         {({ data = {}, subscribeToMore }) => {
@@ -193,7 +187,7 @@ class Chat extends Component {
                 {user && (
                   <ChatInput
                     submit={this.submit}
-                    uploadInProgress={this.state.uploadInProgress}
+                    uploadInProgress={uploadInProgress}
                   />
                 )}
               </div>
@@ -211,17 +205,6 @@ class Chat extends Component {
         }}
       </Query>
     );
-  }
 }
 
-function mapStateToProps(state) {
-  return {
-    user: pull(state, "user"),
-    activeChannel: pull(state, "activeChannel"),
-    activeCircle: pull(state, "activeCircle")
-  };
-}
-
-export default compose(graphql(CREATE_MESSAGE, { name: "createMessage" }))(
-  connect(mapStateToProps)(Chat)
-);
+export default compose(graphql(CREATE_MESSAGE, { name: "createMessage" }))(Chat);

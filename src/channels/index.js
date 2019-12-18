@@ -1,8 +1,8 @@
-import React, { Component } from "react";
+import React, { useState } from "reactn";
 import ChannelGroup from "./ChannelGroup";
 import GovernanceChannelGroup from "./GovernanceChannelGroup";
 import { Link } from "react-router-dom";
-import { connect } from "react-redux";
+
 import { pull } from "../store/state/reducers";
 import BottomNav from "../components/BottomNav";
 import FeatherIcon from "feather-icons-react";
@@ -20,30 +20,34 @@ import { updateCircle } from "../store/state/actions";
 import Search from "../search";
 import Scrollbars from "react-custom-scrollbars";
 
-class Channels extends Component {
-  componentDidMount() {
-    if (/\/app\/circle\/.{25}$/.test(this.props.location.pathname)) {
-      let match = /\/app\/circle\/(.{25})$/.exec(this.props.location.pathname);
-      this.props.dispatch(updateCircle(match[1]));
+function Channels (){
+useEffect(()=>{
+ componentMount();
+}, [])
+
+const componentMount =    => {
+    if (/\/app\/circle\/.{25}$/.test(props.location.pathname)) {
+      let match = /\/app\/circle\/(.{25})$/.exec(props.location.pathname);
+      props.dispatch(updateCircle(match[1]));
     }
   }
   componentDidUpdate(prevProps) {
-    if (/\/app\/circle\/.{25}$/.test(this.props.location.pathname)) {
+    if (/\/app\/circle\/.{25}$/.test(props.location.pathname)) {
       let match = /\/app\/circle\/(.{25})$/.exec(
-        this.props.location.pathname
+        props.location.pathname
       )[1];
-      if (match !== this.props.activeCircle) {
-        this.props.dispatch(updateCircle(match));
+      if (match !== props.activeCircle) {
+        props.dispatch(updateCircle(match));
       }
     }
   }
-  goToOptions = () => {
-    this.props.history.push(`/app/circle/${this.props.activeCircle}/settings`);
+  const goToOptions = () => {
+    props.history.push(`/app/circle/${props.activeCircle}/settings`);
   };
   _subToMore = subscribeToMore => {
     subscribeToMore({
       document: SUB_TO_CIRCLES_CHANNELS,
-      variables: { id: this.props.activeCircle || "" },
+      variables: { id: props.activeCircle || "" },
       updateQuery: (prev, { subscriptionData }) => {
         if (!subscriptionData.data) {
           return prev;
@@ -62,7 +66,7 @@ class Channels extends Component {
       }
     });
   };
-  render() {
+  
     let {
       activeChannel,
       activeCircle,
@@ -70,7 +74,7 @@ class Channels extends Component {
       unreadDMs,
       unreadChannels,
       isUserInCircle
-    } = this.props;
+    } = props;
     let belongsToCircle = false;
     let user = null;
     let circle = null;
@@ -101,7 +105,7 @@ class Channels extends Component {
     return (
       <Query
         query={GET_CHANNELS_BY_CIRCLE_ID}
-        variables={{ id: this.props.activeCircle || "" }}
+        variables={{ id: props.activeCircle || "" }}
         // pollInterval={3000}
       >
         {({ data = {}, subscribeToMore }) => {
@@ -222,7 +226,6 @@ class Channels extends Component {
         }}
       </Query>
     );
-  }
 }
 
 const style = {

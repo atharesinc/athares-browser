@@ -1,20 +1,20 @@
-import React from "react";
+import React from "reactn";
 import Navbar from "../Navbar";
 import Footer from "../Footer";
 import { Scrollbars } from "react-custom-scrollbars";
-import { connect } from "react-redux";
 
-class Roadmap extends React.Component {
+
+function Roadmap (){
   state = {
     scrolled: false,
     top: 0
   };
-  handleUpdate = ({ scrollTop }) => {
+  const handleUpdate = ({ scrollTop }) => {
     if (this.state.top !== scrollTop) {
       this.setState({ scrolled: scrollTop > 100, top: scrollTop });
     }
   };
-  render() {
+  
     return (
       <Scrollbars
         style={{ width: "100vw", height: "100vh" }}
@@ -111,7 +111,6 @@ class Roadmap extends React.Component {
         </div>
       </Scrollbars>
     );
-  }
 }
 function mapStateToProps(state) {
   return {};

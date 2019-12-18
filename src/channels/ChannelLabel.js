@@ -1,9 +1,9 @@
-import React from "react";
+import React from "reactn";
 import { Link, withRouter } from "react-router-dom";
 import FeatherIcon from "feather-icons-react";
 import * as stateSelectors from "../store/state/reducers";
 import { updateChannel } from "../store/state/actions";
-import { connect } from "react-redux";
+
 
 const ChannelLabel = props => {
   const hasBorder = parent_id => {

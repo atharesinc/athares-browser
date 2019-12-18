@@ -1,6 +1,6 @@
-import React, { Component } from "react";
+import React, { useState } from "reactn";
 import CircleInviteList from "./CircleInviteList";
-import { connect } from "react-redux";
+
 import { pull } from "../store/state/reducers";
 import { updateCircle } from "../store/state/actions";
 import swal from "sweetalert";
@@ -10,49 +10,48 @@ import { graphql } from "react-apollo";
 import compose from 'lodash.flowright'
 import { ADD_USER_TO_CIRCLE } from "../graphql/mutations";
 
-class AddUser extends Component {
-  constructor(props) {
-    super(props);
+function AddUser (){
+ 
+     const [selectedUsers, setSelectedUsers] = useState([])
 
-    this.state = {
-      selectedUsers: []
-    };
-  }
   componentDidUpdate(prevProps) {
-    if (prevProps.user !== this.props.user && !this.props.user) {
-      this.props.history.replace("/app");
+    if (prevProps.user !== props.user && !props.user) {
+      props.history.replace("/app");
     }
   }
-  componentDidMount() {
-    if (!this.props.user) {
-      this.props.history.replace("/app");
+useEffect(()=>{
+ componentMount();
+}, [])
+
+const componentMount =    => {
+    if (!props.user) {
+      props.history.replace("/app");
     }
     if (
-      !this.props.activeCircle ||
-      this.props.activeCircle !== this.props.match.params.id
+      !props.activeCircle ||
+      props.activeCircle !== props.match.params.id
     ) {
-      this.props.dispatch(updateCircle(this.props.match.params.id));
+      props.dispatch(updateCircle(props.match.params.id));
     }
   }
 
-  updateList = items => {
-    this.setState({
-      selectedUsers: items
-    });
+  const updateList = items => {
+   setSelectedUsers( items)
   };
-  onSubmit = async e => {
+
+  const onSubmit = async e => {
     e.preventDefault();
     // add each user to circle
-    let { selectedUsers } = this.state;
+    let { selectedUsers } = state;
     if (selectedUsers.length === 0) {
       return;
     }
     try {
       let invites = selectedUsers.map(user => {
-        return this.props.addUserToCircle({
+        return props.addUserToCircle({
           variables: {
             user: user.id,
-            circle: this.props.activeCircle
+            circle: props.activeCircle
           }
         });
       });
@@ -65,19 +64,17 @@ class AddUser extends Component {
           } been added.`,
           "success"
         );
-        this.props.history.push("/app");
+        props.history.push("/app");
         // clear state
-        this.setState({
-          users: []
-        });
+        setSelectedUsers([])
       });
     } catch (err) {
       console.error(new Error(e));
       swal("Error", "There was an error inviting users.", "error");
     }
   };
-  render() {
-    const { selectedUsers } = this.state;
+  
+    const { selectedUsers } = state;
     return (
       <div id="revisions-wrapper">
         <div className="flex ph2 mobile-nav">
@@ -85,14 +82,14 @@ class AddUser extends Component {
             <FeatherIcon
               icon="chevron-left"
               className="white db dn-l"
-              onClick={this.back}
+              onClick={back}
             />
           </Link>
           <h2 className="ma3 lh-title white"> Invite Users </h2>
         </div>
         <form
           className="pa4 white wrapper mobile-body"
-          onSubmit={this.onSubmit}
+          onSubmit={onSubmit}
           id="create-circle-form"
           style={{
             overflowY: "scroll"
@@ -105,8 +102,8 @@ class AddUser extends Component {
             <div className="fn mt4">
               <div className="mb4 ba b--white-30" id="circle-invite-list">
                 <CircleInviteList
-                  shouldPlaceholder={this.state.selectedUsers.length === 0}
-                  updateList={this.updateList}
+                  shouldPlaceholder={state.selectedUsers.length === 0}
+                  updateList={updateList}
                   selectedUsers={selectedUsers}
                 />
               </div>
@@ -125,7 +122,6 @@ class AddUser extends Component {
         </form>
       </div>
     );
-  }
 }
 
 function mapStateToProps(state) {

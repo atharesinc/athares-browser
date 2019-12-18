@@ -1,11 +1,11 @@
-import React, { Component } from "react";
+import React, { useState } from "reactn";
 import { Switch, Route } from "react-router-dom";
 import RevisionBoard from "./RevisionBoard";
 import ViewRevision from "./ViewRevision";
 
-export default class Revisions extends Component {
-    render() {
-        const { match } = this.props;
+export default function Revisions (){
+    
+        const { match } = props;
         return (
             <Switch>
                 <Route

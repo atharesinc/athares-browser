@@ -1,4 +1,4 @@
-import { Component } from 'react';
+import { useState } from 'react';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { pull } from '../store/state/reducers';
@@ -16,14 +16,13 @@ import sha from 'simple-hash-browser';
 
 let checkItemsTimer = null;
 
-class App extends Component {
-  constructor() {
-    super();
+function App (){
+  
     this.checkItemsTimer = checkItemsTimer;
-  }
+  
   async componentDidUpdate(prevProps) {
     // only do the following if revisions are loaded, not before
-    if (this.props.data.User) {
+    if (props.data.User) {
       // get a flat list of revisions for current and past props
       let allRevisions = this.getAllRevisions();
       let prevRevisions = prevProps.data.User
@@ -38,15 +37,15 @@ class App extends Component {
       }
     }
   }
-  getAllRevisions = () => {
-    return this.props.data.User.circles
+  const getAllRevisions = () => {
+    return props.data.User.circles
       .map(c => c.revisions.map(r => ({ ...r, circle: c.id })))
       .flat(1);
   };
-  getNext = () => {
+  const getNext = () => {
     clearTimeout(this.checkItemsTimer);
     let now = moment().valueOf();
-    if (!this.props.data.User) {
+    if (!props.data.User) {
       return false;
     }
     let revisions = this.getAllRevisions();
@@ -99,7 +98,7 @@ class App extends Component {
     ) {
       // if this revision is a repeal, update the revision like in updateAmendment but also delete amendment
       if (thisRevision.repeal === true) {
-        await this.props.deleteAmendment({
+        await props.deleteAmendment({
           variables: {
             revision: thisRevision.id,
             amendment: thisRevision.amendment.id,
@@ -117,7 +116,7 @@ class App extends Component {
           }),
         );
         if (thisRevision.amendment) {
-          await this.props.updateAmendment({
+          await props.updateAmendment({
             variables: {
               amendment: thisRevision.amendment.id,
               title: thisRevision.title,
@@ -129,7 +128,7 @@ class App extends Component {
           });
           this.getNext();
         } else {
-          await this.props.createAmendmentFromRevision({
+          await props.createAmendmentFromRevision({
             variables: {
               title: thisRevision.title,
               text: thisRevision.newText,
@@ -143,7 +142,7 @@ class App extends Component {
       }
     } else {
       // it fails and we ignore it forever
-      await this.props.denyRevision({
+      await props.denyRevision({
         variables: {
           id: thisRevision.id,
         },
@@ -151,7 +150,7 @@ class App extends Component {
       this.getNext();
     }
   };
-  render() {
+  
     return null;
   }
 }

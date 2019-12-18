@@ -1,4 +1,4 @@
-import { Component } from 'react';
+import { useState } from 'react';
 import { connect } from 'react-redux';
 import { pull } from '../store/state/reducers';
 import { DELETE_WEB_SUB, CREATE_WEB_SUB } from '../graphql/mutations';
@@ -7,26 +7,30 @@ import { graphql } from 'react-apollo';
 import compose from 'lodash.flowright';
 import swal from 'sweetalert';
 
-class ServiceWorkerMonitor extends Component {
-  componentDidMount() {
-    if (this.getNotificationPermission() === 'granted' && this.props.user) {
+function ServiceWorkerMonitor (){
+useEffect(()=>{
+ componentMount();
+}, [])
+
+const componentMount =    => {
+    if (this.getNotificationPermission() === 'granted' && props.user) {
       this.doLogin();
     }
   }
-  getNotificationPermission = () => {
+  const getNotificationPermission = () => {
     return Notification.permission;
   };
-  doLogin = async () => {
+  const doLogin = async () => {
     let activeSub = await this.getCurrentSub();
     let permission = this.getNotificationPermission();
     let subbed = this.currentlySubscribed(activeSub);
     if (permission === 'granted' && subbed === false) {
       // user has allowed subs but isn't subscribed on this device
-      this.createSub(subbed.subscription, this.props.user);
+      this.createSub(subbed.subscription, props.user);
     }
   };
   createSub = (sub, user) =>
-    this.props.createWebSub({
+    props.createWebSub({
       variables: {
         sub,
         user,
@@ -40,13 +44,13 @@ class ServiceWorkerMonitor extends Component {
     if (subbed) {
       this.deleteWebSub(activeSub.id);
     }
-    this.props.sw.unregister();
+    props.sw.unregister();
   };
-  deleteWebSub = id => this.props.deleteWebSub({ variables: { id } });
+  const deleteWebSub = id => props.deleteWebSub({ variables: { id } });
 
   currentlySubscribed = activeSub => {
-    if (this.props.getWebSubs.User) {
-      let { webSubs } = this.props.getWebSubs.User;
+    if (props.getWebSubs.User) {
+      let { webSubs } = props.getWebSubs.User;
       let subNode = webSubs.find(
         s => s.subsciption.endpoint === activeSub.endpoint,
       );
@@ -56,15 +60,15 @@ class ServiceWorkerMonitor extends Component {
   };
   async componentDidUpdate(prevProps) {
     // user has logged in
-    if (prevProps.user === null && this.props.user !== null) {
+    if (prevProps.user === null && props.user !== null) {
       this.doLogin();
     }
     // user has logged out, delete the webPushSubscription in GQL, unregister the service worker
-    if (prevProps.user !== null && this.props.user === null) {
+    if (prevProps.user !== null && props.user === null) {
       this.doLogout();
     }
   }
-  getCurrentSub = () => {
+  const getCurrentSub = () => {
     return new Promise(resolve => {
       navigator.serviceWorker.ready.then(async function(
         serviceWorkerRegistration,
@@ -74,7 +78,7 @@ class ServiceWorkerMonitor extends Component {
       });
     });
   };
-  render() {
+  
     return null;
   }
 }

@@ -1,7 +1,7 @@
-import React, { Component } from "react";
+import React, { useState } from "reactn";
 import ImageUpload from "../components/ImageUpload";
 import ErrorSwap from "../utils/ErrorSwap";
-import { connect } from "react-redux";
+
 import { pull } from "../store/state/reducers";
 import { updateCircle } from "../store/state/actions";
 import Loader from "../components/Loader";
@@ -14,9 +14,8 @@ import { graphql } from "react-apollo";
 import compose from "lodash.flowright";
 import { uploadToAWS } from "utils/upload";
 
-class createCircleBoard extends Component {
-  constructor(props) {
-    super(props);
+function createCircleBoard (){
+  
 
     this.state = {
       // this should be whatever fits into an img src value or a css url(), either a filepath or base64 encoded image string
@@ -27,11 +26,15 @@ class createCircleBoard extends Component {
       loading: false,
       editMode: false
     };
-  }
-  componentDidMount() {
+  
+useEffect(()=>{
+ componentMount();
+}, [])
+
+const componentMount =    => {
     // verify this circle is real and that the user is logged in, but for now...
-    if (!this.props.user) {
-      this.props.history.replace("/app");
+    if (!props.user) {
+      props.history.replace("/app");
     }
 
     let that = this;
@@ -46,28 +49,28 @@ class createCircleBoard extends Component {
         });
       });
   }
-  changeImage = imageUrl => {
+  const changeImage = imageUrl => {
     this.setState({
       icon: imageUrl
     });
   };
-  editMode = bool => {
+  const editMode = bool => {
     this.setState({
       editMode: bool
     });
   };
-  updateName = e => {
+  const updateName = e => {
     this.setState({
       name: e.target.value.substring(0, 51),
       isTaken: false
     });
   };
-  updatePreamble = e => {
+  const updatePreamble = e => {
     this.setState({
       preamble: e.target.value
     });
   };
-  convertBlobToBase64 = blob => {
+  const convertBlobToBase64 = blob => {
     return new Promise(resolve => {
       let reader = new FileReader();
       reader.readAsDataURL(blob);
@@ -76,7 +79,7 @@ class createCircleBoard extends Component {
       };
     });
   };
-  b64toBlob = (b64Data, sliceSize = 512) => {
+  const b64toBlob = (b64Data, sliceSize = 512) => {
     const block = b64Data.split(";");
     // get the real base64 content of the file
     const realData = block[1].split(",")[1];
@@ -98,7 +101,7 @@ class createCircleBoard extends Component {
 
     return new Blob(byteArrays, { type: "image/png" });
   };
-  onSubmit = async e => {
+  const onSubmit = async e => {
     e.preventDefault();
     if (this.state.editMode) {
       return false;
@@ -134,7 +137,7 @@ class createCircleBoard extends Component {
       icon: url
     };
 
-    let newCircleRes = await this.props.createCircle({
+    let newCircleRes = await props.createCircle({
       variables: {
         ...newCircle
       }
@@ -142,22 +145,22 @@ class createCircleBoard extends Component {
 
     newCircle.id = newCircleRes.data.createCircle.id;
 
-    await this.props.addCircleToUser({
+    await props.addCircleToUser({
       variables: {
-        user: this.props.user,
+        user: props.user,
         circle: newCircle.id
       }
     });
     // set activeCircle as this one
-    this.props.dispatch(updateCircle(newCircle.id));
+    props.dispatch(updateCircle(newCircle.id));
 
     await this.setState({ loading: false });
     swal("Circle Created", `${name} has been created successfully.`, "success");
 
-    this.props.history.push("/app/circle/" + newCircle.id + "/constitution");
+    props.history.push("/app/circle/" + newCircle.id + "/constitution");
   };
 
-  shrinkBase64 = base64String => {
+  const shrinkBase64 = base64String => {
     return new Promise(resolve => {
       // We create an image to receive the Data URI
       var img = document.createElement("img");
@@ -180,12 +183,12 @@ class createCircleBoard extends Component {
       img.src = base64String;
     });
   };
-  clearError = () => {
+  const clearError = () => {
     this.setState({
       isTaken: false
     });
   };
-  render() {
+  
     if (this.state.loading) {
       return (
         <div
@@ -298,7 +301,6 @@ class createCircleBoard extends Component {
         </form>
       </div>
     );
-  }
 }
 
 function mapStateToProps(state) {

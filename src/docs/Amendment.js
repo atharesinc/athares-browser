@@ -16,22 +16,21 @@ import {
 } from '../graphql/mutations';
 import sha from 'simple-hash-browser';
 
-class Amendment extends React.Component {
-  constructor(props) {
-    super(props);
+function Amendment (){
+  
 
     this.state = {
       editMode: false,
-      text: this.props.text,
+      text: props.text,
     };
-  }
-  cancel = () => {
+  
+  const cancel = () => {
     this.setState({
       editMode: false,
-      text: this.props.text,
+      text: props.text,
     });
   };
-  repeal = () => {
+  const repeal = () => {
     try {
       swal(
         "Are you sure you'd like to repeal this amendment?\n\nBy starting the repeal process, you will create a revision with the intention of permanently deleting this amendment.",
@@ -43,8 +42,8 @@ class Amendment extends React.Component {
         },
       ).then(async value => {
         if (value === true) {
-          const { activeCircle, circle, user } = this.props;
-          const { title, text, id } = this.props.amendment;
+          const { activeCircle, circle, user } = props;
+          const { title, text, id } = props.amendment;
 
           let numUsers = circle.users.length;
           let newRevision = {
@@ -70,7 +69,7 @@ class Amendment extends React.Component {
       swal('Error', 'There was an error in the repeal process', 'error');
     }
   };
-  toggleEdit = e => {
+  const toggleEdit = e => {
     if (e.target.className !== 'editMask' && this.state.editMode) {
       return false;
     }
@@ -78,16 +77,16 @@ class Amendment extends React.Component {
       editMode: !this.state.editMode,
     });
   };
-  update = text => {
+  const update = text => {
     this.setState({
       text: text,
     });
   };
-  addSub = () => {
-    this.props.addSub(this.props.id);
+  const addSub = () => {
+    props.addSub(props.id);
     this.cancel();
   };
-  customSigm = x => {
+  const customSigm = x => {
     return 604800 / (1 + Math.pow(Math.E, -1 * (x - 10))) / 2;
   };
   // a minimum number of users in a circle must have voted on a revision to ratify it
@@ -95,14 +94,14 @@ class Amendment extends React.Component {
   ratifiedThreshold = n => {
     return 0.4 / (1 + Math.pow(Math.E, -1 * n * 0.2));
   };
-  save = async () => {
+  const save = async () => {
     // can be undefined if no changes
-    if (this.props.amendment.text.trim() === this.state.text) {
+    if (props.amendment.text.trim() === this.state.text) {
       return;
     }
 
-    const { activeCircle, circle, user } = this.props;
-    const { title, text, id } = this.props.amendment;
+    const { activeCircle, circle, user } = props;
+    const { title, text, id } = props.amendment;
 
     let numUsers = circle.users.length;
     let newRevision = {
@@ -121,7 +120,7 @@ class Amendment extends React.Component {
     this.createRevision(newRevision);
   };
 
-  createRevision = async newRevision => {
+  const createRevision = async newRevision => {
     try {
       let hash = await sha(
         JSON.stringify({
@@ -133,39 +132,39 @@ class Amendment extends React.Component {
         }),
       );
 
-      let newRevisionRes = await this.props.createRevision({
+      let newRevisionRes = await props.createRevision({
         variables: {
           ...newRevision,
           hash,
         },
       });
 
-      await this.props.addNewRevisionToAmendment({
+      await props.addNewRevisionToAmendment({
         variables: {
           revision: newRevisionRes.data.createRevision.id,
-          amendment: this.props.amendment.id,
+          amendment: props.amendment.id,
           title: newRevision.title,
         },
       });
       newRevision.id = newRevisionRes.data.createRevision.id;
 
       const newVote = {
-        circle: this.props.activeCircle,
+        circle: props.activeCircle,
         revision: newRevision.id,
-        user: this.props.user,
+        user: props.user,
         support: true,
       };
 
-      await this.props.createVote({
+      await props.createVote({
         variables: {
           ...newVote,
         },
       });
 
-      this.props.dispatch(updateRevision(newRevision.id));
+      props.dispatch(updateRevision(newRevision.id));
 
-      this.props.history.push(
-        `/app/circle/${this.props.activeCircle}/revisions/${newRevision.id}`,
+      props.history.push(
+        `/app/circle/${props.activeCircle}/revisions/${newRevision.id}`,
       );
     } catch (err) {
       if (
@@ -179,12 +178,12 @@ class Amendment extends React.Component {
   };
   shouldComponentUpdate(nextProps, nextState) {
     return (
-      nextProps !== this.props || nextState.editMode !== this.state.editMode
+      nextProps !== props || nextState.editMode !== this.state.editMode
     );
   }
-  render() {
+  
     const { text, editMode } = this.state;
-    const { amendment, activeCircle } = this.props;
+    const { amendment, activeCircle } = props;
     const hasOutstandingRevision =
       amendment.revision !== null && amendment.revision.passed === null;
     return (
@@ -204,13 +203,12 @@ class Amendment extends React.Component {
             amendment={amendment}
             toggleEdit={this.toggleEdit}
             text={text}
-            editable={this.props.editable}
+            editable={props.editable}
             circle={activeCircle}
           />
         )}
       </div>
     );
-  }
 }
 function mapStateToProps(state) {
   return {

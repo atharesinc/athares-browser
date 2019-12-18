@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from "react";
+import React, { Component, Fragment } from "reactn";
 import {
   UPDATE_USER_PASSWORD,
   DELETE_RESET_REQUEST
@@ -13,7 +13,7 @@ import FeatherIcon from "feather-icons-react";
 import sha from "simple-hash-browser";
 import Loader from "../components/Loader";
 
-class Reset extends Component {
+function Reset (){
   state = {
     loading: false,
     code: "",
@@ -21,10 +21,10 @@ class Reset extends Component {
     showReset: false
   };
 
-  checkIfExpired = () => {
+  const checkIfExpired = () => {
     if (
-      !this.props.data.ResetRequest ||
-      moment(this.props.data.ResetRequest.createdAt)
+      !props.data.ResetRequest ||
+      moment(props.data.ResetRequest.createdAt)
         .add(24, "hours")
         .format() <= moment().format()
     ) {
@@ -33,7 +33,7 @@ class Reset extends Component {
     }
     return true;
   };
-  check = async () => {
+  const check = async () => {
     let valid = this.checkIfExpired();
     if (valid === false) {
       return false;
@@ -41,8 +41,8 @@ class Reset extends Component {
     let { code } = this.state;
     code = code.trim().toLowerCase();
 
-    let { token, id } = this.props.data.ResetRequest;
-    if (id !== this.props.match.params.id) {
+    let { token, id } = props.data.ResetRequest;
+    if (id !== props.match.params.id) {
       console.log("uhh...");
       return false;
     }
@@ -56,15 +56,15 @@ class Reset extends Component {
       showReset: true
     });
   };
-  resetPassword = async () => {
+  const resetPassword = async () => {
     await this.setState({
       loading: true
     });
     let { password, code } = this.state;
-    const { id, token } = this.props.data.ResetRequest;
-    const { User } = this.props.getUser;
+    const { id, token } = props.data.ResetRequest;
+    const { User } = props.getUser;
 
-    if (id !== this.props.match.params.id) {
+    if (id !== props.match.params.id) {
       return false;
     }
     code = code.trim().toLowerCase();
@@ -78,13 +78,13 @@ class Reset extends Component {
     }
     try {
       let hashedPass = await sha(password);
-      await this.props.updateUserPassword({
+      await props.updateUserPassword({
         variables: {
           user: User.id,
           password: hashedPass
         }
       });
-      await this.props.deleteResetRequest({
+      await props.deleteResetRequest({
         variables: {
           id
         }
@@ -92,7 +92,7 @@ class Reset extends Component {
       if (localStorage.getItem("ATHARES_HASH")) {
         localStorage.setItem("ATHARES_HASH", hashedPass);
       }
-      this.props.history.push("/login");
+      props.history.push("/login");
       await this.setState({
         loading: false
       });
@@ -104,17 +104,17 @@ class Reset extends Component {
       });
     }
   };
-  updateCode = e => {
+  const updateCode = e => {
     this.setState({
       code: e.currentTarget.value.toUpperCase()
     });
   };
-  updatePassword = e => {
+  const updatePassword = e => {
     this.setState({
       password: e.currentTarget.value
     });
   };
-  render() {
+  
     const { code, showReset, password, loading } = this.state;
     return (
       <Fragment>
@@ -195,7 +195,6 @@ class Reset extends Component {
         )}
       </Fragment>
     );
-  }
 }
 
 export default withRouter(

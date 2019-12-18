@@ -6,12 +6,12 @@ import moment from 'moment';
 import { Query } from 'react-apollo';
 import { GET_USER_BY_ID_ALL } from '../graphql/queries';
 
-class ViewUser extends React.Component {
-  render() {
+function ViewUser (){
+  
     return (
       <Query
         query={GET_USER_BY_ID_ALL}
-        variables={{ id: this.props.match.params.id || '' }}
+        variables={{ id: props.match.params.id || '' }}
         pollInterval={10000}
       >
         {({ loading, err, data = {} }) => {
@@ -161,7 +161,6 @@ class ViewUser extends React.Component {
         }}
       </Query>
     );
-  }
 }
 
 export default ViewUser;

@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 import ChatWindow from '../components/ChatWindow';
 import ChatInput from '../components/ChatInput';
 import DMInviteList from './DMInviteList';
@@ -20,37 +20,40 @@ import compose from 'lodash.flowright'
 import { uploadToAWS } from 'utils/upload';
 import swal from 'sweetalert';
 
-class CreateDM extends Component {
-  constructor(props) {
-    super(props);
+function CreateDM (){
+  
     this.state = {
       text: '',
       selectedUsers: [],
       cryptoEnabled: false,
       uploadInProgress: false,
     };
-  }
-  componentDidMount() {
-    if (!this.props.user) {
-      this.props.history.push('/app');
+  
+useEffect(()=>{
+ componentMount();
+}, [])
+
+const componentMount =    => {
+    if (!props.user) {
+      props.history.push('/app');
     }
     document.getElementById('no-messages').innerText =
       "Enter a user's name to start a conversation";
   }
-  updateList = items => {
+  const updateList = items => {
     this.setState({
       selectedUsers: items,
     });
   };
-  updateText = text => {
+  const updateText = text => {
     this.setState({
       text,
     });
   };
 
-  submit = async (text = '', file = null) => {
+  const submit = async (text = '', file = null) => {
     let { selectedUsers } = this.state;
-    let { data } = this.props;
+    let { data } = props;
     if (!data.User) {
       return false;
     }
@@ -60,7 +63,7 @@ class CreateDM extends Component {
     //   return false;
     // }
     // if the user addresses themselves, remove them because they'll get added anyway
-    let userIndex = selectedUsers.findIndex(u => u.id === this.props.user);
+    let userIndex = selectedUsers.findIndex(u => u.id === props.user);
     if (userIndex !== -1) {
       selectedUsers.splice(userIndex, 1);
     }
@@ -70,7 +73,7 @@ class CreateDM extends Component {
     await this.setState({
       uploadInProgress: true,
     });
-    let { User: user } = this.props.data;
+    let { User: user } = props.data;
 
     // create a symmetric key for the new channel
     var _secretKey = SimpleCrypto.generateRandom({ length: 256 });
@@ -92,7 +95,7 @@ class CreateDM extends Component {
 
     try {
       // create the channel as a DM channel
-      let res = await this.props.createChannel({
+      let res = await props.createChannel({
         variables: {
           ...newChannel,
         },
@@ -103,7 +106,7 @@ class CreateDM extends Component {
       // give each user an encrypted copy of this keypair and store it in
       let promiseList = selectedUsers.map(async u => {
         const encryptedKey = await encrypt(_secretKey, u.pub);
-        return this.props.createKey({
+        return props.createKey({
           variables: {
             key: encryptedKey,
             user: u.id,
@@ -114,7 +117,7 @@ class CreateDM extends Component {
 
       // add each user to this channel
       let promiseList2 = selectedUsers.map(u =>
-        this.props.addUserToChannel({
+        props.addUserToChannel({
           variables: {
             channel: id,
             user: u.id,
@@ -133,13 +136,13 @@ class CreateDM extends Component {
       // send the first message, encrypted with the channel's SEA pair
       let newMessage = {
         text: simpleCrypto.encrypt(text.trim()),
-        user: this.props.user,
+        user: props.user,
         channel: id,
         file: url ? simpleCrypto.encrypt(url.url) : '',
         fileName: file !== null ? file.name : null,
       };
 
-      this.props.createMessage({
+      props.createMessage({
         variables: {
           ...newMessage,
         },
@@ -147,7 +150,7 @@ class CreateDM extends Component {
       await this.setState({
         uploadInProgress: false,
       });
-      this.props.history.push(`/app/channel/${id}`);
+      props.history.push(`/app/channel/${id}`);
     } catch (err) {
       console.error(new Error(err));
       swal(
@@ -157,7 +160,7 @@ class CreateDM extends Component {
       );
     }
   };
-  render() {
+  
     const { selectedUsers } = this.state;
     return (
       <div id='chat-wrapper'>
@@ -180,7 +183,6 @@ class CreateDM extends Component {
         />
       </div>
     );
-  }
 }
 
 function mapStateToProps(state) {

@@ -1,38 +1,37 @@
-import React, { Component } from "react";
+import React, { useState } from "reactn";
 import FeatherIcon from "feather-icons-react";
 import swal from "sweetalert";
 import { Link, withRouter } from "react-router-dom";
 import { updateUser, updatePub } from "../store/state/actions";
 import { validateLogin } from "../utils/validators";
 import { pull } from "../store/state/reducers";
-import { connect } from "react-redux";
+
 import { showLoading, hideLoading } from "react-redux-loading-bar";
 import sha from "simple-hash-browser";
 import { SIGNIN_USER } from "../graphql/mutations";
 import { graphql } from "react-apollo";
 
-class MiniLogin extends Component {
-  constructor(props) {
-    super(props);
+function MiniLogin (){
+  
     this.state = {
       password: "",
       email: "",
       loading: false
     };
-  }
-  tryLogin = async e => {
-    this.props.dispatch(showLoading());
+  
+  const tryLogin = async e => {
+    props.dispatch(showLoading());
     e.preventDefault();
     await this.setState({ loading: true });
     const isValid = validateLogin({ ...this.state });
 
     if (isValid !== undefined) {
       swal("Error", isValid[Object.keys(isValid)[0]][0], "error");
-      this.props.dispatch(hideLoading());
+      props.dispatch(hideLoading());
       await this.setState({ loading: false });
       return false;
     }
-    const { signinUser } = this.props;
+    const { signinUser } = props;
     let { password, email } = this.state;
     let hashedToken = await sha(password);
 
@@ -54,9 +53,9 @@ class MiniLogin extends Component {
       window.localStorage.setItem("ATHARES_ALIAS", email);
       window.localStorage.setItem("ATHARES_HASH", hashedToken);
       window.localStorage.setItem("ATHARES_TOKEN", token);
-      this.props.dispatch(updateUser(userId));
-      this.props.dispatch(updatePub(hashedToken));
-      this.props.dispatch(hideLoading());
+      props.dispatch(updateUser(userId));
+      props.dispatch(updatePub(hashedToken));
+      props.dispatch(hideLoading());
       await this.setState({ loading: false });
     } catch (err) {
       if (err.message.indexOf("Invalid Credentials") !== -1) {
@@ -64,11 +63,11 @@ class MiniLogin extends Component {
       } else {
         swal("Error", err.message, "error");
       }
-      this.props.dispatch(hideLoading());
+      props.dispatch(hideLoading());
       await this.setState({ loading: false });
     }
   };
-  updateInfo = () => {
+  const updateInfo = () => {
     this.setState({
       password: document.getElementById("loginPassword").value,
       email: document.getElementById("loginEmail").value
@@ -77,7 +76,7 @@ class MiniLogin extends Component {
   shouldComponentUpdate(nextProps, nextState) {
     return nextState !== this.state;
   }
-  render() {
+  
     const { email, password } = this.state;
 
     return (
@@ -124,7 +123,6 @@ class MiniLogin extends Component {
         </Link>
       </form>
     );
-  }
 }
 
 function mapStateToProps(state) {

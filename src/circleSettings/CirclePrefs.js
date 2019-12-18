@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { useState } from "reactn";
 import Loader from "../components/Loader";
 import {
   UPDATE_AMENDEMENT_PERMISSION_FOR_CIRCLE,
@@ -13,37 +13,41 @@ import compose from 'lodash.flowright';
 import Switch from "react-switch";
 import { withRouter } from "react-router-dom";
 
-class CirclePrefs extends Component {
-  componentDidMount() {
+function CirclePrefs (){
+useEffect(()=>{
+ componentMount();
+}, [])
+
+const componentMount =    => {
     // verify this circle is real and that the user is logged in, but for now...
-    if (!this.props.user || !this.props.activeCircle) {
-      this.props.history.replace("/app");
+    if (!props.user || !props.activeCircle) {
+      props.history.replace("/app");
     }
   }
 
-  updateAmendmentPref = async checked => {
-    let { id } = this.props.data.User.circlePermissions[0];
+  const updateAmendmentPref = async checked => {
+    let { id } = props.data.User.circlePermissions[0];
 
-    await this.props.updateAmendmentPref({
+    await props.updateAmendmentPref({
       variables: {
         id,
         flag: checked
       }
     });
   };
-  updateRevisionPref = async checked => {
-    let { id } = this.props.data.User.circlePermissions[0];
+  const updateRevisionPref = async checked => {
+    let { id } = props.data.User.circlePermissions[0];
 
-    await this.props.updateRevisionPref({
+    await props.updateRevisionPref({
       variables: {
         id,
         flag: checked
       }
     });
   };
-  updateEmailPref = async checked => {
-    let { id } = this.props.data.User.circlePermissions[0];
-    await this.props.updateEmailPref({
+  const updateEmailPref = async checked => {
+    let { id } = props.data.User.circlePermissions[0];
+    await props.updateEmailPref({
       variables: {
         id,
         flag: checked
@@ -51,11 +55,11 @@ class CirclePrefs extends Component {
     });
   };
 
-  render() {
+  
     let {
       loading,
       data: { User: user }
-    } = this.props;
+    } = props;
 
     if (loading || !user) {
       return (
@@ -134,7 +138,6 @@ class CirclePrefs extends Component {
         {/*  */}
       </div>
     );
-  }
 }
 
 export default compose(

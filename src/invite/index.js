@@ -16,37 +16,41 @@ import { logout } from '../store/state/actions';
 import { Scrollbars } from 'react-custom-scrollbars';
 import MiniLoginRegister from './MiniLoginRegister';
 
-class Invite extends Component {
+function Invite (){
   state = {
     registered: false,
     loading: true,
   };
-  componentDidMount() {
-    if (this.props.getInviteById.Invite) {
-      if (this.props.getInviteById.Invite.hasAccepted) {
-        this.props.history.replace('/app');
+useEffect(()=>{
+ componentMount();
+}, [])
+
+const componentMount =    => {
+    if (props.getInviteById.Invite) {
+      if (props.getInviteById.Invite.hasAccepted) {
+        props.history.replace('/app');
       }
     }
   }
   componentDidUpdate(prevProps) {
-    if (this.props.getInviteById.Invite !== prevProps.getInviteById.Invite) {
-      if (this.props.getInviteById.Invite.hasAccepted) {
-        this.props.history.replace('/app');
+    if (props.getInviteById.Invite !== prevProps.getInviteById.Invite) {
+      if (props.getInviteById.Invite.hasAccepted) {
+        props.history.replace('/app');
       }
       if (
-        this.props.getUserById.User &&
-        this.props.getUserById.User.id ===
-          this.props.getInviteById.Invite.inviter.id
+        props.getUserById.User &&
+        props.getUserById.User.id ===
+          props.getInviteById.Invite.inviter.id
       ) {
-        this.props.history.replace('/app');
+        props.history.replace('/app');
       }
     }
   }
-  logout = () => {
-    this.props.dispatch(logout());
+  const logout = () => {
+    props.dispatch(logout());
   };
-  joinCircle = async () => {
-    let { getInviteById, getUserById } = this.props;
+  const joinCircle = async () => {
+    let { getInviteById, getUserById } = props;
     let circle,
       invite,
       user = null;
@@ -60,28 +64,28 @@ class Invite extends Component {
     }
     if (user && circle) {
       try {
-        await this.props.addUserToCircle({
+        await props.addUserToCircle({
           variables: {
             circle: circle.id,
             user: user.id,
           },
         });
 
-        await this.props.updateInvite({
+        await props.updateInvite({
           variables: {
             id: invite.id,
           },
         });
 
-        this.props.history.replace('/app');
+        props.history.replace('/app');
       } catch (err) {
         console.error(new Error(err));
         swal('Error', 'An error occurred joining this Circle', 'error');
       }
     }
   };
-  render() {
-    let { getInviteById, getUserById } = this.props;
+  
+    let { getInviteById, getUserById } = props;
     let circle,
       user,
       loading,
@@ -173,7 +177,6 @@ class Invite extends Component {
         <Loader />
       </div>
     );
-  }
 }
 
 function mapStateToProps(state) {

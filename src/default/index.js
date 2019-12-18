@@ -1,6 +1,6 @@
-import React, { Component } from "react";
+import React, { useState } from "reactn";
 import { Link } from "react-router-dom";
-import { connect } from "react-redux";
+
 import { pull } from "../store/state/reducers";
 import {
   updateCircle,
@@ -12,16 +12,19 @@ import { GET_CHANNELS_BY_CIRCLE_ID } from "../graphql/queries";
 import NoticeBoard from "./NoticeBoard";
 import FeatherIcon from "feather-icons-react";
 
-class Dashboard extends Component {
-  constructor(props) {
-    super(props);
+function Dashboard (){
+  
     this.state = {
       news: []
     };
-  }
+  
 
-  componentDidMount() {
-    let circleId = this.props.location.pathname.match(
+useEffect(()=>{
+ componentMount();
+}, [])
+
+const componentMount =    => {
+    let circleId = props.location.pathname.match(
       /\/circle\/([a-zA-Z0-9]{25})/
     );
     if (circleId !== null) {
@@ -29,25 +32,25 @@ class Dashboard extends Component {
       this.setState({
         circle: circleId
       });
-      this.props.dispatch(updateCircle(circleId));
+      props.dispatch(updateCircle(circleId));
     }
-    this.props.dispatch(updateChannel(null));
-    this.props.dispatch(updateRevision(null));
+    props.dispatch(updateChannel(null));
+    props.dispatch(updateRevision(null));
   }
   componentDidUpdate(prevProps, prevState) {
-    let circleId = this.props.location.pathname.match(
+    let circleId = props.location.pathname.match(
       /\/circle\/([a-zA-Z0-9]{25})/
     );
 
     if (circleId !== null) {
       circleId = circleId[1];
 
-      if (this.props.activeCircle !== circleId) {
-        this.props.dispatch(updateCircle(circleId));
+      if (props.activeCircle !== circleId) {
+        props.dispatch(updateCircle(circleId));
       }
     }
   }
-  render() {
+  
     return (
       <div
         id="dashboard-wrapper"
@@ -84,7 +87,7 @@ class Dashboard extends Component {
           Distributed Democracy Platform
         </div>
         <div className="mw9 center">
-          {this.props.user ? (
+          {props.user ? (
             <div className="cf mb3">
               <Link className="fl w-100 pv2" to={"/app/new/circle"}>
                 <div className="bg-white-10 tc dashboard-item">
@@ -107,11 +110,10 @@ class Dashboard extends Component {
           <div className="bg-white-20 mt2 pv3 w-100 ph4 ttu tracked">
             Athares News
           </div>
-          <NoticeBoard activeCircle={this.props.activeCircle} />
+          <NoticeBoard activeCircle={props.activeCircle} />
         </div>
       </div>
     );
-  }
 }
 
 function mapStateToProps(state) {

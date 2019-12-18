@@ -1,4 +1,4 @@
-import React, { PureComponent } from 'react';
+import React, { useState  } from 'react';
 import Amendment from './Amendment';
 import Loader from '../components/Loader.js';
 import { Link } from 'react-router-dom';
@@ -16,34 +16,37 @@ import { SUB_TO_CIRCLES_AMENDMENTS } from '../graphql/subscriptions';
 
 import FeatherIcon from 'feather-icons-react';
 
-class Constitution extends PureComponent {
-  constructor(props) {
-    super(props);
+function Constitution (){
+  
     this.state = {
       circle: null,
       amendments: [],
     };
-  }
+  
 
-  componentDidMount() {
+useEffect(()=>{
+ componentMount();
+}, [])
+
+const componentMount =    => {
     // we only need to manually fetch the circle and it's amendments if the user isn't signed in
     // we should always make sure that the currently navigated-to circle is the activeCircle in redux
     this._isMounted = true;
-    if (this.props.activeCircle) {
-      this.props.dispatch(updateChannel(null));
-      this.props.dispatch(updateRevision(null));
+    if (props.activeCircle) {
+      props.dispatch(updateChannel(null));
+      props.dispatch(updateRevision(null));
     } else {
-      let circleID = this.props.match.params.id;
+      let circleID = props.match.params.id;
 
-      this.props.dispatch(updateCircle(circleID));
-      this.props.dispatch(updateChannel(null));
-      this.props.dispatch(updateRevision(null));
+      props.dispatch(updateCircle(circleID));
+      props.dispatch(updateChannel(null));
+      props.dispatch(updateRevision(null));
     }
   }
   _subToMore = subscribeToMore => {
     subscribeToMore({
       document: SUB_TO_CIRCLES_AMENDMENTS,
-      variables: { id: this.props.activeCircle || '' },
+      variables: { id: props.activeCircle || '' },
       updateQuery: (prev, { subscriptionData }) => {
         let {
           previousValues,
@@ -79,15 +82,15 @@ class Constitution extends PureComponent {
       },
     });
   };
-  render() {
-    let { user } = this.props;
+  
+    let { user } = props;
     let circle = null;
     let amendments = [];
 
     return (
       <Query
         query={GET_AMENDMENTS_FROM_CIRCLE_ID}
-        variables={{ id: this.props.activeCircle || '' }}
+        variables={{ id: props.activeCircle || '' }}
         fetchPolicy={'cache-and-network'}
       >
         {({ data = {}, subscribeToMore }) => {
@@ -156,7 +159,6 @@ class Constitution extends PureComponent {
         }}
       </Query>
     );
-  }
 }
 
 function mapStateToProps(state) {

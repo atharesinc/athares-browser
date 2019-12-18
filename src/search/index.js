@@ -1,15 +1,14 @@
-import React from "react";
+import React from "reactn";
 import SearchResults from "./SearchResults";
 import FeatherIcon from "feather-icons-react";
 import { Query } from "react-apollo";
 import { SEARCH_ALL } from "../graphql/queries";
-import { connect } from "react-redux";
+
 import { pull } from "../store/ui/reducers";
 import { updateSearchParams } from "../store/ui/actions";
 
-class Search extends React.Component {
-  constructor() {
-    super();
+function Search (){
+  
     this.state = {
       circles: [],
       channels: [],
@@ -18,21 +17,21 @@ class Search extends React.Component {
       loading: false
     };
     this._isMounted = false;
-  }
-  updateText = e => {
+  
+  const updateText = e => {
     e.preventDefault();
-    this.props.dispatch(updateSearchParams(e.currentTarget.value));
+    props.dispatch(updateSearchParams(e.currentTarget.value));
   };
   componentWillUnmount() {
     this._isMounted = false;
   }
-  hideSearch = () => {
+  const hideSearch = () => {
     this.setState({
       searchParams: ""
     });
   };
-  render() {
-    const { searchParams } = this.props;
+  
+    const { searchParams } = props;
 
     return (
       <Query
@@ -62,7 +61,6 @@ class Search extends React.Component {
         }}
       </Query>
     );
-  }
 }
 
 function mapStateToProps(state) {

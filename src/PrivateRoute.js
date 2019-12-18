@@ -3,10 +3,10 @@
 
 // If they are: they proceed to the page
 // If not: they are redirected to the login page.
-import React from "react";
+import React from "reactn";
 import { Redirect, Route, withRouter } from "react-router-dom";
 import * as stateSelectors from "./store/state/reducers";
-import { connect } from "react-redux";
+
 
 const PrivateRoute = ({ component: Component, user, ...rest }) => {
   if (user || true) {

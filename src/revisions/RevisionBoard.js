@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 import { Link, withRouter } from 'react-router-dom';
 import Loader from '../components/Loader';
 import moment from 'moment';
@@ -17,35 +17,38 @@ import {
 } from '../graphql/queries';
 import { Query, graphql } from 'react-apollo';
 
-class RevisionBoard extends Component {
-  constructor(props) {
-    super(props);
+function RevisionBoard (){
+  
 
     this.state = {
       circle: null,
       revisions: [],
     };
     this._isMounted = false;
-  }
-  componentDidMount() {
-    if (this.props.activeCircle) {
-      this.props.dispatch(updateChannel(null));
+  
+useEffect(()=>{
+ componentMount();
+}, [])
+
+const componentMount =    => {
+    if (props.activeCircle) {
+      props.dispatch(updateChannel(null));
     } else {
-      this.props.dispatch(updateChannel(null));
-      this.props.dispatch(updateRevision(null));
-      this.props.dispatch(updateCircle(this.props.match.params.id));
+      props.dispatch(updateChannel(null));
+      props.dispatch(updateRevision(null));
+      props.dispatch(updateCircle(props.match.params.id));
     }
   }
 
-  render() {
-    let { activeCircle, user, isUserInCircle } = this.props;
+  
+    let { activeCircle, user, isUserInCircle } = props;
     let circle = null;
     let allRevisions = [];
     let belongsToCircle = false;
     return (
       <Query
         query={GET_REVISIONS_FROM_CIRCLE_ID}
-        variables={{ id: this.props.activeCircle || '' }}
+        variables={{ id: props.activeCircle || '' }}
         pollInterval={10000}
       >
         {({ data = {} }) => {
@@ -80,7 +83,7 @@ class RevisionBoard extends Component {
           ) {
             belongsToCircle = true;
           }
-          allRevisions = allRevisions.map(r => {
+          const allRevisions = allRevisions.map(r => {
             return {
               votes: r.votes.filter(v => v.revision === r.id),
               ...r,
@@ -123,9 +126,9 @@ class RevisionBoard extends Component {
                 Review proposed legislation and changes to existing laws
                 <br />
                 <br />
-                {this.props.user && belongsToCircle && (
+                {props.user && belongsToCircle && (
                   <Link
-                    to={this.props.match.url.replace('revisions', 'settings')}
+                    to={props.match.url.replace('revisions', 'settings')}
                     className='dim ba br-pill bg-theme pv1 ph2 mt2'
                   >
                     Subscribe to Revisions
@@ -169,7 +172,6 @@ class RevisionBoard extends Component {
         }}
       </Query>
     );
-  }
 }
 
 const Board = ({

@@ -1,7 +1,7 @@
-import React, { Component, Fragment } from "react";
+import React, { Component, Fragment } from "reactn";
 import { graphql } from "react-apollo";
 import compose from 'lodash.flowright'
-import { connect } from "react-redux";
+
 import { pull } from "../store/state/reducers";
 import { toggleAddUsers } from "../store/ui/actions";
 import FeatherIcon from "feather-icons-react";
@@ -21,25 +21,24 @@ import swal from "sweetalert";
 
 const pullUI = require("../store/ui/reducers").pull;
 
-class AddUserToDM extends Component {
-  constructor() {
-    super();
+function AddUserToDM (){
+  
 
     this.state = {
       selectedUsers: []
     };
-  }
+  
 
-  updateList = selectedUsers => {
+  const updateList = selectedUsers => {
     this.setState({
       selectedUsers
     });
   };
-  submit = async () => {
+  const submit = async () => {
     // hoo boy theres a lot to do here
     let { selectedUsers } = this.state;
-    let { activeChannel, updateChannelName } = this.props;
-    let { User: user } = this.props.getUserKeys;
+    let { activeChannel, updateChannelName } = props;
+    let { User: user } = props.getUserKeys;
     // get the users encrypted priv key
     let userChannelKey = user.keys[0].key;
     let myToken = window.localStorage.getItem("ATHARES_HASH");
@@ -59,7 +58,7 @@ class AddUserToDM extends Component {
       // give each user an encrypted copy of this keypair and store it in
       let promiseList = selectedUsers.map(async u => {
         const encryptedKey = await encrypt(decryptedChannelSecret, u.pub);
-        return this.props.createKey({
+        return props.createKey({
           variables: {
             key: encryptedKey,
             user: u.id,
@@ -70,14 +69,14 @@ class AddUserToDM extends Component {
 
       // add each user to this channel
       let promiseList2 = selectedUsers.map(u =>
-        this.props.addUserToChannel({
+        props.addUserToChannel({
           variables: {
             channel: activeChannel,
             user: u.id
           }
         })
       );
-      const { users: existingUsers } = this.props.getUsers.Channel;
+      const { users: existingUsers } = props.getUsers.Channel;
       const allUsers = [...selectedUsers, ...existingUsers];
 
       const channelName = allUsers
@@ -93,24 +92,24 @@ class AddUserToDM extends Component {
           name: channelName
         }
       });
-      this.props.dispatch(toggleAddUsers());
+      props.dispatch(toggleAddUsers());
       this.setState({
         selectedUsers: []
       });
-      this.props.getUsers.refetch();
+      props.getUsers.refetch();
       swal("Users Added", "Successfully added users", "success");
     } catch (err) {
       console.error(new Error(err));
       swal("Error", "There was an error adding users at this time", "error");
     }
   };
-  toggleUserInput = () => {
-    this.props.dispatch(toggleAddUsers());
+  const toggleUserInput = () => {
+    props.dispatch(toggleAddUsers());
   };
-  render() {
+  
     let users = [];
-    if (this.props.getUsers.Channel) {
-      users = this.props.getUsers.Channel.users;
+    if (props.getUsers.Channel) {
+      users = props.getUsers.Channel.users;
     }
     return (
       <Fragment>
@@ -126,7 +125,7 @@ class AddUserToDM extends Component {
           </div>
           <FeatherIcon className="w2 h2 h3-ns" icon="user-plus" />
         </div>
-        {this.props.showAddMoreUsers && (
+        {props.showAddMoreUsers && (
           <div className="flex flex-row justify-between items-center">
             <AddMoreUsers
               selectedUsers={this.state.selectedUsers || []}
@@ -142,7 +141,6 @@ class AddUserToDM extends Component {
         )}
       </Fragment>
     );
-  }
 }
 function mapStateToProps(state) {
   return {

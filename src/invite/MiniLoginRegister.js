@@ -1,22 +1,22 @@
-import React, { Component } from "react";
+import React, { useState } from "reactn";
 import Login from "./Login";
 import Register from "./Register";
 
-export default class MiniLoginRegister extends Component {
+export default function MiniLoginRegister (){
   state = {
     loginVisible: false
   };
-  showLogin = () => {
+  const showLogin = () => {
     this.setState({
       loginVisible: true
     });
   };
-  showRegister = () => {
+  const showRegister = () => {
     this.setState({
       loginVisible: false
     });
   };
-  render() {
+  
     let { loginVisible } = this.state;
     return (
       <div className="mv4 flex flex-column justify-start items-center w-100">
@@ -39,5 +39,4 @@ export default class MiniLoginRegister extends Component {
         {loginVisible ? <Login /> : <Register />}
       </div>
     );
-  }
 }

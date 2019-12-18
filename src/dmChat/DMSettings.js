@@ -1,16 +1,16 @@
-import React, { Component } from "react";
+import React, { useState } from "reactn";
 import { pull } from "../store/state/reducers";
-import { connect } from "react-redux";
+
 import FeatherIcon from "feather-icons-react";
 import { closeDMSettings } from "../store/ui/actions";
 import LeaveDM from "./LeaveDM";
 import AddUserToDM from "./AddUserToDM";
 import Scrollbars from "react-custom-scrollbars";
-class DMSettings extends Component {
+function DMSettings (){
   close = () => {
-    this.props.dispatch(closeDMSettings());
+    props.dispatch(closeDMSettings());
   };
-  render() {
+  
     return (
       <div
         id="dm-settings"
@@ -27,7 +27,6 @@ class DMSettings extends Component {
         </Scrollbars>
       </div>
     );
-  }
 }
 
 function mapStateToProps(state) {

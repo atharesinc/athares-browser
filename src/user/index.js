@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 import ViewUser from './ViewUser';
 import EditUser from './EditUser';
 import ViewOtherUser from './ViewOtherUser'; // same as view user w/o btns to toggle
@@ -8,7 +8,7 @@ import { pull } from '../store/state/reducers';
 import { Query } from 'react-apollo';
 import { GET_USER_BY_ID_ALL } from '../graphql/queries';
 
-class User extends Component {
+function User (){
   state = {
     loading: false,
     user: null,
@@ -17,21 +17,25 @@ class User extends Component {
     circleCount: 0,
     passedRevisionCount: 0,
   };
-  componentDidMount() {
+useEffect(()=>{
+ componentMount();
+}, [])
+
+const componentMount =    => {
     // if a user is logged in OR location params exist to see another user
-    if (/user\/.+/.test(this.props.location.pathname)) {
+    if (/user\/.+/.test(props.location.pathname)) {
       this.setState({
         loading: false,
       });
-    } else if (!this.props.user) {
-      this.props.history.replace('/app');
+    } else if (!props.user) {
+      props.history.replace('/app');
     }
   }
-  render() {
+  
     return (
       <Query
         query={GET_USER_BY_ID_ALL}
-        variables={{ id: this.props.user || '' }}
+        variables={{ id: props.user || '' }}
         pollInterval={1500}
       >
         {({ loading, err, data = {} }) => {
@@ -46,7 +50,7 @@ class User extends Component {
               passedRevisionCount: user.revisions.filter(r => r.passed).length,
             };
           }
-          const { match } = this.props;
+          const { match } = props;
 
           return (
             <Switch>
@@ -78,7 +82,6 @@ class User extends Component {
         }}
       </Query>
     );
-  }
 }
 
 function mapStateToProps(state) {

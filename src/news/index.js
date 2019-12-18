@@ -1,4 +1,4 @@
-import { PureComponent } from 'react';
+import { useState  } from 'react';
 
 import { connect } from 'react-redux';
 
@@ -6,13 +6,17 @@ import { updateChannel, updateRevision } from '../store/state/actions';
 import { withRouter } from 'react-router-dom';
 // import { withGun } from 'react-gun';
 
-class Constitution extends PureComponent {
-    componentDidMount() {
-        this.props.dispatch(updateChannel(null));
-        this.props.dispatch(updateRevision(null));
-        this.props.history.replace('/app');
+function Constitution (){
+useEffect(()=>{
+ componentMount();
+}, [])
+
+const componentMount =      => {
+        props.dispatch(updateChannel(null));
+        props.dispatch(updateRevision(null));
+        props.history.replace('/app');
     }
-    render() {
+    
         return null;
     }
 }

@@ -1,4 +1,4 @@
-import React from "react";
+import React from "reactn";
 import { withRouter, Link } from "react-router-dom";
 
 const RevisionStatus = ({ amendment, support, votes, circle, repeal }) => {
@@ -57,7 +57,6 @@ const RevisionStatus = ({ amendment, support, votes, circle, repeal }) => {
         </small>
       </div>
     );
-  }
 };
 
 export default withRouter(RevisionStatus);

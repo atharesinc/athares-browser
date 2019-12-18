@@ -1,4 +1,4 @@
-import React from "react";
+import React from "reactn";
 
 // https://codesandbox.io/s/q3mqkny5o9
 import FeatherIcon from "feather-icons-react";

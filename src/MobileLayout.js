@@ -1,4 +1,4 @@
-import React, { PureComponent, Fragment } from "react";
+import React, { useState , Fragment } from "reactn";
 import TopNav from "./mobile/TopNav";
 import Circles from "./mobile/Circles";
 import Channels from "./channels";
@@ -6,50 +6,49 @@ import Dashboards from "./dashboards";
 import PushingMenu from "./menu";
 import Search from "./search";
 import { Switch, Route, withRouter } from "react-router-dom";
-import { connect } from "react-redux";
+
 import { pull } from "./store/state/reducers";
 import { pull as pullUI } from "./store/ui/reducers";
 import { closeSearch, toggleSearch } from "./store/ui/actions";
 import { updateCircle } from "./store/state/actions";
 
-class MobileLayout extends PureComponent {
-  constructor(props) {
-    super(props);
+function MobileLayout (){
+  
     this.state = {
       index: 0,
       menuIsOpen: false
     };
-  }
+  
 
-  clickOffSearch = e => {
+  const clickOffSearch = e => {
     if (e.target.className === "modal-mask") {
-      this.props.dispatch(closeSearch());
+      props.dispatch(closeSearch());
     }
   };
-  toggleOpenSearch = () => {
-    this.props.dispatch(toggleSearch());
+  const toggleOpenSearch = () => {
+    props.dispatch(toggleSearch());
   };
-  toggleMenu = () => {
+  const toggleMenu = () => {
     this.setState({
       menuIsOpen: !this.state.menuIsOpen
     });
   };
-  isMenuOpen = state => {
+  const isMenuOpen = state => {
     this.setState({
       menuIsOpen: state.menuIsOpen
     });
   };
-  setActive = id => {
-    this.props.dispatch(updateCircle(id));
+  const setActive = id => {
+    props.dispatch(updateCircle(id));
   };
-  render() {
-    const { circles, activeCircle, location, searchOpen, user } = this.props;
+  
+    const { circles, activeCircle, location, searchOpen, user } = props;
     return (
       <div id="app-wrapper-outer" className="wrapper">
         <PushingMenu
           isOpen={this.state.menuIsOpen}
           isMenuOpen={this.isMenuOpen}
-          history={this.props.history}
+          history={props.history}
           user={user}
           toggleMenu={this.toggleMenu}
         />
@@ -109,7 +108,6 @@ class MobileLayout extends PureComponent {
         </div>
       </div>
     );
-  }
 }
 function mapStateToProps(state) {
   return {

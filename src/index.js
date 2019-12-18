@@ -1,4 +1,4 @@
-import React from "react";
+import React, { setGlobal } from "reactn";
 import ReactDOM from "react-dom";
 import App from "./App";
 import { BrowserRouter } from "react-router-dom";
@@ -24,6 +24,34 @@ const store = createStore(
   combineReducers({ ...reducers, loadingBar: loadingBarReducer }),
   composeEnhancers(applyMiddleware(thunk))
 );
+
+setGlobal({
+  // state
+  user: null,
+  activeCircle: null,
+  activeChannel: null,
+  activeRevision: null,
+  activeAmendment: null,
+  pub: null,
+  circles: [],
+  channels: [],
+  unreadChannels: [],
+  revisions: [],
+  votes: [],
+  users: [],
+  amendments: [],
+  messages: [],
+  dms: [],
+  unreadDMs: [],
+  dmsgs: [],
+  viewUser: null,
+  // ui
+  showSearch: false,
+  dmSettings: false,
+  showAddMoreUsers: false,
+  searchParams: "",
+  isOnline: false
+});
 
 ReactDOM.render(
   <ApolloProvider client={client}>

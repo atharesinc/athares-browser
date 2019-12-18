@@ -1,15 +1,15 @@
-import React, { Component } from "react";
+import React, { useState } from "reactn";
 import Splash from "./Splash";
 import Footer from "../Footer";
 import { Scrollbars } from "react-custom-scrollbars";
-import { connect } from "react-redux";
 
-class SplashPage extends Component {
+
+function SplashPage (){
   state = {
     scrolled: false,
     top: 0
   };
-  handleUpdate = ({ scrollTop }) => {
+  const handleUpdate = ({ scrollTop }) => {
     if (this.state.top !== scrollTop) {
       this.setState({ scrolled: scrollTop > 100, top: scrollTop });
     }
@@ -17,7 +17,7 @@ class SplashPage extends Component {
   shouldComponentUpdate(nextProps, nextState) {
     return nextState.scrolled !== this.state.scrolled;
   }
-  render() {
+  
     return (
       <Scrollbars
         style={{ width: "100vw", height: "100vh" }}
@@ -28,11 +28,10 @@ class SplashPage extends Component {
         autoHideDuration={200}
         universal={true}
       >
-        <Splash {...this.props} scrolled={this.state.scrolled} />
+        <Splash {...props} scrolled={this.state.scrolled} />
         <Footer />
       </Scrollbars>
     );
-  }
 }
 
 function mapStateToProps(state) {

@@ -1,15 +1,19 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 import { GET_CIRCLE_NOTICES } from '../graphql/queries';
 import CircleNotice from './CircleNotice';
 import { graphql } from 'react-apollo';
 import Scrollbars from 'react-custom-scrollbars';
 import ReactDOM from 'react-dom';
 
-class NoticeBoard extends Component {
+function NoticeBoard (){
   state = {
     wrapperHeight: 300,
   };
-  componentDidMount() {
+useEffect(()=>{
+ componentMount();
+}, [])
+
+const componentMount =    => {
     let wrapper = ReactDOM.findDOMNode(this).getBoundingClientRect();
 
     wrapper &&
@@ -17,13 +21,13 @@ class NoticeBoard extends Component {
         wrapperHeight: window.innerHeight - wrapper.top,
       });
   }
-  render() {
+  
     const { wrapperHeight } = this.state;
     const {
       loading,
       error,
       data: { Circle },
-    } = this.props;
+    } = props;
     if (error) {
       return (
         <div className='bg-white-10 pv3 w-100 ph4 ttu tracked tc'>
@@ -62,7 +66,6 @@ class NoticeBoard extends Component {
         No news available
       </div>
     );
-  }
 }
 
 export default graphql(GET_CIRCLE_NOTICES, {
