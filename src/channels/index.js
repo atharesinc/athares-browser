@@ -258,7 +258,7 @@ export default connect(mapStateToProps)(
     graphql(GET_DMS_BY_USER, {
       name: "getDMsByUser",
       options: ({ user }) => ({
-        pollInterval: 5000,
+        // pollInterval: 5000,
         variables: { id: user || "" }
       })
     })
