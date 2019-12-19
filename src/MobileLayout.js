@@ -14,7 +14,7 @@ import { updateCircle } from "./store/state/actions";
 
 function MobileLayout (){
   
-    this.state = {
+    state = {
       index: 0,
       menuIsOpen: false
     };
@@ -29,12 +29,12 @@ function MobileLayout (){
     props.dispatch(toggleSearch());
   };
   const toggleMenu = () => {
-    this.setState({
-      menuIsOpen: !this.state.menuIsOpen
+    setState({
+      menuIsOpen: !menuIsOpen
     });
   };
   const isMenuOpen = state => {
-    this.setState({
+    setState({
       menuIsOpen: state.menuIsOpen
     });
   };
@@ -46,14 +46,14 @@ function MobileLayout (){
     return (
       <div id="app-wrapper-outer" className="wrapper">
         <PushingMenu
-          isOpen={this.state.menuIsOpen}
-          isMenuOpen={this.isMenuOpen}
+          isOpen={menuIsOpen}
+          isMenuOpen={isMenuOpen}
           history={props.history}
           user={user}
-          toggleMenu={this.toggleMenu}
+          toggleMenu={toggleMenu}
         />
         <div
-          index={this.state.index}
+          index={index}
           className="wrapper"
           style={{
             height: "100vh",
@@ -62,17 +62,17 @@ function MobileLayout (){
           id="app-wrapper"
         >
           <TopNav
-            toggleMenu={this.toggleMenu}
+            toggleMenu={toggleMenu}
             hide={
               location.pathname !== "/app" &&
               !/app\/circle\/[a-zA-Z\d]{25}$/.test(location.pathname)
             }
             user={user}
-            toggleOpenSearch={this.toggleOpenSearch}
+            toggleOpenSearch={toggleOpenSearch}
             searchOpen={searchOpen}
           />
           {searchOpen && (
-            <div className="modal-mask" onClick={this.clickOffSearch}>
+            <div className="modal-mask" onClick={clickOffSearch}>
               <Search />
             </div>
           )}
@@ -83,7 +83,7 @@ function MobileLayout (){
                 <CirclesAndChannels
                   activeCircle={activeCircle}
                   circles={circles}
-                  setActive={this.setActive}
+                  setActive={setActive}
                   user={user}
                   {...props}
                 />
@@ -96,7 +96,7 @@ function MobileLayout (){
                 <CirclesAndChannels
                   activeCircle={activeCircle}
                   circles={circles}
-                  setActive={this.setActive}
+                  setActive={setActive}
                   user={user}
                   {...props}
                 />

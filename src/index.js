@@ -50,7 +50,8 @@ setGlobal({
   dmSettings: false,
   showAddMoreUsers: false,
   searchParams: "",
-  isOnline: false
+  isOnline: false,
+  showMenu: false
 });
 
 ReactDOM.render(

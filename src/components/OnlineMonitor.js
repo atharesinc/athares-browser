@@ -1,37 +1,28 @@
-import { useState } from "reactn";
+import { useGlobal } from "reactn";
 
-import { pull } from "../store/ui/reducers";
-import { updateOnlineStatus } from "../store/ui/actions";
+function OnlineMonitor(props) {
+  const [isOnline, setIsOnline] = useGlobal("isOnline");
 
-function OnlineMonitor (){
-  
-    this.timer = null;
-  
-useEffect(()=>{
- componentMount();
-}, [])
+  let timer = null;
 
-const componentMount =    => {
-    this.timer = setInterval(this.checkOnline, 2000);
-  }
-  componentWillUnmount() {
-    clearInterval(this.timer);
-  }
+  useEffect(() => {
+    componentMount();
+    return () => {
+      clearInterval(timer);
+    };
+  }, []);
+
+  const componentMount = () => {
+    timer = setInterval(checkOnline, 2000);
+  };
+
   const checkOnline = e => {
-    if (navigator.onLine !== props.isOnline) {
-      props.dispatch(updateOnlineStatus(navigator.onLine));
+    if (navigator.onLine !== isOnline) {
+      setIsOnline(navigator.onLine);
     }
   };
-  shouldComponentUpdate(nextProps) {
-    return nextProps.isOnline !== props.isOnline;
-  }
-  
-    return null;
-  }
+
+  return null;
 }
-function mapStateToProps(state) {
-  return {
-    isOnline: pull(state, "isOnline")
-  };
-}
-export default connect(mapStateToProps)(OnlineMonitor);
+
+export default OnlineMonitor;

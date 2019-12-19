@@ -9,7 +9,7 @@ import swal from "sweetalert";
 
 export default function ImageUpload (){
   
-    this.state = {
+    state = {
       image: props.defaultImage,
       width:
         parseFloat(getComputedStyle(document.getElementById("root")).fontSize) *
@@ -26,30 +26,30 @@ export default function ImageUpload (){
   
 
   const handleDrop = dropped => {
-    this.setState({ image: dropped[0] });
+    setState({ image: dropped[0] });
   };
   const toggleEdit = () => {
     if (props.editMode) {
-      props.editMode(!this.state.editMode);
+      props.editMode(!editMode);
     }
-    this.setState({ editMode: !this.state.editMode });
+    setState({ editMode: !editMode });
   };
   const rotate = (angle = 90) => {};
   const onClickSave = async () => {
     try {
-      if (this.editor) {
+      if (editor) {
         // This returns a HTMLCanvasElement, it can be made into a data URL or a blob,
         // drawn on another canvas, or added to the DOM.
-        let canvas = this.editor.getImage().toDataURL("image/jpg");
+        let canvas = editor.getImage().toDataURL("image/jpg");
 
         let imageURL;
 
         await fetch(canvas)
           .then(res => res.blob())
           .then(blob => (imageURL = window.URL.createObjectURL(blob)));
-        let blob = this.dataURItoBlob(canvas);
+        let blob = dataURItoBlob(canvas);
 
-        this.setState(
+        setState(
           { finalImage: imageURL, editMode: false, loading: false },
           () => {
             props.onSet(blob);
@@ -57,7 +57,7 @@ export default function ImageUpload (){
           }
         );
         // If you want the image resized to the canvas size (also a HTMLCanvasElement)
-        // const canvasScaled = this.editor.getImageScaledToCanvas();
+        // const canvasScaled = editor.getImageScaledToCanvas();
       }
     } catch (err) {
       throw new Error(err);
@@ -85,7 +85,7 @@ export default function ImageUpload (){
 
   const onChange = () => {
     let file = document.getElementById("imgFile").files[0];
-    if (!this.isValidFile(file.type)) {
+    if (!isValidFile(file.type)) {
       swal(
         "Error",
         "Please use a valid file type such as .jpeg or .png",
@@ -96,7 +96,7 @@ export default function ImageUpload (){
 
     let reader = new FileReader();
     reader.readAsDataURL(file);
-    this.setState({ loading: true });
+    setState({ loading: true });
     reader.onloadend = e => {
       EXIF.getData(file, () => {
         var orientation = EXIF.getTag(file, "Orientation");
@@ -114,7 +114,7 @@ export default function ImageUpload (){
           default:
             rotatePic = 0;
         }
-        this.setState({
+        setState({
           loading: false,
           image: reader.result,
           rotate: rotatePic
@@ -123,28 +123,28 @@ export default function ImageUpload (){
     };
   };
   const sliderChange = pos => {
-    this.setState({
+    setState({
       scale: 1 + pos / 100
     });
   };
-  const setEditorRef = editor => (this.editor = editor);
+  const setEditorRef = editor => (editor = editor);
   
-    let tempImage = this.state.image;
+    let tempImage = image;
 
-    if (!this.state.editMode) {
+    if (!editMode) {
       return (
         <div className="mv4">
           <div
             style={{
               border: "5px solid #FFFFFF",
-              height: this.state.height,
-              width: this.state.width,
+              height: height,
+              width: width,
               borderRadius: "2px"
             }}
             className="row-center"
           >
             {/*<img
-                          src={this.state.finalImage}
+                          src={finalImage}
                           style={{
                             height: "100%"
                             // width: "100%"
@@ -153,9 +153,9 @@ export default function ImageUpload (){
                           crossOrigin="Anonymous"
                         /> */}
             <div
-              onClick={this.toggleEdit}
+              onClick={toggleEdit}
               style={{
-                background: `url(${this.state.finalImage}) center no-repeat`,
+                background: `url(${finalImage}) center no-repeat`,
                 backgroundSize: "cover",
                 height: "100%",
                 minWidth: "100%",
@@ -165,23 +165,23 @@ export default function ImageUpload (){
           </div>
           <div
             className="btn mv2 tc"
-            style={{ width: this.state.width / 2 - 10 }}
-            onClick={this.toggleEdit}
+            style={{ width: width / 2 - 10 }}
+            onClick={toggleEdit}
           >
             Edit Icon
           </div>
         </div>
       );
     }
-    if (this.state.loading) {
+    if (loading) {
       return (
         <div className="mv4">
           <div
             className="horizontal"
             style={{
               border: "5px solid #FFFFFF",
-              height: this.state.height,
-              width: this.state.width,
+              height: height,
+              width: width,
               borderRadius: "2px",
               justifyContent: "center"
             }}
@@ -195,30 +195,30 @@ export default function ImageUpload (){
       <div className="mv4">
         <div>
           <Dropzone
-            onDrop={this.handleDrop}
+            onDrop={handleDrop}
             multiple={false}
             accept={"image/*"}
             disableClick
-            width={this.state.width}
-            height={this.state.height}
+            width={width}
+            height={height}
             id="create-circle-dropzone"
             style={{
               border: "5px solid #FFFFFF",
-              height: this.state.height,
-              width: this.state.width,
+              height: height,
+              width: width,
               borderRadius: "2px"
             }}
           >
             <ReactAvatarEditor
-              width={this.state.width - 30}
-              height={this.state.height - 30}
+              width={width - 30}
+              height={height - 30}
               image={tempImage}
-              ref={this.setEditorRef}
+              ref={setEditorRef}
               id="create-circle-editor"
               border={10}
-              scale={this.state.scale}
+              scale={scale}
               crossOrigin={"anonymous"}
-              rotate={this.state.rotate}
+              rotate={rotate}
             />
           </Dropzone>
         </div>
@@ -226,23 +226,23 @@ export default function ImageUpload (){
           min={0}
           max={100}
           defaultValue={0}
-          onChange={this.sliderChange}
+          onChange={sliderChange}
           className="mv3"
-          style={{ width: this.state.width }}
+          style={{ width: width }}
         />
         {/*<div
                   className="flex flex-row space-around"
-                  style={{ width: this.state.width }}
+                  style={{ width: width }}
                 >
                   <FeatherIcon
                     icon="rotate-ccw"
                     className="ghost w-50"
-                    onClick={this.rotate(-90)}
+                    onClick={rotate(-90)}
                   />
                   <FeatherIcon
                     icon="rotate-cw"
                     className="ghost w-50"
-                    onClick={this.rotate(90)}
+                    onClick={rotate(90)}
                   />
                 </div>*/}
         <input
@@ -250,19 +250,19 @@ export default function ImageUpload (){
           name="file"
           id="imgFile"
           accept=".jpeg,.jpg,.png,.gif"
-          onChange={this.onChange}
+          onChange={onChange}
         />
         <div className="horizontal">
           <label htmlFor="imgFile">
-            <div className="btn mv2 tc" style={{ width: this.state.width / 2 }}>
+            <div className="btn mv2 tc" style={{ width: width / 2 }}>
               New
             </div>
           </label>
 
           <div
             className="btn mv2 tc"
-            style={{ width: this.state.width / 2 }}
-            onClick={this.onClickSave}
+            style={{ width: width / 2 }}
+            onClick={onClickSave}
           >
             Set
           </div>

@@ -1,63 +1,56 @@
-import React, { useState } from 'react';
-import ErrorSwap from '../utils/ErrorSwap';
-import Loader from '../components/Loader';
-import { withRouter, Link } from 'react-router-dom';
-import { Scrollbars } from 'react-custom-scrollbars';
-import { connect } from 'react-redux';
-import { pull } from '../store/state/reducers';
-import { updateRevision } from '../store/state/actions';
-import FeatherIcon from 'feather-icons-react';
-import swal from 'sweetalert';
-import sha from 'simple-hash-browser';
-import { graphql } from 'react-apollo';
-import compose from 'lodash.flowright';
-import { CREATE_REVISION, CREATE_VOTE } from '../graphql/mutations';
+import React, { useState } from "react";
+import ErrorSwap from "../utils/ErrorSwap";
+import Loader from "../components/Loader";
+import { withRouter, Link } from "react-router-dom";
+import { Scrollbars } from "react-custom-scrollbars";
+import { updateRevision } from "../store/state/actions";
+import FeatherIcon from "feather-icons-react";
+import swal from "sweetalert";
+import sha from "simple-hash-browser";
+import { graphql } from "react-apollo";
+import compose from "lodash.flowright";
+import { CREATE_REVISION, CREATE_VOTE } from "../graphql/mutations";
 import {
   GET_AMENDMENTS_FROM_CIRCLE_ID,
-  DOES_AMENDMENT_EXIST,
-} from '../graphql/queries';
-import moment from 'moment';
+  DOES_AMENDMENT_EXIST
+} from "../graphql/queries";
+import moment from "moment";
 
-function CreateAmendment (){
-  
+function CreateAmendment(props) {
+  const [name, setName] = useState("");
+  const [amendment, setAmendment] = useState("");
+  const [isTaken, setIsTaken] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [isEmpty, setIsEmpty] = useState(false);
+  const [user] = useGlobal("user");
 
-    this.state = {
-      name: '',
-      amendment: '',
-      isTaken: false,
-      loading: false,
-      isEmpty: false,
-    };
-  
-useEffect(()=>{
- componentMount();
-}, [])
+  const [activeRevision, setActiveRevision] = useGlobal("activeRevision");
 
-const componentMount =    => {
+  useEffect(() => {
+    componentMount();
+  }, []);
+
+  const componentMount = () => {
     // verify this circle is real and that the user is logged in, but for now...
-    if (!props.user || !props.activeCircle) {
-      props.history.replace('/app');
+    if (!user || !activeCircle) {
+      props.history.replace("/app");
     }
-  }
+  };
   const updateName = e => {
-    this.setState({
-      name: e.target.value.substring(0, 51),
-      isTaken: false,
-    });
+    setName(e.target.value.substring(0, 51));
+    setIsTaken(false);
   };
   const updateAmend = e => {
-    this.setState({
-      amendment: e.target.innerText,
-    });
+    setAmendment(e.target.innerText);
   };
   // the longest a revision must persist before votes are counted is 7 days ( many users), the shortest is about 30 seconds (1 user)
   // add this number of seconds to the createdAt time to determine when a revision should expire, where x is the number of users
-  customSigm = x => {
+  const customSigm = x => {
     return 604800 / (1 + Math.pow(Math.E, -1 * (x - 10))) / 2;
   };
   // a minimum number of users in a circle must have voted on a revision to ratify it
   // this prevents someone from sneaking in a revision where only one person votes to support and no one rejects it
-  ratifiedThreshold = n => {
+  const ratifiedThreshold = n => {
     return 0.4 / (1 + Math.pow(Math.E, -1 * n * 0.2));
   };
   const onSubmit = async e => {
@@ -65,9 +58,10 @@ const componentMount =    => {
     // validate & trim fields
     // ???
 
-    await this.setState({ loading: true });
+    setLoading(true);
+
     let {
-      data: { Circle: circle },
+      data: { Circle: circle }
     } = props;
 
     let numUsers = circle.users.length;
@@ -75,33 +69,33 @@ const componentMount =    => {
       // make sure this circle doesnt already have an amendment by the same name
       const {
         data: { allAmendments },
-        error,
+        error
       } = await props.doesAmendmentExistInCircle.refetch({
         circleId: props.activeCircle,
-        title: this.state.name,
+        title: name
       });
 
       if (allAmendments.length !== 0) {
-        this.setState({ isTaken: true });
+        setState({ isTaken: true });
         return false;
       }
 
       // make sure the amendment isn't empty
-      if (this.state.amendment.trim() === '') {
-        this.setState({ isEmpty: true });
+      if (amendment.trim() === "") {
+        setState({ isEmpty: true });
         return false;
       }
 
       let newRevision = {
         circle: props.activeCircle,
         user: props.user,
-        title: this.state.name,
-        newText: this.state.amendment.trim(),
+        title: name,
+        newText: amendment.trim(),
         expires: moment()
-          .add(Math.max(this.customSigm(numUsers), 61), 's')
+          .add(Math.max(customSigm(numUsers), 61), "s")
           .format(),
-        voterThreshold: Math.round(numUsers * this.ratifiedThreshold(numUsers)),
-        repeal: false,
+        voterThreshold: Math.round(numUsers * ratifiedThreshold(numUsers)),
+        repeal: false
       };
       let hash = await sha(
         JSON.stringify({
@@ -109,14 +103,14 @@ const componentMount =    => {
           text: newRevision.newText,
           circle: newRevision.circle,
           expires: newRevision.expires,
-          voterThreshold: newRevision.voterThreshold,
-        }),
+          voterThreshold: newRevision.voterThreshold
+        })
       );
       let newRevisionRes = await props.createRevision({
         variables: {
           ...newRevision,
-          hash,
-        },
+          hash
+        }
       });
 
       newRevision.id = newRevisionRes.data.createRevision.id;
@@ -124,193 +118,185 @@ const componentMount =    => {
       const newVote = {
         revision: newRevision.id,
         user: props.user,
-        support: true,
+        support: true
       };
 
       await props.createVote({
         variables: {
-          ...newVote,
-        },
+          ...newVote
+        }
       });
 
-      props.dispatch(updateRevision(newRevision.id));
+      setActiveRevision(newRevision.id);
 
       props.history.push(
-        `/app/circle/${props.activeCircle}/revisions/${newRevision.id}`,
+        `/app/circle/${props.activeCircle}/revisions/${newRevision.id}`
       );
     } catch (err) {
       if (
-        !err.message.includes('unique constraint would be violated') ||
-        !err.message.includes('hash')
+        !err.message.includes("unique constraint would be violated") ||
+        !err.message.includes("hash")
       ) {
         console.error(new Error(err));
         swal(
-          'Error',
-          'There was an error connecting to the Athares network. Please try again later.',
-          'error',
+          "Error",
+          "There was an error connecting to the Athares network. Please try again later.",
+          "error"
         );
       }
     }
   };
   const clearError = () => {
-    this.setState({
-      isTaken: false,
+    setState({
+      isTaken: false
     });
   };
-  
-    let { activeCircle, data = {} } = props;
 
-    if (activeCircle && data.Circle) {
-      return (
-        <div id='revisions-wrapper'>
-          <div className='flex db-ns ph2 h10'>
-            <Link to='/app' className='flex justify-center items-center'>
-              <FeatherIcon
-                icon='chevron-left'
-                className='white db dn-l'
-                onClick={this.back}
-              />
-            </Link>
-            <h2 className='ma3 lh-title white'>Create Amendment</h2>
-          </div>
-          <Scrollbars style={{ height: '85vh', width: '100%' }}>
-            <form
-              className='pa2 pa4-ns white wrapper'
-              onSubmit={this.onSubmit}
-              id='create-circle-form'
-            >
-              <article className='cf'>
-                <time className='f7 ttu tracked white-80'>
-                  Draft a new piece of legislation for {data.Circle.name}
-                </time>
-                <div className='fn mt4'>
-                  <div className='measure mb4'>
-                    <label htmlFor='name' className='f6 b db mb2'>
-                      Name
-                    </label>
-                    <input
-                      id='name'
-                      className='input-reset ba pa2 mb2 db w-100 ghost'
-                      type='text'
-                      aria-describedby='name-desc'
-                      required
-                      value={this.state.name}
-                      onChange={this.updateName}
-                    />
-                    <ErrorSwap
-                      condition={!this.state.isTaken}
-                      normal={
-                        <small id='name-desc' className='f6 white-80 db mb2'>
-                          Provide a name for your new amendment.
-                        </small>
-                      }
-                      error={
-                        <small id='name-desc' className='f6 red db mb2'>
-                          Amendment name must be unique to this Circle
-                        </small>
-                      }
-                    />
-                  </div>
-                  <div className='mv4'>
-                    <label htmlFor='comment' className='f6 b db mb2'>
-                      Amendment
-                    </label>
-                    <Scrollbars
-                      style={{
-                        maxHeight: '11.5rem',
-                        width: '100%',
-                      }}
-                      autoHeight
-                      className='ghost mb2'
-                    >
-                      <div
-                        contentEditable={true}
-                        className={`f6 amendment-text editableText`}
-                        onInput={this.updateAmend}
-                        value={this.state.amendment}
-                        suppressContentEditableWarning
-                      />
-                    </Scrollbars>
-                    <ErrorSwap
-                      condition={!this.state.isEmpty}
-                      normal={
-                        <small id='comment-desc' className='f6 white-80'>
-                          Draft your amendment. What do you want to add to your
-                          government?
-                        </small>
-                      }
-                      error={
-                        <small id='name-desc' className='f6 red db mb2'>
-                          You can't submit an empty amendment.
-                        </small>
-                      }
-                    />
-                  </div>
+  let { activeCircle, data = {} } = props;
+
+  if (activeCircle && data.Circle) {
+    return (
+      <div id="revisions-wrapper">
+        <div className="flex db-ns ph2 h10">
+          <Link to="/app" className="flex justify-center items-center">
+            <FeatherIcon
+              icon="chevron-left"
+              className="white db dn-l"
+              onClick={back}
+            />
+          </Link>
+          <h2 className="ma3 lh-title white">Create Amendment</h2>
+        </div>
+        <Scrollbars style={{ height: "85vh", width: "100%" }}>
+          <form
+            className="pa2 pa4-ns white wrapper"
+            onSubmit={onSubmit}
+            id="create-circle-form"
+          >
+            <article className="cf">
+              <time className="f7 ttu tracked white-80">
+                Draft a new piece of legislation for {data.Circle.name}
+              </time>
+              <div className="fn mt4">
+                <div className="measure mb4">
+                  <label htmlFor="name" className="f6 b db mb2">
+                    Name
+                  </label>
+                  <input
+                    id="name"
+                    className="input-reset ba pa2 mb2 db w-100 ghost"
+                    type="text"
+                    aria-describedby="name-desc"
+                    required
+                    value={name}
+                    onChange={updateName}
+                  />
+                  <ErrorSwap
+                    condition={!isTaken}
+                    normal={
+                      <small id="name-desc" className="f6 white-80 db mb2">
+                        Provide a name for your new amendment.
+                      </small>
+                    }
+                    error={
+                      <small id="name-desc" className="f6 red db mb2">
+                        Amendment name must be unique to this Circle
+                      </small>
+                    }
+                  />
                 </div>
-              </article>
-              <div id='comment-desc' className='f6 white-80'>
-                Pressing "Draft Amendment" will create a new revision for this
-                amendment. Drafts must first be ratified by a minimum electorate
-                of Circle members, and then must be approved with a majority of
-                votes. Amendment drafts are publicly accessible, but can be
-                removed by the owner at any point before ratification.
+                <div className="mv4">
+                  <label htmlFor="comment" className="f6 b db mb2">
+                    Amendment
+                  </label>
+                  <Scrollbars
+                    style={{
+                      maxHeight: "11.5rem",
+                      width: "100%"
+                    }}
+                    autoHeight
+                    className="ghost mb2"
+                  >
+                    <div
+                      contentEditable={true}
+                      className={`f6 amendment-text editableText`}
+                      onInput={updateAmend}
+                      value={amendment}
+                      suppressContentEditableWarning
+                    />
+                  </Scrollbars>
+                  <ErrorSwap
+                    condition={!isEmpty}
+                    normal={
+                      <small id="comment-desc" className="f6 white-80">
+                        Draft your amendment. What do you want to add to your
+                        government?
+                      </small>
+                    }
+                    error={
+                      <small id="name-desc" className="f6 red db mb2">
+                        You can't submit an empty amendment.
+                      </small>
+                    }
+                  />
+                </div>
               </div>
-              {this.state.amendment.trim() !== '' && !this.state.isTaken && (
-                <button
-                  id='create-circle-button'
-                  className='btn mt4'
-                  type='submit'
-                >
-                  Draft Amendment
-                </button>
-              )}
-            </form>
-          </Scrollbars>
-        </div>
-      );
-    } else {
-      return (
-        <div
-          id='dashboard-wrapper'
-          style={{
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-          }}
-        >
-          <Loader />
-        </div>
-      );
-    }
+            </article>
+            <div id="comment-desc" className="f6 white-80">
+              Pressing "Draft Amendment" will create a new revision for this
+              amendment. Drafts must first be ratified by a minimum electorate
+              of Circle members, and then must be approved with a majority of
+              votes. Amendment drafts are publicly accessible, but can be
+              removed by the owner at any point before ratification.
+            </div>
+            {amendment.trim() !== "" && !isTaken && (
+              <button
+                id="create-circle-button"
+                className="btn mt4"
+                type="submit"
+              >
+                Draft Amendment
+              </button>
+            )}
+          </form>
+        </Scrollbars>
+      </div>
+    );
+  } else {
+    return (
+      <div
+        id="dashboard-wrapper"
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center"
+        }}
+      >
+        <Loader />
+      </div>
+    );
   }
 }
 
-function mapStateToProps(state) {
-  return {
-    user: pull(state, 'user'),
-    activeCircle: pull(state, 'activeCircle'),
-    activeRevision: pull(state, 'activeRevision'),
-  };
-}
-export default connect(mapStateToProps)(
+export default withGlobal(({ activeCircle }) => ({ activeCircle }))(
   compose(
     graphql(DOES_AMENDMENT_EXIST, {
-      name: 'doesAmendmentExistInCircle',
+      name: "doesAmendmentExistInCircle",
       options: ({ activeCircle }) => ({
         variables: {
           circleId: activeCircle,
-          title: '',
-        },
-      }),
+          title: ""
+        }
+      })
     }),
-    graphql(CREATE_REVISION, { name: 'createRevision' }),
-    graphql(CREATE_VOTE, { name: 'createVote' }),
+    graphql(CREATE_REVISION, { name: "createRevision" }),
+    graphql(CREATE_VOTE, { name: "createVote" }),
     graphql(GET_AMENDMENTS_FROM_CIRCLE_ID, {
       options: ({ activeCircle }) => ({
         variables: {
-          id: activeCircle,
-        },
-      }),
-    }),
-  )(withRouter(CreateAmendment)),
+          id: activeCircle
+        }
+      })
+    })
+  )(withRouter(CreateAmendment))
 );

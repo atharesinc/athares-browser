@@ -3,38 +3,31 @@ import Splash from "./Splash";
 import Footer from "../Footer";
 import { Scrollbars } from "react-custom-scrollbars";
 
+function SplashPage(props) {
+  const [scrolled, setScrolled] = useState(false);
+  const [top, setTop] = useState(0);
 
-function SplashPage (){
-  state = {
-    scrolled: false,
-    top: 0
-  };
   const handleUpdate = ({ scrollTop }) => {
-    if (this.state.top !== scrollTop) {
-      this.setState({ scrolled: scrollTop > 100, top: scrollTop });
+    if (top !== scrollTop) {
+      setScrolled(scrollTop > 100);
+      setTop(scrollTop);
     }
   };
-  shouldComponentUpdate(nextProps, nextState) {
-    return nextState.scrolled !== this.state.scrolled;
-  }
-  
-    return (
-      <Scrollbars
-        style={{ width: "100vw", height: "100vh" }}
-        className="splash"
-        onUpdate={this.handleUpdate}
-        autoHide
-        autoHideTimeout={1000}
-        autoHideDuration={200}
-        universal={true}
-      >
-        <Splash {...props} scrolled={this.state.scrolled} />
-        <Footer />
-      </Scrollbars>
-    );
+
+  return (
+    <Scrollbars
+      style={{ width: "100vw", height: "100vh" }}
+      className="splash"
+      onUpdate={handleUpdate}
+      autoHide
+      autoHideTimeout={1000}
+      autoHideDuration={200}
+      universal={true}
+    >
+      <Splash {...props} scrolled={scrolled} />
+      <Footer />
+    </Scrollbars>
+  );
 }
 
-function mapStateToProps(state) {
-  return {};
-}
-export default connect(mapStateToProps)(SplashPage);
+export default SplashPage;

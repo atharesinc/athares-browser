@@ -10,8 +10,8 @@ function Roadmap (){
     top: 0
   };
   const handleUpdate = ({ scrollTop }) => {
-    if (this.state.top !== scrollTop) {
-      this.setState({ scrolled: scrollTop > 100, top: scrollTop });
+    if (top !== scrollTop) {
+      setState({ scrolled: scrollTop > 100, top: scrollTop });
     }
   };
   
@@ -19,14 +19,14 @@ function Roadmap (){
       <Scrollbars
         style={{ width: "100vw", height: "100vh" }}
         className="splash"
-        onUpdate={this.handleUpdate}
+        onUpdate={handleUpdate}
         autoHide
         autoHideTimeout={1000}
         autoHideDuration={200}
         universal={true}
       >
         <div id="roadmap-wrapper" className="splash">
-          <Navbar {...this.state} top={this.state.top} />
+          <Navbar {...state} top={top} />
           <div className="ph3 ph5-ns pt6 sans-serif white">
             <div className="center mw9">
               <h3 className="f5 fw6 ttu tracked">

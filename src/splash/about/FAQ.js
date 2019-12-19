@@ -128,14 +128,14 @@ const faqs = [
   //     id: 'i-dont-understand-this',
 
   //     question:
-  //         "I'm not a computer person and I don't understand any of this.",
+  //         "I'm not a computer person and I don't understand any of ",
   //     text:
   //         "All you need to know is Athares is a chat app with productivity tools for groups. It's like Messenger, with Slack, with Trello, and two scoops of freedom."
   // },
   // {
   //     id: 'i-really-dont-understand-this',
   //     question:
-  //         "I'm a computer person and I STILL don't understand any of this.",
+  //         "I'm a computer person and I STILL don't understand any of ",
   //     text:
   //         "It's like Github for legislation.  Create revisions like pull-requests, and merge them with your existing base."
   // }

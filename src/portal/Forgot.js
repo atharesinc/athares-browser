@@ -12,8 +12,8 @@ function Forgot (){
     email: ""
   };
   const requestReset = async () => {
-    await this.setState({ loading: true });
-    let { email } = this.state;
+    await setState({ loading: true });
+    let { email } = state;
 
     if (email.trim() !== "") {
       try {
@@ -34,25 +34,25 @@ function Forgot (){
           }
         } = res;
 
-        this.setState({
+        setState({
           email: ""
         });
 
         props.history.push("/reset/" + id);
       } catch (err) {
         console.error(new Error(err));
-        await this.setState({ loading: false });
+        await setState({ loading: false });
         swal("Error", "Unable to send reset link.", "error");
       }
     }
   };
   const updateInfo = e => {
-    this.setState({
+    setState({
       email: e.currentTarget.value
     });
   };
   
-    const { email, loading } = this.state;
+    const { email, loading } = state;
     return (
       <Fragment>
         <div id="portal-header">
@@ -79,7 +79,7 @@ function Forgot (){
                 className="portal-input h2 ghost pa2"
                 required
                 type="email"
-                onChange={this.updateInfo}
+                onChange={updateInfo}
                 value={email}
                 id="forgotEmail"
                 tabIndex="1"
@@ -89,7 +89,7 @@ function Forgot (){
               id="forgot-button"
               className="f6 link glow br-pill ph3 pv2 bg-theme mb2 dib white pointer"
               tabIndex="2"
-              onClick={this.requestReset}
+              onClick={requestReset}
             >
               REQUEST LINK
             </button>

@@ -1,28 +1,17 @@
-import { useState  } from 'react';
+import React, { useGlobal } from "react";
 
-import { connect } from 'react-redux';
+import { withRouter } from "react-router-dom";
 
-import { updateChannel, updateRevision } from '../store/state/actions';
-import { withRouter } from 'react-router-dom';
-// import { withGun } from 'react-gun';
+function News(props) {
+  const [activeChannel, setActiveChannel] = useGlobal("setActiveChannel");
+  const [activeRevision, setActiveRevision] = useGlobal("setActiveRevision");
+  useEffect(() => {
+    setActiveChannel(null);
+    setActiveRevision(null);
+    props.history.replace("/app");
+  }, []);
 
-function Constitution (){
-useEffect(()=>{
- componentMount();
-}, [])
-
-const componentMount =      => {
-        props.dispatch(updateChannel(null));
-        props.dispatch(updateRevision(null));
-        props.history.replace('/app');
-    }
-    
-        return null;
-    }
+  return null;
 }
 
-function mapStateToProps(state) {
-    return {};
-}
-
-export default withRouter(connect(mapStateToProps)(Constitution));
+export default withRouter(News);

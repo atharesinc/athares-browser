@@ -84,7 +84,7 @@ function LeaveDM (){
         <button
           id='create-circle-button'
           className='btn-red mt4'
-          onClick={this.leave}
+          onClick={leave}
         >
           Leave Channel
         </button>

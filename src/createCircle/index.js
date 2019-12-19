@@ -2,8 +2,6 @@ import React, { useState } from "reactn";
 import ImageUpload from "../components/ImageUpload";
 import ErrorSwap from "../utils/ErrorSwap";
 
-import { pull } from "../store/state/reducers";
-import { updateCircle } from "../store/state/actions";
 import Loader from "../components/Loader";
 import swal from "sweetalert";
 import { Scrollbars } from "react-custom-scrollbars";
@@ -14,61 +12,48 @@ import { graphql } from "react-apollo";
 import compose from "lodash.flowright";
 import { uploadToAWS } from "utils/upload";
 
-function createCircleBoard (){
-  
+function createCircleBoard(props) {
+  // this should be whatever fits into an img src value or a css url(), either a filepath or base64 encoded image string
+  const [icon, setIcon] = useState("/img/Athares-logo-large-white.png");
+  const [name, setName] = useState("");
+  const [preamble, setPreamble] = useState("");
+  const [isTaken, setIsTaken] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [editMode, setEditMode] = useState(false);
+  const [user, setUser] = useGlobal("user");
+  const [pub, setPub] = useGlobal("pub");
 
-    this.state = {
-      // this should be whatever fits into an img src value or a css url(), either a filepath or base64 encoded image string
-      icon: "/img/Athares-logo-large-white.png",
-      name: "",
-      preamble: "",
-      isTaken: false,
-      loading: false,
-      editMode: false
-    };
-  
-useEffect(()=>{
- componentMount();
-}, [])
+  useEffect(() => {
+    componentMount();
+  }, []);
 
-const componentMount =    => {
+  const componentMount = () => {
     // verify this circle is real and that the user is logged in, but for now...
-    if (!props.user) {
+    if (!user) {
       props.history.replace("/app");
     }
 
-    let that = this;
-    fetch(this.state.icon)
+    fetch(icon)
       .then(function(response) {
         return response.blob();
       })
       .then(function(blob) {
         // here the image is a blob
-        that.setState({
-          icon: blob
-        });
+        setIcon(blob);
       });
-  }
+  };
   const changeImage = imageUrl => {
-    this.setState({
-      icon: imageUrl
-    });
+    setIcon(imageUrl);
   };
   const editMode = bool => {
-    this.setState({
-      editMode: bool
-    });
+    setEditMode(bool);
   };
   const updateName = e => {
-    this.setState({
-      name: e.target.value.substring(0, 51),
-      isTaken: false
-    });
+    setName(e.target.value.substring(0, 51));
+    setIsTaken(false);
   };
   const updatePreamble = e => {
-    this.setState({
-      preamble: e.target.value
-    });
+    setPreamble(e.target.value);
   };
   const convertBlobToBase64 = blob => {
     return new Promise(resolve => {
@@ -103,21 +88,20 @@ const componentMount =    => {
   };
   const onSubmit = async e => {
     e.preventDefault();
-    if (this.state.editMode) {
+    if (editMode) {
       return false;
     }
-    let { name, preamble } = this.state;
 
-    let base64Large = this.state.icon;
+    let base64Large = icon;
     // Depending on whether or not the user updates their image, the photo can be either base64 or a Blob
     if (base64Large instanceof Blob) {
-      base64Large = await this.convertBlobToBase64(base64Large);
+      base64Large = await convertBlobToBase64(base64Large);
     }
 
-    let base64Small = await this.shrinkBase64(base64Large);
+    let base64Small = await shrinkBase64(base64Large);
 
     // finally create a file to be uploaded to aws or wherever
-    const finalImage = this.b64toBlob(base64Small);
+    const finalImage = b64toBlob(base64Small);
 
     let { url } = await uploadToAWS(finalImage);
 
@@ -128,12 +112,12 @@ const componentMount =    => {
       swal("Sorry", "Circles must have a name and preamble.", "error");
       return false;
     }
-    await this.setState({ loading: true });
+    await setState({ loading: true });
 
     // create circle
     let newCircle = {
-      name: name,
-      preamble: preamble,
+      name,
+      preamble,
       icon: url
     };
 
@@ -147,14 +131,14 @@ const componentMount =    => {
 
     await props.addCircleToUser({
       variables: {
-        user: props.user,
+        user,
         circle: newCircle.id
       }
     });
     // set activeCircle as this one
-    props.dispatch(updateCircle(newCircle.id));
+    setActiveCircle(newCircle.id);
 
-    await this.setState({ loading: false });
+    setLoading(false);
     swal("Circle Created", `${name} has been created successfully.`, "success");
 
     props.history.push("/app/circle/" + newCircle.id + "/constitution");
@@ -184,130 +168,117 @@ const componentMount =    => {
     });
   };
   const clearError = () => {
-    this.setState({
+    setState({
       isTaken: false
     });
   };
-  
-    if (this.state.loading) {
-      return (
-        <div
-          id="dashboard-wrapper"
-          style={{
-            justifyContent: "center"
-          }}
-          className="pa2"
-        >
-          <Loader />
-          <h1 className="mb3 mt0 lh-title mt4 f3 f2-ns">
-            Creating Your Circle
-          </h1>
-        </div>
-      );
-    }
+
+  if (loading) {
     return (
-      <div id="revisions-wrapper">
-        <div className="flex ph2 mobile-nav">
-          <Link to="/app" className="flex justify-center items-center">
-            <FeatherIcon
-              icon="chevron-left"
-              className="white db dn-l"
-              onClick={this.back}
-            />
-          </Link>
-          <h2 className="ma3 lh-title white"> Create Circle </h2>
-        </div>
-        <form
-          className="pa2 pa4-ns white wrapper mobile-body"
-          onSubmit={this.onSubmit}
-          id="create-circle-form"
-        >
-          <Scrollbars style={{ height: "100%", width: "100%" }}>
-            <article className="cf">
-              <time className="f7 ttu tracked white-80">
-                Circles are collaborative, voting-centric organizations.
-              </time>
-              <header className="fn fl-ns w-50-ns pr4-ns">
-                <ImageUpload
-                  onSet={this.changeImage}
-                  defaultImage={this.state.icon}
-                  editMode={this.editMode}
-                />
-              </header>
-              <div className="fn fl-ns w-50-ns mt4">
-                <div className="measure mb4">
-                  <label htmlFor="name" className="f6 b db mb2">
-                    Name
-                  </label>
-                  <input
-                    id="name"
-                    className="input-reset ba pa2 mb2 db w-100 ghost"
-                    type="text"
-                    aria-describedby="name-desc"
-                    required
-                    value={this.state.name}
-                    onChange={this.updateName}
-                  />
-                  <ErrorSwap
-                    condition={!this.state.isTaken}
-                    normal={
-                      <small id="name-desc" className="f6 white-80 db mb2">
-                        This name must be unique.
-                      </small>
-                    }
-                    error={
-                      <small id="name-desc" className="f6 red db mb2">
-                        Sorry! This name has already been taken.
-                      </small>
-                    }
-                  />
-                </div>
-                <div className="mv4">
-                  <label htmlFor="comment" className="f6 b db mb2">
-                    Preamble
-                  </label>
-                  <textarea
-                    id="comment"
-                    name="comment"
-                    className="db border-box w-100 measure ba pa2 mb2 ghost"
-                    aria-describedby="comment-desc"
-                    resize="false"
-                    required
-                    value={this.state.preamble}
-                    onChange={this.updatePreamble}
-                  />
-                  <small id="comment-desc" className="f6 white-80">
-                    Describe your government in a few sentences. This will be
-                    visible at the top of the Constitution and outlines the
-                    basic vision of this government.
-                  </small>
-                </div>
-              </div>
-            </article>
-            <div id="comment-desc" className="f6 white-80">
-              By pressing "Create Circle" you will create a new government with
-              a the above name, preamble, and the selected image.
-            </div>
-            {!this.state.editMode && (
-              <button
-                id="create-circle-button"
-                className="btn mt4"
-                type="submit"
-              >
-                Create Circle
-              </button>
-            )}
-          </Scrollbars>
-        </form>
+      <div
+        id="dashboard-wrapper"
+        style={{
+          justifyContent: "center"
+        }}
+        className="pa2"
+      >
+        <Loader />
+        <h1 className="mb3 mt0 lh-title mt4 f3 f2-ns">Creating Your Circle</h1>
       </div>
     );
-}
-
-function mapStateToProps(state) {
-  return {
-    user: pull(state, "user"),
-    pub: pull(state, "pub")
-  };
+  }
+  return (
+    <div id="revisions-wrapper">
+      <div className="flex ph2 mobile-nav">
+        <Link to="/app" className="flex justify-center items-center">
+          <FeatherIcon
+            icon="chevron-left"
+            className="white db dn-l"
+            onClick={back}
+          />
+        </Link>
+        <h2 className="ma3 lh-title white"> Create Circle </h2>
+      </div>
+      <form
+        className="pa2 pa4-ns white wrapper mobile-body"
+        onSubmit={onSubmit}
+        id="create-circle-form"
+      >
+        <Scrollbars style={{ height: "100%", width: "100%" }}>
+          <article className="cf">
+            <time className="f7 ttu tracked white-80">
+              Circles are collaborative, voting-centric organizations.
+            </time>
+            <header className="fn fl-ns w-50-ns pr4-ns">
+              <ImageUpload
+                onSet={changeImage}
+                defaultImage={icon}
+                editMode={editMode}
+              />
+            </header>
+            <div className="fn fl-ns w-50-ns mt4">
+              <div className="measure mb4">
+                <label htmlFor="name" className="f6 b db mb2">
+                  Name
+                </label>
+                <input
+                  id="name"
+                  className="input-reset ba pa2 mb2 db w-100 ghost"
+                  type="text"
+                  aria-describedby="name-desc"
+                  required
+                  value={name}
+                  onChange={updateName}
+                />
+                <ErrorSwap
+                  condition={!isTaken}
+                  normal={
+                    <small id="name-desc" className="f6 white-80 db mb2">
+                      This name must be unique.
+                    </small>
+                  }
+                  error={
+                    <small id="name-desc" className="f6 red db mb2">
+                      Sorry! This name has already been taken.
+                    </small>
+                  }
+                />
+              </div>
+              <div className="mv4">
+                <label htmlFor="comment" className="f6 b db mb2">
+                  Preamble
+                </label>
+                <textarea
+                  id="comment"
+                  name="comment"
+                  className="db border-box w-100 measure ba pa2 mb2 ghost"
+                  aria-describedby="comment-desc"
+                  resize="false"
+                  required
+                  value={preamble}
+                  onChange={updatePreamble}
+                />
+                <small id="comment-desc" className="f6 white-80">
+                  Describe your government in a few sentences. This will be
+                  visible at the top of the Constitution and outlines the basic
+                  vision of this government.
+                </small>
+              </div>
+            </div>
+          </article>
+          <div id="comment-desc" className="f6 white-80">
+            By pressing "Create Circle" you will create a new government with a
+            the above name, preamble, and the selected image.
+          </div>
+          {!editMode && (
+            <button id="create-circle-button" className="btn mt4" type="submit">
+              Create Circle
+            </button>
+          )}
+        </Scrollbars>
+      </form>
+    </div>
+  );
 }
 
 export default compose(

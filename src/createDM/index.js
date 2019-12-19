@@ -1,58 +1,50 @@
-import React, { useState } from 'react';
-import ChatWindow from '../components/ChatWindow';
-import ChatInput from '../components/ChatInput';
-import DMInviteList from './DMInviteList';
-import { Link, withRouter } from 'react-router-dom';
-import FeatherIcon from 'feather-icons-react';
-import { pull } from '../store/state/reducers';
-import { connect } from 'react-redux';
-import { encrypt } from '../utils/crypto';
-import SimpleCrypto from 'simple-crypto-js';
-import { GET_USER_BY_ID } from '../graphql/queries';
+import React, { useState } from "react";
+import ChatWindow from "../components/ChatWindow";
+import ChatInput from "../components/ChatInput";
+import DMInviteList from "./DMInviteList";
+import { Link, withRouter } from "react-router-dom";
+import FeatherIcon from "feather-icons-react";
+import { pull } from "../store/state/reducers";
+import { connect } from "react-redux";
+import { encrypt } from "../utils/crypto";
+import SimpleCrypto from "simple-crypto-js";
+import { GET_USER_BY_ID } from "../graphql/queries";
 import {
   CREATE_CHANNEL,
   CREATE_KEY,
   CREATE_MESSAGE,
-  ADD_USER_TO_CHANNEL,
-} from '../graphql/mutations';
-import { graphql } from 'react-apollo';
-import compose from 'lodash.flowright'
-import { uploadToAWS } from 'utils/upload';
-import swal from 'sweetalert';
+  ADD_USER_TO_CHANNEL
+} from "../graphql/mutations";
+import { graphql } from "react-apollo";
+import compose from "lodash.flowright";
+import { uploadToAWS } from "utils/upload";
+import swal from "sweetalert";
 
-function CreateDM (){
-  
-    this.state = {
-      text: '',
-      selectedUsers: [],
-      cryptoEnabled: false,
-      uploadInProgress: false,
-    };
-  
-useEffect(()=>{
- componentMount();
-}, [])
+function CreateDM(props) {
+  const [text, setText] = useState("");
+  const [selectedUsers, setSelectedUsers] = useState([]);
+  const [cryptoEnabled, setCryptoEnabled] = useState(false);
+  const [uploadInProgress, setUploadInProgress] = useState(false);
 
-const componentMount =    => {
-    if (!props.user) {
-      props.history.push('/app');
+  useEffect(() => {
+    componentMount();
+  }, []);
+
+  const componentMount = () => {
+    if (!user) {
+      props.history.push("/app");
     }
-    document.getElementById('no-messages').innerText =
+    document.getElementById("no-messages").innerText =
       "Enter a user's name to start a conversation";
-  }
+  };
   const updateList = items => {
-    this.setState({
-      selectedUsers: items,
-    });
+    setSelectedUsers(items);
   };
   const updateText = text => {
-    this.setState({
-      text,
-    });
+    setText(text);
   };
 
-  const submit = async (text = '', file = null) => {
-    let { selectedUsers } = this.state;
+  const submit = async (text = "", file = null) => {
     let { data } = props;
     if (!data.User) {
       return false;
@@ -70,9 +62,8 @@ const componentMount =    => {
     if (text.trim().length === 0 && file === null) {
       return false;
     }
-    await this.setState({
-      uploadInProgress: true,
-    });
+    setUploadInProgress(true);
+
     let { User: user } = props.data;
 
     // create a symmetric key for the new channel
@@ -84,21 +75,21 @@ const componentMount =    => {
     selectedUsers.push(user);
 
     const tempName = selectedUsers
-      .map(u => u.firstName + ' ' + u.lastName)
-      .join(', ');
+      .map(u => u.firstName + " " + u.lastName)
+      .join(", ");
 
     const newChannel = {
       name: tempName,
-      channelType: 'dm',
-      description: tempName,
+      channelType: "dm",
+      description: tempName
     };
 
     try {
       // create the channel as a DM channel
       let res = await props.createChannel({
         variables: {
-          ...newChannel,
-        },
+          ...newChannel
+        }
       });
 
       let { id } = res.data.createChannel;
@@ -110,8 +101,8 @@ const componentMount =    => {
           variables: {
             key: encryptedKey,
             user: u.id,
-            channel: id,
-          },
+            channel: id
+          }
         });
       });
 
@@ -120,85 +111,76 @@ const componentMount =    => {
         props.addUserToChannel({
           variables: {
             channel: id,
-            user: u.id,
-          },
-        }),
+            user: u.id
+          }
+        })
       );
       // store all the keys, add all the users
       await Promise.all(promiseList);
       await Promise.all(promiseList2);
 
-      let url =
-        file === null ? null : await uploadToAWS(file, this.updateProgress);
+      let url = file === null ? null : await uploadToAWS(file, updateProgress);
       if (file) {
         fetch(file);
       }
       // send the first message, encrypted with the channel's SEA pair
       let newMessage = {
         text: simpleCrypto.encrypt(text.trim()),
-        user: props.user,
+        user: user,
         channel: id,
-        file: url ? simpleCrypto.encrypt(url.url) : '',
-        fileName: file !== null ? file.name : null,
+        file: url ? simpleCrypto.encrypt(url.url) : "",
+        fileName: file !== null ? file.name : null
       };
 
       props.createMessage({
         variables: {
-          ...newMessage,
-        },
+          ...newMessage
+        }
       });
-      await this.setState({
-        uploadInProgress: false,
-      });
+      setUploadInProgress(false);
+
       props.history.push(`/app/channel/${id}`);
     } catch (err) {
       console.error(new Error(err));
       swal(
-        'Error',
-        'We were unable to send your message, please try again later',
-        'error',
+        "Error",
+        "We were unable to send your message, please try again later",
+        "error"
       );
     }
   };
-  
-    const { selectedUsers } = this.state;
-    return (
-      <div id='chat-wrapper'>
-        <div id='create-dm-channel'>
-          <Link to='/app'>
-            <FeatherIcon icon='chevron-left' className='white db dn-l' />
-          </Link>
-          <DMInviteList
-            shouldPlaceholder={selectedUsers.length === 0}
-            updateList={this.updateList}
-            selectedUsers={selectedUsers}
-          />
-        </div>
-        <ChatWindow />
-        <ChatInput
-          submit={this.submit}
-          text={this.state.text}
-          updateText={this.updateText}
-          uploadInProgress={this.state.uploadInProgress}
+
+  return (
+    <div id="chat-wrapper">
+      <div id="create-dm-channel">
+        <Link to="/app">
+          <FeatherIcon icon="chevron-left" className="white db dn-l" />
+        </Link>
+        <DMInviteList
+          shouldPlaceholder={selectedUsers.length === 0}
+          updateList={updateList}
+          selectedUsers={selectedUsers}
         />
       </div>
-    );
+      <ChatWindow />
+      <ChatInput
+        submit={submit}
+        text={text}
+        updateText={updateText}
+        uploadInProgress={uploadInProgress}
+      />
+    </div>
+  );
 }
 
-function mapStateToProps(state) {
-  return {
-    user: pull(state, 'user'),
-  };
-}
-
-export default connect(mapStateToProps)(
+export default withGlobal(({ user }) => ({ user }))(
   compose(
-    graphql(CREATE_MESSAGE, { name: 'createMessage' }),
-    graphql(ADD_USER_TO_CHANNEL, { name: 'addUserToChannel' }),
-    graphql(CREATE_CHANNEL, { name: 'createChannel' }),
-    graphql(CREATE_KEY, { name: 'createKey' }),
+    graphql(CREATE_MESSAGE, { name: "createMessage" }),
+    graphql(ADD_USER_TO_CHANNEL, { name: "addUserToChannel" }),
+    graphql(CREATE_CHANNEL, { name: "createChannel" }),
+    graphql(CREATE_KEY, { name: "createKey" }),
     graphql(GET_USER_BY_ID, {
-      options: ({ user }) => ({ variables: { id: user || '' } }),
-    }),
-  )(withRouter(CreateDM)),
+      options: ({ user }) => ({ variables: { id: user || "" } })
+    })
+  )(withRouter(CreateDM))
 );

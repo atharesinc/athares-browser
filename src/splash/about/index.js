@@ -11,8 +11,8 @@ function About (){
     top: 0
   };
   const handleUpdate = ({ scrollTop }) => {
-    if (this.state.top !== scrollTop) {
-      this.setState({ scrolled: scrollTop > 100, top: scrollTop });
+    if (top !== scrollTop) {
+      setState({ scrolled: scrollTop > 100, top: scrollTop });
     }
   };
   
@@ -20,7 +20,7 @@ function About (){
       <Scrollbars
         style={{ width: "100vw", height: "100vh", overflowX: "hidden" }}
         className="splash"
-        onUpdate={this.handleUpdate}
+        onUpdate={handleUpdate}
         autoHide
         autoHideTimeout={1000}
         autoHideDuration={200}
@@ -31,7 +31,7 @@ function About (){
                         <source src="./img/earth.mp4" type="video/mp4" />
                     </video> */}
 
-          <Navbar {...this.state} top={this.state.top} />
+          <Navbar {...state} top={top} />
           <header className="sans-serif">
             <div className="mw9 center pa4 pt6">
               <time className="f6 mb2 dib ttu tracked">

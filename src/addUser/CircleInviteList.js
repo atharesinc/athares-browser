@@ -9,6 +9,7 @@ import compose from "lodash.flowright";
 
 function CircleInviteList() {
   const [search, setSearch] = useState("");
+  const [user] = useGlobal("user");
 
   const deleteItem = i => {
     // returns the index of the selected user we'd like to remove
@@ -21,9 +22,7 @@ function CircleInviteList() {
     if (props.selectedUsers.length >= 6) {
       return;
     }
-    this.setState({
-      search: input
-    });
+    setSearch(input);
   };
   const addition = user => {
     const newSelectedList = [...props.selectedUsers, user];
@@ -36,12 +35,12 @@ function CircleInviteList() {
   return (
     <Query
       query={SEARCH_FOR_USER}
-      variables={{ text: this.state.search || "s7d9f87vs69d8fv7" }}
+      variables={{ text: search || "s7d9f87vs69d8fv7" }}
     >
       {({ data: { allUsers = [] } = {} }) => {
         // filter data.suggestions by users that are in selectedUsers list
         if (
-          this.state.search.trim().length >= 1 &&
+          search.trim().length >= 1 &&
           selectedUsers.length < 7 &&
           allUsers &&
           getUsers.Circle
@@ -64,9 +63,9 @@ function CircleInviteList() {
             <ReactTags
               tags={props.selectedUsers}
               suggestions={suggestions}
-              handleDelete={this.deleteItem}
-              handleAddition={this.addition}
-              handleInputChange={this.inputChange}
+              handleDelete={deleteItem}
+              handleAddition={addition}
+              handleInputChange={inputChange}
               placeholder={
                 props.shouldPlaceholder ? "Type the name of a person" : " "
               }
@@ -80,19 +79,11 @@ function CircleInviteList() {
   );
 }
 
-function mapStateToProps(state) {
-  return {
-    user: pull(state, "user"),
-    activeCircle: pull(state, "activeCircle")
-  };
-}
-export default connect(mapStateToProps)(
-  compose(
-    graphql(GET_USERS_BY_CIRCLE_ID, {
-      name: "getUsers",
-      options: ({ activeCircle }) => ({
-        variables: { id: activeCircle || "" }
-      })
+export default compose(
+  graphql(GET_USERS_BY_CIRCLE_ID, {
+    name: "getUsers",
+    options: ({ activeCircle }) => ({
+      variables: { id: activeCircle || "" }
     })
-  )(CircleInviteList)
-);
+  })
+)(CircleInviteList);

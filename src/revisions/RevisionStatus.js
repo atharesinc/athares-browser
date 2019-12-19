@@ -57,6 +57,7 @@ const RevisionStatus = ({ amendment, support, votes, circle, repeal }) => {
         </small>
       </div>
     );
+  }
 };
 
 export default withRouter(RevisionStatus);

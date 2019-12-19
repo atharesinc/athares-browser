@@ -24,19 +24,19 @@ const pullUI = require("../store/ui/reducers").pull;
 function AddUserToDM (){
   
 
-    this.state = {
+    state = {
       selectedUsers: []
     };
   
 
   const updateList = selectedUsers => {
-    this.setState({
+    setState({
       selectedUsers
     });
   };
   const submit = async () => {
     // hoo boy theres a lot to do here
-    let { selectedUsers } = this.state;
+    let { selectedUsers } = state;
     let { activeChannel, updateChannelName } = props;
     let { User: user } = props.getUserKeys;
     // get the users encrypted priv key
@@ -93,7 +93,7 @@ function AddUserToDM (){
         }
       });
       props.dispatch(toggleAddUsers());
-      this.setState({
+      setState({
         selectedUsers: []
       });
       props.getUsers.refetch();
@@ -115,7 +115,7 @@ function AddUserToDM (){
       <Fragment>
         <div
           className="flex items-center lh-copy h3 bb b--white-10 dim pointer ph3"
-          onClick={this.toggleUserInput}
+          onClick={toggleUserInput}
         >
           <div className="flex-auto">
             <span className="f5 db white">Add Users</span>
@@ -128,14 +128,14 @@ function AddUserToDM (){
         {props.showAddMoreUsers && (
           <div className="flex flex-row justify-between items-center">
             <AddMoreUsers
-              selectedUsers={this.state.selectedUsers || []}
+              selectedUsers={selectedUsers || []}
               existingUsers={users || []}
-              updateList={this.updateList}
+              updateList={updateList}
             />
             <FeatherIcon
               icon="plus"
               className="white w3 h-100 bg-theme-blue pv1 ph2 pointer"
-              onClick={this.submit}
+              onClick={submit}
             />
           </div>
         )}

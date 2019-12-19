@@ -40,7 +40,7 @@ function OtherCircles (){
                     key={circle.id}
                     {...circle}
                     isActive={circle.id === props.activeCircle}
-                    selectCircle={this.setActive}
+                    selectCircle={setActive}
                   />
                 ))}
               </Scrollbars>

@@ -1,97 +1,75 @@
-import React, { useState } from 'react';
-import ViewUser from './ViewUser';
-import EditUser from './EditUser';
-import ViewOtherUser from './ViewOtherUser'; // same as view user w/o btns to toggle
-import { Switch, Route } from 'react-router-dom';
-import { connect } from 'react-redux';
-import { pull } from '../store/state/reducers';
-import { Query } from 'react-apollo';
-import { GET_USER_BY_ID_ALL } from '../graphql/queries';
+import React, { useState } from "react";
+import ViewUser from "./ViewUser";
+import EditUser from "./EditUser";
+import ViewOtherUser from "./ViewOtherUser"; // same as view user w/o btns to toggle
+import { Switch, Route } from "react-router-dom";
+import { connect } from "react-redux";
+import { pull } from "../store/state/reducers";
+import { Query } from "react-apollo";
+import { GET_USER_BY_ID_ALL } from "../graphql/queries";
 
-function User (){
-  state = {
-    loading: false,
-    user: null,
-    voteCount: 0,
-    revisionCount: 0,
-    circleCount: 0,
-    passedRevisionCount: 0,
-  };
-useEffect(()=>{
- componentMount();
-}, [])
+function User(props) {
+  const [user] = useGlobal("user");
 
-const componentMount =    => {
+  useEffect(() => {
     // if a user is logged in OR location params exist to see another user
     if (/user\/.+/.test(props.location.pathname)) {
-      this.setState({
-        loading: false,
-      });
-    } else if (!props.user) {
-      props.history.replace('/app');
+      setLoading(false);
+    } else if (!user) {
+      props.history.replace("/app");
     }
-  }
-  
-    return (
-      <Query
-        query={GET_USER_BY_ID_ALL}
-        variables={{ id: props.user || '' }}
-        pollInterval={1500}
-      >
-        {({ loading, err, data = {} }) => {
-          let user,
-            stats = null;
-          if (data.User) {
-            user = data.User;
-            stats = {
-              voteCount: user.votes.length,
-              circleCount: user.circles.length,
-              revisionCount: user.revisions.length,
-              passedRevisionCount: user.revisions.filter(r => r.passed).length,
-            };
-          }
-          const { match } = props;
+  }, []);
 
-          return (
-            <Switch>
-              <Route
-                exact
-                path={`${match.path}`}
-                component={props => (
-                  <ViewUser
-                    {...props}
-                    stats={stats}
-                    user={user}
-                    loading={loading}
-                  />
-                )}
-              />
-              )
-              <Route
-                exact
-                path={`${match.path}/edit`}
-                component={props => <EditUser {...props} user={user} />}
-              />
-              <Route
-                exact
-                path={`${match.path}/:id`}
-                component={props => <ViewOtherUser {...props} />}
-              />
-            </Switch>
-          );
-        }}
-      </Query>
-    );
+  return (
+    <Query
+      query={GET_USER_BY_ID_ALL}
+      variables={{ id: user || "" }}
+      pollInterval={1500}
+    >
+      {({ loading, err, data = {} }) => {
+        let user,
+          stats = null;
+        if (data.User) {
+          user = data.User;
+          stats = {
+            voteCount: user.votes.length,
+            circleCount: user.circles.length,
+            revisionCount: user.revisions.length,
+            passedRevisionCount: user.revisions.filter(r => r.passed).length
+          };
+        }
+        const { match } = props;
+
+        return (
+          <Switch>
+            <Route
+              exact
+              path={`${match.path}`}
+              component={props => (
+                <ViewUser
+                  {...props}
+                  stats={stats}
+                  user={user}
+                  loading={loading}
+                />
+              )}
+            />
+            )
+            <Route
+              exact
+              path={`${match.path}/edit`}
+              component={props => <EditUser {...props} user={user} />}
+            />
+            <Route
+              exact
+              path={`${match.path}/:id`}
+              component={props => <ViewOtherUser {...props} />}
+            />
+          </Switch>
+        );
+      }}
+    </Query>
+  );
 }
 
-function mapStateToProps(state) {
-  return {
-    user: pull(state, 'user'),
-    pub: pull(state, 'pub'),
-    circles: pull(state, 'circles'),
-    votes: pull(state, 'votes'),
-    revisions: pull(state, 'revisions'),
-  };
-}
-
-export default connect(mapStateToProps)(User);
+export default User;

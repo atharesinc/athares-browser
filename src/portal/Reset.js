@@ -34,11 +34,11 @@ function Reset (){
     return true;
   };
   const check = async () => {
-    let valid = this.checkIfExpired();
+    let valid = checkIfExpired();
     if (valid === false) {
       return false;
     }
-    let { code } = this.state;
+    let { code } = state;
     code = code.trim().toLowerCase();
 
     let { token, id } = props.data.ResetRequest;
@@ -52,15 +52,15 @@ function Reset (){
     if ((await sha(code)) !== token) {
       return false;
     }
-    this.setState({
+    setState({
       showReset: true
     });
   };
   const resetPassword = async () => {
-    await this.setState({
+    await setState({
       loading: true
     });
-    let { password, code } = this.state;
+    let { password, code } = state;
     const { id, token } = props.data.ResetRequest;
     const { User } = props.getUser;
 
@@ -93,29 +93,29 @@ function Reset (){
         localStorage.setItem("ATHARES_HASH", hashedPass);
       }
       props.history.push("/login");
-      await this.setState({
+      await setState({
         loading: false
       });
     } catch (err) {
       console.error(new Error(err));
       swal("Error", "Unable to update password at this time.", "error");
-      await this.setState({
+      await setState({
         loading: false
       });
     }
   };
   const updateCode = e => {
-    this.setState({
+    setState({
       code: e.currentTarget.value.toUpperCase()
     });
   };
   const updatePassword = e => {
-    this.setState({
+    setState({
       password: e.currentTarget.value
     });
   };
   
-    const { code, showReset, password, loading } = this.state;
+    const { code, showReset, password, loading } = state;
     return (
       <Fragment>
         <div id="portal-header">
@@ -148,7 +148,7 @@ function Reset (){
                   className="portal-input h2 ghost pa2"
                   required
                   type="text"
-                  onChange={this.updateCode}
+                  onChange={updateCode}
                   value={code}
                   id="recoverCode"
                   tabIndex="1"
@@ -158,7 +158,7 @@ function Reset (){
                 id="forgot-button"
                 className="f6 link glow br-pill ph3 pv2 bg-theme mb2 dib white pointer"
                 tabIndex="2"
-                onClick={this.check}
+                onClick={check}
               >
                 VERIFY CODE
               </button>
@@ -177,7 +177,7 @@ function Reset (){
                   className="portal-input h2 ghost pa2"
                   required
                   type="password"
-                  onChange={this.updatePassword}
+                  onChange={updatePassword}
                   value={password}
                   id="newPassword"
                   tabIndex="1"
@@ -186,7 +186,7 @@ function Reset (){
               <button
                 className="f6 link glow br-pill ph3 pv2 bg-theme mb2 dib white pointer"
                 tabIndex="2"
-                onClick={this.resetPassword}
+                onClick={resetPassword}
               >
                 RESET PASSWORD
               </button>

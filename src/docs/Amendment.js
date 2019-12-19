@@ -1,34 +1,29 @@
-import React from 'react';
-import AmendmentEdit from './AmendmentEdit';
-import AmendmentView from './AmendmentView';
-import moment from 'moment';
-import { updateRevision } from '../store/state/actions';
-import { connect } from 'react-redux';
-import { withRouter } from 'react-router-dom';
-import swal from 'sweetalert';
-import { pull } from '../store/state/reducers';
-import {  graphql } from 'react-apollo';
-import compose from 'lodash.flowright';
+import React from "react";
+import AmendmentEdit from "./AmendmentEdit";
+import AmendmentView from "./AmendmentView";
+import moment from "moment";
+import { withRouter } from "react-router-dom";
+import swal from "sweetalert";
+import { graphql } from "react-apollo";
+import compose from "lodash.flowright";
 import {
   CREATE_REVISION,
   CREATE_VOTE,
-  ADD_REVISION_TO_AMENDMENT,
-} from '../graphql/mutations';
-import sha from 'simple-hash-browser';
+  ADD_REVISION_TO_AMENDMENT
+} from "../graphql/mutations";
+import sha from "simple-hash-browser";
 
-function Amendment (){
-  
+function Amendment(props) {
+  const [editMode, setEditMode] = useState(false);
+  const [text, setText] = useState(props.text);
+  const [user] = useGlobal("user");
 
-    this.state = {
-      editMode: false,
-      text: props.text,
-    };
-  
+  const [activeCircle] = useGlobal("activeCircle");
+  const [, setActiveRevision] = useGlobal("activeRevision");
+
   const cancel = () => {
-    this.setState({
-      editMode: false,
-      text: props.text,
-    });
+    setEditMode(false);
+    setText(props.text);
   };
   const repeal = () => {
     try {
@@ -36,13 +31,13 @@ function Amendment (){
         "Are you sure you'd like to repeal this amendment?\n\nBy starting the repeal process, you will create a revision with the intention of permanently deleting this amendment.",
         {
           buttons: {
-            cancel: 'Back',
-            confirm: 'Yes, Repeal',
-          },
-        },
+            cancel: "Back",
+            confirm: "Yes, Repeal"
+          }
+        }
       ).then(async value => {
         if (value === true) {
-          const { activeCircle, circle, user } = props;
+          const { circle } = props;
           const { title, text, id } = props.amendment;
 
           let numUsers = circle.users.length;
@@ -53,38 +48,30 @@ function Amendment (){
             oldText: null,
             newText: text,
             expires: moment()
-              .add(Math.max(this.customSigm(numUsers), 61), 's')
+              .add(Math.max(customSigm(numUsers), 61), "s")
               .format(),
-            voterThreshold: Math.round(
-              numUsers * this.ratifiedThreshold(numUsers),
-            ),
+            voterThreshold: Math.round(numUsers * ratifiedThreshold(numUsers)),
             amendment: id,
-            repeal: true,
+            repeal: true
           };
-          this.createRevision(newRevision);
+          createRevision(newRevision);
         }
       });
     } catch (err) {
       console.error(new Error(err));
-      swal('Error', 'There was an error in the repeal process', 'error');
+      swal("Error", "There was an error in the repeal process", "error");
     }
   };
   const toggleEdit = e => {
-    if (e.target.className !== 'editMask' && this.state.editMode) {
+    if (e.target.className !== "editMask" && editMode) {
       return false;
     }
-    this.setState({
-      editMode: !this.state.editMode,
-    });
+    setEditMode(!editMode);
   };
-  const update = text => {
-    this.setState({
-      text: text,
-    });
-  };
+
   const addSub = () => {
     props.addSub(props.id);
-    this.cancel();
+    cancel();
   };
   const customSigm = x => {
     return 604800 / (1 + Math.pow(Math.E, -1 * (x - 10))) / 2;
@@ -96,11 +83,11 @@ function Amendment (){
   };
   const save = async () => {
     // can be undefined if no changes
-    if (props.amendment.text.trim() === this.state.text) {
+    if (props.amendment.text.trim() === text) {
       return;
     }
 
-    const { activeCircle, circle, user } = props;
+    const { circle } = props;
     const { title, text, id } = props.amendment;
 
     let numUsers = circle.users.length;
@@ -109,15 +96,15 @@ function Amendment (){
       user: user,
       title,
       oldText: text,
-      newText: this.state.text.trim(),
+      newText: text.trim(),
       expires: moment()
-        .add(Math.max(this.customSigm(numUsers), 61), 's')
+        .add(Math.max(customSigm(numUsers), 61), "s")
         .format(),
-      voterThreshold: Math.round(numUsers * this.ratifiedThreshold(numUsers)),
+      voterThreshold: Math.round(numUsers * ratifiedThreshold(numUsers)),
       amendment: id,
-      repeal: false,
+      repeal: false
     };
-    this.createRevision(newRevision);
+    createRevision(newRevision);
   };
 
   const createRevision = async newRevision => {
@@ -128,23 +115,23 @@ function Amendment (){
           text: newRevision.newText,
           circle: newRevision.circle,
           expires: newRevision.expires,
-          voterThreshold: newRevision.voterThreshold,
-        }),
+          voterThreshold: newRevision.voterThreshold
+        })
       );
 
       let newRevisionRes = await props.createRevision({
         variables: {
           ...newRevision,
-          hash,
-        },
+          hash
+        }
       });
 
       await props.addNewRevisionToAmendment({
         variables: {
           revision: newRevisionRes.data.createRevision.id,
           amendment: props.amendment.id,
-          title: newRevision.title,
-        },
+          title: newRevision.title
+        }
       });
       newRevision.id = newRevisionRes.data.createRevision.id;
 
@@ -152,72 +139,61 @@ function Amendment (){
         circle: props.activeCircle,
         revision: newRevision.id,
         user: props.user,
-        support: true,
+        support: true
       };
 
       await props.createVote({
         variables: {
-          ...newVote,
-        },
+          ...newVote
+        }
       });
 
-      props.dispatch(updateRevision(newRevision.id));
+      setActiveRevision(newRevision.id);
 
       props.history.push(
-        `/app/circle/${props.activeCircle}/revisions/${newRevision.id}`,
+        `/app/circle/${props.activeCircle}/revisions/${newRevision.id}`
       );
     } catch (err) {
       if (
-        !err.message.includes('unique constraint would be violated') ||
-        !err.message.includes('hash')
+        !err.message.includes("unique constraint would be violated") ||
+        !err.message.includes("hash")
       ) {
         console.error(new Error(err));
-        swal('Error', err.message, 'error');
+        swal("Error", err.message, "error");
       }
     }
   };
-  shouldComponentUpdate(nextProps, nextState) {
-    return (
-      nextProps !== props || nextState.editMode !== this.state.editMode
-    );
-  }
-  
-    const { text, editMode } = this.state;
-    const { amendment, activeCircle } = props;
-    const hasOutstandingRevision =
-      amendment.revision !== null && amendment.revision.passed === null;
-    return (
-      <div>
-        {editMode && hasOutstandingRevision === false ? (
-          <AmendmentEdit
-            save={this.save}
-            cancel={this.cancel}
-            update={this.update}
-            amendment={amendment}
-            toggleEdit={this.toggleEdit}
-            text={text}
-            repeal={this.repeal}
-          />
-        ) : (
-          <AmendmentView
-            amendment={amendment}
-            toggleEdit={this.toggleEdit}
-            text={text}
-            editable={props.editable}
-            circle={activeCircle}
-          />
-        )}
-      </div>
-    );
+
+  const { amendment } = props;
+  const hasOutstandingRevision =
+    amendment.revision !== null && amendment.revision.passed === null;
+  return (
+    <div>
+      {editMode && hasOutstandingRevision === false ? (
+        <AmendmentEdit
+          save={save}
+          cancel={cancel}
+          update={setText}
+          amendment={amendment}
+          toggleEdit={toggleEdit}
+          text={text}
+          repeal={repeal}
+        />
+      ) : (
+        <AmendmentView
+          amendment={amendment}
+          toggleEdit={toggleEdit}
+          text={text}
+          editable={props.editable}
+          circle={activeCircle}
+        />
+      )}
+    </div>
+  );
 }
-function mapStateToProps(state) {
-  return {
-    user: pull(state, 'user'),
-    activeCircle: pull(state, 'activeCircle'),
-  };
-}
+
 export default compose(
-  graphql(CREATE_REVISION, { name: 'createRevision' }),
-  graphql(CREATE_VOTE, { name: 'createVote' }),
-  graphql(ADD_REVISION_TO_AMENDMENT, { name: 'addNewRevisionToAmendment' }),
-)(withRouter(connect(mapStateToProps)(Amendment)));
+  graphql(CREATE_REVISION, { name: "createRevision" }),
+  graphql(CREATE_VOTE, { name: "createVote" }),
+  graphql(ADD_REVISION_TO_AMENDMENT, { name: "addNewRevisionToAmendment" })
+)(withRouter(Amendment));

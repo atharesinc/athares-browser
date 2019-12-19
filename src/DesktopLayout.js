@@ -7,18 +7,18 @@ import PushingMenu from "./menu";
 
 function DesktopLayout (){
   
-    this.state = {
+    state = {
       isOpen: false,
       user: null
     };
   
   const toggleMenu = () => {
-    this.setState({
-      isOpen: !this.state.isOpen
+    setState({
+      isOpen: !isOpen
     });
   };
   const isMenuOpen = state => {
-    this.setState({
+    setState({
       isOpen: state.isOpen
     });
   };
@@ -26,19 +26,19 @@ function DesktopLayout (){
     return (
       <div id="app-wrapper-outer" className="wrapper">
         <PushingMenu
-          isOpen={this.state.isOpen}
-          isMenuOpen={this.isMenuOpen}
+          isOpen={isOpen}
+          isMenuOpen={isMenuOpen}
           history={props.history}
-          toggleMenu={this.toggleMenu}
+          toggleMenu={toggleMenu}
         />
         <div
           className="wrapper"
           id="app-wrapper"
           style={{
-            marginLeft: this.state.isOpen ? "calc(30% - 300px)" : ""
+            marginLeft: isOpen ? "calc(30% - 300px)" : ""
           }}
         >
-          <Circles {...props} toggleMenu={this.toggleMenu} />
+          <Circles {...props} toggleMenu={toggleMenu} />
           <Channels {...props} />
           <Dashboards {...props} />
         </div>

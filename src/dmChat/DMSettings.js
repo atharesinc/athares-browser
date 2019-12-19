@@ -18,7 +18,7 @@ function DMSettings (){
       >
         <div id="current-dm-channel" className="pa2">
           <div>Settings</div>
-          <FeatherIcon icon="x" onClick={this.close} className="pointer" />
+          <FeatherIcon icon="x" onClick={close} className="pointer" />
         </div>
         {/* Various Settings */}
         <Scrollbars style={{ width: "100%", height: "90vh" }}>
