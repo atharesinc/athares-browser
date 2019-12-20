@@ -1,25 +1,22 @@
-import React, { useGlobal, withGlobal } from "reactn";
+import React, { useGlobal, withGlobal, useEffect } from "reactn";
 
 import { GET_DMS_BY_USER } from "../graphql/queries";
 import { SUB_TO_DMS_BY_USER } from "../graphql/subscriptions";
 import { Query, graphql } from "react-apollo";
 
-function ChannelUpdateMonitor() {
+function ChannelUpdateMonitor(props) {
   let toggleTitle = null;
- const [activeChannel]= useGlobal("activeChannel")
-    const [dms, setDms]= useGlobal("dms")
-    const [unreadDMs, setUnreadDMs] =useGlobal("unreadDMs")
-    
+  const [activeChannel] = useGlobal("activeChannel");
+  const [dms, setDms] = useGlobal("dms");
+  const [unreadDMs, setUnreadDMs] = useGlobal("unreadDMs");
+
   useEffect(() => {
     let { channels } = props.getDMs.User;
     let dms = channels.map(c => c.id);
     // set the user's current DMs
     setDms(dms);
 
-    if (
-      unreadDMs.length > unreadDMs.length ||
-      unreadDMs.length === 0
-    ) {
+    if (unreadDMs.length > unreadDMs.length || unreadDMs.length === 0) {
       clearInterval(toggleTitle);
       document.title = "Athares Distributed Democracy";
     }
@@ -30,8 +27,8 @@ function ChannelUpdateMonitor() {
     audio.volume = 0.2;
     audio.play();
   };
-  
-  const_subToMore = subscribeToMore => {
+
+  const _subToMore = subscribeToMore => {
     subscribeToMore({
       document: SUB_TO_DMS_BY_USER,
       variables: { ids: dms || [] },

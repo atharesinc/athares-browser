@@ -1,4 +1,4 @@
-import React, { useState, withGlobal, useGlobal } from "reactn";
+import React, { useState, withGlobal, useGlobal, useEffect } from "reactn";
 import ChannelGroup from "./ChannelGroup";
 import GovernanceChannelGroup from "./GovernanceChannelGroup";
 import { Link } from "react-router-dom";
@@ -19,9 +19,10 @@ import Search from "../search";
 import Scrollbars from "react-custom-scrollbars";
 
 function Channels(props) {
-  const [activeChannel] = useGlobal("activeChannel");
+  const [activeChannel, setActiveCircle] = useGlobal("activeChannel");
   const [unreadDMs] = useGlobal("unreadDMs");
   const [unreadChannels] = useGlobal("unreadChannels");
+
   useEffect(() => {
     componentMount();
   }, []);

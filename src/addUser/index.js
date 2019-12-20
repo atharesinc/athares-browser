@@ -1,8 +1,5 @@
-import React, { useState, userGlobal } from "reactn";
+import React, { useState, useGlobal, useEffect } from "reactn";
 import CircleInviteList from "./CircleInviteList";
-
-import { pull } from "../store/state/reducers";
-import { updateCircle } from "../store/state/actions";
 import swal from "sweetalert";
 import FeatherIcon from "feather-icons-react";
 import { Link } from "react-router-dom";
@@ -21,6 +18,10 @@ function AddUser(props) {
       props.history.replace("/app");
     }
   }, [user]);
+
+  const back = () => {
+    props.history.push(`/app`);
+  };
 
   useEffect(() => {
     componentMount();
@@ -122,6 +123,6 @@ function AddUser(props) {
   );
 }
 
-export default connect(mapStateToProps)(
-  compose(graphql(ADD_USER_TO_CIRCLE, { name: "addUserToCircle" }))(AddUser)
-);
+export default compose(
+  graphql(ADD_USER_TO_CIRCLE, { name: "addUserToCircle" })
+)(AddUser);

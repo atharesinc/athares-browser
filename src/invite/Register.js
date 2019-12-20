@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useGlobal } from "react";
 import FeatherIcon from "feather-icons-react";
 import { validateRegister } from "../utils/validators";
 import { Link, withRouter } from "react-router-dom";
@@ -22,6 +22,8 @@ function MiniRegister(props) {
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
+  const [, setUser] = useGlobal("user");
+  const [, setPub] = useGlobal("pub");
 
   const tryRegister = async e => {
     e.preventDefault();

@@ -1,4 +1,4 @@
-import { useGlobal } from "reactn";
+import { useGlobal, useEffect } from "reactn";
 
 function OnlineMonitor(props) {
   const [isOnline, setIsOnline] = useGlobal("isOnline");

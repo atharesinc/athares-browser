@@ -1,4 +1,4 @@
-import { withGlobal } from "react";
+import { withGlobal, useEffect } from "react";
 import { withRouter } from "react-router-dom";
 import moment from "moment";
 import {
@@ -20,18 +20,9 @@ function RevisionMonitor(props) {
   useEffect(() => {
     // only do the following if revisions are loaded, not before
     if (props.data.User) {
-      // get a flat list of revisions for current and past props
-      let allRevisions = getAllRevisions();
-      let prevRevisions = prevProps.data.User
-        ? prevProps.data.User.circles
-            .map(c => c.revisions.map(r => ({ ...r, circle: c.id })))
-            .flat(1)
-        : [];
-      if (allRevisions.length !== prevRevisions.length) {
-        // There is probably a new revision or the last revision has been dealt with
-        // Reset Timer
-        getNext();
-      }
+      // There is probably a new revision or the last revision has been dealt with
+      // Reset Timer
+      getNext();
     }
   }, [props.data.User]);
 
@@ -154,7 +145,7 @@ function RevisionMonitor(props) {
   return null;
 }
 
-withGlobal(({ user }) => ({ user }))(
+export default withGlobal(({ user }) => ({ user }))(
   compose(
     graphql(UPDATE_AMENDMENT_FROM_REVISION_AND_DELETE, {
       name: "deleteAmendment"

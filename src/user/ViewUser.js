@@ -1,4 +1,4 @@
-import React, { withGlobal } from "react";
+import React, { withGlobal, useEffect } from "react";
 import FeatherIcon from "feather-icons-react";
 import { Link, withRouter } from "react-router-dom";
 import moment from "moment";

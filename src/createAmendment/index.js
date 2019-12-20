@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useGlobal, withGlobal } from "react";
 import ErrorSwap from "../utils/ErrorSwap";
 import Loader from "../components/Loader";
 import { withRouter, Link } from "react-router-dom";
@@ -29,6 +29,10 @@ function CreateAmendment(props) {
   useEffect(() => {
     componentMount();
   }, []);
+
+  const back = () => {
+    props.history.push("/app");
+  };
 
   const componentMount = () => {
     // verify this circle is real and that the user is logged in, but for now...
@@ -76,13 +80,13 @@ function CreateAmendment(props) {
       });
 
       if (allAmendments.length !== 0) {
-        setState({ isTaken: true });
+        setIsTaken(true);
         return false;
       }
 
       // make sure the amendment isn't empty
       if (amendment.trim() === "") {
-        setState({ isEmpty: true });
+        setIsEmpty(true);
         return false;
       }
 
@@ -147,9 +151,7 @@ function CreateAmendment(props) {
     }
   };
   const clearError = () => {
-    setState({
-      isTaken: false
-    });
+    setIsTaken(false);
   };
 
   let { activeCircle, data = {} } = props;

@@ -1,4 +1,4 @@
-import React, { useGlobal } from "react";
+import React, { useGlobal, useEffect } from "react";
 
 import { withRouter } from "react-router-dom";
 

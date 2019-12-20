@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useGlobal } from "react";
 import ReactTags from "react-tag-autocomplete";
 import TagComponent from "../components/TagComponent";
 import { SEARCH_FOR_USER } from "../graphql/queries";
@@ -23,7 +23,7 @@ function AddMoreUsers(props) {
     props.updateList(newSelectedList);
   };
 
-  let { selectedUsers, existingUsers, user } = props;
+  let { selectedUsers, existingUsers } = props;
   let suggestions = [];
   return (
     <Query

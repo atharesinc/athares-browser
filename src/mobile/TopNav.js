@@ -5,7 +5,7 @@ import FeatherIcon from "feather-icons-react";
 import { Query } from "react-apollo";
 import { GET_USER_BY_ID } from "../graphql/queries";
 
-const TopNav = ({ searchOpen = false, ...props }) => {
+const TopNav = ({ showSearch = false, ...props }) => {
   return (
     <Query
       query={GET_USER_BY_ID}
@@ -30,7 +30,7 @@ const TopNav = ({ searchOpen = false, ...props }) => {
               onClick={props.toggleMenu}
             />
 
-            {searchOpen ? (
+            {showSearch ? (
               <FeatherIcon
                 icon="x"
                 className="white w2 h2"

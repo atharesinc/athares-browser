@@ -1,4 +1,4 @@
-import React, { useGlobal, withGlobal } from "reactn";
+import React, { useGlobal, withGlobal, useEffect } from "reactn";
 
 import { GET_ALL_USERS_CIRCLES_CHANNELS } from "../graphql/queries";
 import { SUB_TO_ALL_CIRCLES_CHANNELS } from "../graphql/subscriptions";

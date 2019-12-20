@@ -1,4 +1,4 @@
-import React from "reactn";
+import React, { useGlobal } from "reactn";
 import SearchResults from "./SearchResults";
 import FeatherIcon from "feather-icons-react";
 import { Query } from "react-apollo";

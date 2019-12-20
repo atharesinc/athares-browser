@@ -1,4 +1,4 @@
-import React, { useState , Fragment } from "reactn";
+import React, { useState, useGlobal, Fragment } from "reactn";
 import TopNav from "./mobile/TopNav";
 import Circles from "./mobile/Circles";
 import Channels from "./channels";
@@ -7,120 +7,102 @@ import PushingMenu from "./menu";
 import Search from "./search";
 import { Switch, Route, withRouter } from "react-router-dom";
 
-import { pull } from "./store/state/reducers";
-import { pull as pullUI } from "./store/ui/reducers";
-import { closeSearch, toggleSearch } from "./store/ui/actions";
-import { updateCircle } from "./store/state/actions";
+function MobileLayout(props) {
+  const [menuIsOpen, setMenuIsOpen] = useState(false);
+  const [index, setIndex] = useState(0);
+  const [showSearch, setShowSearch] = useGlobal("showSearch");
 
-function MobileLayout (){
-  
-    state = {
-      index: 0,
-      menuIsOpen: false
-    };
-  
+  const [user] = useState("user");
+  const [activeCircle, setActiveCircle] = useState("activeCircle");
+  const [circles] = useState("circles");
 
   const clickOffSearch = e => {
     if (e.target.className === "modal-mask") {
-      props.dispatch(closeSearch());
+      setShowSearch(false);
     }
   };
   const toggleOpenSearch = () => {
-    props.dispatch(toggleSearch());
+    setShowSearch(!showSearch);
   };
+
   const toggleMenu = () => {
-    setState({
-      menuIsOpen: !menuIsOpen
-    });
+    setMenuIsOpen(!menuIsOpen);
   };
+
   const isMenuOpen = state => {
-    setState({
-      menuIsOpen: state.menuIsOpen
-    });
+    setMenuIsOpen(state.menuIsOpen);
   };
-  const setActive = id => {
-    props.dispatch(updateCircle(id));
-  };
-  
-    const { circles, activeCircle, location, searchOpen, user } = props;
-    return (
-      <div id="app-wrapper-outer" className="wrapper">
-        <PushingMenu
-          isOpen={menuIsOpen}
-          isMenuOpen={isMenuOpen}
-          history={props.history}
-          user={user}
+
+  const { location } = props;
+
+  return (
+    <div id="app-wrapper-outer" className="wrapper">
+      <PushingMenu
+        isOpen={menuIsOpen}
+        isMenuOpen={isMenuOpen}
+        history={props.history}
+        user={user}
+        toggleMenu={toggleMenu}
+      />
+      <div
+        index={index}
+        className="wrapper"
+        style={{
+          height: "100vh",
+          width: "100vw"
+        }}
+        id="app-wrapper"
+      >
+        <TopNav
           toggleMenu={toggleMenu}
+          hide={
+            location.pathname !== "/app" &&
+            !/app\/circle\/[a-zA-Z\d]{25}$/.test(location.pathname)
+          }
+          user={user}
+          toggleOpenSearch={toggleOpenSearch}
+          showSearch={showSearch}
         />
-        <div
-          index={index}
-          className="wrapper"
-          style={{
-            height: "100vh",
-            width: "100vw"
-          }}
-          id="app-wrapper"
-        >
-          <TopNav
-            toggleMenu={toggleMenu}
-            hide={
-              location.pathname !== "/app" &&
-              !/app\/circle\/[a-zA-Z\d]{25}$/.test(location.pathname)
-            }
-            user={user}
-            toggleOpenSearch={toggleOpenSearch}
-            searchOpen={searchOpen}
+        {showSearch && (
+          <div className="modal-mask" onClick={clickOffSearch}>
+            <Search />
+          </div>
+        )}
+        <Switch>
+          <Route
+            exact
+            component={props => (
+              <CirclesAndChannels
+                activeCircle={activeCircle}
+                circles={circles}
+                setActive={setActiveCircle}
+                user={user}
+                {...props}
+              />
+            )}
+            path="/app"
           />
-          {searchOpen && (
-            <div className="modal-mask" onClick={clickOffSearch}>
-              <Search />
-            </div>
-          )}
-          <Switch>
-            <Route
-              exact
-              component={props => (
-                <CirclesAndChannels
-                  activeCircle={activeCircle}
-                  circles={circles}
-                  setActive={setActive}
-                  user={user}
-                  {...props}
-                />
-              )}
-              path="/app"
-            />
-            <Route
-              exact
-              component={props => (
-                <CirclesAndChannels
-                  activeCircle={activeCircle}
-                  circles={circles}
-                  setActive={setActive}
-                  user={user}
-                  {...props}
-                />
-              )}
-              path="/app/circle/:id"
-            />
-            <Route component={props => <Dashboards {...props} />} />
-          </Switch>
-        </div>
+          <Route
+            exact
+            component={props => (
+              <CirclesAndChannels
+                activeCircle={activeCircle}
+                circles={circles}
+                setActive={setActiveCircle}
+                user={user}
+                {...props}
+              />
+            )}
+            path="/app/circle/:id"
+          />
+          <Route component={props => <Dashboards {...props} />} />
+        </Switch>
       </div>
-    );
-}
-function mapStateToProps(state) {
-  return {
-    user: pull(state, "user"),
-    pub: pull(state, "pub"),
-    activeCircle: pull(state, "activeCircle"),
-    circles: pull(state, "circles"),
-    activeChannel: pull(state, "activeChannel"),
-    searchOpen: pullUI(state, "searchOpen")
-  };
+    </div>
+  );
 }
 
-export default withRouter(connect(mapStateToProps)(MobileLayout));
+export default withRouter(MobileLayout);
 
 const CirclesAndChannels = props => {
   return (

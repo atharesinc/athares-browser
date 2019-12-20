@@ -1,4 +1,4 @@
-import React, { useGlobal } from "reactn";
+import React, { useState, useGlobal, useEffect } from "reactn";
 import { pushRotate as Menu } from "react-burger-menu";
 import { Link } from "react-router-dom";
 import FeatherIcon from "feather-icons-react";
@@ -6,8 +6,10 @@ import { Query } from "react-apollo";
 import { GET_USER_BY_ID } from "../graphql/queries";
 
 function MenuWrapper(props) {
+  const [showInstall, setShowInstall] = useState("showInstall");
   const [showMenu, setShowMenu] = useGlobal("showMenu");
-  const userId = ([user] = useGlobal("user"));
+  const [user: userId] = useGlobal("user");
+
   let deferredPrompt = null;
 
   const logoutUser = async () => {
@@ -79,7 +81,7 @@ function MenuWrapper(props) {
     });
   };
 
-  let { isOpen, history, isMenuOpen, ...props } = props;
+  let { isOpen, history, isMenuOpen } = props;
   return (
     <Query query={GET_USER_BY_ID} variables={{ id: userId || "" }}>
       {({ data = {}, subscribeToMore }) => {

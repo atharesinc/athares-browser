@@ -1,4 +1,4 @@
-import React, { useState, useGlobal } from "reactn";
+import React, { useState, useGlobal, useEffect } from "reactn";
 import ImageUpload from "../components/ImageUpload";
 import ErrorSwap from "../utils/ErrorSwap";
 import Phone from "react-phone-number-input";
@@ -8,7 +8,6 @@ import { Link, withRouter } from "react-router-dom";
 import Loader from "../components/Loader";
 import { Scrollbars } from "react-custom-scrollbars";
 
-import { pull } from "../store/state/reducers";
 import { hideLoading } from "react-redux-loading-bar";
 import { UPDATE_USER } from "../graphql/mutations";
 import { graphql } from "react-apollo";
@@ -29,52 +28,56 @@ function EditUser(props) {
   const [loading, setLoading] = useState(true);
   const [editMode, setEditMode] = useState(false);
   const [hasEditedImage, setHasEditedImage] = useState(false);
-  const userId = ([user] = useGlobal("user"));
+  const [user] = useGlobal("user");
 
   useEffect(() => {
     componentMount();
   }, []);
 
   const componentMount = async () => {
-    if (!userId) {
+    if (!user) {
       props.history.replace("/app");
     }
     setUserState(...props.user);
     setLoading(false);
   };
 
-  const editMode = bool => {
-    setState({
-      editMode: bool,
-      hasEditedImage: true
-    });
+  const toggleEditMode = bool => {
+    setEditMode(bool);
+    setHasEditedImage(true);
   };
   const changeImage = imageUrl => {
-    setState({
+    setUserState({
+      ...userState,
       icon: imageUrl
     });
   };
+
   const updateFirstName = e => {
-    setState({
+    setUserState({
+      ...userState,
       firstName: e.target.value.substring(0, 51)
     });
   };
   const updateLastName = e => {
-    setState({
+    setUserState({
+      ...userState,
       lastName: e.target.value.substring(0, 51)
     });
   };
   const updateUsername = e => {
-    setState({
-      uname: e.target.value.substring(0, 100),
-      unameTaken: false
+    setUserState({
+      ...userState,
+      uname: e.target.value.substring(0, 100)
     });
+
+    setUnameTaken(false);
   };
   const updatePhone = number => {
-    setState({
-      phone: number,
-      phoneTaken: false
+    setUserState({
+      phone: number
     });
+    setPhoneTaken(false);
   };
   const convertBlobToBase64 = blob => {
     return new Promise(resolve => {
@@ -112,10 +115,12 @@ function EditUser(props) {
     if (editMode) {
       return false;
     }
-    await setState({ loading: true });
+    setLoading(true);
 
     // validate user data
     // ???
+
+    const [firstName, lastName, phone, uname, icon] = userState;
 
     try {
       let updatedUser = {
@@ -148,7 +153,7 @@ function EditUser(props) {
       // Update the user by merging in changes
       await props.updateUser({
         variables: {
-          id: userId,
+          id: user,
           ...updatedUser
         }
       });
@@ -188,6 +193,8 @@ function EditUser(props) {
     setPhoneTaken(false);
     setUnameTaken(false);
   };
+
+  const [id, firstName, lastName, phone, uname, icon] = userState;
 
   if (loading || id === null) {
     return (
@@ -237,7 +244,7 @@ function EditUser(props) {
               <ImageUpload
                 onSet={changeImage}
                 defaultImage={icon}
-                editMode={editMode}
+                editMode={toggleEditMode}
               />
               <small id="name-desc" className="f6 white-80 db mb2">
                 Your profile picture will be cropped as a circle. It is

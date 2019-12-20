@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, withGlobal } from "react";
 import { GET_CIRCLE_NOTICES } from "../graphql/queries";
 import CircleNotice from "./CircleNotice";
 import { graphql } from "react-apollo";

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useGlobal } from "react";
 import ErrorSwap from "../utils/ErrorSwap";
 import { connect } from "react-redux";
 import Loader from "../components/Loader";
@@ -15,14 +15,19 @@ function CreateChannel(props) {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [isTaken, setIsTaken] = useState(false);
-  const [activeCircle, setActiveCircle] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [activeCircle, setActiveCircle] = useGlobal("activeCircle");
+  const [, setActiveChannel] = useGlobal("activeChannel");
 
-  circles;
+  const [user] = useGlobal("user");
 
   useEffect(() => {
     componentMount();
   }, []);
+
+  const back = () => {
+    props.history.push("/app");
+  };
 
   const componentMount = () => {
     // verify this circle is real and that the user is logged in, but for now...
@@ -32,15 +37,11 @@ function CreateChannel(props) {
   };
   const updateName = e => {
     const name = e.target.value.substring(0, 51);
-    setState({
-      name,
-      isTaken: false
-    });
+    setName(name);
+    setIsTaken(false);
   };
   const updateDesc = e => {
-    setState({
-      description: e.target.value.substring(0, 301)
-    });
+    setDescription(e.target.value.substring(0, 301));
   };
   const onSubmit = async e => {
     e.preventDefault();
@@ -204,4 +205,4 @@ function CreateChannel(props) {
 export default compose(
   graphql(CREATE_CHANNEL, { name: "createChannel" }),
   graphql(ADD_CHANNEL_TO_CIRCLE, { name: "addChannelToCircle" })
-)(connect(mapStateToProps)(CreateChannel));
+)(CreateChannel);

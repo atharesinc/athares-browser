@@ -1,4 +1,4 @@
-import React, { useState, useGlobal, withGlobal } from "reactn";
+import React, { useState, useGlobal, useEffect, withGlobal } from "reactn";
 import ChatWindow from "../components/ChatWindow";
 import ChatInput from "../components/ChatInput";
 import DMSettings from "./DMSettings";
@@ -26,7 +26,7 @@ function DMChat(props) {
   const [simpleCrypto, setSimpleCrypto] = useState(new SimpleCrypto("nope"));
   const [dmSettings, setDmSettings] = useGlobal("dmSettings");
   const [unreadDMs, setUnreadDMs] = useGlobal("unreadDMs");
-
+  const [, setActiveChannel] = useGlobal("activeChannel");
   useEffect(() => {
     componentMount();
   }, []);
@@ -44,7 +44,7 @@ function DMChat(props) {
       setActiveChannel(props.match.params.id);
     }
     if (props.activeChannel) {
-      setUnreadDMs();
+      seeThisChannel();
     }
     if (props.getUserKeys.User) {
       try {
@@ -60,18 +60,20 @@ function DMChat(props) {
         );
 
         simpleCrypto.setSecret(decryptedChannelSecret);
-        setState({
-          cryptoEnabled: true
-        });
+        setCryptoEnabled(true);
       } catch (err) {
         console.error(new Error(err));
       }
     }
   };
 
-  useEffect(() => {
+  const seeThisChannel = () => {
     const index = unreadDMs.findIndex(item => item.id === props.activeChannel);
-    setUnreadDM(unreadDMs.splice(index));
+    setUnreadDMs(unreadDMs.splice(index));
+  };
+
+  useEffect(() => {
+    seeThisChannel();
   }, [props.activeChannel]);
 
   useEffect(() => {

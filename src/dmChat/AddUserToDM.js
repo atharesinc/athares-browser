@@ -1,15 +1,9 @@
-import React, { Component, Fragment } from "reactn";
+import React, { useState, useGlobal, withGlobal, Fragment } from "reactn";
 import { graphql } from "react-apollo";
-import compose from 'lodash.flowright'
-
-import { pull } from "../store/state/reducers";
-import { toggleAddUsers } from "../store/ui/actions";
+import compose from "lodash.flowright";
 import FeatherIcon from "feather-icons-react";
 import AddMoreUsers from "./AddMoreUsers";
-import {
-  GET_USERS_BY_CHANNEL_ID,
-  GET_USER_KEYS
-} from "../graphql/queries";
+import { GET_USERS_BY_CHANNEL_ID, GET_USER_KEYS } from "../graphql/queries";
 import {
   ADD_USER_TO_CHANNEL,
   CREATE_KEY,
@@ -19,24 +13,11 @@ import SimpleCrypto from "simple-crypto-js";
 import { decrypt, encrypt } from "utils/crypto";
 import swal from "sweetalert";
 
-const pullUI = require("../store/ui/reducers").pull;
-
-function AddUserToDM (){
-  
-
-    state = {
-      selectedUsers: []
-    };
-  
-
-  const updateList = selectedUsers => {
-    setState({
-      selectedUsers
-    });
-  };
+function AddUserToDM(props) {
+  const [selectedUsers, setSelectedUsers] = useState([]);
+  const [showAddMoreUsers, setShowAddMoreUsers] = useGlobal("showAddMoreUsers");
   const submit = async () => {
     // hoo boy theres a lot to do here
-    let { selectedUsers } = state;
     let { activeChannel, updateChannelName } = props;
     let { User: user } = props.getUserKeys;
     // get the users encrypted priv key
@@ -86,16 +67,17 @@ function AddUserToDM (){
       // store all the keys, add all the users, and update the channel name
       await Promise.all(promiseList);
       await Promise.all(promiseList2);
+
       updateChannelName({
         variables: {
           id: activeChannel,
           name: channelName
         }
       });
-      props.dispatch(toggleAddUsers());
-      setState({
-        selectedUsers: []
-      });
+
+      showAddMoreUsers(false);
+      setSelectedUsers([]);
+
       props.getUsers.refetch();
       swal("Users Added", "Successfully added users", "success");
     } catch (err) {
@@ -104,52 +86,49 @@ function AddUserToDM (){
     }
   };
   const toggleUserInput = () => {
-    props.dispatch(toggleAddUsers());
+    setShowAddMoreUsers(!showAddMoreUsers);
   };
-  
-    let users = [];
-    if (props.getUsers.Channel) {
-      users = props.getUsers.Channel.users;
-    }
-    return (
-      <Fragment>
-        <div
-          className="flex items-center lh-copy h3 bb b--white-10 dim pointer ph3"
-          onClick={toggleUserInput}
-        >
-          <div className="flex-auto">
-            <span className="f5 db white">Add Users</span>
-            {users.length >= 6 && (
-              <span className="f6 white-50">You can't add any more users</span>
-            )}
-          </div>
-          <FeatherIcon className="w2 h2 h3-ns" icon="user-plus" />
+
+  let users = [];
+  if (props.getUsers.Channel) {
+    users = props.getUsers.Channel.users;
+  }
+  return (
+    <Fragment>
+      <div
+        className="flex items-center lh-copy h3 bb b--white-10 dim pointer ph3"
+        onClick={toggleUserInput}
+      >
+        <div className="flex-auto">
+          <span className="f5 db white">Add Users</span>
+          {users.length >= 6 && (
+            <span className="f6 white-50">You can't add any more users</span>
+          )}
         </div>
-        {props.showAddMoreUsers && (
-          <div className="flex flex-row justify-between items-center">
-            <AddMoreUsers
-              selectedUsers={selectedUsers || []}
-              existingUsers={users || []}
-              updateList={updateList}
-            />
-            <FeatherIcon
-              icon="plus"
-              className="white w3 h-100 bg-theme-blue pv1 ph2 pointer"
-              onClick={submit}
-            />
-          </div>
-        )}
-      </Fragment>
-    );
+        <FeatherIcon className="w2 h2 h3-ns" icon="user-plus" />
+      </div>
+      {props.showAddMoreUsers && (
+        <div className="flex flex-row justify-between items-center">
+          <AddMoreUsers
+            selectedUsers={selectedUsers || []}
+            existingUsers={users || []}
+            updateList={setSelectedUsers}
+          />
+          <FeatherIcon
+            icon="plus"
+            className="white w3 h-100 bg-theme-blue pv1 ph2 pointer"
+            onClick={submit}
+          />
+        </div>
+      )}
+    </Fragment>
+  );
 }
-function mapStateToProps(state) {
-  return {
-    user: pull(state, "user"),
-    activeChannel: pull(state, "activeChannel"),
-    showAddMoreUsers: pullUI(state, "showAddMoreUsers")
-  };
-}
-export default connect(mapStateToProps)(
+
+export default withGlobal(({ user, activeChannel }) => ({
+  user,
+  activeChannel
+}))(
   compose(
     graphql(ADD_USER_TO_CHANNEL, { name: "addUserToChannel" }),
     graphql(UPDATE_CHANNEL_NAME, { name: "updateChannelName" }),

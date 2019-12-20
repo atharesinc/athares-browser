@@ -1,4 +1,4 @@
-import React, { useState } from "reactn";
+import React, { useState, useGlobal, useEffect } from "reactn";
 import ImageUpload from "../components/ImageUpload";
 import ErrorSwap from "../utils/ErrorSwap";
 
@@ -12,7 +12,7 @@ import { graphql } from "react-apollo";
 import compose from "lodash.flowright";
 import { uploadToAWS } from "utils/upload";
 
-function createCircleBoard(props) {
+function CreateCircle(props) {
   // this should be whatever fits into an img src value or a css url(), either a filepath or base64 encoded image string
   const [icon, setIcon] = useState("/img/Athares-logo-large-white.png");
   const [name, setName] = useState("");
@@ -22,6 +22,7 @@ function createCircleBoard(props) {
   const [editMode, setEditMode] = useState(false);
   const [user, setUser] = useGlobal("user");
   const [pub, setPub] = useGlobal("pub");
+  const [, setActiveCircle] = useGlobal("activeCircle");
 
   useEffect(() => {
     componentMount();
@@ -38,16 +39,14 @@ function createCircleBoard(props) {
         return response.blob();
       })
       .then(function(blob) {
-        // here the image is a blob
         setIcon(blob);
       });
   };
+
   const changeImage = imageUrl => {
     setIcon(imageUrl);
   };
-  const editMode = bool => {
-    setEditMode(bool);
-  };
+
   const updateName = e => {
     setName(e.target.value.substring(0, 51));
     setIsTaken(false);
@@ -55,6 +54,7 @@ function createCircleBoard(props) {
   const updatePreamble = e => {
     setPreamble(e.target.value);
   };
+
   const convertBlobToBase64 = blob => {
     return new Promise(resolve => {
       let reader = new FileReader();
@@ -64,6 +64,7 @@ function createCircleBoard(props) {
       };
     });
   };
+
   const b64toBlob = (b64Data, sliceSize = 512) => {
     const block = b64Data.split(";");
     // get the real base64 content of the file
@@ -86,6 +87,11 @@ function createCircleBoard(props) {
 
     return new Blob(byteArrays, { type: "image/png" });
   };
+
+  const back = () => {
+    props.history.push(`/app`);
+  };
+
   const onSubmit = async e => {
     e.preventDefault();
     if (editMode) {
@@ -112,7 +118,7 @@ function createCircleBoard(props) {
       swal("Sorry", "Circles must have a name and preamble.", "error");
       return false;
     }
-    await setState({ loading: true });
+    setLoading(true);
 
     // create circle
     let newCircle = {
@@ -168,9 +174,7 @@ function createCircleBoard(props) {
     });
   };
   const clearError = () => {
-    setState({
-      isTaken: false
-    });
+    setIsTaken(false);
   };
 
   if (loading) {
@@ -213,7 +217,7 @@ function createCircleBoard(props) {
               <ImageUpload
                 onSet={changeImage}
                 defaultImage={icon}
-                editMode={editMode}
+                editMode={setEditMode}
               />
             </header>
             <div className="fn fl-ns w-50-ns mt4">
@@ -284,4 +288,4 @@ function createCircleBoard(props) {
 export default compose(
   graphql(CREATE_CIRCLE, { name: "createCircle" }),
   graphql(ADD_USER_TO_CIRCLE, { name: "addCircleToUser" })
-)(connect(mapStateToProps)(createCircleBoard));
+)(CreateCircle);

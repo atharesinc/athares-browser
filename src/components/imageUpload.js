@@ -1,4 +1,4 @@
-import React from "reactn";
+import React, { useState, useRef } from "reactn";
 import ReactAvatarEditor from "react-avatar-editor";
 import Dropzone from "react-dropzone";
 import Loader from "./Loader";
@@ -7,34 +7,33 @@ import "rc-slider/assets/index.css";
 import EXIF from "exif-js";
 import swal from "sweetalert";
 
-export default function ImageUpload (){
-  
-    state = {
-      image: props.defaultImage,
-      width:
-        parseFloat(getComputedStyle(document.getElementById("root")).fontSize) *
-        15,
-      height:
-        parseFloat(getComputedStyle(document.getElementById("root")).fontSize) *
-        15,
-      editMode: false,
-      finalImage: props.defaultImage,
-      loading: false,
-      scale: 1,
-      rotate: 0
-    };
-  
+export default function ImageUpload(props) {
+  const editor = useRef(null);
+
+  const [image, setImage] = useState(props.defaultImage);
+  const [width, setWidth] = useState(
+    parseFloat(getComputedStyle(document.getElementById("root")).fontSize) * 15
+  );
+  const [height, setHeight] = useState(
+    parseFloat(getComputedStyle(document.getElementById("root")).fontSize) * 15
+  );
+  const [editMode, setEditMode] = useState(false);
+  const [finalImage, setFinalImage] = useState(props.defaultImage);
+  const [loading, setLoading] = useState(false);
+  const [scale, setScale] = useState(1);
+  const [rotate, setRotate] = useState(0);
 
   const handleDrop = dropped => {
-    setState({ image: dropped[0] });
+    setImage(dropped[0]);
   };
+
   const toggleEdit = () => {
     if (props.editMode) {
-      props.editMode(!editMode);
+      props.toggleEditMode(!editMode);
     }
-    setState({ editMode: !editMode });
+    setEditMode(!editMode);
   };
-  const rotate = (angle = 90) => {};
+  // const rotate = (angle = 90) => {};
   const onClickSave = async () => {
     try {
       if (editor) {
@@ -49,13 +48,13 @@ export default function ImageUpload (){
           .then(blob => (imageURL = window.URL.createObjectURL(blob)));
         let blob = dataURItoBlob(canvas);
 
-        setState(
-          { finalImage: imageURL, editMode: false, loading: false },
-          () => {
-            props.onSet(blob);
-            props.editMode(false);
-          }
-        );
+        setFinalImage(imageURL);
+        setEditMode(false);
+        setLoading(false);
+
+        props.onSet(blob);
+        props.editMode(false);
+
         // If you want the image resized to the canvas size (also a HTMLCanvasElement)
         // const canvasScaled = editor.getImageScaledToCanvas();
       }
@@ -96,7 +95,8 @@ export default function ImageUpload (){
 
     let reader = new FileReader();
     reader.readAsDataURL(file);
-    setState({ loading: true });
+    setLoading(true);
+
     reader.onloadend = e => {
       EXIF.getData(file, () => {
         var orientation = EXIF.getTag(file, "Orientation");
@@ -114,123 +114,109 @@ export default function ImageUpload (){
           default:
             rotatePic = 0;
         }
-        setState({
-          loading: false,
-          image: reader.result,
-          rotate: rotatePic
-        });
+        setLoading(false);
+        setImage(reader.result);
+        setRotate(rotatePic);
       });
     };
   };
   const sliderChange = pos => {
-    setState({
-      scale: 1 + pos / 100
-    });
+    setScale(1 + pos / 100);
   };
-  const setEditorRef = editor => (editor = editor);
-  
-    let tempImage = image;
 
-    if (!editMode) {
-      return (
-        <div className="mv4">
-          <div
-            style={{
-              border: "5px solid #FFFFFF",
-              height: height,
-              width: width,
-              borderRadius: "2px"
-            }}
-            className="row-center"
-          >
-            {/*<img
-                          src={finalImage}
-                          style={{
-                            height: "100%"
-                            // width: "100%"
-                          }}
-                          alt="icon"
-                          crossOrigin="Anonymous"
-                        /> */}
-            <div
-              onClick={toggleEdit}
-              style={{
-                background: `url(${finalImage}) center no-repeat`,
-                backgroundSize: "cover",
-                height: "100%",
-                minWidth: "100%",
-                cursor: "pointer"
-              }}
-            />
-          </div>
-          <div
-            className="btn mv2 tc"
-            style={{ width: width / 2 - 10 }}
-            onClick={toggleEdit}
-          >
-            Edit Icon
-          </div>
-        </div>
-      );
-    }
-    if (loading) {
-      return (
-        <div className="mv4">
-          <div
-            className="horizontal"
-            style={{
-              border: "5px solid #FFFFFF",
-              height: height,
-              width: width,
-              borderRadius: "2px",
-              justifyContent: "center"
-            }}
-          >
-            <Loader />
-          </div>
-        </div>
-      );
-    }
+  let tempImage = image;
+
+  if (!editMode) {
     return (
       <div className="mv4">
-        <div>
-          <Dropzone
-            onDrop={handleDrop}
-            multiple={false}
-            accept={"image/*"}
-            disableClick
-            width={width}
-            height={height}
-            id="create-circle-dropzone"
+        <div
+          style={{
+            border: "5px solid #FFFFFF",
+            height: height,
+            width: width,
+            borderRadius: "2px"
+          }}
+          className="row-center"
+        >
+          <div
+            onClick={toggleEdit}
             style={{
-              border: "5px solid #FFFFFF",
-              height: height,
-              width: width,
-              borderRadius: "2px"
+              background: `url(${finalImage}) center no-repeat`,
+              backgroundSize: "cover",
+              height: "100%",
+              minWidth: "100%",
+              cursor: "pointer"
             }}
-          >
-            <ReactAvatarEditor
-              width={width - 30}
-              height={height - 30}
-              image={tempImage}
-              ref={setEditorRef}
-              id="create-circle-editor"
-              border={10}
-              scale={scale}
-              crossOrigin={"anonymous"}
-              rotate={rotate}
-            />
-          </Dropzone>
+          />
         </div>
-        <Slider
-          min={0}
-          max={100}
-          defaultValue={0}
-          onChange={sliderChange}
-          className="mv3"
-          style={{ width: width }}
-        />
-        {/*<div
+        <div
+          className="btn mv2 tc"
+          style={{ width: width / 2 - 10 }}
+          onClick={toggleEdit}
+        >
+          Edit Icon
+        </div>
+      </div>
+    );
+  }
+  if (loading) {
+    return (
+      <div className="mv4">
+        <div
+          className="horizontal"
+          style={{
+            border: "5px solid #FFFFFF",
+            height: height,
+            width: width,
+            borderRadius: "2px",
+            justifyContent: "center"
+          }}
+        >
+          <Loader />
+        </div>
+      </div>
+    );
+  }
+  return (
+    <div className="mv4">
+      <div>
+        <Dropzone
+          onDrop={handleDrop}
+          multiple={false}
+          accept={"image/*"}
+          disableClick
+          width={width}
+          height={height}
+          id="create-circle-dropzone"
+          style={{
+            border: "5px solid #FFFFFF",
+            height: height,
+            width: width,
+            borderRadius: "2px"
+          }}
+        >
+          <ReactAvatarEditor
+            width={width - 30}
+            height={height - 30}
+            image={tempImage}
+            ref={editor}
+            id="create-circle-editor"
+            border={10}
+            scale={scale}
+            crossOrigin={"anonymous"}
+            rotate={rotate}
+          />
+        </Dropzone>
+      </div>
+      <Slider
+        min={0}
+        max={100}
+        defaultValue={0}
+        onChange={sliderChange}
+        className="mv3"
+        style={{ width: width }}
+      />
+      {/*<div
                   className="flex flex-row space-around"
                   style={{ width: width }}
                 >
@@ -245,31 +231,31 @@ export default function ImageUpload (){
                     onClick={rotate(90)}
                   />
                 </div>*/}
-        <input
-          type="file"
-          name="file"
-          id="imgFile"
-          accept=".jpeg,.jpg,.png,.gif"
-          onChange={onChange}
-        />
-        <div className="horizontal">
-          <label htmlFor="imgFile">
-            <div className="btn mv2 tc" style={{ width: width / 2 }}>
-              New
-            </div>
-          </label>
-
-          <div
-            className="btn mv2 tc"
-            style={{ width: width / 2 }}
-            onClick={onClickSave}
-          >
-            Set
+      <input
+        type="file"
+        name="file"
+        id="imgFile"
+        accept=".jpeg,.jpg,.png,.gif"
+        onChange={onChange}
+      />
+      <div className="horizontal">
+        <label htmlFor="imgFile">
+          <div className="btn mv2 tc" style={{ width: width / 2 }}>
+            New
           </div>
+        </label>
+
+        <div
+          className="btn mv2 tc"
+          style={{ width: width / 2 }}
+          onClick={onClickSave}
+        >
+          Set
         </div>
-        <small id="comment-desc" className="f6 white-80">
-          Drag and drop or press "New" to change the image.
-        </small>
       </div>
-    );
+      <small id="comment-desc" className="f6 white-80">
+        Drag and drop or press "New" to change the image.
+      </small>
+    </div>
+  );
 }

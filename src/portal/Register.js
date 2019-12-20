@@ -1,4 +1,4 @@
-import React, { Fragment, useState, useGlobal } from "react";
+import React, { Fragment, useEffect, useState, useGlobal } from "react";
 import FeatherIcon from "feather-icons-react";
 import { validateRegister } from "../utils/validators";
 import { Link, withRouter } from "react-router-dom";
@@ -16,21 +16,26 @@ import compose from "lodash.flowright";
 import { pair } from "utils/crypto";
 import SimpleCrypto from "simple-crypto-js";
 
-function Register() {
+function Register(props) {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
+
   const [user, setUser] = useGlobal("user");
+  const [, setPub] = useGlobal("pub");
+  const [setActiveChannel] = useGlobal("activeChannel");
+  const [setActiveCircle] = useGlobal("activeCircle");
+  const [setActiveRevision] = useGlobal("activeRevision");
 
   useEffect(() => {
     if (user) {
       props.history.replace("/app");
     } else {
-      setChannel(null);
-      setCircle(null);
-      setRevision(null);
+      setActiveChannel(null);
+      setActiveCircle(null);
+      setActiveRevision(null);
     }
   }, []);
 

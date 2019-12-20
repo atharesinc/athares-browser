@@ -1,4 +1,4 @@
-import React, { useState } from "reactn";
+import React, { useState, useEffect } from "reactn";
 import Loader from "../components/Loader";
 import {
   UPDATE_AMENDEMENT_PERMISSION_FOR_CIRCLE,

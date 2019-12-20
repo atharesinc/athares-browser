@@ -1,4 +1,4 @@
-import React, { useGlobal } from "react";
+import React, { useGlobal, withGlobal, useEffect } from "react";
 import { Link, withRouter } from "react-router-dom";
 import Loader from "../components/Loader";
 import moment from "moment";
@@ -10,10 +10,7 @@ import {
 } from "../graphql/queries";
 import { Query, graphql } from "react-apollo";
 
-function RevisionBoard() {
-  // const [circle, setCircle] = useState( null)
-  // const [revisions, setRevisions] = useState([])
-
+function RevisionBoard({ user, ...props }) {
   const [activeChannel, setActiveChannel] = useGlobal("setActiveChannel");
   const [activeRevision, setAciveRevision] = useGlobal("setAciveRevision");
   const [activeCircle, setActiveCircle] = useGlobal("setActiveCircle");
@@ -27,6 +24,10 @@ function RevisionBoard() {
       setActiveCircle(props.match.params.id);
     }
   }, []);
+
+  const back = () => {
+    props.history.push(`/app`);
+  };
 
   let { isUserInCircle } = props;
   let circle = null;

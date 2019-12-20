@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, withGlobal, useEffect, useGlobal } from "react";
 import RevisionHeader from "./RevisionHeader";
 import RevisionStats from "./RevisionStats";
 import VoteButtons from "./VoteButtons";
@@ -7,15 +7,8 @@ import ToggleDiffBar from "./ToggleDiffBar";
 import DiffSection from "./DiffSection";
 import HasVoted from "./HasVoted";
 import { Scrollbars } from "react-custom-scrollbars";
-import {
-  updateRevision,
-  updateChannel,
-  updateCircle
-} from "../store/state/actions";
 import Loader from "../components/Loader.js";
 import moment from "moment";
-import { pull } from "../store/state/reducers";
-import { connect } from "react-redux";
 import { withRouter, Link } from "react-router-dom";
 import FeatherIcon from "feather-icons-react";
 import { graphql } from "react-apollo";
@@ -26,25 +19,26 @@ import { CREATE_VOTE, UPDATE_VOTE } from "../graphql/mutations";
 import { GET_REVISION_BY_ID, IS_USER_IN_CIRCLE } from "../graphql/queries";
 import swal from "sweetalert";
 
-// create forceUpdate hook
-function useForceUpdate() {
-  const [value, setValue] = useState(0); // integer state
-  return () => setValue(value => ++value); // update the state to force render
-}
-
-function ViewRevision() {
+function ViewRevision(props) {
   const [mode, setMode] = useState(0);
+  const [value, setValue] = useState(0); // integer state
 
+  const [, setActiveRevision] = useGlobal("activeRevision");
+  const [, setActiveCircle] = useGlobal("activeCircle");
+  const [, setActiveChannel] = useGlobal("activeChannel");
+
+  const back = () => {
+    props.history.push(`/app`);
+  };
   useEffect(() => {
     if (
       !props.activeRevision ||
       props.activeRevision !== props.match.params.id
     ) {
-      props.dispatch(updateRevision(props.match.params.id));
-      props.dispatch(
-        updateCircle(props.match.url.match(/circle\/(.+)\/rev/)[1])
-      );
-      props.dispatch(updateChannel(null));
+      setActiveRevision(props.match.params.id);
+      setActiveCircle(props.match.url.match(/circle\/(.+)\/rev/)[1]);
+
+      setActiveChannel(null);
     }
   }, []);
 
@@ -93,7 +87,7 @@ function ViewRevision() {
     }
   };
   const checkIfPass = () => {
-    useForceUpdate();
+    setValue((value += 1));
   };
 
   let revision = null;

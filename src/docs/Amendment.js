@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useGlobal, useState } from "react";
 import AmendmentEdit from "./AmendmentEdit";
 import AmendmentView from "./AmendmentView";
 import moment from "moment";
@@ -78,7 +78,7 @@ function Amendment(props) {
   };
   // a minimum number of users in a circle must have voted on a revision to ratify it
   // this prevents someone from sneaking in a revision where only one person votes to support and no one rejects it
-  ratifiedThreshold = n => {
+  const ratifiedThreshold = n => {
     return 0.4 / (1 + Math.pow(Math.E, -1 * n * 0.2));
   };
   const save = async () => {

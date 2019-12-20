@@ -1,4 +1,4 @@
-import React, { useState, useEffect, Fragment } from "reactn";
+import React, { useState, useGlobal, useEffect, Fragment } from "reactn";
 import "tachyons";
 import "./styles/App.css";
 import "./styles/swaloverride.css";
@@ -26,17 +26,19 @@ import Invite from "./invite";
 
 import throttle from "lodash.throttle";
 import { TweenMax } from "gsap";
-
-
-import { pull } from "./store/state/reducers";
-import * as sync from "./store/state/actions";
 import LoadingBar from "react-redux-loading-bar";
 
 import { SIGNIN_USER } from "./graphql/mutations";
 import { graphql } from "react-apollo";
 
-function App() {
+function App(props) {
   const [width, setWidth] = useState(window.innerWidth);
+  const [user, setUser] = useGlobal("user");
+  const [, setPub] = useGlobal("setPub");
+  const [revisions] = useGlobal("revisions");
+  const [votes] = useGlobal("votes");
+  const [amendments] = useGlobal("amendments");
+  const [circles] = useGlobal("circles");
 
   const updateWidth = () => {
     setWidth(window.innerWidth);
@@ -82,13 +84,13 @@ function App() {
             signinUser: { token, userId }
           }
         } = res;
-        props.dispatch(sync.updateUser(userId));
-        props.dispatch(sync.updatePub(hash));
+        setUser(userId);
+        setPub(hash);
         window.localStorage.setItem("ATHARES_TOKEN", token);
       } catch (err) {
         console.error(new Error(err));
         // there was some sort of error auto-logging in, clear localStorage and redux just in case
-        props.dispatch(sync.logout());
+        // props.dispatch(sync.logout());
       }
     }
     window.addEventListener("resize", throttle(updateWidth, 1000));
@@ -170,7 +172,7 @@ function App() {
               <Route
                 path="/app"
                 render={props =>
-                  state.width >= 992 ? (
+                  width >= 992 ? (
                     <DesktopLayout {...props} />
                   ) : (
                     <MobileLayout {...props} />
@@ -192,15 +194,4 @@ function App() {
   );
 }
 
-function mapStateToProps(state) {
-  return {
-    user: pull(state, "user"),
-    revisions: pull(state, "revisions"),
-    votes: pull(state, "votes"),
-    amendments: pull(state, "amendments"),
-    circles: pull(state, "circles")
-  };
-}
-export default graphql(SIGNIN_USER, { name: "signinUser" })(
-  withRouter(connect(mapStateToProps)(App))
-);
+export default graphql(SIGNIN_USER, { name: "signinUser" })(withRouter(App));

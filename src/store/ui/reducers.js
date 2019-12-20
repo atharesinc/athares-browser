@@ -1,5 +1,5 @@
 const initialState = {
-  searchOpen: false,
+  showSearch: false,
   dmSettings: false,
   showAddMoreUsers: false,
   searchParams: "",
@@ -10,11 +10,11 @@ const initialState = {
 export default function reduce(state = initialState, action = {}) {
   switch (action.type) {
     case "OPEN_SEARCH":
-      return { ...state, searchOpen: true };
+      return { ...state, showSearch: true };
     case "CLOSE_SEARCH":
-      return { ...state, searchOpen: false };
+      return { ...state, showSearch: false };
     case "TOGGLE_SEARCH":
-      return { ...state, searchOpen: !state.searchOpen };
+      return { ...state, showSearch: !state.showSearch };
     case "CLOSE_DM_SETTINGS":
       return { ...state, dmSettings: false };
     case "OPEN_DM_SETTINGS":

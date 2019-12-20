@@ -1,6 +1,4 @@
-import React, { useState } from "react";
-import { connect } from "react-redux";
-import { pull } from "../store/state/reducers";
+import React, { useState, useGlobal, useEffect } from "react";
 import { updateCircle } from "../store/state/actions";
 import swal from "sweetalert";
 import FeatherIcon from "feather-icons-react";
@@ -10,21 +8,18 @@ import ShareCircle from "./ShareCircle";
 import CirclePrefs from "./CirclePrefs";
 import ScrollBars from "react-custom-scrollbars";
 
-function Settings(props) {
+function CircleSettings(props) {
   const [user] = useGlobal("user");
   const [activeCircle] = useGlobal("activeCircle");
 
   useEffect(() => {
-    componentMount();
-  }, []);
-
-  const componentMount = () => {
     // verify this circle is real and that the user is logged in, but for now...
     if (!user || !activeCircle) {
       props.history.replace("/app");
     }
-  };
-  useEfect(() => {
+  }, []);
+
+  useEffect(() => {
     if (!user || !activeCircle) {
       props.history.replace("/app");
     }
@@ -93,4 +88,4 @@ function Settings(props) {
   );
 }
 
-export default Settings;
+export default CircleSettings;

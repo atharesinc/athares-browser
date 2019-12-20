@@ -1,7 +1,4 @@
-import React, { useState } from "react";
-import { connect } from "react-redux";
-import { pull } from "../store/state/reducers";
-import { updateCircle } from "../store/state/actions";
+import React, { useGlobal, useEffect, withGlobal } from "reactn";
 import Loader from "../components/Loader";
 import swal from "sweetalert";
 import {
@@ -17,6 +14,8 @@ import compose from "lodash.flowright";
 import { withRouter } from "react-router-dom";
 
 function LeaveCircle(props) {
+  const [, setActiveCircle] = useGlobal("activeCircle");
+
   useEffect(() => {
     componentMount();
   }, []);
@@ -58,7 +57,7 @@ function LeaveCircle(props) {
             `You have left this Circle. You will have to be re-invited to participate at a later time.`,
             "warning"
           );
-          props.dispatch(updateCircle(null));
+          setActiveCircle(null);
           props.history.push(`/app`);
         }
       })
@@ -112,14 +111,7 @@ function LeaveCircle(props) {
   );
 }
 
-function mapStateToProps(state) {
-  return {
-    user: pull(state, "user"),
-    activeCircle: pull(state, "activeCircle")
-  };
-}
-
-export default connect(mapStateToProps)(
+export default withGlobal(({ user, activeCircle }) => ({ user, activeCircle }))(
   compose(
     graphql(GET_CIRCLE_PREFS_FOR_USER, {
       name: "getCirclePrefs",

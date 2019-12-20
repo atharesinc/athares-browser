@@ -1,4 +1,4 @@
-import React, { Fragment, useState, withGlobal } from "react";
+import React, { Fragment, useEffect, withGlobal } from "react";
 import { GET_INVITE_BY_ID, GET_USER_BY_ID } from "../graphql/queries";
 import {
   ADD_USER_TO_CIRCLE,
@@ -13,8 +13,8 @@ import swal from "sweetalert";
 import { Scrollbars } from "react-custom-scrollbars";
 import MiniLoginRegister from "./MiniLoginRegister";
 
-function Invite() {
-  const [loading, setLoading] = useState(true);
+function Invite(props) {
+  // const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     componentMount();

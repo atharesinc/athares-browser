@@ -1,4 +1,4 @@
-import React, { useState } from "reactn";
+import React, { useState, useEffect, useGlobal } from "reactn";
 import ChatWindow from "../components/ChatWindow";
 import ChatInput from "../components/ChatInput";
 import Loader from "../components/Loader";
@@ -13,17 +13,15 @@ import compose from "lodash.flowright";
 import swal from "sweetalert";
 import { uploadToAWS } from "utils/upload";
 
-function Chat() {
+function Chat(props) {
   const [uploadInProgress, setUploadInProgress] = useState(false);
   const [user] = useGlobal("user");
   const [activeChannel, setActiveChannel] = useGlobal("activeChannel");
   const [, setActiveCircle] = useGlobal("activeCircle");
+  const [unreadChannels, setUnreadChannels] = useGlobal("unreadChannels");
+  const [, setActiveRevision] = useGlobal("activeRevision");
 
   useEffect(() => {
-    componentMount();
-  }, []);
-
-  const componentMount = () => {
     const circleId = props.match.url.match(/app\/circle\/(.+)\/channel/)[1];
 
     if (circleId) {
@@ -32,13 +30,19 @@ function Chat() {
 
     if (!activeChannel) {
       setActiveChannel(props.match.params.id);
-      setRevision(null);
+      setActiveRevision(null);
       return;
     }
-    // if (activeChannel) {
-    //   props.dispatch(removeUnreadChannel(props.match.params.id));
-    // }
-  };
+    // remove this channel from list of channels with unread messages
+    if (activeChannel) {
+      const index = unreadChannels.findIndex(
+        item => item.id === props.match.params.id
+      );
+
+      setUnreadChannels(unreadChannels.splice(index));
+    }
+    // may need to make this activeChannel
+  }, []);
 
   useEffect(() => {
     // if current url doesn't match internal state, update state to match url
@@ -112,7 +116,7 @@ function Chat() {
       );
     }
   };
-  _subToMore = subscribeToMore => {
+  const _subToMore = subscribeToMore => {
     subscribeToMore({
       document: SUB_TO_MESSAGES_BY_CHANNEL_ID,
       variables: { id: activeChannel || "" },
@@ -137,7 +141,6 @@ function Chat() {
 
   let channel = null;
   let messages = [];
-  let { user } = props;
 
   return (
     <Query

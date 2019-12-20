@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, withGlobal } from "react";
 import ChatWindow from "../components/ChatWindow";
 import ChatInput from "../components/ChatInput";
 import DMInviteList from "./DMInviteList";
@@ -31,17 +31,11 @@ function CreateDM(props) {
   }, []);
 
   const componentMount = () => {
-    if (!user) {
+    if (!props.user) {
       props.history.push("/app");
     }
     document.getElementById("no-messages").innerText =
       "Enter a user's name to start a conversation";
-  };
-  const updateList = items => {
-    setSelectedUsers(items);
-  };
-  const updateText = text => {
-    setText(text);
   };
 
   const submit = async (text = "", file = null) => {
@@ -119,7 +113,8 @@ function CreateDM(props) {
       await Promise.all(promiseList);
       await Promise.all(promiseList2);
 
-      let url = file === null ? null : await uploadToAWS(file, updateProgress);
+      let url =
+        file === null ? null : await uploadToAWS(file, setUploadInProgress);
       if (file) {
         fetch(file);
       }
@@ -158,7 +153,7 @@ function CreateDM(props) {
         </Link>
         <DMInviteList
           shouldPlaceholder={selectedUsers.length === 0}
-          updateList={updateList}
+          updateList={setSelectedUsers}
           selectedUsers={selectedUsers}
         />
       </div>
@@ -166,7 +161,7 @@ function CreateDM(props) {
       <ChatInput
         submit={submit}
         text={text}
-        updateText={updateText}
+        updateText={setText}
         uploadInProgress={uploadInProgress}
       />
     </div>

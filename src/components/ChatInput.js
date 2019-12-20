@@ -1,4 +1,4 @@
-import React, { useState } from "reactn";
+import React, { useState, useEffect } from "reactn";
 import TextareaAutosize from "react-autosize-textarea";
 import FeatherIcon from "feather-icons-react";
 import Loader from "./Loader";
@@ -7,16 +7,16 @@ import Loader from "./Loader";
 import { Picker } from "emoji-mart";
 var loadImage = require("blueimp-load-image-npm");
 
-export default function ChatInput() {
-  const [input] = useState("");
-  const [showFilePreview] = useState(false);
-  const [file] = useState(null);
-  const [fileIsImage] = useState(false);
-  const [loadingImage] = useState(false);
-  const [showEmoji] = useState(false);
-  const [rotate] = useState(0);
-  const [extension] = useState(null);
-  const [filePreview] = useState(null);
+export default function ChatInput(props) {
+  const [input, setInput] = useState("");
+  const [showFilePreview, setShowFilePreview] = useState(false);
+  const [file, setFile] = useState(null);
+  const [fileIsImage, setFileIsImage] = useState(false);
+  const [loadingImage, setLoadingImage] = useState(false);
+  const [showEmoji, setShowEmoji] = useState(false);
+  const [rotate, setRotate] = useState(0);
+  const [extension, setExtension] = useState(null);
+  const [filePreview, setFilePreview] = useState(null);
 
   useEffect(() => {
     componentMount();
@@ -107,22 +107,19 @@ export default function ChatInput() {
       file.type.includes("image/") &&
       imgs.findIndex(i => i === extension.toLowerCase()) !== -1
     ) {
-      await setState({
-        showFilePreview: true,
-        file,
-        fileIsImage: true,
-        loadingImage: true
-      });
+      setShowFilePreview(true);
+      setFile(file);
+      setFileIsImage(true);
+      setLoadingImage(true);
 
       getImagePreview(file);
     } else {
-      await setState({
-        showFilePreview: true,
-        file,
-        fileIsImage: false
-      });
+      setShowFilePreview(true);
+      setFile(file);
+      setFileIsImage(false);
     }
   };
+
   const shouldRenderImage = () => {
     if (fileIsImage) {
       if (loadingImage) {
@@ -179,16 +176,12 @@ export default function ChatInput() {
     });
   };
   const deleteImage = () => {
-    setState({
-      showFilePreview: false,
-      file: null,
-      fileIsImage: false
-    });
+    setShowFilePreview(false);
+    setFile(null);
+    setFileIsImage(false);
   };
   const selectEmoji = emoji => {
-    setState({
-      input: input + emoji.native
-    });
+    setInput(input + emoji.native);
   };
 
   let mobile = window.innerWidth < 993;

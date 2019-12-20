@@ -1,4 +1,4 @@
-import React, { Fragment, Component } from "reactn";
+import React, { Fragment, useState, useGlobal, useEffect } from "reactn";
 import FeatherIcon from "feather-icons-react";
 import swal from "sweetalert";
 import { Link, withRouter } from "react-router-dom";

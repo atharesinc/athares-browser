@@ -1,11 +1,13 @@
-import React from "reactn";
+import React, { useGlobal } from "reactn";
 import { Link, withRouter } from "react-router-dom";
 import FeatherIcon from "feather-icons-react";
-import * as stateSelectors from "../store/state/reducers";
 import { updateChannel } from "../store/state/actions";
 
-
 const ChannelLabel = props => {
+  const [user] = useGlobal("user");
+  const [activeCircle] = useGlobal("activeCircle");
+  const [activeChannel] = useGlobal("activeChannel");
+
   const hasBorder = parent_id => {
     switch (parent_id) {
       case "Governance":
@@ -79,12 +81,4 @@ const ChannelLabel = props => {
   );
 };
 
-function mapStateToProps(state) {
-  return {
-    user: stateSelectors.pull(state, "user"),
-    activeCircle: stateSelectors.pull(state, "activeCircle"),
-    activeChannel: stateSelectors.pull(state, "activeChannel")
-  };
-}
-
-export default withRouter(connect(mapStateToProps)(ChannelLabel));
+export default withRouter(ChannelLabel);

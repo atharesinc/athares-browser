@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useGlobal } from "react";
 import ReactTags from "react-tag-autocomplete";
 import TagComponent from "../components/TagComponent";
 
@@ -7,7 +7,7 @@ import { SEARCH_FOR_USER, GET_USERS_BY_CIRCLE_ID } from "../graphql/queries";
 import { graphql, Query } from "react-apollo";
 import compose from "lodash.flowright";
 
-function CircleInviteList() {
+function CircleInviteList(props) {
   const [search, setSearch] = useState("");
   const [user] = useGlobal("user");
 

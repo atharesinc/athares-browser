@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useGlobal, useEffect } from "react";
 import Amendment from "./Amendment";
 import Loader from "../components/Loader.js";
 import { Link } from "react-router-dom";
@@ -10,16 +10,18 @@ import { SUB_TO_CIRCLES_AMENDMENTS } from "../graphql/subscriptions";
 import FeatherIcon from "feather-icons-react";
 
 function Constitution(props) {
-  const [circle] = useState(null);
-  const [amendments] = useState([]);
   const [user] = useGlobal("user");
-  const [activeCircle, setActiveChannel] = useGlobal("activeCircle");
+  const [activeCircle, setActiveCircle] = useGlobal("activeCircle");
   const [, setActiveChannel] = useGlobal("activeChannel");
   const [, setActiveRevision] = useGlobal("activeRevision");
 
   useEffect(() => {
     componentMount();
   }, []);
+
+  const back = () => {
+    props.history.push(`/app`);
+  };
 
   const componentMount = () => {
     // we only need to manually fetch the circle and it's amendments if the user isn't signed in
@@ -121,9 +123,9 @@ function Constitution(props) {
                       <Amendment
                         key={i}
                         editable={user !== null}
-                        updateItem={updateItem}
+                        // updateItem={updateItem}
                         amendment={amendment}
-                        addSub={addSub}
+                        // addSub={addSub}
                         circle={circle}
                         user={user}
                       />
