@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useState, useGlobal } from "react";
+import React, { Fragment, useEffect, useState, useGlobal } from "reactn";
 import FeatherIcon from "feather-icons-react";
 import { validateRegister } from "../utils/validators";
 import { Link, withRouter } from "react-router-dom";
@@ -25,9 +25,9 @@ function Register(props) {
 
   const [user, setUser] = useGlobal("user");
   const [, setPub] = useGlobal("pub");
-  const [setActiveChannel] = useGlobal("activeChannel");
-  const [setActiveCircle] = useGlobal("activeCircle");
-  const [setActiveRevision] = useGlobal("activeRevision");
+  const [, setActiveChannel] = useGlobal("activeChannel");
+  const [, setActiveCircle] = useGlobal("activeCircle");
+  const [, setActiveRevision] = useGlobal("activeRevision");
 
   useEffect(() => {
     if (user) {

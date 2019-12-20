@@ -1,4 +1,4 @@
-import React from "react";
+import React from "reactn";
 import Diff from "react-stylable-diff-common";
 import { Scrollbars } from "react-custom-scrollbars";
 

@@ -1,4 +1,4 @@
-import React from "react";
+import React from "reactn";
 import FeatherIcon from "feather-icons-react";
 import { Scrollbars } from "react-custom-scrollbars";
 import Loader from "../components/Loader";

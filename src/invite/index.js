@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, withGlobal } from "react";
+import React, { Fragment, useEffect, withGlobal } from "reactn";
 import { GET_INVITE_BY_ID, GET_USER_BY_ID } from "../graphql/queries";
 import {
   ADD_USER_TO_CIRCLE,
@@ -12,6 +12,7 @@ import { withRouter } from "react-router-dom";
 import swal from "sweetalert";
 import { Scrollbars } from "react-custom-scrollbars";
 import MiniLoginRegister from "./MiniLoginRegister";
+import { logout } from "../utils/state";
 
 function Invite(props) {
   // const [loading, setLoading] = useState(true);
@@ -38,10 +39,6 @@ function Invite(props) {
       props.history.replace("/app");
     }
   }, [props.getInviteById.Invite]);
-
-  const logout = () => {
-    props.dispatch(logout());
-  };
 
   const joinCircle = async () => {
     let { getInviteById, getUserById } = props;

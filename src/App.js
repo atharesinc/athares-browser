@@ -30,6 +30,7 @@ import LoadingBar from "react-redux-loading-bar";
 
 import { SIGNIN_USER } from "./graphql/mutations";
 import { graphql } from "react-apollo";
+import { logout } from "./utils/state";
 
 function App(props) {
   const [width, setWidth] = useState(window.innerWidth);
@@ -90,7 +91,7 @@ function App(props) {
       } catch (err) {
         console.error(new Error(err));
         // there was some sort of error auto-logging in, clear localStorage and redux just in case
-        // props.dispatch(sync.logout());
+        logout();
       }
     }
     window.addEventListener("resize", throttle(updateWidth, 1000));

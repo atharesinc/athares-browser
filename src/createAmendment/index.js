@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useGlobal, withGlobal } from "react";
+import React, { useState, useEffect, useGlobal, withGlobal } from "reactn";
 import ErrorSwap from "../utils/ErrorSwap";
 import Loader from "../components/Loader";
 import { withRouter, Link } from "react-router-dom";

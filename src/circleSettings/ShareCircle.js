@@ -1,4 +1,4 @@
-import React, { useState, useGlobal, useEffect } from "react";
+import React, { useState, useGlobal, useEffect } from "reactn";
 import Loader from "../components/Loader";
 import FeatherIcon from "feather-icons-react";
 import { CREATE_INVITE } from "../graphql/mutations";

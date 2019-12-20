@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useGlobal } from "react";
+import React, { useState, useEffect, useGlobal } from "reactn";
 import ErrorSwap from "../utils/ErrorSwap";
 import { connect } from "react-redux";
 import Loader from "../components/Loader";

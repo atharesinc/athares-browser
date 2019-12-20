@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useGlobal } from "react";
+import React, { useState, useEffect, useGlobal } from "reactn";
 import ViewUser from "./ViewUser";
 import EditUser from "./EditUser";
 import ViewOtherUser from "./ViewOtherUser"; // same as view user w/o btns to toggle
@@ -8,16 +8,16 @@ import { GET_USER_BY_ID_ALL } from "../graphql/queries";
 
 function User(props) {
   const [user] = useGlobal("user");
-  // const [loading, setLoading] = useState(false);
+  const [loadingUser, setLoadingUser] = useState(false);
 
   useEffect(() => {
     // if a user is logged in OR location params exist to see another user
     if (/user\/.+/.test(props.location.pathname)) {
-      // setLoading(false);
+      setLoadingUser(true);
     } else if (!user) {
       props.history.replace("/app");
     }
-  }, []);
+  }, [user]);
 
   return (
     <Query
@@ -26,15 +26,15 @@ function User(props) {
       pollInterval={1500}
     >
       {({ loading, err, data = {} }) => {
-        let user,
+        let userObj,
           stats = null;
         if (data.User) {
-          user = data.User;
+          userObj = data.User;
           stats = {
-            voteCount: user.votes.length,
-            circleCount: user.circles.length,
-            revisionCount: user.revisions.length,
-            passedRevisionCount: user.revisions.filter(r => r.passed).length
+            voteCount: userObj.votes.length,
+            circleCount: userObj.circles.length,
+            revisionCount: userObj.revisions.length,
+            passedRevisionCount: userObj.revisions.filter(r => r.passed).length
           };
         }
         const { match } = props;
@@ -45,12 +45,7 @@ function User(props) {
               exact
               path={`${match.path}`}
               component={props => (
-                <ViewUser
-                  {...props}
-                  stats={stats}
-                  user={user}
-                  loading={loading}
-                />
+                <ViewUser stats={stats} user={userObj} loading={loading} />
               )}
             />
             )

@@ -1,4 +1,4 @@
-import React, { useState, useGlobal, useEffect } from "react";
+import React, { useState, useGlobal, useEffect } from "reactn";
 import Amendment from "./Amendment";
 import Loader from "../components/Loader.js";
 import { Link } from "react-router-dom";

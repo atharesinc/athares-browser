@@ -1,4 +1,4 @@
-import React, { useState, useEffect, withGlobal } from "react";
+import React, { useState, useEffect, withGlobal } from "reactn";
 import { GET_CIRCLE_NOTICES } from "../graphql/queries";
 import CircleNotice from "./CircleNotice";
 import { graphql } from "react-apollo";
@@ -7,15 +7,15 @@ import ReactDOM from "react-dom";
 
 function NoticeBoard(props) {
   const [wrapperHeight, setWrapperHeight] = useState(300);
-  useEffect(() => {
-    componentMount();
-  }, []);
+  // useEffect(() => {
+  // componentMount();
+  // }, []);
 
-  const componentMount = () => {
-    let wrapper = ReactDOM.findDOMNode(this).getBoundingClientRect();
+  // const componentMount = () => {
+  //   let wrapper = ReactDOM.findDOMNode(this).getBoundingClientRect();
 
-    wrapper && setWrapperHeight(window.innerHeight - wrapper.top);
-  };
+  //   wrapper && setWrapperHeight(window.innerHeight - wrapper.top);
+  // };
 
   const {
     loading,

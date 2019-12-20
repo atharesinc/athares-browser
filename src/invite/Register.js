@@ -1,4 +1,4 @@
-import React, { useState, useGlobal } from "react";
+import React, { useState, useGlobal } from "reactn";
 import FeatherIcon from "feather-icons-react";
 import { validateRegister } from "../utils/validators";
 import { Link, withRouter } from "react-router-dom";

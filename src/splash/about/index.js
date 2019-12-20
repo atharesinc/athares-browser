@@ -9,9 +9,10 @@ function About() {
   const [top, setTop] = useState(0);
 
   const handleUpdate = ({ scrollTop }) => {
+    console.log(scrolled);
     if (top !== scrollTop) {
       setScrolled(scrollTop > 100);
-      setTop(scrollTop);
+      // setTop(scrollTop);
     }
   };
 

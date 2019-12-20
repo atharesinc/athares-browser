@@ -273,7 +273,7 @@ function DMChat(props) {
   );
 }
 
-export default useGlobal(({ user, activeChannel }) => ({
+export default withGlobal(({ user, activeChannel }) => ({
   activeChannel,
   user
 }))(

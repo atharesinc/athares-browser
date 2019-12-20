@@ -1,4 +1,4 @@
-import React, { useState, useGlobal, useEffect } from "react";
+import React, { useState, useGlobal, useEffect } from "reactn";
 import { updateCircle } from "../store/state/actions";
 import swal from "sweetalert";
 import FeatherIcon from "feather-icons-react";

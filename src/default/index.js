@@ -1,4 +1,4 @@
-import React, { useState, useGlobal, useEffect, withGlobal } from "reactn";
+import React, { useGlobal, useEffect, withGlobal } from "reactn";
 import { Link } from "react-router-dom";
 
 import { graphql } from "react-apollo";
@@ -7,15 +7,11 @@ import NoticeBoard from "./NoticeBoard";
 import FeatherIcon from "feather-icons-react";
 
 function Dashboard(props) {
-  const [news, setNews] = useState([]);
-  const [user, setUser] = useGlobal("user");
+  // const [news, setNews] = useState([]);
+  const [user] = useGlobal("user");
   const [activeCircle, setActiveCircle] = useGlobal("activeCircle");
   const [, setActiveChannel] = useGlobal("setActiveChannel");
   const [, setActiveRevision] = useGlobal("setActiveRevision");
-
-  useEffect(() => {
-    componentMount();
-  }, []);
 
   const back = () => {
     props.history.push(`/app`);
@@ -30,6 +26,11 @@ function Dashboard(props) {
     setActiveChannel(null);
     setActiveRevision(null);
   };
+
+  useEffect(() => {
+    componentMount();
+  }, []);
+
   useEffect(() => {
     let circleId = props.location.pathname.match(/\/circle\/([a-zA-Z0-9]{25})/);
 

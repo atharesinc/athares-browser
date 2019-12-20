@@ -15,17 +15,14 @@ function Login(props) {
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const [user, setUser] = useGlobal("setUser");
-  const [, setPub] = useGlobal("setPub");
-  const [, setActiveChannel] = useGlobal("setActiveChannel");
-  const [, setActiveCircle] = useGlobal("setActiveCircle");
-  const [, setActiveRevision] = useGlobal("setActiveRevision");
+  const [user, setUser] = useGlobal("user");
+  const [pub, setPub] = useGlobal("pub");
+  const [, setActiveChannel] = useGlobal("activeChannel");
+  const [, setActiveCircle] = useGlobal("activeCircle");
+  const [, setActiveRevision] = useGlobal("activeRevision");
 
   useEffect(() => {
-    componentMount();
-  }, []);
-
-  const componentMount = () => {
+    console.log(user);
     if (user) {
       props.history.replace("/app");
     } else {
@@ -33,7 +30,8 @@ function Login(props) {
       setActiveCircle(null);
       setActiveRevision(null);
     }
-  };
+  }, [user]);
+
   const tryLogin = async e => {
     setLoading(true);
     e.preventDefault();

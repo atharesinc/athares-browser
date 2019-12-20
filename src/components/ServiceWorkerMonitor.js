@@ -1,4 +1,4 @@
-import React, { withGlobal } from "react";
+import React, { withGlobal } from "reactn";
 import { DELETE_WEB_SUB, CREATE_WEB_SUB } from "../graphql/mutations";
 import { GET_WEB_SUBS } from "../graphql/queries";
 import { graphql } from "react-apollo";

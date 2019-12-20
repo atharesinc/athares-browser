@@ -1,4 +1,4 @@
-import React, { useGlobal, withGlobal, useEffect } from "react";
+import React, { useGlobal, withGlobal, useEffect } from "reactn";
 import { Link, withRouter } from "react-router-dom";
 import Loader from "../components/Loader";
 import moment from "moment";

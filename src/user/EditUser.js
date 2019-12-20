@@ -38,7 +38,7 @@ function EditUser(props) {
     if (!user) {
       props.history.replace("/app");
     }
-    setUserState(...props.user);
+    setUserState(props.user);
     setLoading(false);
   };
 
@@ -194,7 +194,7 @@ function EditUser(props) {
     setUnameTaken(false);
   };
 
-  const [id, firstName, lastName, phone, uname, icon] = userState;
+  const { id, firstName, lastName, phone, uname, icon } = userState;
 
   if (loading || id === null) {
     return (

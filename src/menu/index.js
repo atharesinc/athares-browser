@@ -4,21 +4,17 @@ import { Link } from "react-router-dom";
 import FeatherIcon from "feather-icons-react";
 import { Query } from "react-apollo";
 import { GET_USER_BY_ID } from "../graphql/queries";
+import { logout } from "../utils/state";
 
 function MenuWrapper(props) {
   const [showInstall, setShowInstall] = useState("showInstall");
-  const [showMenu, setShowMenu] = useGlobal("showMenu");
-  const [user: userId] = useGlobal("user");
+  const [, setShowMenu] = useGlobal("showMenu");
+  const [user] = useGlobal("user");
 
   let deferredPrompt = null;
 
   const logoutUser = async () => {
-    sessionStorage.clear();
-
-    window.localStorage.removeItem("ATHARES_ALIAS");
-    window.localStorage.removeItem("ATHARES_TOKEN");
-    window.localStorage.removeItem("ATHARES_HASH");
-
+    logout();
     setShowMenu(false);
   };
 
@@ -45,8 +41,9 @@ function MenuWrapper(props) {
     setShowInstall(true);
   };
   const alsoToggleMenu = () => {
-    setShowMenu(!showMenu);
+    setShowMenu(false);
   };
+
   const install = () => {
     // if (!deferredPrompt) {
     //   console.log(deferredPrompt, "not installable");
@@ -70,7 +67,7 @@ function MenuWrapper(props) {
   const _subToMore = subscribeToMore => {
     subscribeToMore({
       document: GET_USER_BY_ID,
-      variables: { id: userId || "" },
+      variables: { id: user || "" },
       updateQuery: (prev, { subscriptionData }) => {
         if (!subscriptionData.data) {
           return prev;
@@ -83,11 +80,11 @@ function MenuWrapper(props) {
 
   let { isOpen, history, isMenuOpen } = props;
   return (
-    <Query query={GET_USER_BY_ID} variables={{ id: userId || "" }}>
+    <Query query={GET_USER_BY_ID} variables={{ id: user || "" }}>
       {({ data = {}, subscribeToMore }) => {
-        let user = null;
+        let userObj = null;
         if (data.User) {
-          user = data.User;
+          userObj = data.User;
           _subToMore(subscribeToMore);
         }
         return (
@@ -100,7 +97,7 @@ function MenuWrapper(props) {
             menuClassName={"push-menu white pt2"}
             onStateChange={isMenuOpen}
           >
-            {user ? (
+            {userObj ? (
               <Link
                 className="dt w-100 pb2-ns pv2 pl2-ns pl3 dim hover-bg-black-05"
                 to="/app/user"
@@ -108,14 +105,14 @@ function MenuWrapper(props) {
               >
                 <div className="dtc w3 h3 v-mid">
                   <img
-                    src={user.icon}
+                    src={userObj.icon}
                     className="ba b--white db br-100 w3 h3 bw1"
                     alt="Menu"
                   />
                 </div>
                 <div className="dtc v-mid pl3">
                   <h1 className="f5 f5-ns fw6 lh-title white mv0">
-                    {user.firstName + " " + user.lastName}
+                    {userObj.firstName + " " + userObj.lastName}
                   </h1>
                   <h2 className="f6 f7-ns fw4 mt0 mb0 white-60">
                     View Profile
@@ -126,6 +123,7 @@ function MenuWrapper(props) {
               <Link
                 className="dt w-100 pb2-ns pv2 pl2-ns pl3 dim hover-bg-black-05"
                 to="/login"
+                onClick={alsoToggleMenu}
               >
                 <div className="dtc w3 h3 v-mid">
                   <img
@@ -205,7 +203,7 @@ function MenuWrapper(props) {
                         <span className="f7 db white-70">Report an issue</span>
                     </div>
                 </Link> */}
-              {user && (
+              {userObj && (
                 <div
                   className="flex items-center lh-copy ph3 h3 bb b--white-10 dim"
                   onClick={logoutUser}

@@ -1,10 +1,9 @@
-import React, { withGlobal, useEffect } from "react";
+import React, { withGlobal, useEffect, useGlobal } from "reactn";
 import FeatherIcon from "feather-icons-react";
 import { Link, withRouter } from "react-router-dom";
 import moment from "moment";
 import Loader from "../components/Loader";
 import { Scrollbars } from "react-custom-scrollbars";
-import { showLoading, hideLoading } from "react-redux-loading-bar";
 import { graphql } from "react-apollo";
 import compose from "lodash.flowright";
 import Switch from "react-switch";
@@ -12,6 +11,7 @@ import { UPDATE_ALLOW_MARKETING_EMAIL } from "../graphql/mutations";
 import { GET_USER_PREF_BY_ID } from "../graphql/queries";
 
 function ViewUser(props) {
+  const [loadingUser, setLoadingUser] = useGlobal("loadingUser");
   useEffect(() => {
     if (!props.userId) {
       props.history.replace("/app");
@@ -40,7 +40,7 @@ function ViewUser(props) {
     data: { User: userPref }
   } = props;
 
-  if (loading || !userPref || !user) {
+  if (loading || !userPref || loadingUser) {
     return (
       <div
         id="dashboard-wrapper"
@@ -196,7 +196,7 @@ function ViewUser(props) {
 }
 
 export default withRouter(
-  withGlobal(({ user }) => ({ user }))(
+  withGlobal(({ user }) => ({ userId: user }))(
     compose(
       graphql(UPDATE_ALLOW_MARKETING_EMAIL, { name: "updateMarketingEmail" }),
       graphql(GET_USER_PREF_BY_ID, {

@@ -3,32 +3,25 @@ import { Link } from "react-router-dom";
 
 export default function Navbar(props) {
   useEffect(() => {
-    window.addEventListener("scroll", animateBackground, true);
-    return () => {
-      window.removeEventListener("scroll", animateBackground, true);
-    };
-  }, []);
-
-  const animateBackground = () => {
-    const h = props.scrolled;
-    document.getElementById("splash-nav").style.background = h
+    document.getElementById("splash-nav").style.backgroundColor = scrolled
       ? "#FFFFFF"
       : "transparent";
-  };
+  }, [props.scrolled]);
 
   const { scrolled } = props;
 
   const logo = scrolled
-      ? "/img/Athares-owl-logo-large-black.png"
-      : "/img/Athares-owl-logo-large-white.png",
-    brand = !scrolled
-      ? "/img/Athares-type-small-white.png"
-      : "/img/Athares-type-small-black.png";
+    ? "/img/Athares-owl-logo-large-black.png"
+    : "/img/Athares-owl-logo-large-white.png";
+
+  const brand = scrolled
+    ? "/img/Athares-type-small-black.png"
+    : "/img/Athares-type-small-white.png";
 
   const textStyle = scrolled ? whiteStyle : normalStyle;
 
   return (
-    <nav
+    <div
       className="dt w-100 center tracked ph1"
       id="splash-nav"
       style={textStyle}
@@ -68,15 +61,16 @@ export default function Navbar(props) {
           </div>
         </Link>
       </div>
-    </nav>
+    </div>
   );
 }
 
 const whiteStyle = {
-  color: "black"
+  color: "#000000",
+  backgroundColor: "#FFFFFF"
 };
 
 const normalStyle = {
   color: "#FFFFFF",
-  background: "transparent"
+  backgroundColor: "transparent"
 };

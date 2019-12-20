@@ -1,4 +1,4 @@
-import { withGlobal, useEffect } from "react";
+import { withGlobal, useEffect } from "reactn";
 import { withRouter } from "react-router-dom";
 import moment from "moment";
 import {

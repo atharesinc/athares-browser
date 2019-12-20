@@ -1,4 +1,4 @@
-import React, { useState, withGlobal, useEffect, useGlobal } from "react";
+import React, { useState, withGlobal, useEffect, useGlobal } from "reactn";
 import RevisionHeader from "./RevisionHeader";
 import RevisionStats from "./RevisionStats";
 import VoteButtons from "./VoteButtons";

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, withGlobal } from "react";
+import React, { useState, useEffect, withGlobal } from "reactn";
 import ChatWindow from "../components/ChatWindow";
 import ChatInput from "../components/ChatInput";
 import DMInviteList from "./DMInviteList";

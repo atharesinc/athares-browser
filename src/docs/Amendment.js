@@ -1,4 +1,4 @@
-import React, { useGlobal, useState } from "react";
+import React, { useGlobal, useState } from "reactn";
 import AmendmentEdit from "./AmendmentEdit";
 import AmendmentView from "./AmendmentView";
 import moment from "moment";
