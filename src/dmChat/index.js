@@ -77,8 +77,10 @@ function DMChat(props) {
   }, [props.activeChannel]);
 
   useEffect(() => {
-    updateCrypto();
-  }, [getUserKeys.User]);
+    if (typeof props.getUserKeys.User !== undefined) {
+      updateCrypto();
+    }
+  }, [props.getUserKeys]);
 
   const updateCrypto = async () => {
     try {
@@ -94,7 +96,7 @@ function DMChat(props) {
         userPriv
       );
 
-      setSimpleCrypto(simpleCrypto.setSecret(decryptedChannelSecret));
+      setSimpleCrypto(new SimpleCrypto(decryptedChannelSecret));
       setCryptoEnabled(true);
     } catch (err) {
       console.error(new Error(err));

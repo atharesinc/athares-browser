@@ -15,7 +15,7 @@ import {
 } from "../graphql/queries";
 import moment from "moment";
 
-function CreateAmendment(props) {
+function CreateAmendment({ activeCircle, ...props }) {
   const [name, setName] = useState("");
   const [amendment, setAmendment] = useState("");
   const [isTaken, setIsTaken] = useState(false);
@@ -26,19 +26,15 @@ function CreateAmendment(props) {
   const [activeRevision, setActiveRevision] = useGlobal("activeRevision");
 
   useEffect(() => {
-    componentMount();
+    if (!user || !activeCircle) {
+      props.history.replace("/app");
+    }
   }, []);
 
   const back = () => {
     props.history.push("/app");
   };
 
-  const componentMount = () => {
-    // verify this circle is real and that the user is logged in, but for now...
-    if (!user || !activeCircle) {
-      props.history.replace("/app");
-    }
-  };
   const updateName = e => {
     setName(e.target.value.substring(0, 51));
     setIsTaken(false);
@@ -74,7 +70,7 @@ function CreateAmendment(props) {
         data: { allAmendments },
         error
       } = await props.doesAmendmentExistInCircle.refetch({
-        circleId: props.activeCircle,
+        circleId: activeCircle,
         title: name
       });
 
@@ -90,8 +86,8 @@ function CreateAmendment(props) {
       }
 
       let newRevision = {
-        circle: props.activeCircle,
-        user: props.user,
+        circle: activeCircle,
+        user: user,
         title: name,
         newText: amendment.trim(),
         expires: moment()
@@ -120,7 +116,7 @@ function CreateAmendment(props) {
 
       const newVote = {
         revision: newRevision.id,
-        user: props.user,
+        user: user,
         support: true
       };
 
@@ -133,7 +129,7 @@ function CreateAmendment(props) {
       setActiveRevision(newRevision.id);
 
       props.history.push(
-        `/app/circle/${props.activeCircle}/revisions/${newRevision.id}`
+        `/app/circle/${activeCircle}/revisions/${newRevision.id}`
       );
     } catch (err) {
       if (
@@ -153,12 +149,12 @@ function CreateAmendment(props) {
     setIsTaken(false);
   };
 
-  let { activeCircle, data = {} } = props;
+  let { data = {} } = props;
 
   if (activeCircle && data.Circle) {
     return (
       <div id="revisions-wrapper">
-        <div className="flex db-ns ph2 h10">
+        <div className="flex ph2 h10">
           <Link to="/app" className="flex justify-center items-center">
             <FeatherIcon
               icon="chevron-left"

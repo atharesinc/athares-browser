@@ -1,4 +1,4 @@
-import gql from 'graphql-tag';
+import gql from "graphql-tag";
 
 export const CREATE_USER = gql`
   mutation CREATE_USER(
@@ -351,6 +351,7 @@ export const DELETE_USER_FROM_DM = gql`
       }
       channelsChannel {
         id
+        name
       }
     }
   }

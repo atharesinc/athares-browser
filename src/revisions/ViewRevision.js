@@ -87,7 +87,7 @@ function ViewRevision(props) {
     }
   };
   const checkIfPass = () => {
-    setValue((value += 1));
+    setValue(value + 1);
   };
 
   let revision = null;

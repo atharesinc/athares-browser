@@ -12,9 +12,9 @@ function MobileLayout(props) {
   const [index, setIndex] = useState(0);
   const [showSearch, setShowSearch] = useGlobal("showSearch");
 
-  const [user] = useState("user");
-  const [activeCircle, setActiveCircle] = useState("activeCircle");
-  const [circles] = useState("circles");
+  const [user] = useGlobal("user");
+  const [activeCircle, setActiveCircle] = useGlobal("activeCircle");
+  const [circles] = useGlobal("circles");
 
   const clickOffSearch = e => {
     if (e.target.className === "modal-mask") {

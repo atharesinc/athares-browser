@@ -20,8 +20,7 @@ function CreateCircle(props) {
   const [isTaken, setIsTaken] = useState(false);
   const [loading, setLoading] = useState(false);
   const [editMode, setEditMode] = useState(false);
-  const [user, setUser] = useGlobal("user");
-  const [pub, setPub] = useGlobal("pub");
+  const [user] = useGlobal("user");
   const [, setActiveCircle] = useGlobal("activeCircle");
 
   useEffect(() => {
@@ -98,56 +97,71 @@ function CreateCircle(props) {
       return false;
     }
 
-    let base64Large = icon;
-    // Depending on whether or not the user updates their image, the photo can be either base64 or a Blob
-    if (base64Large instanceof Blob) {
-      base64Large = await convertBlobToBase64(base64Large);
-    }
-
-    let base64Small = await shrinkBase64(base64Large);
-
-    // finally create a file to be uploaded to aws or wherever
-    const finalImage = b64toBlob(base64Small);
-
-    let { url } = await uploadToAWS(finalImage);
-
-    preamble = preamble.trim();
-    name = name.trim();
-
-    if (preamble === "" || name === "") {
-      swal("Sorry", "Circles must have a name and preamble.", "error");
-      return false;
-    }
-    setLoading(true);
-
-    // create circle
-    let newCircle = {
-      name,
-      preamble,
-      icon: url
-    };
-
-    let newCircleRes = await props.createCircle({
-      variables: {
-        ...newCircle
+    try {
+      let base64Large = icon;
+      // Depending on whether or not the user updates their image, the photo can be either base64 or a Blob
+      if (base64Large instanceof Blob) {
+        base64Large = await convertBlobToBase64(base64Large);
       }
-    });
 
-    newCircle.id = newCircleRes.data.createCircle.id;
+      let base64Small = await shrinkBase64(base64Large);
 
-    await props.addCircleToUser({
-      variables: {
-        user,
-        circle: newCircle.id
+      // finally create a file to be uploaded to aws or wherever
+      const finalImage = b64toBlob(base64Small);
+
+      let { url } = await uploadToAWS(finalImage);
+
+      setPreamble(preamble.trim());
+      setName(name.trim());
+
+      if (preamble === "" || name === "") {
+        swal("Sorry", "Circles must have a name and preamble.", "error");
+        return false;
       }
-    });
-    // set activeCircle as this one
-    setActiveCircle(newCircle.id);
+      setLoading(true);
 
-    setLoading(false);
-    swal("Circle Created", `${name} has been created successfully.`, "success");
+      // create circle
+      let newCircle = {
+        name,
+        preamble,
+        icon: url
+      };
 
-    props.history.push("/app/circle/" + newCircle.id + "/constitution");
+      let newCircleRes = await props.createCircle({
+        variables: {
+          ...newCircle
+        }
+      });
+
+      newCircle.id = newCircleRes.data.createCircle.id;
+
+      await props.addCircleToUser({
+        variables: {
+          user,
+          circle: newCircle.id
+        }
+      });
+      // set activeCircle as this one
+      setActiveCircle(newCircle.id);
+
+      setLoading(false);
+      swal(
+        "Circle Created",
+        `${name} has been created successfully.`,
+        "success"
+      );
+
+      props.history.push("/app/circle/" + newCircle.id + "/constitution");
+    } catch (e) {
+      setLoading(false);
+
+      if (e.message.includes("Field name = name")) {
+        swal("Error", "A Circle with this name already exists.", "error");
+        return;
+      }
+
+      swal("Error", "Unable to create this Circle", "error");
+    }
   };
 
   const shrinkBase64 = base64String => {
