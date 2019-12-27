@@ -1,4 +1,4 @@
-import React, { useState, useGlobal, useEffect } from "reactn";
+import React, { useGlobal } from "reactn";
 import { pushRotate as Menu } from "react-burger-menu";
 import { Link } from "react-router-dom";
 import FeatherIcon from "feather-icons-react";
@@ -7,39 +7,39 @@ import { GET_USER_BY_ID } from "../graphql/queries";
 import { logout } from "../utils/state";
 
 function MenuWrapper(props) {
-  const [showInstall, setShowInstall] = useState("showInstall");
+  // const [, setShowInstall] = useState("showInstall");
   const [, setShowMenu] = useGlobal("showMenu");
   const [user] = useGlobal("user");
 
-  let deferredPrompt = null;
+  // let deferredPrompt = null;
 
   const logoutUser = async () => {
     logout();
     setShowMenu(false);
   };
 
-  useEffect(() => {
-    window.addEventListener("beforeinstallprompt", enableInstall);
-    window.addEventListener("appinstalled", preventAnotherInstall);
+  // useEffect(() => {
+  //   window.addEventListener("beforeinstallprompt", enableInstall);
+  //   window.addEventListener("appinstalled", preventAnotherInstall);
 
-    return () => {
-      window.removeEventListener("beforeinstallprompt", enableInstall);
-      window.removeEventListener("appinstalled", preventAnotherInstall);
-    };
-  }, []);
+  //   return () => {
+  //     window.removeEventListener("beforeinstallprompt", enableInstall);
+  //     window.removeEventListener("appinstalled", preventAnotherInstall);
+  //   };
+  // }, []);
 
-  const preventAnotherInstall = () => {
-    // console.log('User has added the app');
-  };
-  const enableInstall = e => {
-    // console.log('able to add to desktop');
-    // Prevent Chrome 67 and earlier from automatically showing the prompt
-    e.preventDefault();
-    // Stash the event so it can be triggered later.
-    deferredPrompt = e;
-    // Update UI notify the user they can add to home screen
-    setShowInstall(true);
-  };
+  // const preventAnotherInstall = () => {
+  //   // console.log('User has added the app');
+  // };
+  // const enableInstall = e => {
+  //   // console.log('able to add to desktop');
+  //   // Prevent Chrome 67 and earlier from automatically showing the prompt
+  //   e.preventDefault();
+  //   // Stash the event so it can be triggered later.
+  //   deferredPrompt = e;
+  //   // Update UI notify the user they can add to home screen
+  //   setShowInstall(true);
+  // };
   const alsoToggleMenu = () => {
     setShowMenu(false);
   };

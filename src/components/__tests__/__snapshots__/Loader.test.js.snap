@@ -1,0 +1,19 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Loader component should render loader component 1`] = `
+<div
+  className="loader-wrapper"
+>
+  <img
+    alt="Loading"
+    className="loader-img"
+    src="/img/Athares-logo-small-white-no-circle.png"
+  />
+  <div
+    className="loader"
+  />
+  <div
+    className="loader delay"
+  />
+</div>
+`;

@@ -7,7 +7,6 @@ import { Query } from "react-apollo";
 
 function DMInviteList(props) {
   const [search, setSearch] = useState("");
-  const [user] = useGlobal("user");
 
   const deleteItem = i => {
     // returns the index of the selected user we'd like to remove

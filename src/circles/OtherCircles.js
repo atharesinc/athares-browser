@@ -7,9 +7,8 @@ import { GET_CIRCLES_BY_USER_ID } from "../graphql/queries";
 import { Query } from "react-apollo";
 
 function OtherCircles(props) {
-  const [user, setUser] = useGlobal("user");
+  const [user] = useGlobal("user");
   const [activeCircle, setActiveCircle] = useGlobal("activeCircle");
-  const [pub, setPub] = useGlobal("pub");
 
   const setActive = id => {
     setActiveCircle(id);
@@ -23,7 +22,7 @@ function OtherCircles(props) {
       variables={{ id: user || "" }}
       pollInterval={3000}
     >
-      {({ loading, err, data = {} }) => {
+      {({ data = {} }) => {
         if (data.User) {
           circles = data.User.circles;
         }

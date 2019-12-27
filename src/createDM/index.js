@@ -131,7 +131,6 @@ function CreateDM(props) {
           ...newMessage
         }
       });
-      setUploadInProgress(false);
 
       props.history.push(`/app/channel/${id}`);
     } catch (err) {
@@ -142,6 +141,7 @@ function CreateDM(props) {
         "error"
       );
     }
+    setUploadInProgress(false);
   };
 
   return (

@@ -8,7 +8,7 @@ import { GET_USER_BY_ID_ALL } from "../graphql/queries";
 
 function User(props) {
   const [user] = useGlobal("user");
-  const [loadingUser, setLoadingUser] = useState(false);
+  const [, setLoadingUser] = useState(false);
 
   useEffect(() => {
     // if a user is logged in OR location params exist to see another user
@@ -17,7 +17,7 @@ function User(props) {
     } else if (!user) {
       props.history.replace("/app");
     }
-  }, [user]);
+  }, [user, props.history]);
 
   return (
     <Query
