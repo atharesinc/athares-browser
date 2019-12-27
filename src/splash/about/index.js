@@ -6,13 +6,11 @@ import { Scrollbars } from "react-custom-scrollbars";
 
 function About() {
   const [scrolled, setScrolled] = useState(false);
-  const [top, setTop] = useState(0);
+  const [top] = useState(0);
 
   const handleUpdate = ({ scrollTop }) => {
-    console.log(scrolled);
     if (top !== scrollTop) {
       setScrolled(scrollTop > 100);
-      // setTop(scrollTop);
     }
   };
 

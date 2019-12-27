@@ -78,7 +78,7 @@ function MenuWrapper(props) {
     });
   };
 
-  let { isOpen, history, isMenuOpen } = props;
+  let { isOpen, isMenuOpen } = props;
   return (
     <Query query={GET_USER_BY_ID} variables={{ id: user || "" }}>
       {({ data = {}, subscribeToMore }) => {

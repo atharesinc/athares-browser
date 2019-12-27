@@ -22,7 +22,6 @@ import swal from "sweetalert";
 function CreateDM(props) {
   const [text, setText] = useState("");
   const [selectedUsers, setSelectedUsers] = useState([]);
-  const [cryptoEnabled, setCryptoEnabled] = useState(false);
   const [uploadInProgress, setUploadInProgress] = useState(false);
 
   useEffect(() => {

@@ -4,9 +4,9 @@ import { withRouter } from "react-router-dom";
 import moment from "moment";
 
 const Section = props => {
-  const [showSearch, setShowSearch] = useGlobal("showSearch");
+  const [, setShowSearch] = useGlobal("showSearch");
 
-  const [searchParams, setSearchParams] = useGlobal("searchParams");
+  const [, setSearchParams] = useGlobal("searchParams");
   let { data } = props;
 
   const navigate = e => {

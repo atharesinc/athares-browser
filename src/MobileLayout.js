@@ -9,7 +9,7 @@ import { Switch, Route, withRouter } from "react-router-dom";
 
 function MobileLayout(props) {
   const [menuIsOpen, setMenuIsOpen] = useState(false);
-  const [index, setIndex] = useState(0);
+  // const [index, setIndex] = useState(0);
   const [showSearch, setShowSearch] = useGlobal("showSearch");
 
   const [user] = useGlobal("user");
@@ -45,7 +45,7 @@ function MobileLayout(props) {
         toggleMenu={toggleMenu}
       />
       <div
-        index={index}
+        // index={index}
         className="wrapper"
         style={{
           height: "100vh",

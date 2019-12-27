@@ -22,7 +22,6 @@ function Login(props) {
   const [, setActiveRevision] = useGlobal("activeRevision");
 
   useEffect(() => {
-    console.log(user);
     if (user) {
       props.history.replace("/app");
     } else {

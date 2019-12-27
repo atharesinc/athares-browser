@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, withGlobal } from "reactn";
+import React, { Fragment, useEffect, withGlobal, useGlobal } from "reactn";
 import { GET_INVITE_BY_ID, GET_USER_BY_ID } from "../graphql/queries";
 import {
   ADD_USER_TO_CIRCLE,
@@ -15,7 +15,7 @@ import MiniLoginRegister from "./MiniLoginRegister";
 import { logout } from "../utils/state";
 
 function Invite(props) {
-  // const [loading, setLoading] = useState(true);
+  const [loading] = useGlobal("loading");
 
   useEffect(() => {
     componentMount();
@@ -79,13 +79,13 @@ function Invite(props) {
   let { getInviteById, getUserById } = props;
   let circle,
     user,
-    loading,
+    loadingLocal,
     invitingUser = null;
 
   if (getInviteById.loading || getUserById.loading) {
-    loading = true;
+    loadingLocal = true;
   } else {
-    loading = false;
+    loadingLocal = false;
   }
   if (getInviteById.Invite) {
     circle = getInviteById.Invite.circle;
@@ -94,7 +94,7 @@ function Invite(props) {
   if (getUserById.User) {
     user = getUserById.User;
   }
-  if (circle && loading === false) {
+  if (circle && loadingLocal === false && loading == false) {
     return (
       <div className="wrapper mt2">
         <Scrollbars

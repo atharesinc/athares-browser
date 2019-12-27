@@ -69,10 +69,10 @@ function Amendment(props) {
     setEditMode(!editMode);
   };
 
-  const addSub = () => {
-    props.addSub(props.id);
-    cancel();
-  };
+  // const addSub = () => {
+  //   props.addSub(props.id);
+  //   cancel();
+  // };
   const customSigm = x => {
     return 604800 / (1 + Math.pow(Math.E, -1 * (x - 10))) / 2;
   };
@@ -88,14 +88,14 @@ function Amendment(props) {
     }
 
     const { circle } = props;
-    const { title, text, id } = props.amendment;
+    const { title, text: amText, id } = props.amendment;
 
     let numUsers = circle.users.length;
     let newRevision = {
       circle: activeCircle,
       user: user,
       title,
-      oldText: text,
+      oldText: amText,
       newText: text.trim(),
       expires: moment()
         .add(Math.max(customSigm(numUsers), 61), "s")

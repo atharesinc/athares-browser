@@ -6,8 +6,7 @@ import AddUserToDM from "./AddUserToDM";
 import Scrollbars from "react-custom-scrollbars";
 
 function DMSettings(props) {
-  const [dmSettings, setDmSettings] = useGlobal("setDmSettings");
-  const [activeChannel] = useGlobal("activeChannel");
+  const [, setDmSettings] = useGlobal("setDmSettings");
 
   const closeSettings = () => {
     setDmSettings(false);

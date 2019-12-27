@@ -67,7 +67,6 @@ export default function ChatInput(props) {
       return;
     }
     if (e.shiftKey === true && mobile === false) {
-      console.log("desktop and using shift", e.shiftKey);
       return false;
     }
 

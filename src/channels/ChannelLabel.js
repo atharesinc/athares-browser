@@ -3,7 +3,6 @@ import { Link, withRouter } from "react-router-dom";
 import FeatherIcon from "feather-icons-react";
 
 const ChannelLabel = props => {
-  const [user] = useGlobal("user");
   const [activeCircle] = useGlobal("activeCircle");
   const [activeChannel, setActiveChannel] = useGlobal("activeChannel");
 

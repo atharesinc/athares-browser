@@ -156,9 +156,9 @@ function DMChat(props) {
     }
   };
 
-  const updateChannel = () => {
-    setActiveChannel(null);
-  };
+  // const updateChannel = () => {
+  //   setActiveChannel(null);
+  // };
 
   const normalizeName = name => {
     let retval = name

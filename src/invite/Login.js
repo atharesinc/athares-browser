@@ -11,7 +11,7 @@ import { graphql } from "react-apollo";
 function MiniLogin(props) {
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [, setLoading] = useState(false);
 
   const [setUser] = useGlobal("setUser");
   const [setPub] = useGlobal("setPub");

@@ -67,10 +67,6 @@ function LeaveCircle(props) {
       });
   };
 
-  const back = () => {
-    props.history.push(`/app`);
-  };
-
   return (
     <Query query={GET_CIRCLE_NAME_BY_ID} variables={{ id: props.activeCircle }}>
       {({ loading, data: { Circle: circle } = {} }) => {

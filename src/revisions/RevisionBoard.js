@@ -11,8 +11,8 @@ import {
 import { Query, graphql } from "react-apollo";
 
 function RevisionBoard({ user, ...props }) {
-  const [activeChannel, setActiveChannel] = useGlobal("setActiveChannel");
-  const [activeRevision, setAciveRevision] = useGlobal("setAciveRevision");
+  const [, setActiveChannel] = useGlobal("setActiveChannel");
+  const [, setAciveRevision] = useGlobal("setAciveRevision");
   const [activeCircle, setActiveCircle] = useGlobal("setActiveCircle");
 
   useEffect(() => {
@@ -71,7 +71,8 @@ function RevisionBoard({ user, ...props }) {
         ) {
           belongsToCircle = true;
         }
-        const allRevisions = allRevisions.map(r => {
+
+        allRevisions = allRevisions.map(r => {
           return {
             votes: r.votes.filter(v => v.revision === r.id),
             ...r

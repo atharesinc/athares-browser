@@ -9,8 +9,7 @@ import { ADD_USER_TO_CIRCLE } from "../graphql/mutations";
 
 function AddUser(props) {
   const [selectedUsers, setSelectedUsers] = useState([]);
-  const [user, setUser] = useGlobal("user");
-  const [pub, setPub] = useGlobal("pub");
+  const [user] = useGlobal("user");
   const [activeCircle, setActiveCircle] = useGlobal("activeCircle");
 
   useEffect(() => {

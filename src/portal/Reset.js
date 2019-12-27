@@ -37,7 +37,7 @@ function Reset(props) {
     if (valid === false) {
       return false;
     }
-    code = code.trim().toLowerCase();
+    setCode(code.trim().toLowerCase());
 
     let { token, id } = props.data.ResetRequest;
 
@@ -65,7 +65,7 @@ function Reset(props) {
       return false;
     }
 
-    code = code.trim().toLowerCase();
+    setCode(code.trim().toLowerCase());
 
     if ((await sha(code)) !== token) {
       return false;

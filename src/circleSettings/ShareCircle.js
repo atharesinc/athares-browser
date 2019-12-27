@@ -51,9 +51,6 @@ function ShareCircle(props) {
       swal("Error", "Unable to generate invite link.", "error");
     }
   };
-  const back = () => {
-    props.history.push(`/app`);
-  };
 
   return (
     <Query query={GET_CIRCLE_NAME_BY_ID} variables={{ id: activeCircle }}>
