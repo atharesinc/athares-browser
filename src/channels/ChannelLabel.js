@@ -1,12 +1,11 @@
 import React, { useGlobal } from "reactn";
 import { Link, withRouter } from "react-router-dom";
 import FeatherIcon from "feather-icons-react";
-import { updateChannel } from "../store/state/actions";
 
 const ChannelLabel = props => {
   const [user] = useGlobal("user");
   const [activeCircle] = useGlobal("activeCircle");
-  const [activeChannel] = useGlobal("activeChannel");
+  const [activeChannel, setActiveChannel] = useGlobal("activeChannel");
 
   const hasBorder = parent_id => {
     switch (parent_id) {
@@ -45,22 +44,19 @@ const ChannelLabel = props => {
     return null;
   };
 
-  const setActiveChannel = () => {
+  const setChannel = () => {
     if (props.isTop) {
       return false;
     }
-    props.dispatch(updateChannel(props.id));
+    setActiveChannel(props.id);
     if (props.channelType !== "dm") {
-      props.history.push(
-        `/app/circle/${props.activeCircle}/channel/${props.id}`
-      );
+      props.history.push(`/app/circle/${activeCircle}/channel/${props.id}`);
     } else {
       props.history.push(`/app/channel/${props.id}`);
     }
   };
 
-  const active =
-    props.activeChannel && props.activeChannel === props.id ? "active-bg" : "";
+  const active = activeChannel && activeChannel === props.id ? "active-bg" : "";
 
   return (
     <div
@@ -69,11 +65,11 @@ const ChannelLabel = props => {
           ? "channel-wrapper"
           : "ttu tracked f7"
       }`}
-      onClick={setActiveChannel}
+      onClick={setChannel}
       style={hasBorder(props.name)}
     >
       <div>{props.name}</div>
-      {shouldRenderAddChannel(props.activeCircle)}
+      {shouldRenderAddChannel(activeCircle)}
       {props.unread && (
         <FeatherIcon icon="alert-circle" className="theme-blue h1 popIn" />
       )}

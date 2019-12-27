@@ -26,7 +26,6 @@ import Invite from "./invite";
 
 import throttle from "lodash.throttle";
 import { TweenMax } from "gsap";
-import LoadingBar from "react-redux-loading-bar";
 
 import { SIGNIN_USER } from "./graphql/mutations";
 import { graphql } from "react-apollo";
@@ -127,16 +126,6 @@ function App(props) {
 
   return (
     <Fragment>
-      <LoadingBar
-        style={{
-          height: "0.2em",
-          backgroundColor: "#00DFFC",
-          boxShadow: "0 0 0.5em #00DFFC",
-          zIndex: 1,
-          position: "fixed"
-        }}
-        showFastActions
-      />
       <OnlineMonitor />
       <RevisionMonitor />
       {props.user && <ChannelUpdateMonitor />}

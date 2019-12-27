@@ -3,7 +3,6 @@ import FeatherIcon from "feather-icons-react";
 import { validateRegister } from "../utils/validators";
 import { Link, withRouter } from "react-router-dom";
 import swal from "sweetalert";
-import { connect } from "react-redux";
 import defaultUser from "../portal/defaultUser.json";
 import sha from "simple-hash-browser";
 import {

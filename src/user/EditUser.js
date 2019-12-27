@@ -8,7 +8,6 @@ import { Link, withRouter } from "react-router-dom";
 import Loader from "../components/Loader";
 import { Scrollbars } from "react-custom-scrollbars";
 
-import { hideLoading } from "react-redux-loading-bar";
 import { UPDATE_USER } from "../graphql/mutations";
 import { graphql } from "react-apollo";
 import { uploadToAWS } from "utils/upload";

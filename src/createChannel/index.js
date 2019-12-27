@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useGlobal } from "reactn";
 import ErrorSwap from "../utils/ErrorSwap";
-import { connect } from "react-redux";
 import Loader from "../components/Loader";
 import { Scrollbars } from "react-custom-scrollbars";
 import swal from "sweetalert";

@@ -5,8 +5,6 @@
 // If not: they are redirected to the login page.
 import React from "reactn";
 import { Redirect, Route, withRouter } from "react-router-dom";
-import * as stateSelectors from "./store/state/reducers";
-
 
 const PrivateRoute = ({ component: Component, user, ...rest }) => {
   if (user || true) {

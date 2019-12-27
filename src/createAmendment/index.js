@@ -3,7 +3,6 @@ import ErrorSwap from "../utils/ErrorSwap";
 import Loader from "../components/Loader";
 import { withRouter, Link } from "react-router-dom";
 import { Scrollbars } from "react-custom-scrollbars";
-import { updateRevision } from "../store/state/actions";
 import FeatherIcon from "feather-icons-react";
 import swal from "sweetalert";
 import sha from "simple-hash-browser";

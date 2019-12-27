@@ -4,8 +4,7 @@ import ChatInput from "../components/ChatInput";
 import DMInviteList from "./DMInviteList";
 import { Link, withRouter } from "react-router-dom";
 import FeatherIcon from "feather-icons-react";
-import { pull } from "../store/state/reducers";
-import { connect } from "react-redux";
+
 import { encrypt } from "../utils/crypto";
 import SimpleCrypto from "simple-crypto-js";
 import { GET_USER_BY_ID } from "../graphql/queries";

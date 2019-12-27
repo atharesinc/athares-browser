@@ -2,7 +2,6 @@ import React, { useState, useGlobal } from "reactn";
 import ReactTags from "react-tag-autocomplete";
 import TagComponent from "../components/TagComponent";
 
-import { pull } from "../store/state/reducers";
 import { SEARCH_FOR_USER, GET_USERS_BY_CIRCLE_ID } from "../graphql/queries";
 import { graphql, Query } from "react-apollo";
 import compose from "lodash.flowright";
@@ -52,7 +51,7 @@ function CircleInviteList(props) {
               s => getUsers.Circle.users.findIndex(su => su.id === s.id) === -1
             )
             .filter(s => selectedUsers.findIndex(su => su.id === s.id) === -1)
-            .filter(s => s.id !== props.user)
+            .filter(s => s.id !== user)
             .map(s => ({
               name: s.firstName + " " + s.lastName + " - " + s.email,
               ...s

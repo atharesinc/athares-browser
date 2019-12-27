@@ -1,5 +1,4 @@
 import React, { useState, useGlobal, useEffect } from "reactn";
-import { updateCircle } from "../store/state/actions";
 import swal from "sweetalert";
 import FeatherIcon from "feather-icons-react";
 import { Link } from "react-router-dom";
@@ -10,7 +9,7 @@ import ScrollBars from "react-custom-scrollbars";
 
 function CircleSettings(props) {
   const [user] = useGlobal("user");
-  const [activeCircle] = useGlobal("activeCircle");
+  const [activeCircle, setActiveCircle] = useGlobal("activeCircle");
 
   useEffect(() => {
     // verify this circle is real and that the user is logged in, but for now...
@@ -27,7 +26,6 @@ function CircleSettings(props) {
 
   const leaveCircle = e => {
     e.preventDefault();
-    let { activeCircle, user } = props;
 
     swal("Are you sure you'd like to leave this Circle?", {
       buttons: {
@@ -47,7 +45,7 @@ function CircleSettings(props) {
           `You have left this Circle. You will have to be re-invited to participate at a later time.`,
           "warning"
         );
-        props.dispatch(updateCircle(null));
+        setActiveCircle(null);
         props.history.push(`/app`);
       }
     });
