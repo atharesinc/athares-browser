@@ -1,4 +1,4 @@
-import React, { useState, useGlobal } from "reactn";
+import React, { useState } from "reactn";
 import ReactTags from "react-tag-autocomplete";
 import TagComponent from "../components/TagComponent";
 import swal from "sweetalert";

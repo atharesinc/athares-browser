@@ -13,29 +13,36 @@ function AddUser(props) {
   const [activeCircle, setActiveCircle] = useGlobal("activeCircle");
 
   useEffect(() => {
+    function componentMount() {
+      if (!user) {
+        props.history.replace("/app");
+      }
+      if (!activeCircle || activeCircle !== props.match.params.id) {
+        setActiveCircle(props.match.params.id);
+      }
+    }
+
+    componentMount();
+  }, [
+    activeCircle,
+    props.history,
+    props.match.params.id,
+    setActiveCircle,
+    user
+  ]);
+
+  useEffect(() => {
     if (!user) {
       props.history.replace("/app");
     }
-  }, [user]);
+  }, [user, props.history]);
 
   const back = () => {
     props.history.push(`/app`);
   };
 
-  useEffect(() => {
-    componentMount();
-  }, []);
-
-  const componentMount = () => {
-    if (!user) {
-      props.history.replace("/app");
-    }
-    if (!activeCircle || activeCircle !== props.match.params.id) {
-      setActiveCircle(props.match.params.id);
-    }
-  };
-
   const updateList = items => {
+    console.log("updateList", items);
     setSelectedUsers(items);
   };
 

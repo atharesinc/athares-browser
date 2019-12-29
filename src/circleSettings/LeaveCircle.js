@@ -17,15 +17,10 @@ function LeaveCircle(props) {
   const [, setActiveCircle] = useGlobal("activeCircle");
 
   useEffect(() => {
-    componentMount();
-  }, []);
-
-  const componentMount = () => {
-    // verify this circle is real and that the user is logged in, but for now...
     if (!props.user || !props.activeCircle) {
       props.history.replace("/app");
     }
-  };
+  }, [props.user, props.activeCircle, props.history]);
 
   const leaveCircle = e => {
     e.preventDefault();

@@ -11,12 +11,12 @@ import { UPDATE_ALLOW_MARKETING_EMAIL } from "../graphql/mutations";
 import { GET_USER_PREF_BY_ID } from "../graphql/queries";
 
 function ViewUser(props) {
-  const [loadingUser, setLoadingUser] = useGlobal("loadingUser");
+  const [loadingUser] = useGlobal("loadingUser");
   useEffect(() => {
     if (!props.userId) {
       props.history.replace("/app");
     }
-  }, []);
+  }, [props.history, props.userId]);
 
   const toEdit = () => {
     props.history.push("/app/user/edit");

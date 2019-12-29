@@ -18,16 +18,16 @@ function Invite(props) {
   const [loading] = useGlobal("loading");
 
   useEffect(() => {
-    componentMount();
-  }, []);
-
-  const componentMount = () => {
-    if (props.getInviteById.Invite) {
-      if (props.getInviteById.Invite.hasAccepted) {
-        props.history.replace("/app");
+    function componentMount() {
+      if (props.getInviteById.Invite) {
+        if (props.getInviteById.Invite.hasAccepted) {
+          props.history.replace("/app");
+        }
       }
     }
-  };
+    componentMount();
+  }, [props.getInviteById.Invite, props.history]);
+
   useEffect(() => {
     if (props.getInviteById.Invite.hasAccepted) {
       props.history.replace("/app");
@@ -38,7 +38,7 @@ function Invite(props) {
     ) {
       props.history.replace("/app");
     }
-  }, [props.getInviteById.Invite]);
+  }, [props.getInviteById.Invite, props.history, props.getUserById.User]);
 
   const joinCircle = async () => {
     let { getInviteById, getUserById } = props;
@@ -94,7 +94,7 @@ function Invite(props) {
   if (getUserById.User) {
     user = getUserById.User;
   }
-  if (circle && loadingLocal === false && loading == false) {
+  if (circle && loadingLocal === false && loading === false) {
     return (
       <div className="wrapper mt2">
         <Scrollbars

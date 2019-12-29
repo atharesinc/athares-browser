@@ -42,7 +42,16 @@ function Chat(props) {
       setUnreadChannels(unreadChannels.splice(index));
     }
     // may need to make this activeChannel
-  }, []);
+  }, [
+    props.match.url,
+    setActiveCircle,
+    activeChannel,
+    setActiveChannel,
+    setActiveRevision,
+    unreadChannels,
+    setUnreadChannels,
+    props.match.params.id
+  ]);
 
   useEffect(() => {
     // if current url doesn't match internal state, update state to match url
@@ -55,7 +64,12 @@ function Chat(props) {
     // ) {
     //   dispatch(removeUnreadChannel(props.match.params.id));
     // }
-  }, [props.match.params.id, activeChannel]);
+  }, [
+    props.match.params.id,
+    activeChannel,
+    props.activeChannel,
+    setActiveChannel
+  ]);
 
   const scrollToBottom = () => {
     let chatBox = document.getElementById("chat-window-scroller");

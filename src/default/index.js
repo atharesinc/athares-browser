@@ -1,4 +1,4 @@
-import React, { useGlobal, useEffect, withGlobal } from "reactn";
+import React, { useCallback, useGlobal, useEffect, withGlobal } from "reactn";
 import { Link } from "react-router-dom";
 
 import { graphql } from "react-apollo";
@@ -17,19 +17,25 @@ function Dashboard(props) {
     props.history.push(`/app`);
   };
 
-  const componentMount = () => {
+  const componentMount = useCallback(() => {
     let circleId = props.location.pathname.match(/\/circle\/([a-zA-Z0-9]{25})/);
     if (circleId !== null) {
       circleId = circleId[1];
       setActiveCircle(circleId);
     }
+
     setActiveChannel(null);
     setActiveRevision(null);
-  };
+  }, [
+    props.location.pathname,
+    setActiveCircle,
+    setActiveRevision,
+    setActiveChannel
+  ]);
 
   useEffect(() => {
     componentMount();
-  }, []);
+  }, [componentMount]);
 
   useEffect(() => {
     let circleId = props.location.pathname.match(/\/circle\/([a-zA-Z0-9]{25})/);
@@ -41,7 +47,7 @@ function Dashboard(props) {
         setActiveCircle(circleId);
       }
     }
-  }, [props.location.pathname, activeCircle]);
+  }, [props.location.pathname, activeCircle, setActiveCircle]);
 
   return (
     <div

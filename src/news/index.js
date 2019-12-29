@@ -1,15 +1,15 @@
-import React, { useGlobal, useEffect } from "reactn";
+import { useGlobal, useEffect } from "reactn";
 
 import { withRouter } from "react-router-dom";
 
 function News(props) {
-  const [activeChannel, setActiveChannel] = useGlobal("setActiveChannel");
-  const [activeRevision, setActiveRevision] = useGlobal("setActiveRevision");
+  const [, setActiveChannel] = useGlobal("setActiveChannel");
+  const [, setActiveRevision] = useGlobal("setActiveRevision");
   useEffect(() => {
     setActiveChannel(null);
     setActiveRevision(null);
     props.history.replace("/app");
-  }, []);
+  }, [setActiveChannel, setActiveRevision, props.history]);
 
   return null;
 }

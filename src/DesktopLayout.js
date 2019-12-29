@@ -1,4 +1,4 @@
-import React, { useState, useGlobal } from "reactn";
+import React, { useGlobal } from "reactn";
 import Circles from "./circles";
 import Channels from "./channels";
 import Dashboards from "./dashboards";

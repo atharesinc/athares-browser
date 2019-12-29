@@ -1,5 +1,4 @@
-import React, { useState, useGlobal, useEffect } from "reactn";
-import swal from "sweetalert";
+import React, { useGlobal, useEffect } from "reactn";
 import FeatherIcon from "feather-icons-react";
 import { Link } from "react-router-dom";
 import LeaveCircle from "./LeaveCircle";
@@ -9,47 +8,17 @@ import ScrollBars from "react-custom-scrollbars";
 
 function CircleSettings(props) {
   const [user] = useGlobal("user");
-  const [activeCircle, setActiveCircle] = useGlobal("activeCircle");
+  const [activeCircle] = useGlobal("activeCircle");
 
   useEffect(() => {
-    // verify this circle is real and that the user is logged in, but for now...
-    if (!user || !activeCircle) {
-      props.history.replace("/app");
-    }
-  }, []);
-
-  useEffect(() => {
-    if (!user || !activeCircle) {
-      props.history.replace("/app");
-    }
-  }, [user, activeCircle]);
-
-  const leaveCircle = e => {
-    e.preventDefault();
-
-    swal("Are you sure you'd like to leave this Circle?", {
-      buttons: {
-        cancel: "Not yet",
-        confirm: true
+    function componentMount() {
+      if (!user || !activeCircle) {
+        props.history.replace("/app");
       }
-    }).then(async value => {
-      if (value === true) {
-        props.deleteUserFomCircle({
-          variables: {
-            user,
-            circle: activeCircle
-          }
-        });
-        swal(
-          "Removed From Circle",
-          `You have left this Circle. You will have to be re-invited to participate at a later time.`,
-          "warning"
-        );
-        setActiveCircle(null);
-        props.history.push(`/app`);
-      }
-    });
-  };
+    }
+    componentMount();
+  }, [user, activeCircle, props.history]);
+
   const back = () => {
     props.history.push(`/app`);
   };

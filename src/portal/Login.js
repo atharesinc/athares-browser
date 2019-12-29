@@ -16,7 +16,7 @@ function Login(props) {
   const [loading, setLoading] = useState(false);
 
   const [user, setUser] = useGlobal("user");
-  const [pub, setPub] = useGlobal("pub");
+  const [, setPub] = useGlobal("pub");
   const [, setActiveChannel] = useGlobal("activeChannel");
   const [, setActiveCircle] = useGlobal("activeCircle");
   const [, setActiveRevision] = useGlobal("activeRevision");
@@ -29,7 +29,13 @@ function Login(props) {
       setActiveCircle(null);
       setActiveRevision(null);
     }
-  }, [user]);
+  }, [
+    user,
+    props.history,
+    setActiveChannel,
+    setActiveCircle,
+    setActiveRevision
+  ]);
 
   const tryLogin = async e => {
     setLoading(true);

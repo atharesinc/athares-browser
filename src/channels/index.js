@@ -1,4 +1,4 @@
-import React, { useState, withGlobal, useGlobal, useEffect } from "reactn";
+import React, { withGlobal, useGlobal, useEffect } from "reactn";
 import ChannelGroup from "./ChannelGroup";
 import GovernanceChannelGroup from "./GovernanceChannelGroup";
 import { Link } from "react-router-dom";
@@ -24,8 +24,11 @@ function Channels(props) {
   const [unreadChannels] = useGlobal("unreadChannels");
 
   useEffect(() => {
-    componentMount();
-  }, []);
+    if (/\/app\/circle\/.{25}$/.test(props.location.pathname)) {
+      let match = /\/app\/circle\/(.{25})$/.exec(props.location.pathname);
+      setActiveCircle(match[1]);
+    }
+  }, [props.location.pathname, setActiveCircle]);
 
   useEffect(() => {
     if (/\/app\/circle\/.{25}$/.test(props.location.pathname)) {
@@ -34,14 +37,7 @@ function Channels(props) {
         setActiveCircle(match);
       }
     }
-  }, [props.location.pathname]);
-
-  const componentMount = () => {
-    if (/\/app\/circle\/.{25}$/.test(props.location.pathname)) {
-      let match = /\/app\/circle\/(.{25})$/.exec(props.location.pathname);
-      setActiveCircle(match[1]);
-    }
-  };
+  }, [props.location.pathname, props.activeCircle, setActiveCircle]);
 
   const goToOptions = () => {
     props.history.push(`/app/circle/${props.activeCircle}/settings`);

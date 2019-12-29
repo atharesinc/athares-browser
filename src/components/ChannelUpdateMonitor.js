@@ -16,7 +16,7 @@ function ChannelUpdateMonitor(props) {
     channels = channels.map(c => c.id);
     // set the user's current channels
     setChannels(channels);
-  }, [props.getAllMyChannels.User]);
+  }, [props.getAllMyChannels.User, setChannels]);
 
   const _subToMore = subscribeToMore => {
     subscribeToMore({

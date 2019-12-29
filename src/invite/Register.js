@@ -20,7 +20,7 @@ function MiniRegister(props) {
   const [lastName, setLastName] = useState("");
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [, setLoading] = useState(false);
   const [, setUser] = useGlobal("user");
   const [, setPub] = useGlobal("pub");
 

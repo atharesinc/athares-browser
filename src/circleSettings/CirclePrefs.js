@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "reactn";
+import React, { useEffect } from "reactn";
 import Loader from "../components/Loader";
 import {
   UPDATE_AMENDEMENT_PERMISSION_FOR_CIRCLE,
@@ -15,15 +15,10 @@ import { withRouter } from "react-router-dom";
 
 function CirclePrefs(props) {
   useEffect(() => {
-    componentMount();
-  }, []);
-
-  const componentMount = () => {
-    // verify this circle is real and that the user is logged in, but for now...
     if (!props.user || !props.activeCircle) {
       props.history.replace("/app");
     }
-  };
+  }, [props.user, props.activeCircle, props.history]);
 
   const updateAmendmentPref = async checked => {
     let { id } = props.data.User.circlePermissions[0];

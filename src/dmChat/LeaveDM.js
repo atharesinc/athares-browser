@@ -1,4 +1,4 @@
-import React, { useState, withGlobal, useGlobal } from "reactn";
+import React, { withGlobal, useGlobal } from "reactn";
 import swal from "sweetalert";
 import { graphql } from "react-apollo";
 import compose from "lodash.flowright";

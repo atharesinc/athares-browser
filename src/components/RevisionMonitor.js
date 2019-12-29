@@ -1,4 +1,4 @@
-import { withGlobal, useEffect } from "reactn";
+import { Component, withGlobal } from "reactn";
 import { withRouter } from "react-router-dom";
 import moment from "moment";
 import {
@@ -14,32 +14,40 @@ import sha from "simple-hash-browser";
 
 let checkItemsTimer = null;
 
-function RevisionMonitor(props) {
-  checkItemsTimer = checkItemsTimer;
-
-  useEffect(() => {
+class RevisionMonitor extends Component {
+  constructor() {
+    super();
+    this.checkItemsTimer = checkItemsTimer;
+  }
+  async componentDidUpdate(prevProps) {
     // only do the following if revisions are loaded, not before
-    if (props.data.User) {
-      // There is probably a new revision or the last revision has been dealt with
-      // Reset Timer
-      getNext();
+    if (this.props.data.User) {
+      // get a flat list of revisions for current and past props
+      let allRevisions = this.getAllRevisions();
+      let prevRevisions = prevProps.data.User
+        ? prevProps.data.User.circles
+            .map(c => c.revisions.map(r => ({ ...r, circle: c.id })))
+            .flat(1)
+        : [];
+      if (allRevisions.length !== prevRevisions.length) {
+        // There is probably a new revision or the last revision has been dealt with
+        // Reset Timer
+        this.getNext();
+      }
     }
-  }, [props.data.User]);
-
-  const getAllRevisions = () => {
-    return props.data.User.circles
+  }
+  getAllRevisions = () => {
+    return this.props.data.User.circles
       .map(c => c.revisions.map(r => ({ ...r, circle: c.id })))
       .flat(1);
   };
-
-  const getNext = () => {
-    clearTimeout(checkItemsTimer);
+  getNext = () => {
+    clearTimeout(this.checkItemsTimer);
     let now = moment().valueOf();
-    if (!props.data.User) {
+    if (!this.props.data.User) {
       return false;
     }
-
-    let revisions = getAllRevisions();
+    let revisions = this.getAllRevisions();
 
     let items = revisions
       .filter(i => i.passed === null)
@@ -54,7 +62,7 @@ function RevisionMonitor(props) {
       if (moment(items[i].expires).valueOf() <= now) {
         // process this item
 
-        checkIfPass({
+        this.checkIfPass({
           circleId: items[i].circle,
           revisionId: items[i].id
         });
@@ -63,7 +71,7 @@ function RevisionMonitor(props) {
         // there aren't any revisions that need to be processed, set a timer for the soonest occurring one
         let time = moment(items[i].expires).valueOf() - now;
 
-        checkItemsTimer = setTimeout(getNext, time);
+        this.checkItemsTimer = setTimeout(this.getNext, time);
         break;
       }
     }
@@ -72,8 +80,8 @@ function RevisionMonitor(props) {
 
   // a revision has expired or crossed the voter threshold
   // see if it has passed and becomes an amendment or fails and lives in infamy
-  const checkIfPass = async ({ circleId, revisionId }) => {
-    let revisions = getAllRevisions();
+  checkIfPass = async ({ circleId, revisionId }) => {
+    let revisions = this.getAllRevisions();
     let thisRevision = revisions.find(r => r.id === revisionId);
     // get the votes for this revision in this circle
     let { votes } = thisRevision;
@@ -89,13 +97,13 @@ function RevisionMonitor(props) {
     ) {
       // if this revision is a repeal, update the revision like in updateAmendment but also delete amendment
       if (thisRevision.repeal === true) {
-        await props.deleteAmendment({
+        await this.props.deleteAmendment({
           variables: {
             revision: thisRevision.id,
             amendment: thisRevision.amendment.id
           }
         });
-        getNext();
+        this.getNext();
       } else {
         // create a separate unique identifier to make sure our new amendment doesn't get created twice
 
@@ -107,7 +115,7 @@ function RevisionMonitor(props) {
           })
         );
         if (thisRevision.amendment) {
-          await props.updateAmendment({
+          await this.props.updateAmendment({
             variables: {
               amendment: thisRevision.amendment.id,
               title: thisRevision.title,
@@ -117,9 +125,9 @@ function RevisionMonitor(props) {
               hash
             }
           });
-          getNext();
+          this.getNext();
         } else {
-          await props.createAmendmentFromRevision({
+          await this.props.createAmendmentFromRevision({
             variables: {
               title: thisRevision.title,
               text: thisRevision.newText,
@@ -128,23 +136,23 @@ function RevisionMonitor(props) {
               hash
             }
           });
-          getNext();
+          this.getNext();
         }
       }
     } else {
       // it fails and we ignore it forever
-      await props.denyRevision({
+      await this.props.denyRevision({
         variables: {
           id: thisRevision.id
         }
       });
-      getNext();
+      this.getNext();
     }
   };
-
-  return null;
+  render() {
+    return null;
+  }
 }
-
 export default withGlobal(({ user }) => ({ user }))(
   compose(
     graphql(UPDATE_AMENDMENT_FROM_REVISION_AND_DELETE, {

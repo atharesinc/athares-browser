@@ -1,4 +1,10 @@
-import React, { useState, useGlobal, useEffect, withGlobal } from "reactn";
+import React, {
+  useCallback,
+  useState,
+  useGlobal,
+  useEffect,
+  withGlobal
+} from "reactn";
 import ChatWindow from "../components/ChatWindow";
 import ChatInput from "../components/ChatInput";
 import DMSettings from "./DMSettings";
@@ -27,11 +33,44 @@ function DMChat(props) {
   const [dmSettings, setDmSettings] = useGlobal("dmSettings");
   const [unreadDMs, setUnreadDMs] = useGlobal("unreadDMs");
   const [, setActiveChannel] = useGlobal("activeChannel");
-  useEffect(() => {
-    componentMount();
-  }, []);
 
-  const componentMount = async () => {
+  const seeThisChannel = useCallback(() => {
+    const index = unreadDMs.findIndex(item => item.id === props.activeChannel);
+    setUnreadDMs(unreadDMs.splice(index));
+  }, [unreadDMs, props.activeChannel, setUnreadDMs]);
+
+  useEffect(() => {
+    seeThisChannel();
+  }, [props.activeChannel, seeThisChannel]);
+
+  const updateCrypto = useCallback(async () => {
+    try {
+      let hashed = window.localStorage.getItem("ATHARES_HASH");
+      let simpleCryptoForUserPriv = new SimpleCrypto(hashed);
+
+      let userPriv = simpleCryptoForUserPriv.decrypt(
+        props.getUserKeys.User.priv
+      );
+
+      let decryptedChannelSecret = await decrypt(
+        props.getUserKeys.User.keys[0].key,
+        userPriv
+      );
+
+      setSimpleCrypto(new SimpleCrypto(decryptedChannelSecret));
+      setCryptoEnabled(true);
+    } catch (err) {
+      console.error(new Error(err));
+    }
+  }, [props.getUserKeys.User.keys, props.getUserKeys.User.priv]);
+
+  useEffect(() => {
+    if (typeof props.getUserKeys.User !== undefined) {
+      updateCrypto();
+    }
+  }, [props.getUserKeys, updateCrypto]);
+
+  const componentMount = useCallback(async () => {
     if (props.user === null) {
       props.history.push("/app");
     }
@@ -65,43 +104,22 @@ function DMChat(props) {
         console.error(new Error(err));
       }
     }
-  };
-
-  const seeThisChannel = () => {
-    const index = unreadDMs.findIndex(item => item.id === props.activeChannel);
-    setUnreadDMs(unreadDMs.splice(index));
-  };
+  }, [
+    props.user,
+    props.history,
+    props.activeChannel,
+    props.match.params.id,
+    setActiveChannel,
+    seeThisChannel,
+    props.getUserKeys.User,
+    setCryptoEnabled,
+    simpleCrypto
+  ]);
 
   useEffect(() => {
-    seeThisChannel();
-  }, [props.activeChannel]);
+    componentMount();
+  }, [componentMount, seeThisChannel, updateCrypto]);
 
-  useEffect(() => {
-    if (typeof props.getUserKeys.User !== undefined) {
-      updateCrypto();
-    }
-  }, [props.getUserKeys]);
-
-  const updateCrypto = async () => {
-    try {
-      let hashed = window.localStorage.getItem("ATHARES_HASH");
-      let simpleCryptoForUserPriv = new SimpleCrypto(hashed);
-
-      let userPriv = simpleCryptoForUserPriv.decrypt(
-        props.getUserKeys.User.priv
-      );
-
-      let decryptedChannelSecret = await decrypt(
-        props.getUserKeys.User.keys[0].key,
-        userPriv
-      );
-
-      setSimpleCrypto(new SimpleCrypto(decryptedChannelSecret));
-      setCryptoEnabled(true);
-    } catch (err) {
-      console.error(new Error(err));
-    }
-  };
   const scrollToBottom = () => {
     let chatBox = document.getElementById("chat-window-scroller");
     if (chatBox) {

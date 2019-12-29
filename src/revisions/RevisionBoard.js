@@ -16,14 +16,23 @@ function RevisionBoard({ user, ...props }) {
   const [activeCircle, setActiveCircle] = useGlobal("setActiveCircle");
 
   useEffect(() => {
-    if (activeCircle) {
-      setActiveChannel(null);
-    } else {
-      setActiveChannel(null);
-      setAciveRevision(null);
-      setActiveCircle(props.match.params.id);
+    function componentMount() {
+      if (activeCircle) {
+        setActiveChannel(null);
+      } else {
+        setActiveChannel(null);
+        setAciveRevision(null);
+        setActiveCircle(props.match.params.id);
+      }
     }
-  }, []);
+    componentMount();
+  }, [
+    activeCircle,
+    props.match.params.id,
+    setActiveChannel,
+    setAciveRevision,
+    setActiveCircle
+  ]);
 
   const back = () => {
     props.history.push(`/app`);

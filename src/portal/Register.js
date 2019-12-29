@@ -37,7 +37,13 @@ function Register(props) {
       setActiveCircle(null);
       setActiveRevision(null);
     }
-  }, []);
+  }, [
+    user,
+    props.history,
+    setActiveChannel,
+    setActiveCircle,
+    setActiveRevision
+  ]);
 
   const tryRegister = async e => {
     e.preventDefault();

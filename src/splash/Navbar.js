@@ -1,14 +1,12 @@
 import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
 
-export default function Navbar(props) {
+export default function Navbar({ scrolled, ...props }) {
   useEffect(() => {
     document.getElementById("splash-nav").style.backgroundColor = scrolled
       ? "#FFFFFF"
       : "transparent";
-  }, [props.scrolled]);
-
-  const { scrolled } = props;
+  }, [scrolled]);
 
   const logo = scrolled
     ? "/img/Athares-owl-logo-large-black.png"

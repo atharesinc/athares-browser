@@ -24,23 +24,23 @@ function CreateCircle(props) {
   const [, setActiveCircle] = useGlobal("activeCircle");
 
   useEffect(() => {
+    const componentMount = () => {
+      // verify this circle is real and that the user is logged in, but for now...
+      if (!user) {
+        props.history.replace("/app");
+      }
+
+      fetch(icon)
+        .then(function(response) {
+          return response.blob();
+        })
+        .then(function(blob) {
+          setIcon(blob);
+        });
+    };
+
     componentMount();
-  }, []);
-
-  const componentMount = () => {
-    // verify this circle is real and that the user is logged in, but for now...
-    if (!user) {
-      props.history.replace("/app");
-    }
-
-    fetch(icon)
-      .then(function(response) {
-        return response.blob();
-      })
-      .then(function(blob) {
-        setIcon(blob);
-      });
-  };
+  }, [icon, props.history, user]);
 
   const changeImage = imageUrl => {
     setIcon(imageUrl);
@@ -49,6 +49,7 @@ function CreateCircle(props) {
   const updateName = e => {
     setName(e.target.value.substring(0, 51));
     setIsTaken(false);
+    clearError();
   };
   const updatePreamble = e => {
     setPreamble(e.target.value);

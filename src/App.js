@@ -1,4 +1,10 @@
-import React, { useState, useGlobal, useEffect, Fragment } from "reactn";
+import React, {
+  useState,
+  useGlobal,
+  useEffect,
+  Fragment,
+  useCallback
+} from "reactn";
 import "tachyons";
 import "./styles/App.css";
 import "./styles/swaloverride.css";
@@ -48,22 +54,43 @@ function App(props) {
     routeFix();
   });
 
-  // didMount
-  useEffect(() => {
-    componentMount();
-    return () => {
-      window.addEventListener("resize", throttle(updateWidth, 1000));
-      document.getElementById("root").addEventListener("mousemove", e => {
-        e.stopPropogation();
-        e.preventDefault();
-      });
-    };
+  const { user, signinUser } = props;
+
+  const parallaxIt = useCallback((e, target, movement, rootElement) => {
+    var $this = document.querySelector(rootElement);
+    var relX = e.pageX - $this.offsetLeft;
+    var relY = e.pageY - $this.offsetTop;
+
+    const height = window.innerHeight * 0.9,
+      width = window.innerWidth * 0.9;
+    TweenMax.to(target, 1.25, {
+      x: ((relX - width / 2) / width) * movement,
+      y: ((relY - height / 2) / height) * movement
+    });
   }, []);
 
-  const componentMount = async () => {
+  const parallaxApp = useCallback(
+    e => {
+      if (width < 992) {
+        return false;
+      }
+      parallaxIt(e, "#desktop-wrapper-outer", 30, "#main-layout");
+      parallaxIt(e, "#main-layout", -30, "#main-layout");
+    },
+    [parallaxIt, width]
+  );
+
+  const routeFix = useCallback(() => {
+    document
+      .getElementById("root")
+      .addEventListener("mousemove", parallaxApp, true);
+    document.getElementById("root").style.overflow = "hidden";
+  }, [parallaxApp]);
+
+  const componentMount = useCallback(async () => {
     // check if user could log in
     if (
-      !props.user &&
+      !user &&
       localStorage.getItem("ATHARES_ALIAS") &&
       localStorage.getItem("ATHARES_HASH")
     ) {
@@ -72,7 +99,7 @@ function App(props) {
       let hash = localStorage.getItem("ATHARES_HASH");
 
       try {
-        const res = await props.signinUser({
+        const res = await signinUser({
           variables: {
             email: alias,
             password: hash
@@ -95,34 +122,19 @@ function App(props) {
     }
     window.addEventListener("resize", throttle(updateWidth, 1000));
     routeFix();
-  };
+  }, [user, routeFix, setPub, setUser, signinUser]);
 
-  const routeFix = () => {
-    document
-      .getElementById("root")
-      .addEventListener("mousemove", parallaxApp, true);
-    document.getElementById("root").style.overflow = "hidden";
-  };
-  const parallaxApp = e => {
-    if (width < 992) {
-      return false;
-    }
-    parallaxIt(e, "#desktop-wrapper-outer", 30, "#main-layout");
-    parallaxIt(e, "#main-layout", -30, "#main-layout");
-  };
-
-  const parallaxIt = (e, target, movement, rootElement) => {
-    var $this = document.querySelector(rootElement);
-    var relX = e.pageX - $this.offsetLeft;
-    var relY = e.pageY - $this.offsetTop;
-
-    const height = window.innerHeight * 0.9,
-      width = window.innerWidth * 0.9;
-    TweenMax.to(target, 1.25, {
-      x: ((relX - width / 2) / width) * movement,
-      y: ((relY - height / 2) / height) * movement
-    });
-  };
+  // didMount
+  useEffect(() => {
+    componentMount();
+    return () => {
+      window.addEventListener("resize", throttle(updateWidth, 1000));
+      document.getElementById("root").removeEventListener("mousemove", e => {
+        e.stopPropogation();
+        e.preventDefault();
+      });
+    };
+  }, [componentMount]);
 
   return (
     <Fragment>

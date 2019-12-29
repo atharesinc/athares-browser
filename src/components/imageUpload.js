@@ -11,10 +11,10 @@ export default function ImageUpload(props) {
   const editor = useRef(null);
 
   const [image, setImage] = useState(props.defaultImage);
-  const [width, setWidth] = useState(
+  const [width] = useState(
     parseFloat(getComputedStyle(document.getElementById("root")).fontSize) * 15
   );
-  const [height, setHeight] = useState(
+  const [height] = useState(
     parseFloat(getComputedStyle(document.getElementById("root")).fontSize) * 15
   );
   const [editMode, setEditMode] = useState(false);
@@ -132,8 +132,8 @@ export default function ImageUpload(props) {
         <div
           style={{
             border: "5px solid #FFFFFF",
-            height: height,
-            width: width,
+            height,
+            width,
             borderRadius: "2px"
           }}
           className="row-center"
@@ -166,8 +166,8 @@ export default function ImageUpload(props) {
           className="horizontal"
           style={{
             border: "5px solid #FFFFFF",
-            height: height,
-            width: width,
+            height,
+            width,
             borderRadius: "2px",
             justifyContent: "center"
           }}
@@ -190,8 +190,8 @@ export default function ImageUpload(props) {
           id="create-circle-dropzone"
           style={{
             border: "5px solid #FFFFFF",
-            height: height,
-            width: width,
+            height,
+            width,
             borderRadius: "2px"
           }}
         >
@@ -214,7 +214,7 @@ export default function ImageUpload(props) {
         defaultValue={0}
         onChange={sliderChange}
         className="mv3"
-        style={{ width: width }}
+        style={{ width }}
       />
       {/*<div
                   className="flex flex-row space-around"

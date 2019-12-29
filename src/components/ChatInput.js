@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "reactn";
+import React, { useState, useEffect, useCallback } from "reactn";
 import TextareaAutosize from "react-autosize-textarea";
 import FeatherIcon from "feather-icons-react";
 import Loader from "./Loader";
@@ -14,34 +14,35 @@ export default function ChatInput(props) {
   const [fileIsImage, setFileIsImage] = useState(false);
   const [loadingImage, setLoadingImage] = useState(false);
   const [showEmoji, setShowEmoji] = useState(false);
-  const [rotate, setRotate] = useState(0);
-  const [extension, setExtension] = useState(null);
+  const [rotate] = useState(0);
+  // const [extension, setExtension] = useState(null);
   const [filePreview, setFilePreview] = useState(null);
 
+  const hideEmojis = useCallback(
+    e => {
+      if (showEmoji === false) {
+        return;
+      }
+      if (e.target.closest(".emoji-mart") !== null) {
+        return;
+      }
+      if (e.target.closest("#emoji-trigger") !== null) {
+        return;
+      }
+      if (e.target.closest(".emoji-mart") === null) {
+        setShowEmoji(false);
+      }
+    },
+    [showEmoji]
+  );
+
   useEffect(() => {
-    componentMount();
+    window.addEventListener("click", hideEmojis);
     return () => {
       window.removeEventListener("click", hideEmojis);
     };
-  }, []);
+  }, [hideEmojis]);
 
-  const componentMount = () => {
-    window.addEventListener("click", hideEmojis);
-  };
-  const hideEmojis = e => {
-    if (showEmoji === false) {
-      return;
-    }
-    if (e.target.closest(".emoji-mart") !== null) {
-      return;
-    }
-    if (e.target.closest("#emoji-trigger") !== null) {
-      return;
-    }
-    if (e.target.closest(".emoji-mart") === null) {
-      setShowEmoji(false);
-    }
-  };
   const changeText = () => {
     let chatInput = document.getElementById("chat-input");
     if (input.trim() === "" && chatInput.value.trim() === "") {
@@ -174,11 +175,12 @@ export default function ChatInput(props) {
       );
     });
   };
-  const deleteImage = () => {
-    setShowFilePreview(false);
-    setFile(null);
-    setFileIsImage(false);
-  };
+  // const deleteImage = () => {
+  //   setShowFilePreview(false);
+  //   setFile(null);
+  //   setFileIsImage(false);
+  // };
+
   const selectEmoji = emoji => {
     setInput(input + emoji.native);
   };

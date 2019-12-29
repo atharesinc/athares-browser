@@ -25,16 +25,15 @@ function CreateDM(props) {
   const [uploadInProgress, setUploadInProgress] = useState(false);
 
   useEffect(() => {
-    componentMount();
-  }, []);
-
-  const componentMount = () => {
-    if (!props.user) {
-      props.history.push("/app");
+    function componentMount() {
+      if (!props.user) {
+        props.history.push("/app");
+      }
+      document.getElementById("no-messages").innerText =
+        "Enter a user's name to start a conversation";
     }
-    document.getElementById("no-messages").innerText =
-      "Enter a user's name to start a conversation";
-  };
+    componentMount();
+  }, [props.user, props.history]);
 
   const submit = async (text = "", file = null) => {
     let { data } = props;

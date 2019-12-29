@@ -15,25 +15,21 @@ function CreateChannel(props) {
   const [description, setDescription] = useState("");
   const [isTaken, setIsTaken] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [activeCircle, setActiveCircle] = useGlobal("activeCircle");
+  const [activeCircle] = useGlobal("activeCircle");
   const [, setActiveChannel] = useGlobal("activeChannel");
 
   const [user] = useGlobal("user");
 
   useEffect(() => {
-    componentMount();
-  }, []);
+    if (!user || !activeCircle) {
+      props.history.replace("/app");
+    }
+  }, [user, activeCircle, props.history]);
 
   const back = () => {
     props.history.push("/app");
   };
 
-  const componentMount = () => {
-    // verify this circle is real and that the user is logged in, but for now...
-    if (!user || !activeCircle) {
-      props.history.replace("/app");
-    }
-  };
   const updateName = e => {
     const name = e.target.value.substring(0, 51);
     setName(name);
@@ -43,6 +39,7 @@ function CreateChannel(props) {
     setDescription(e.target.value.substring(0, 301));
   };
   const onSubmit = async e => {
+    setLoading(true);
     e.preventDefault();
     if (name.trim().length === 0) {
       return false;
@@ -80,6 +77,7 @@ function CreateChannel(props) {
     } catch (err) {
       console.error(new Error(err));
     }
+    setLoading(false);
   };
 
   let circle = null;

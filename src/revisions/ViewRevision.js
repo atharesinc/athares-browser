@@ -40,7 +40,14 @@ function ViewRevision(props) {
 
       setActiveChannel(null);
     }
-  }, []);
+  }, [
+    props.activeRevision,
+    props.match.params.id,
+    setActiveRevision,
+    setActiveCircle,
+    props.match.url,
+    setActiveChannel
+  ]);
 
   const vote = async support => {
     let { activeRevision, data, isUserInCircle, activeCircle } = props;

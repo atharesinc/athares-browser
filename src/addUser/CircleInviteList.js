@@ -17,12 +17,14 @@ function CircleInviteList(props) {
     );
     props.updateList(updatedListOfSelections);
   };
+
   const inputChange = input => {
     if (props.selectedUsers.length >= 6) {
       return;
     }
-    setSearch(input);
+    setSearch(input.toLowerCase());
   };
+
   const addition = user => {
     const newSelectedList = [...props.selectedUsers, user];
     props.updateList(newSelectedList);
@@ -38,6 +40,7 @@ function CircleInviteList(props) {
     >
       {({ data: { allUsers = [] } = {} }) => {
         // filter data.suggestions by users that are in selectedUsers list
+        console.log("allUsers", allUsers);
         if (
           search.trim().length >= 1 &&
           selectedUsers.length < 7 &&

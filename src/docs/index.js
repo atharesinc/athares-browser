@@ -1,4 +1,4 @@
-import React, { useState, useGlobal, useEffect } from "reactn";
+import React, { useGlobal, useEffect } from "reactn";
 import Amendment from "./Amendment";
 import Loader from "../components/Loader.js";
 import { Link } from "react-router-dom";
@@ -16,14 +16,6 @@ function Constitution(props) {
   const [, setActiveRevision] = useGlobal("activeRevision");
 
   useEffect(() => {
-    componentMount();
-  }, []);
-
-  const back = () => {
-    props.history.push(`/app`);
-  };
-
-  const componentMount = () => {
     // we only need to manually fetch the circle and it's amendments if the user isn't signed in
     // we should always make sure that the currently navigated-to circle is the activeCircle in redux
     if (activeCircle) {
@@ -36,6 +28,16 @@ function Constitution(props) {
       setActiveChannel(null);
       setActiveRevision(null);
     }
+  }, [
+    activeCircle,
+    setActiveChannel,
+    setActiveRevision,
+    props.match.params.id,
+    setActiveCircle
+  ]);
+
+  const back = () => {
+    props.history.push(`/app`);
   };
 
   const _subToMore = subscribeToMore => {

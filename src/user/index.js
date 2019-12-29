@@ -17,7 +17,7 @@ function User(props) {
     } else if (!user) {
       props.history.replace("/app");
     }
-  }, [user, props.history]);
+  }, [user, props.history, setLoadingUser, props.location.pathname]);
 
   return (
     <Query

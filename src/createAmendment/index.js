@@ -23,13 +23,17 @@ function CreateAmendment({ activeCircle, ...props }) {
   const [isEmpty, setIsEmpty] = useState(false);
   const [user] = useGlobal("user");
 
-  const [activeRevision, setActiveRevision] = useGlobal("activeRevision");
+  const [, setActiveRevision] = useGlobal("activeRevision");
 
   useEffect(() => {
-    if (!user || !activeCircle) {
-      props.history.replace("/app");
+    function componentMount() {
+      if (!user || !activeCircle) {
+        props.history.replace("/app");
+      }
     }
-  }, []);
+
+    componentMount();
+  }, [user, activeCircle, props.history]);
 
   const back = () => {
     props.history.push("/app");
@@ -74,6 +78,9 @@ function CreateAmendment({ activeCircle, ...props }) {
         title: name
       });
 
+      if (error) {
+        throw error;
+      }
       if (allAmendments.length !== 0) {
         setIsTaken(true);
         return false;
@@ -145,13 +152,23 @@ function CreateAmendment({ activeCircle, ...props }) {
       }
     }
   };
-  const clearError = () => {
-    setIsTaken(false);
-  };
 
   let { data = {} } = props;
 
-  if (activeCircle && data.Circle) {
+  if (loading) {
+    return (
+      <div
+        id="dashboard-wrapper"
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center"
+        }}
+      >
+        <Loader />
+      </div>
+    );
+  } else if (activeCircle && data.Circle) {
     return (
       <div id="revisions-wrapper">
         <div className="flex ph2 h10">
@@ -257,19 +274,6 @@ function CreateAmendment({ activeCircle, ...props }) {
             )}
           </form>
         </Scrollbars>
-      </div>
-    );
-  } else {
-    return (
-      <div
-        id="dashboard-wrapper"
-        style={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center"
-        }}
-      >
-        <Loader />
       </div>
     );
   }

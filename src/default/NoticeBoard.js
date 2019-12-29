@@ -1,12 +1,11 @@
-import React, { useState, useEffect, withGlobal } from "reactn";
+import React, { useState, withGlobal } from "reactn";
 import { GET_CIRCLE_NOTICES } from "../graphql/queries";
 import CircleNotice from "./CircleNotice";
 import { graphql } from "react-apollo";
 import Scrollbars from "react-custom-scrollbars";
-import ReactDOM from "react-dom";
 
 function NoticeBoard(props) {
-  const [wrapperHeight, setWrapperHeight] = useState(300);
+  const [wrapperHeight] = useState(300);
   // useEffect(() => {
   // componentMount();
   // }, []);

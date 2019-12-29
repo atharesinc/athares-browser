@@ -18,15 +18,10 @@ function ShareCircle(props) {
   const [user] = useGlobal("user");
   const [activeCircle] = useGlobal("activeCircle");
   useEffect(() => {
-    componentMount();
-  }, []);
-
-  const componentMount = () => {
-    // verify this circle is real and that the user is logged in, but for now...
     if (!user || !activeCircle) {
       props.history.replace("/app");
     }
-  };
+  }, [user, activeCircle, props.history]);
 
   const generateLink = async () => {
     setLoading(true);

@@ -1,4 +1,4 @@
-import React, { useState, useGlobal, useEffect } from "reactn";
+import React, { useCallback, useState, useGlobal, useEffect } from "reactn";
 import ImageUpload from "../components/ImageUpload";
 import ErrorSwap from "../utils/ErrorSwap";
 import Phone from "react-phone-number-input";
@@ -29,17 +29,17 @@ function EditUser(props) {
   const [hasEditedImage, setHasEditedImage] = useState(false);
   const [user] = useGlobal("user");
 
-  useEffect(() => {
-    componentMount();
-  }, []);
-
-  const componentMount = async () => {
+  const componentMount = useCallback(() => {
     if (!user) {
       props.history.replace("/app");
     }
     setUserState(props.user);
     setLoading(false);
-  };
+  }, [props.history, setUserState, props.user, setLoading, user]);
+
+  useEffect(() => {
+    componentMount();
+  }, [componentMount]);
 
   const toggleEditMode = bool => {
     setEditMode(bool);
@@ -78,6 +78,7 @@ function EditUser(props) {
     });
     setPhoneTaken(false);
   };
+
   const convertBlobToBase64 = blob => {
     return new Promise(resolve => {
       let reader = new FileReader();
@@ -188,10 +189,10 @@ function EditUser(props) {
     });
   };
 
-  const clearError = () => {
-    setPhoneTaken(false);
-    setUnameTaken(false);
-  };
+  // const clearError = () => {
+  //   setPhoneTaken(false);
+  //   setUnameTaken(false);
+  // };
 
   const { id, firstName, lastName, phone, uname, icon } = userState;
 

@@ -16,11 +16,11 @@ function ChannelUpdateMonitor(props) {
     // set the user's current DMs
     setDms(dms);
 
-    if (unreadDMs.length > unreadDMs.length || unreadDMs.length === 0) {
+    if (unreadDMs.length === 0) {
       clearInterval(toggleTitle);
       document.title = "Athares Distributed Democracy";
     }
-  }, [props.getDMs.User, unreadDMs]);
+  }, [props.getDMs.User, unreadDMs, setDms, toggleTitle]);
 
   const playAudio = () => {
     let audio = new Audio("/img/job-done.mp3");
