@@ -42,7 +42,6 @@ function AddUser(props) {
   };
 
   const updateList = items => {
-    console.log("updateList", items);
     setSelectedUsers(items);
   };
 

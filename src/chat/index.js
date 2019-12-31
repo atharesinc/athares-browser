@@ -9,7 +9,6 @@ import { CREATE_MESSAGE } from "../graphql/mutations";
 import { SUB_TO_MESSAGES_BY_CHANNEL_ID } from "../graphql/subscriptions";
 import { GET_MESSAGES_FROM_CHANNEL_ID } from "../graphql/queries";
 import { graphql, Query } from "react-apollo";
-import compose from "lodash.flowright";
 import swal from "sweetalert";
 import { uploadToAWS } from "utils/upload";
 
@@ -22,54 +21,57 @@ function Chat(props) {
   const [, setActiveRevision] = useGlobal("activeRevision");
 
   useEffect(() => {
-    const circleId = props.match.url.match(/app\/circle\/(.+)\/channel/)[1];
+    function componentMount() {
+      const circleId = props.match.url.match(/app\/circle\/(.+)\/channel/)[1];
 
-    if (circleId) {
-      setActiveCircle(circleId);
-    }
+      if (circleId) {
+        setActiveCircle(circleId);
+      }
 
-    if (!activeChannel) {
-      setActiveChannel(props.match.params.id);
-      setActiveRevision(null);
-      return;
-    }
-    // remove this channel from list of channels with unread messages
-    if (activeChannel) {
-      const index = unreadChannels.findIndex(
-        item => item.id === props.match.params.id
-      );
+      if (!activeChannel) {
+        setActiveChannel(props.match.params.id);
+        setActiveRevision(null);
+        return;
+      }
+      // // remove this channel from list of channels with unread messages
+      if (unreadChannels.indexOf(activeChannel) !== -1) {
+        const index = unreadChannels.findIndex(
+          item => item.id === props.match.params.id
+        );
 
-      setUnreadChannels(unreadChannels.splice(index));
+        setUnreadChannels(unreadChannels.splice(index));
+      }
+      // may need to make this activeChannel
     }
-    // may need to make this activeChannel
+    componentMount();
   }, [
     props.match.url,
     setActiveCircle,
     activeChannel,
-    setActiveChannel,
     setActiveRevision,
     unreadChannels,
+    setActiveChannel,
     setUnreadChannels,
     props.match.params.id
   ]);
 
-  useEffect(() => {
-    // if current url doesn't match internal state, update state to match url
-    if (props.match.params.id !== props.activeChannel) {
-      setActiveChannel(props.match.params.id);
-      // props.dispatch(removeUnreadChannel(props.match.params.id));
-    }
-    // if (
-    //   activeChannel &&
-    // ) {
-    //   dispatch(removeUnreadChannel(props.match.params.id));
-    // }
-  }, [
-    props.match.params.id,
-    activeChannel,
-    props.activeChannel,
-    setActiveChannel
-  ]);
+  // useEffect(() => {
+  //   // if current url doesn't match internal state, update state to match url
+  //   if (props.match.params.id !== props.activeChannel) {
+  //     setActiveChannel(props.match.params.id);
+  //     // props.dispatch(removeUnreadChannel(props.match.params.id));
+  //   }
+  //   // const index = unreadChannels.findIndex(
+  //   //   item => item.id === props.match.params.id
+  //   // );
+
+  //   // setUnreadChannels(unreadChannels.splice(index));
+  // }, [
+  //   props.match.params.id,
+  //   activeChannel,
+  //   props.activeChannel,
+  //   setActiveChannel
+  // ]);
 
   const scrollToBottom = () => {
     let chatBox = document.getElementById("chat-window-scroller");
@@ -216,6 +218,4 @@ function Chat(props) {
   );
 }
 
-export default compose(graphql(CREATE_MESSAGE, { name: "createMessage" }))(
-  Chat
-);
+export default graphql(CREATE_MESSAGE, { name: "createMessage" })(Chat);

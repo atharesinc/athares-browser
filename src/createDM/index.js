@@ -1,4 +1,4 @@
-import React, { useState, useEffect, withGlobal } from "reactn";
+import React, { useState, useEffect, useGlobal, withGlobal } from "reactn";
 import ChatWindow from "../components/ChatWindow";
 import ChatInput from "../components/ChatInput";
 import DMInviteList from "./DMInviteList";
@@ -9,7 +9,7 @@ import { encrypt } from "../utils/crypto";
 import SimpleCrypto from "simple-crypto-js";
 import { GET_USER_BY_ID } from "../graphql/queries";
 import {
-  CREATE_CHANNEL,
+  CREATE_DM_CHANNEL,
   CREATE_KEY,
   CREATE_MESSAGE,
   ADD_USER_TO_CHANNEL
@@ -23,6 +23,7 @@ function CreateDM(props) {
   const [text, setText] = useState("");
   const [selectedUsers, setSelectedUsers] = useState([]);
   const [uploadInProgress, setUploadInProgress] = useState(false);
+  const [, setActiveChannel] = useGlobal("activeChannel");
 
   useEffect(() => {
     function componentMount() {
@@ -31,9 +32,10 @@ function CreateDM(props) {
       }
       document.getElementById("no-messages").innerText =
         "Enter a user's name to start a conversation";
+      setActiveChannel(null);
     }
     componentMount();
-  }, [props.user, props.history]);
+  }, [props.user, props.history, setActiveChannel]);
 
   const submit = async (text = "", file = null) => {
     let { data } = props;
@@ -115,10 +117,10 @@ function CreateDM(props) {
       if (file) {
         fetch(file);
       }
-      // send the first message, encrypted with the channel's SEA pair
+      // send the first message, encrypted with the channel's key pair
       let newMessage = {
         text: simpleCrypto.encrypt(text.trim()),
-        user: user,
+        user: user.id,
         channel: id,
         file: url ? simpleCrypto.encrypt(url.url) : "",
         fileName: file !== null ? file.name : null
@@ -130,6 +132,7 @@ function CreateDM(props) {
         }
       });
 
+      setActiveChannel(id);
       props.history.push(`/app/channel/${id}`);
     } catch (err) {
       console.error(new Error(err));
@@ -169,7 +172,7 @@ export default withGlobal(({ user }) => ({ user }))(
   compose(
     graphql(CREATE_MESSAGE, { name: "createMessage" }),
     graphql(ADD_USER_TO_CHANNEL, { name: "addUserToChannel" }),
-    graphql(CREATE_CHANNEL, { name: "createChannel" }),
+    graphql(CREATE_DM_CHANNEL, { name: "createChannel" }),
     graphql(CREATE_KEY, { name: "createKey" }),
     graphql(GET_USER_BY_ID, {
       options: ({ user }) => ({ variables: { id: user || "" } })

@@ -1,6 +1,8 @@
 import React from "reactn";
 import Message from "./Message";
 import { Scrollbars } from "react-custom-scrollbars";
+import MessageDivider from "./MessageDivider";
+import { insertBreaks } from "../utils/transform";
 
 const ChatWindow = ({ messages = [], user, ...props }) => {
   if (!user) {
@@ -8,6 +10,8 @@ const ChatWindow = ({ messages = [], user, ...props }) => {
       id: ""
     };
   }
+  messages = insertBreaks(messages);
+
   return (
     <div id="chat-window">
       {messages.length !== 0 ? (
@@ -21,6 +25,10 @@ const ChatWindow = ({ messages = [], user, ...props }) => {
         >
           {messages.map((msg, i) => {
             // if the user sends multiple consecutive messages we don't need to append the username and image to every message
+            if (msg.date) {
+              // return <div key={msg.id}>{msg.date}</div>;
+              return <MessageDivider key={msg.id} date={msg.date} />;
+            }
             return (
               <Message
                 multiMsg={

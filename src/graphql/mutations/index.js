@@ -129,6 +129,22 @@ export const CREATE_CHANNEL = gql`
     }
   }
 `;
+export const CREATE_DM_CHANNEL = gql`
+  mutation createChannel(
+    $name: String!
+    $description: String
+    $channelType: String!
+  ) {
+    createChannel(
+      channelType: $channelType
+      name: $name
+      description: $description
+    ) {
+      id
+      name
+    }
+  }
+`;
 export const ADD_CHANNEL_TO_CIRCLE = gql`
   mutation addChannelToCircle($channel: ID!, $circle: ID!) {
     addToCircleOnChannels(

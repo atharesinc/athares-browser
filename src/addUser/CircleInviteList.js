@@ -40,7 +40,6 @@ function CircleInviteList(props) {
     >
       {({ data: { allUsers = [] } = {} }) => {
         // filter data.suggestions by users that are in selectedUsers list
-        console.log("allUsers", allUsers);
         if (
           search.trim().length >= 1 &&
           selectedUsers.length < 7 &&

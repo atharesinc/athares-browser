@@ -77,6 +77,7 @@ export default function ChatInput(props) {
 
     submit();
   };
+
   const submit = async () => {
     if (input.trim() === "" && file === null) {
       return false;
@@ -100,23 +101,22 @@ export default function ChatInput(props) {
 
   const onChange = async e => {
     const imgs = ["gif", "png", "jpg", "jpeg", "bmp"];
-    let file = e.currentTarget.files[0];
-    let extension = file.name.match(/\.(.{1,4})$/i)[1];
+    let newFile = e.currentTarget.files[0];
+    let extension = newFile.name.match(/\.(.{1,4})$/i)[1];
 
     if (
-      file.type.includes("image/") &&
+      newFile.type.includes("image/") &&
       imgs.findIndex(i => i === extension.toLowerCase()) !== -1
     ) {
-      setShowFilePreview(true);
-      setFile(file);
       setFileIsImage(true);
-      setLoadingImage(true);
-
-      getImagePreview(file);
-    } else {
       setShowFilePreview(true);
-      setFile(file);
+      setFile(newFile);
+      setLoadingImage(true);
+      getImagePreview(newFile);
+    } else {
       setFileIsImage(false);
+      setShowFilePreview(true);
+      setFile(newFile);
     }
   };
 
@@ -146,17 +146,17 @@ export default function ChatInput(props) {
   //   }
   //   return new Blob([new Uint8Array(array)], { type: 'image/jpg' });
   // };
-  const getImagePreview = async () => {
-    loadImage.parseMetaData(file, function(data) {
+  const getImagePreview = async newFile => {
+    loadImage.parseMetaData(newFile, function(data) {
       let ori = 0;
       if (data.exif) {
         ori = data.exif.get("Orientation");
       }
       loadImage(
-        file,
+        newFile,
         function(img) {
           img.toBlob(blob => {
-            blob.name = file.name;
+            blob.name = newFile.name;
             let reader = new FileReader();
             reader.onloadend = e => {
               setLoadingImage(false);
@@ -187,6 +187,7 @@ export default function ChatInput(props) {
 
   let mobile = window.innerWidth < 993;
   let width = mobile ? "100%" : "300px";
+
   return (
     <div id="chat-input-wrapper">
       {/* new stuff below */}

@@ -2,12 +2,12 @@ import React, { withGlobal, useGlobal, useEffect } from "reactn";
 import ChannelGroup from "./ChannelGroup";
 import GovernanceChannelGroup from "./GovernanceChannelGroup";
 import { Link } from "react-router-dom";
+import DMList from "./DMList";
 
 import BottomNav from "../components/BottomNav";
 import FeatherIcon from "feather-icons-react";
 import {
   GET_CHANNELS_BY_CIRCLE_ID,
-  GET_DMS_BY_USER,
   IS_USER_IN_CIRCLE
 } from "../graphql/queries";
 import { SUB_TO_CIRCLES_CHANNELS } from "graphql/subscriptions";
@@ -20,7 +20,6 @@ import Scrollbars from "react-custom-scrollbars";
 
 function Channels(props) {
   const [activeChannel, setActiveCircle] = useGlobal("activeChannel");
-  const [unreadDMs] = useGlobal("unreadDMs");
   const [unreadChannels] = useGlobal("unreadChannels");
 
   useEffect(() => {
@@ -66,39 +65,22 @@ function Channels(props) {
     });
   };
 
-  let {
-    activeCircle,
-    getDMsByUser,
-
-    isUserInCircle
-  } = props;
+  let { activeCircle, isUserInCircle } = props;
 
   let belongsToCircle = false;
-  let user = null;
+  const { user } = props;
   let circle = null;
   let channels = [];
-  let dms = [];
-  // get channel data, if any
-  if (getDMsByUser.User && getDMsByUser.User.channels) {
-    dms = getDMsByUser.User.channels.map(dm => ({
-      unread: unreadDMs.includes(dm.id),
-      ...dm
-    }));
-    user = getDMsByUser.User;
-    user = {
-      id: user.id,
-      firstName: user.firstName,
-      lastName: user.lastName
-    };
-    // see if the user actually belongs to this circle
-    if (
-      isUserInCircle.allCircles &&
-      isUserInCircle.allCircles.length !== 0 &&
-      isUserInCircle.allCircles[0].id === activeCircle
-    ) {
-      belongsToCircle = true;
-    }
+
+  // see if the user actually belongs to this circle
+  if (
+    isUserInCircle.allCircles &&
+    isUserInCircle.allCircles.length !== 0 &&
+    isUserInCircle.allCircles[0].id === activeCircle
+  ) {
+    belongsToCircle = true;
   }
+
   const mobile = window.innerWidth < 993;
   return (
     <Query
@@ -156,14 +138,7 @@ function Channels(props) {
                       return channel.channelType === "group";
                     })}
                   />
-                  <ChannelGroup
-                    style={style.dm}
-                    channelType={"dm"}
-                    activeChannel={activeChannel}
-                    name={"Direct Messages"}
-                    channels={dms}
-                    user={user}
-                  />
+                  <DMList />
                 </Scrollbars>
               </div>
               <BottomNav
@@ -203,14 +178,7 @@ function Channels(props) {
                     </Link>
                   )}
                 </div>
-                <ChannelGroup
-                  style={style.dm}
-                  channelType={"dm"}
-                  activeChannel={activeChannel}
-                  name={"Direct Messages"}
-                  channels={dms}
-                  user={user}
-                />
+                <DMList />
               </div>
               <BottomNav
                 show={!!user}
@@ -244,13 +212,14 @@ export default withGlobal(({ activeCircle, user }) => ({ activeCircle, user }))(
       options: ({ activeCircle, user }) => ({
         variables: { circle: activeCircle || "", user: user || "" }
       })
-    }),
-    graphql(GET_DMS_BY_USER, {
-      name: "getDMsByUser",
-      options: ({ user }) => ({
-        // pollInterval: 5000,
-        variables: { id: user || "" }
-      })
     })
+    // ,
+    // graphql(GET_DMS_BY_USER, {
+    //   name: "getDMsByUser",
+    //   options: ({ user }) => ({
+    //     // pollInterval: 5000,
+    //     variables: { id: user || "" },
+    //   }),
+    // })
   )(Channels)
 );
