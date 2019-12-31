@@ -39,7 +39,7 @@ import { logout } from "./utils/state";
 
 function App(props) {
   const [width, setWidth] = useState(window.innerWidth);
-  const [, setUser] = useGlobal("user");
+  const [user, setUser] = useGlobal("user");
   const [, setPub] = useGlobal("setPub");
   // const [revisions] = useGlobal("revisions");
   // const [votes] = useGlobal("votes");
@@ -54,7 +54,7 @@ function App(props) {
     routeFix();
   });
 
-  const { user, signinUser } = props;
+  const { signinUser } = props;
 
   const parallaxIt = useCallback((e, target, movement, rootElement) => {
     var $this = document.querySelector(rootElement);
@@ -140,8 +140,8 @@ function App(props) {
     <Fragment>
       <OnlineMonitor />
       <RevisionMonitor />
-      {props.user && <ChannelUpdateMonitor />}
-      {props.user && <DMUpdateMonitor />}
+      {user && <ChannelUpdateMonitor />}
+      {user && <DMUpdateMonitor />}
       <div className="wrapper high-img" id="main-layout">
         <div id="desktop-wrapper-outer" className="wrapper">
           <div className="wrapper grey-screen" id="desktop-wrapper">

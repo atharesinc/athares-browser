@@ -1,10 +1,4 @@
-import React, {
-  useCallback,
-  useState,
-  useGlobal,
-  useEffect,
-  withGlobal
-} from "reactn";
+import React, { Component, withGlobal } from "reactn";
 import ChatWindow from "../components/ChatWindow";
 import ChatInput from "../components/ChatInput";
 import DMSettings from "./DMSettings";
@@ -25,102 +19,105 @@ import compose from "lodash.flowright";
 import { uploadToAWS } from "utils/upload";
 import swal from "sweetalert";
 
-function DMChat(props) {
-  const [cryptoEnabled, setCryptoEnabled] = useState(false);
-  const [uploadInProgress, setUploadInProgress] = useState(false);
+class DMChat extends Component {
+  constructor(props) {
+    super(props);
 
-  const [simpleCrypto, setSimpleCrypto] = useState(new SimpleCrypto("nope"));
-  const [dmSettings, setDmSettings] = useGlobal("dmSettings");
-  const [unreadDMs, setUnreadDMs] = useGlobal("unreadDMs");
-  const [, setActiveChannel] = useGlobal("activeChannel");
+    this.state = {
+      cryptoEnabled: false,
+      text: "",
+      uploadInProgress: false
+    };
+    this.simpleCrypto = new SimpleCrypto("nope");
+  }
 
-  const seeThisChannel = useCallback(() => {
-    const index = unreadDMs.findIndex(item => item.id === props.activeChannel);
-    setUnreadDMs(unreadDMs.splice(index));
-  }, [unreadDMs, props.activeChannel, setUnreadDMs]);
-
-  useEffect(() => {
-    seeThisChannel();
-  }, [props.activeChannel, seeThisChannel]);
-
-  const updateCrypto = useCallback(async () => {
-    try {
-      let hashed = window.localStorage.getItem("ATHARES_HASH");
-      let simpleCryptoForUserPriv = new SimpleCrypto(hashed);
-
-      let userPriv = simpleCryptoForUserPriv.decrypt(
-        props.getUserKeys.User.priv
-      );
-
-      let decryptedChannelSecret = await decrypt(
-        props.getUserKeys.User.keys[0].key,
-        userPriv
-      );
-
-      setSimpleCrypto(new SimpleCrypto(decryptedChannelSecret));
-      setCryptoEnabled(true);
-    } catch (err) {
-      console.error(new Error(err));
+  async componentDidMount() {
+    if (this.props.user === null) {
+      this.props.history.replace("/app");
     }
-  }, [props.getUserKeys.User.keys, props.getUserKeys.User.priv]);
-
-  useEffect(() => {
-    if (typeof props.getUserKeys.User !== undefined) {
-      updateCrypto();
-    }
-  }, [props.getUserKeys, updateCrypto]);
-
-  const componentMount = useCallback(async () => {
-    if (props.user === null) {
-      props.history.push("/app");
-    }
+    const { unreadDMs } = this.global;
 
     // Make sure activeChannel is set
     if (
-      props.activeChannel === null ||
-      props.activeChannel !== props.match.params.id
+      this.props.activeChannel === null ||
+      this.props.activeChannel !== this.props.match.params.id
     ) {
-      setActiveChannel(props.match.params.id);
+      this.setGlobal({ activechannel: this.props.match.params.id });
     }
-    if (props.activeChannel) {
-      seeThisChannel();
+    // see this channel
+    if (this.props.activeChannel) {
+      const index = unreadDMs.indexOf(this.props.activeChannel);
+      this.setGlobal({ unreadDMs: unreadDMs.splice(index) });
     }
-    if (props.getUserKeys.User) {
+
+    if (this.props.getUserKeys.User) {
       try {
         let hashed = window.localStorage.getItem("ATHARES_HASH");
         let simpleCryptoForUserPriv = new SimpleCrypto(hashed);
         const userPriv = simpleCryptoForUserPriv.decrypt(
-          props.getUserKeys.User.priv
+          this.props.getUserKeys.User.priv
         );
 
         let decryptedChannelSecret = await decrypt(
-          props.getUserKeys.User.keys[0].key,
+          this.props.getUserKeys.User.keys[0].key,
           userPriv
         );
 
-        simpleCrypto.setSecret(decryptedChannelSecret);
-        setCryptoEnabled(true);
+        this.simpleCrypto.setSecret(decryptedChannelSecret);
+        this.setState({
+          cryptoEnabled: true
+        });
       } catch (err) {
         console.error(new Error(err));
       }
     }
-  }, [
-    props.user,
-    props.history,
-    props.activeChannel,
-    props.match.params.id,
-    setActiveChannel,
-    seeThisChannel,
-    props.getUserKeys.User,
-    setCryptoEnabled,
-    simpleCrypto
-  ]);
+  }
 
-  useEffect(() => {
-    componentMount();
-  }, [componentMount, seeThisChannel, updateCrypto]);
+  doesUserBelong = () => {
+    if (typeof this.props.getUserKeys.User.keys[0] === "undefined") {
+      this.props.history.replace("/app");
+    }
+  };
+  async componentDidUpdate(prevProps) {
+    if (
+      this.props.activeChannel &&
+      this.props.activeChannel !== prevProps.activeChannel
+    ) {
+      const { unreadDMs } = this.global;
+      const index = unreadDMs.indexOf(this.props.activeChannel);
+      this.setGlobal({ unreadDMs: unreadDMs.splice(index) });
+    }
 
-  const scrollToBottom = () => {
+    if (prevProps.getUserKeys.User !== this.props.getUserKeys.User) {
+      this.doesUserBelong();
+      try {
+        let hashed = window.localStorage.getItem("ATHARES_HASH");
+        let simpleCryptoForUserPriv = new SimpleCrypto(hashed);
+
+        let userPriv = simpleCryptoForUserPriv.decrypt(
+          this.props.getUserKeys.User.priv
+        );
+
+        let decryptedChannelSecret = await decrypt(
+          this.props.getUserKeys.User.keys[0].key,
+          userPriv
+        );
+
+        this.simpleCrypto.setSecret(decryptedChannelSecret);
+        this.setState({
+          cryptoEnabled: true
+        });
+      } catch (err) {
+        if (err.message.includes("Cannot read property 'key' of undefined")) {
+          // user doesn't belong to this dm
+          return;
+        }
+        console.error(new Error(err));
+      }
+    }
+  }
+
+  scrollToBottom = () => {
     let chatBox = document.getElementById("chat-window-scroller");
     if (chatBox) {
       /* scroll to bottom */
@@ -129,42 +126,45 @@ function DMChat(props) {
     }
   };
 
-  const submit = async (text, file = null) => {
+  submit = async (text, file = null) => {
     if (text.trim() === "" && file === null) {
       return false;
     }
     if (file) {
-      setUploadInProgress(true);
+      await this.setState({
+        uploadInProgress: true
+      });
     }
-    let { user, activeChannel: channel } = props;
-
+    let { user, activeChannel: channel } = this.props;
     try {
       let url = file === null ? null : await uploadToAWS(file);
 
       // create the message, encrypted with the channel's key
       let newMessage = {
-        text: simpleCrypto.encrypt(text.trim()),
+        text: this.simpleCrypto.encrypt(text.trim()),
         user,
         channel,
-        file: url ? simpleCrypto.encrypt(url.url) : "",
+        file: url ? this.simpleCrypto.encrypt(url.url) : "",
         fileName: file !== null ? file.name : null
       };
-
-      props.createMessage({
+      this.props.createMessage({
         variables: {
           ...newMessage
         }
       });
 
-      setUploadInProgress(false);
-
+      await this.setState({
+        uploadInProgress: false
+      });
       /* clear textbox */
       let chatInput = document.getElementById("chat-input");
       chatInput.value = "";
       chatInput.setAttribute("rows", 1);
-      // scrollToBottom();
+      // this.scrollToBottom();
     } catch (err) {
-      setUploadInProgress(false);
+      this.setState({
+        uploadInProgress: false
+      });
       console.error(new Error(err));
       swal(
         "Error",
@@ -174,19 +174,19 @@ function DMChat(props) {
     }
   };
 
-  // const updateChannel = () => {
-  //   setActiveChannel(null);
-  // };
+  updateChannel = () => {
+    this.setGlobal({ activeChannel: null });
+  };
 
-  const normalizeName = name => {
+  normalizeName = name => {
     let retval = name
       .split(", ")
       .filter(
         n =>
           n !==
-          props.getUserKeys.User.firstName +
+          this.props.getUserKeys.User.firstName +
             " " +
-            props.getUserKeys.User.lastName
+            this.props.getUserKeys.User.lastName
       );
     if (retval.length === 0) {
       return name;
@@ -206,11 +206,10 @@ function DMChat(props) {
     retval = retval.join(", ");
     return retval;
   };
-
-  const _subToMore = subscribeToMore => {
+  _subToMore = subscribeToMore => {
     subscribeToMore({
       document: SUB_TO_MESSAGES_BY_CHANNEL_ID,
-      variables: { id: props.activeChannel || "" },
+      variables: { id: this.props.activeChannel || "" },
       updateQuery: (prev, { subscriptionData }) => {
         if (!subscriptionData.data) {
           return prev;
@@ -229,68 +228,80 @@ function DMChat(props) {
       }
     });
   };
-  const showDMSettings = () => {
-    setDmSettings(true);
+
+  showDMSettings = () => {
+    this.setGlobal({
+      dmSettings: true
+    });
   };
 
-  let { getUserKeys } = props;
-  let channel = null,
-    messages = [],
-    user = null;
-  return (
-    <Query
-      query={GET_MESSAGES_FROM_CHANNEL_ID}
-      variables={{ id: props.activeChannel || "" }}
-      onCompleted={scrollToBottom}
-    >
-      {({ data = {}, subscribeToMore }) => {
-        if (data.Channel) {
-          _subToMore(subscribeToMore);
-          channel = data.Channel;
-          messages = data.Channel.messages;
-        }
-        if (getUserKeys.User) {
-          user = getUserKeys.User;
-        }
+  render() {
+    let { getUserKeys } = this.props;
+    let channel = null,
+      messages = [],
+      user = null;
+    return (
+      <Query
+        query={GET_MESSAGES_FROM_CHANNEL_ID}
+        variables={{ id: this.props.activeChannel || "" }}
+        onCompleted={this.scrollToBottom}
+      >
+        {({ data = {}, subscribeToMore }) => {
+          if (data.Channel) {
+            this._subToMore(subscribeToMore);
+            channel = data.Channel;
+            messages = data.Channel.messages;
+          }
+          if (getUserKeys.User) {
+            user = getUserKeys.User;
+          }
 
-        if (channel && messages && user && cryptoEnabled) {
-          messages = messages.map(m => ({
-            ...m,
-            text: simpleCrypto.decrypt(m.text),
-            file: m.file ? simpleCrypto.decrypt(m.file) : null
-          }));
-          return (
-            <div id="chat-wrapper">
-              <div id="current-dm-channel">
-                <Link to="/app">
-                  <FeatherIcon icon="chevron-left" className="white db dn-ns" />
-                </Link>
-                <div>{normalizeName(channel.name)}</div>
-                <FeatherIcon
-                  icon="more-vertical"
-                  className="white db pointer"
-                  onClick={showDMSettings}
+          if (channel && messages && user && this.state.cryptoEnabled) {
+            messages = messages.map(m => ({
+              ...m,
+              text: this.simpleCrypto.decrypt(m.text),
+              file: m.file ? this.simpleCrypto.decrypt(m.file) : null
+            }));
+
+            return (
+              <div id="chat-wrapper">
+                <div id="current-dm-channel">
+                  <Link to="/app">
+                    <FeatherIcon
+                      icon="chevron-left"
+                      className="white db dn-ns"
+                    />
+                  </Link>
+                  <div>{this.normalizeName(channel.name)}</div>
+                  <FeatherIcon
+                    icon="more-vertical"
+                    className="white db pointer"
+                    onClick={this.showDMSettings}
+                  />
+                </div>
+                {messages.length !== 0 ? (
+                  <ChatWindow messages={messages} user={user} />
+                ) : (
+                  <Loader />
+                )}
+                <ChatInput
+                  submit={this.submit}
+                  uploadInProgress={this.state.uploadInProgress}
                 />
+                {this.global.dmSettings && <DMSettings />}
               </div>
-              {messages.length !== 0 ? (
-                <ChatWindow messages={messages} user={user} />
-              ) : (
+            );
+          } else {
+            return (
+              <div id="chat-wrapper" style={{ justifyContent: "center" }}>
                 <Loader />
-              )}
-              <ChatInput submit={submit} uploadInProgress={uploadInProgress} />
-              {dmSettings && <DMSettings />}
-            </div>
-          );
-        } else {
-          return (
-            <div id="chat-wrapper" style={{ justifyContent: "center" }}>
-              <Loader />
-            </div>
-          );
-        }
-      }}
-    </Query>
-  );
+              </div>
+            );
+          }
+        }}
+      </Query>
+    );
+  }
 }
 
 export default withGlobal(({ user, activeChannel }) => ({

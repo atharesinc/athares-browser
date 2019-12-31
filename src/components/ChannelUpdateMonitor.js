@@ -10,12 +10,14 @@ function ChannelUpdateMonitor(props) {
   const [activeChannel] = useGlobal("activeChannel");
 
   useEffect(() => {
-    let { circles } = props.getAllMyChannels.User;
-    let channels = circles.map(c => c.channels).flat(1);
+    if (props.getAllMyChannels.User) {
+      let { circles } = props.getAllMyChannels.User;
+      let channels = circles.map(c => c.channels).flat(1);
 
-    channels = channels.map(c => c.id);
-    // set the user's current channels
-    setChannels(channels);
+      channels = channels.map(c => c.id);
+      // set the user's current channels
+      setChannels(channels);
+    }
   }, [props.getAllMyChannels.User, setChannels]);
 
   const _subToMore = subscribeToMore => {

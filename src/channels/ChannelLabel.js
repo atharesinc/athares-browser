@@ -5,6 +5,7 @@ import FeatherIcon from "feather-icons-react";
 const ChannelLabel = props => {
   const [activeCircle] = useGlobal("activeCircle");
   const [activeChannel, setActiveChannel] = useGlobal("activeChannel");
+  const [user] = useGlobal("user");
 
   const hasBorder = parent_id => {
     switch (parent_id) {
@@ -20,7 +21,7 @@ const ChannelLabel = props => {
   };
   const shouldRenderAddChannel = id => {
     if (
-      props.user !== null &&
+      user !== null &&
       props.name !== "Governance" &&
       props.channelType !== "gov" &&
       !props.id

@@ -60,7 +60,7 @@ function LeaveDM(props) {
           );
           setActiveChannel(null);
           setDmSettings(false);
-          props.history.push(`/app`);
+          props.history.replace(`/app`);
         }
       });
     } catch (err) {

@@ -11,14 +11,16 @@ function ChannelUpdateMonitor(props) {
   const [unreadDMs, setUnreadDMs] = useGlobal("unreadDMs");
 
   useEffect(() => {
-    let { channels } = props.getDMs.User;
-    let dms = channels.map(c => c.id);
-    // set the user's current DMs
-    setDms(dms);
+    if (props.getDMs.User) {
+      let { channels } = props.getDMs.User;
+      let dms = channels.map(c => c.id);
+      // set the user's current DMs
+      setDms(dms);
 
-    if (unreadDMs.length === 0) {
-      clearInterval(toggleTitle);
-      document.title = "Athares Distributed Democracy";
+      if (unreadDMs.length === 0) {
+        clearInterval(toggleTitle);
+        document.title = "Athares";
+      }
     }
   }, [props.getDMs.User, unreadDMs, setDms, toggleTitle]);
 

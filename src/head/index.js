@@ -7,7 +7,7 @@ const defaultDesc =
 const Head = ({ title = null, description = null }) => {
   return (
     <Helmet>
-      <title>{title ? title : "Athares Distributed Democracy"}</title>
+      <title>{title ? title : "Athares"}</title>
       <meta
         name="description"
         content={description ? description : defaultDesc}

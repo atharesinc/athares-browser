@@ -107,7 +107,7 @@ function AddUserToDM(props) {
         </div>
         <FeatherIcon className="w2 h2 h3-ns" icon="user-plus" />
       </div>
-      {props.showAddMoreUsers && (
+      {showAddMoreUsers && (
         <div className="flex flex-row justify-between items-center">
           <AddMoreUsers
             selectedUsers={selectedUsers || []}
