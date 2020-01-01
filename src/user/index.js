@@ -52,7 +52,7 @@ function User(props) {
             <Route
               exact
               path={`${match.path}/edit`}
-              component={props => <EditUser {...props} user={user} />}
+              component={props => <EditUser {...props} user={userObj} />}
             />
             <Route
               exact

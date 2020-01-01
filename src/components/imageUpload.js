@@ -29,17 +29,17 @@ export default function ImageUpload(props) {
 
   const toggleEdit = () => {
     if (props.editMode) {
-      props.toggleEditMode(!editMode);
+      props.editMode(!editMode);
     }
     setEditMode(!editMode);
   };
   // const rotate = (angle = 90) => {};
   const onClickSave = async () => {
     try {
-      if (editor) {
+      if (editor && editor.current) {
         // This returns a HTMLCanvasElement, it can be made into a data URL or a blob,
         // drawn on another canvas, or added to the DOM.
-        let canvas = editor.getImage().toDataURL("image/jpg");
+        let canvas = editor.current.getImage().toDataURL("image/jpg");
 
         let imageURL;
 
@@ -138,11 +138,12 @@ export default function ImageUpload(props) {
           }}
           className="row-center"
         >
-          <div
+          <img
             onClick={toggleEdit}
+            src={finalImage}
+            alt={"profile_pic"}
+            crossOrigin="anonymous"
             style={{
-              background: `url(${finalImage}) center no-repeat`,
-              backgroundSize: "cover",
               height: "100%",
               minWidth: "100%",
               cursor: "pointer"

@@ -13,14 +13,18 @@ import { graphql } from "react-apollo";
 import { uploadToAWS } from "utils/upload";
 
 function EditUser(props) {
-  const [userState, setUserState] = useState({
-    id: null,
-    icon: "",
-    phone: "",
-    firstName: "",
-    lastName: "",
-    uname: ""
-  });
+  const [userState, setUserState] = useState(
+    user
+      ? {
+          id: props.user.id || null,
+          icon: props.user.icon || "",
+          phone: props.user.phone || "",
+          firstName: props.user.firstName || "",
+          lastName: props.user.lastName || "",
+          uname: props.user.uname || ""
+        }
+      : {}
+  );
 
   const [phoneTaken, setPhoneTaken] = useState(false);
   const [unameTaken, setUnameTaken] = useState(false);
@@ -30,7 +34,7 @@ function EditUser(props) {
   const [user] = useGlobal("user");
 
   const componentMount = useCallback(() => {
-    if (!user) {
+    if (!props.user) {
       props.history.replace("/app");
     }
     setUserState(props.user);
@@ -74,6 +78,7 @@ function EditUser(props) {
   };
   const updatePhone = number => {
     setUserState({
+      ...userState,
       phone: number
     });
     setPhoneTaken(false);
@@ -120,7 +125,7 @@ function EditUser(props) {
     // validate user data
     // ???
 
-    const [firstName, lastName, phone, uname, icon] = userState;
+    const { firstName, lastName, phone, uname, icon } = userState;
 
     try {
       let updatedUser = {
