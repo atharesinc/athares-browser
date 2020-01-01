@@ -19,7 +19,7 @@ class RevisionMonitor extends Component {
     super();
     this.checkItemsTimer = checkItemsTimer;
   }
-  async componentDidUpdate(prevProps) {
+  componentDidUpdate(prevProps) {
     // only do the following if revisions are loaded, not before
     if (this.props.data.User) {
       // get a flat list of revisions for current and past props
@@ -81,72 +81,79 @@ class RevisionMonitor extends Component {
   // a revision has expired or crossed the voter threshold
   // see if it has passed and becomes an amendment or fails and lives in infamy
   checkIfPass = async ({ circleId, revisionId }) => {
-    let revisions = this.getAllRevisions();
-    let thisRevision = revisions.find(r => r.id === revisionId);
-    // get the votes for this revision in this circle
-    let { votes } = thisRevision;
+    try {
+      let revisions = this.getAllRevisions();
+      let thisRevision = revisions.find(r => r.id === revisionId);
+      // get the votes for this revision in this circle
+      let { votes } = thisRevision;
 
-    let supportVotes = votes.filter(v => v.support === true);
-    // // it passes because the majority of votes has been reached after the expiry period
-    // AND enough people have voted to be representative of the population for a fair referendum
+      let supportVotes = votes.filter(v => v.support === true);
+      // // it passes because the majority of votes has been reached after the expiry period
+      // AND enough people have voted to be representative of the population for a fair referendum
 
-    if (
-      supportVotes.length > votes.length / 2 &&
-      moment().valueOf() >= moment(thisRevision.expires).valueOf() &&
-      votes.length >= thisRevision.voterThreshold
-    ) {
-      // if this revision is a repeal, update the revision like in updateAmendment but also delete amendment
-      if (thisRevision.repeal === true) {
-        await this.props.deleteAmendment({
-          variables: {
-            revision: thisRevision.id,
-            amendment: thisRevision.amendment.id
-          }
-        });
-        this.getNext();
-      } else {
-        // create a separate unique identifier to make sure our new amendment doesn't get created twice
-
-        let hash = await sha(
-          JSON.stringify({
-            id: thisRevision.id,
-            title: thisRevision.title,
-            text: thisRevision.newText
-          })
-        );
-        if (thisRevision.amendment) {
-          await this.props.updateAmendment({
+      if (
+        supportVotes.length > votes.length / 2 &&
+        moment().valueOf() >= moment(thisRevision.expires).valueOf() &&
+        votes.length >= thisRevision.voterThreshold
+      ) {
+        // if this revision is a repeal, update the revision like in updateAmendment but also delete amendment
+        if (thisRevision.repeal === true) {
+          await this.props.deleteAmendment({
             variables: {
-              amendment: thisRevision.amendment.id,
-              title: thisRevision.title,
-              text: thisRevision.newText,
               revision: thisRevision.id,
-              circle: thisRevision.circle,
-              hash
+              amendment: thisRevision.amendment.id
             }
           });
           this.getNext();
         } else {
-          await this.props.createAmendmentFromRevision({
-            variables: {
+          // create a separate unique identifier to make sure our new amendment doesn't get created twice
+
+          let hash = await sha(
+            JSON.stringify({
+              id: thisRevision.id,
               title: thisRevision.title,
-              text: thisRevision.newText,
-              revision: thisRevision.id,
-              circle: thisRevision.circle,
-              hash
-            }
-          });
-          this.getNext();
+              text: thisRevision.newText
+            })
+          );
+          if (thisRevision.amendment) {
+            await this.props.updateAmendment({
+              variables: {
+                amendment: thisRevision.amendment.id,
+                title: thisRevision.title,
+                text: thisRevision.newText,
+                revision: thisRevision.id,
+                circle: thisRevision.circle,
+                hash
+              }
+            });
+            this.getNext();
+          } else {
+            await this.props.createAmendmentFromRevision({
+              variables: {
+                title: thisRevision.title,
+                text: thisRevision.newText,
+                revision: thisRevision.id,
+                circle: thisRevision.circle,
+                hash
+              }
+            });
+            this.getNext();
+          }
         }
+      } else {
+        // it fails and we ignore it forever
+        await this.props.denyRevision({
+          variables: {
+            id: thisRevision.id
+          }
+        });
+        this.getNext();
       }
-    } else {
-      // it fails and we ignore it forever
-      await this.props.denyRevision({
-        variables: {
-          id: thisRevision.id
-        }
-      });
-      this.getNext();
+    } catch (e) {
+      if (e.message.includes("'Amendment' has no item with id")) {
+        return;
+      }
+      console.error(e);
     }
   };
   render() {

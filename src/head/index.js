@@ -16,10 +16,4 @@ const Head = ({ title = null, description = null }) => {
   );
 };
 
-// function mapStateToProps(state) {
-//     return {
-//         title: pull(state, 'title'),
-//         description: pull(state, 'description')
-//     };
-// }
 export default Head;
