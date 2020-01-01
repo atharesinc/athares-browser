@@ -14,6 +14,7 @@ class OnlineMonitor extends Component {
   checkOnline = e => {
     if (navigator.onLine !== this.props.isOnline) {
       this.setGlobal({ isOnline: navigator.onLine });
+      localStorage.setItem("isOnline", navigator.onLine);
     }
   };
   render() {
