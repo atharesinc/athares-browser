@@ -4,6 +4,7 @@ export function insertBreaks(messages = []) {
   if (messages.length === 0) {
     return [];
   }
+
   let newArr = [];
 
   const parsed = "dddd, MMMM Do";
@@ -11,8 +12,9 @@ export function insertBreaks(messages = []) {
     parsed
   );
 
-  for (let i = messages.length - 1; i > 0; i -= 1) {
+  for (let i = messages.length - 1; i >= 0; i -= 1) {
     const thisDay = moment(messages[i].createdAt).format(parsed);
+
     let shortArr = [];
     if (thisDay !== mostRecentDay) {
       shortArr.push({
@@ -30,12 +32,13 @@ export function insertBreaks(messages = []) {
   }
 
   // add the oldest day
-  newArr.splice(0, 0, {
+  newArr.unshift({
     date: mostRecentDay,
     id: messages[0].id + "-" + mostRecentDay,
     user: {
       id: ""
     }
   });
+
   return newArr;
 }
