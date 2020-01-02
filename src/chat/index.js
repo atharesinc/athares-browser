@@ -101,8 +101,8 @@ function Chat(props) {
 
       let newMessage = {
         text: text.trim(),
-        channel: props.activeChannel,
-        user: props.user,
+        channel: activeChannel,
+        user: user,
         file: file !== null ? url.url : null,
         fileName: file !== null ? file.name : null
       };

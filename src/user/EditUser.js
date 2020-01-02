@@ -13,6 +13,7 @@ import { graphql } from "react-apollo";
 import { uploadToAWS } from "utils/upload";
 
 function EditUser(props) {
+  const [user] = useGlobal("user");
   const [userState, setUserState] = useState(
     user
       ? {
@@ -31,7 +32,6 @@ function EditUser(props) {
   const [loading, setLoading] = useState(true);
   const [editMode, setEditMode] = useState(false);
   const [hasEditedImage, setHasEditedImage] = useState(false);
-  const [user] = useGlobal("user");
 
   const componentMount = useCallback(() => {
     if (!props.user) {
@@ -39,7 +39,7 @@ function EditUser(props) {
     }
     setUserState(props.user);
     setLoading(false);
-  }, [props.history, setUserState, props.user, setLoading, user]);
+  }, [props.history, setUserState, props.user, setLoading]);
 
   useEffect(() => {
     componentMount();
