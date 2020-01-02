@@ -1,4 +1,4 @@
-import React from "react";
+import React from "reactn";
 
 import FeatherIcon from "feather-icons-react";
 import { Scrollbars } from "react-custom-scrollbars";
@@ -20,7 +20,7 @@ const Circles = ({ setActive, user, ...props }) => {
           circles = data.User.circles;
         }
         return (
-          <div className="mobile-top-nav w-100 v-mid bg-theme flex flex-row justify-between items-center pv0 ph3">
+          <div className="mobile-top-nav w-100 v-mid bg-theme flex flex-row items-center pv0 ph3">
             <Link
               to={user ? "/app/new/circle" : "/login"}
               className="flex flex-row justify-between items-center"

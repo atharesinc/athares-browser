@@ -1,24 +1,17 @@
-import { PureComponent } from 'react';
+import { useGlobal, useEffect } from "reactn";
 
-import { connect } from 'react-redux';
+import { withRouter } from "react-router-dom";
 
-import { updateChannel, updateRevision } from '../store/state/actions';
-import { withRouter } from 'react-router-dom';
-// import { withGun } from 'react-gun';
+function News(props) {
+  const [, setActiveChannel] = useGlobal("setActiveChannel");
+  const [, setActiveRevision] = useGlobal("setActiveRevision");
+  useEffect(() => {
+    setActiveChannel(null);
+    setActiveRevision(null);
+    props.history.replace("/app");
+  }, [setActiveChannel, setActiveRevision, props.history]);
 
-class Constitution extends PureComponent {
-    componentDidMount() {
-        this.props.dispatch(updateChannel(null));
-        this.props.dispatch(updateRevision(null));
-        this.props.history.replace('/app');
-    }
-    render() {
-        return null;
-    }
+  return null;
 }
 
-function mapStateToProps(state) {
-    return {};
-}
-
-export default withRouter(connect(mapStateToProps)(Constitution));
+export default withRouter(News);

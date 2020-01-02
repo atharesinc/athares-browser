@@ -1,11 +1,12 @@
-import React from "react";
+import React, { useGlobal } from "reactn";
 import { Link, withRouter } from "react-router-dom";
 import FeatherIcon from "feather-icons-react";
-import * as stateSelectors from "../store/state/reducers";
-import { updateChannel } from "../store/state/actions";
-import { connect } from "react-redux";
 
 const ChannelLabel = props => {
+  const [activeCircle] = useGlobal("activeCircle");
+  const [activeChannel, setActiveChannel] = useGlobal("activeChannel");
+  const [user] = useGlobal("user");
+
   const hasBorder = parent_id => {
     switch (parent_id) {
       case "Governance":
@@ -20,7 +21,7 @@ const ChannelLabel = props => {
   };
   const shouldRenderAddChannel = id => {
     if (
-      props.user !== null &&
+      user !== null &&
       props.name !== "Governance" &&
       props.channelType !== "gov" &&
       !props.id
@@ -43,22 +44,19 @@ const ChannelLabel = props => {
     return null;
   };
 
-  const setActiveChannel = () => {
+  const setChannel = () => {
     if (props.isTop) {
       return false;
     }
-    props.dispatch(updateChannel(props.id));
+    setActiveChannel(props.id);
     if (props.channelType !== "dm") {
-      props.history.push(
-        `/app/circle/${props.activeCircle}/channel/${props.id}`
-      );
+      props.history.push(`/app/circle/${activeCircle}/channel/${props.id}`);
     } else {
       props.history.push(`/app/channel/${props.id}`);
     }
   };
 
-  const active =
-    props.activeChannel && props.activeChannel === props.id ? "active-bg" : "";
+  const active = activeChannel && activeChannel === props.id ? "active-bg" : "";
 
   return (
     <div
@@ -67,11 +65,11 @@ const ChannelLabel = props => {
           ? "channel-wrapper"
           : "ttu tracked f7"
       }`}
-      onClick={setActiveChannel}
+      onClick={setChannel}
       style={hasBorder(props.name)}
     >
       <div>{props.name}</div>
-      {shouldRenderAddChannel(props.activeCircle)}
+      {shouldRenderAddChannel(activeCircle)}
       {props.unread && (
         <FeatherIcon icon="alert-circle" className="theme-blue h1 popIn" />
       )}
@@ -79,12 +77,4 @@ const ChannelLabel = props => {
   );
 };
 
-function mapStateToProps(state) {
-  return {
-    user: stateSelectors.pull(state, "user"),
-    activeCircle: stateSelectors.pull(state, "activeCircle"),
-    activeChannel: stateSelectors.pull(state, "activeChannel")
-  };
-}
-
-export default withRouter(connect(mapStateToProps)(ChannelLabel));
+export default withRouter(ChannelLabel);

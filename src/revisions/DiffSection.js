@@ -1,8 +1,8 @@
-import React from "react";
+import React from "reactn";
 import Diff from "react-stylable-diff-common";
 import { Scrollbars } from "react-custom-scrollbars";
 
-const DiffSection = ({ oldText, newText, mode }) => {
+const DiffSection = ({ oldText, newText, mode, ...props }) => {
   switch (mode) {
     case 1:
       return (

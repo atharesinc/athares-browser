@@ -1,10 +1,12 @@
-import React from "react";
+import React, { useGlobal } from "reactn";
 import { withRouter } from "react-router-dom";
-import { closeSearch, clearSearch } from "../store/ui/actions";
-import { connect } from "react-redux";
+
 import moment from "moment";
 
 const Section = props => {
+  const [, setShowSearch] = useGlobal("showSearch");
+
+  const [, setSearchParams] = useGlobal("searchParams");
   let { data } = props;
 
   const navigate = e => {
@@ -36,8 +38,8 @@ const Section = props => {
         default:
           break;
       }
-      props.dispatch(closeSearch());
-      props.dispatch(clearSearch());
+      setShowSearch(false);
+      setSearchParams("");
     }
   };
   // If the user hasn't entered any search terms, or there are no results for this section, don't display the section
@@ -88,7 +90,5 @@ const Section = props => {
     </div>
   );
 };
-function mapStateToProps(state) {
-  return {};
-}
-export default connect(mapStateToProps)(withRouter(Section));
+
+export default withRouter(Section);

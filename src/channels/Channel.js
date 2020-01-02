@@ -1,4 +1,4 @@
-import React from "react";
+import React from "reactn";
 import ChannelLabel from "./ChannelLabel";
 
 /*
@@ -12,14 +12,16 @@ import ChannelLabel from "./ChannelLabel";
         subChannels: [<Object>],
         circle_id: <String>,
         description: <String>,
-        channelType: <String>, "gov" || "group",
-        parent_channel_id
+        channelType: <String>, "gov" || "dm",
     },
     onClick: f(),
     addChannel: f(),
     }
 */
 const Channel = ({ click, channel, activeChannel, user }) => {
+  if (channel.name.trim() === "") {
+    return null;
+  }
   const normalizeName = name => {
     let retval = name
       .split(", ")

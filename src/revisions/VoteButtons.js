@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import React, { Fragment } from "reactn";
 import FeatherIcon from "feather-icons-react";
 
 const VoteButtons = ({ vote }) => {

@@ -1,4 +1,4 @@
-import gql from 'graphql-tag';
+import gql from "graphql-tag";
 
 export const GET_ALL_NOTICES = gql`
   {
@@ -44,6 +44,7 @@ export const GET_USER_BY_ID_ALL = gql`
       uname
       email
       phone
+      createdAt
       circles {
         id
       }
@@ -278,6 +279,9 @@ export const GET_DMS_BY_USER = gql`
         id
         name
         channelType
+        users {
+          id
+        }
       }
     }
   }

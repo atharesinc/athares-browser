@@ -1,13 +1,11 @@
-import React, { Component } from "react";
+import React, { Component, withGlobal } from "reactn";
 import ChatWindow from "../components/ChatWindow";
 import ChatInput from "../components/ChatInput";
 import DMSettings from "./DMSettings";
 import Loader from "../components/Loader";
 import FeatherIcon from "feather-icons-react";
 import { Link } from "react-router-dom";
-import { pull } from "../store/state/reducers";
-import { updateChannel, removeUnreadDM } from "../store/state/actions";
-import { connect } from "react-redux";
+
 import { decrypt } from "utils/crypto";
 import SimpleCrypto from "simple-crypto-js";
 import { CREATE_MESSAGE } from "../graphql/mutations";
@@ -20,8 +18,6 @@ import { graphql, Query } from "react-apollo";
 import compose from "lodash.flowright";
 import { uploadToAWS } from "utils/upload";
 import swal from "sweetalert";
-import { openDMSettings } from "../store/ui/actions";
-const pullUI = require("../store/ui/reducers").pull;
 
 class DMChat extends Component {
   constructor(props) {
@@ -34,21 +30,26 @@ class DMChat extends Component {
     };
     this.simpleCrypto = new SimpleCrypto("nope");
   }
+
   async componentDidMount() {
     if (this.props.user === null) {
-      this.props.history.push("/app");
+      this.props.history.replace("/app");
     }
+    const { unreadDMs } = this.global;
 
     // Make sure activeChannel is set
     if (
       this.props.activeChannel === null ||
       this.props.activeChannel !== this.props.match.params.id
     ) {
-      this.props.dispatch(updateChannel(this.props.match.params.id));
+      this.setGlobal({ activechannel: this.props.match.params.id });
     }
+    // see this channel
     if (this.props.activeChannel) {
-      this.props.dispatch(removeUnreadDM(this.props.activeChannel));
+      const index = unreadDMs.indexOf(this.props.activeChannel);
+      this.setGlobal({ unreadDMs: unreadDMs.splice(index) });
     }
+
     if (this.props.getUserKeys.User) {
       try {
         let hashed = window.localStorage.getItem("ATHARES_HASH");
@@ -72,14 +73,23 @@ class DMChat extends Component {
     }
   }
 
+  doesUserBelong = () => {
+    if (typeof this.props.getUserKeys.User.keys[0] === "undefined") {
+      this.props.history.replace("/app");
+    }
+  };
   async componentDidUpdate(prevProps) {
     if (
       this.props.activeChannel &&
       this.props.activeChannel !== prevProps.activeChannel
     ) {
-      this.props.dispatch(removeUnreadDM(this.props.activeChannel));
+      const { unreadDMs } = this.global;
+      const index = unreadDMs.indexOf(this.props.activeChannel);
+      this.setGlobal({ unreadDMs: unreadDMs.splice(index) });
     }
+
     if (prevProps.getUserKeys.User !== this.props.getUserKeys.User) {
+      this.doesUserBelong();
       try {
         let hashed = window.localStorage.getItem("ATHARES_HASH");
         let simpleCryptoForUserPriv = new SimpleCrypto(hashed);
@@ -98,10 +108,15 @@ class DMChat extends Component {
           cryptoEnabled: true
         });
       } catch (err) {
+        if (err.message.includes("Cannot read property 'key' of undefined")) {
+          // user doesn't belong to this dm
+          return;
+        }
         console.error(new Error(err));
       }
     }
   }
+
   scrollToBottom = () => {
     let chatBox = document.getElementById("chat-window-scroller");
     if (chatBox) {
@@ -158,9 +173,11 @@ class DMChat extends Component {
       );
     }
   };
+
   updateChannel = () => {
-    this.props.dispatch(updateChannel(null));
+    this.setGlobal({ activeChannel: null });
   };
+
   normalizeName = name => {
     let retval = name
       .split(", ")
@@ -211,9 +228,13 @@ class DMChat extends Component {
       }
     });
   };
+
   showDMSettings = () => {
-    this.props.dispatch(openDMSettings());
+    this.setGlobal({
+      dmSettings: true
+    });
   };
+
   render() {
     let { getUserKeys } = this.props;
     let channel = null,
@@ -241,6 +262,7 @@ class DMChat extends Component {
               text: this.simpleCrypto.decrypt(m.text),
               file: m.file ? this.simpleCrypto.decrypt(m.file) : null
             }));
+
             return (
               <div id="chat-wrapper">
                 <div id="current-dm-channel">
@@ -266,7 +288,7 @@ class DMChat extends Component {
                   submit={this.submit}
                   uploadInProgress={this.state.uploadInProgress}
                 />
-                {this.props.dmSettings && <DMSettings />}
+                {this.global.dmSettings && <DMSettings />}
               </div>
             );
           } else {
@@ -282,15 +304,10 @@ class DMChat extends Component {
   }
 }
 
-function mapStateToProps(state) {
-  return {
-    user: pull(state, "user"),
-    activeChannel: pull(state, "activeChannel"),
-    dmSettings: pullUI(state, "dmSettings")
-  };
-}
-
-export default connect(mapStateToProps)(
+export default withGlobal(({ user, activeChannel }) => ({
+  activeChannel,
+  user
+}))(
   compose(
     graphql(CREATE_MESSAGE, { name: "createMessage" }),
     graphql(GET_USER_KEYS, {

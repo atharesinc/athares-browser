@@ -1,4 +1,4 @@
-import React from "react";
+import React from "reactn";
 import moment from "moment";
 
 const HasVoted = ({ vote: { updatedAt, support } }) => {
