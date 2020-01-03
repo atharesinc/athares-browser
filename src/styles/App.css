@@ -507,7 +507,7 @@ input[type="phone"],
 }
 
 #circle-invite-list:focus-within {
-  box-shadow: 0 0 1em #0cb1ff;
+  border: 1px solid #0cb1ff;
 }
 
 .react-tags__suggestions ul {
