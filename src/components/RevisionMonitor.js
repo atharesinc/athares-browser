@@ -1,6 +1,6 @@
 import { Component, withGlobal } from "reactn";
 import { withRouter } from "react-router-dom";
-import moment from "moment";
+import { unixTime } from "../utils/transform";
 import {
   CREATE_AMENDMENT_FROM_REVISION,
   DENY_REVISION,
@@ -43,7 +43,7 @@ class RevisionMonitor extends Component {
   };
   getNext = () => {
     clearTimeout(this.checkItemsTimer);
-    let now = moment().valueOf();
+    let now = unixTime();
     if (!this.props.data.User) {
       return false;
     }
@@ -51,15 +51,13 @@ class RevisionMonitor extends Component {
 
     let items = revisions
       .filter(i => i.passed === null)
-      .sort(
-        (a, b) => moment(a.expires).valueOf() - moment(b.expires).valueOf()
-      );
+      .sort((a, b) => unixTime(a.expires) - unixTime(b.expires));
     if (items.length === 0) {
       return;
     }
     // find soonest ending item, see if it has expired
     for (let i = 0, j = items.length; i < j; i++) {
-      if (moment(items[i].expires).valueOf() <= now) {
+      if (unixTime(items[i].expires) <= now) {
         // process this item
 
         this.checkIfPass({
@@ -67,9 +65,9 @@ class RevisionMonitor extends Component {
           revisionId: items[i].id
         });
         break;
-      } else if (moment(items[i].expires).valueOf() > now) {
+      } else if (unixTime(items[i].expires) > now) {
         // there aren't any revisions that need to be processed, set a timer for the soonest occurring one
-        let time = moment(items[i].expires).valueOf() - now;
+        let time = unixTime(items[i].expires) - now;
 
         this.checkItemsTimer = setTimeout(this.getNext, time);
         break;
@@ -93,7 +91,7 @@ class RevisionMonitor extends Component {
 
       if (
         supportVotes.length > votes.length / 2 &&
-        moment().valueOf() >= moment(thisRevision.expires).valueOf() &&
+        unixTime() >= unixTime(thisRevision.expires) &&
         votes.length >= thisRevision.voterThreshold
       ) {
         // if this revision is a repeal, update the revision like in updateAmendment but also delete amendment

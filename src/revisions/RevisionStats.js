@@ -1,6 +1,6 @@
 import React from "reactn";
 import { Link } from "react-router-dom";
-import moment from "moment";
+import { parseDate, unixTime } from "../utils/transform";
 import ReactCountdownClock from "react-countdown-clock";
 
 const RevisionStats = ({
@@ -17,7 +17,7 @@ const RevisionStats = ({
     .getComputedStyle(document.getElementById("root"))
     .getPropertyValue("font-size")
     .replace("px", "");
-  let remaining = (moment(expires).valueOf() - moment().valueOf()) / 1000;
+  let remaining = (unixTime(expires) - unixTime()) / 1000;
   return (
     <div className="pa3 bg-theme-dark" id="revision-stats">
       <article data-name="slab-stat-small">
@@ -25,13 +25,13 @@ const RevisionStats = ({
           <dl className="fl fn-l w-50 dib-l w-auto-l lh-title mr5-l">
             <dd className="f6 fw4 ml0 white-70">Date Proposed</dd>
             <dd className="f3 fw6 ml0 white">
-              {moment(createdAt).format("MM/DD/YY hh:mma")}
+              {parseDate(createdAt, "P h:mm bbbb")}
             </dd>
           </dl>
           <dl className="fl fn-l w-50 dib-l w-auto-l lh-title">
             <dd className="f6 fw4 ml0 white-70">Expires</dd>
             <dd className="f3 fw6 ml0 white">
-              {moment(expires).format("MM/DD/YY hh:mma")}
+              {parseDate(expires, "P h:mm bbbb")}
             </dd>
           </dl>
         </div>

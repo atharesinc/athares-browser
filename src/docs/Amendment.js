@@ -1,7 +1,7 @@
 import React, { useGlobal, useState } from "reactn";
 import AmendmentEdit from "./AmendmentEdit";
 import AmendmentView from "./AmendmentView";
-import moment from "moment";
+
 import { withRouter } from "react-router-dom";
 import swal from "sweetalert";
 import { graphql } from "react-apollo";
@@ -12,6 +12,8 @@ import {
   ADD_REVISION_TO_AMENDMENT
 } from "../graphql/mutations";
 import sha from "simple-hash-browser";
+import { parseDate } from "../utils/transform";
+import { addSeconds } from "date-fns";
 
 function Amendment(props) {
   const [editMode, setEditMode] = useState(false);
@@ -47,9 +49,9 @@ function Amendment(props) {
             title,
             oldText: null,
             newText: text,
-            expires: moment()
-              .add(Math.max(customSigm(numUsers), 61), "s")
-              .format(),
+            expires: parseDate(
+              addSeconds(new Date(), Math.max(customSigm(numUsers), 61))
+            ),
             voterThreshold: Math.round(numUsers * ratifiedThreshold(numUsers)),
             amendment: id,
             repeal: true
@@ -97,9 +99,7 @@ function Amendment(props) {
       title,
       oldText: amText,
       newText: text.trim(),
-      expires: moment()
-        .add(Math.max(customSigm(numUsers), 61), "s")
-        .format(),
+      expires: parseDate(addSeconds(null, Math.max(customSigm(numUsers), 61))),
       voterThreshold: Math.round(numUsers * ratifiedThreshold(numUsers)),
       amendment: id,
       repeal: false

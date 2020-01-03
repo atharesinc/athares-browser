@@ -1,6 +1,6 @@
 import React from "reactn";
 import FeatherIcon from "feather-icons-react";
-import moment from "moment";
+import { parseDate } from "../utils/transform";
 import { Link } from "react-router-dom";
 
 const AmendmentView = ({ amendment, toggleEdit, editable, circle }) => {
@@ -18,10 +18,10 @@ const AmendmentView = ({ amendment, toggleEdit, editable, circle }) => {
           <div className="mb2">{amendment.title}</div>
           <div className="f7 white-70 flex flex-row justify-start items-center">
             <div className="mb1 w-50">
-              Created - {moment(amendment.createdAt).format("MM/DD/YY hh:mma")}
+              Created - {parseDate(amendment.createdAt, "P h:mm bbbb")}
             </div>
             <div className="w-50">
-              Updated - {moment(amendment.updatedAt).format("MM/DD/YY hh:mma")}
+              Updated - {parseDate(amendment.updatedAt, "P h:mm bbbb")}
             </div>
           </div>
         </div>

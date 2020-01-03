@@ -1,7 +1,6 @@
 import React, { useGlobal } from "reactn";
 import { withRouter } from "react-router-dom";
-
-import moment from "moment";
+import { fromNow } from "../utils/transform";
 
 const Section = props => {
   const [, setShowSearch] = useGlobal("showSearch");
@@ -79,7 +78,7 @@ const Section = props => {
                         : "")}
                   </div>
                   {props.title !== "circles" && (
-                    <div className="f7">{moment(item.createdAt).fromNow()}</div>
+                    <div className="f7">{fromNow(item.createdAt)}</div>
                   )}
                 </div>
               )}

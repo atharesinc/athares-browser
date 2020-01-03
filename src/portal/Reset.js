@@ -4,7 +4,7 @@ import {
   DELETE_RESET_REQUEST
 } from "../graphql/mutations";
 import { GET_RESET_REQUEST, GET_USER_BY_EMAIL } from "../graphql/queries";
-import moment from "moment";
+import { parseDate } from "../utils/transform";
 import { graphql } from "react-apollo";
 import compose from "lodash.flowright";
 import { withRouter } from "react-router-dom";
@@ -12,6 +12,7 @@ import swal from "sweetalert";
 import FeatherIcon from "feather-icons-react";
 import sha from "simple-hash-browser";
 import Loader from "../components/Loader";
+import { addHours } from "date-fns";
 
 function Reset(props) {
   const [loading, setLoading] = useState(false);
@@ -22,9 +23,8 @@ function Reset(props) {
   const checkIfExpired = () => {
     if (
       !props.data.ResetRequest ||
-      moment(props.data.ResetRequest.createdAt)
-        .add(24, "hours")
-        .format() <= moment().format()
+      parseDate(addHours(new Date(props.data.ResetRequest.createdAt), 24)) <=
+        parseDate()
     ) {
       swal("Error", "This code is invalid or has expired.", "error");
       return false;

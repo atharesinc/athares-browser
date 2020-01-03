@@ -1,7 +1,7 @@
 import React, { useGlobal, withGlobal, useEffect } from "reactn";
 import { Link, withRouter } from "react-router-dom";
 import Loader from "../components/Loader";
-import moment from "moment";
+import { parseDate, unixTime } from "../utils/transform";
 import { Scrollbars } from "react-custom-scrollbars";
 import FeatherIcon from "feather-icons-react";
 import {
@@ -87,21 +87,19 @@ function RevisionBoard({ user, ...props }) {
             ...r
           };
         });
-        let now = moment().valueOf();
+        let now = unixTime();
 
         // all non-expired revisions
         let newRevisions = allRevisions.filter(
-          r => r.passed === null && now < moment(r.expires).valueOf()
+          r => r.passed === null && now < unixTime(r.expires)
         );
         // passed in the last week
         let recentlyPassed = allRevisions.filter(
-          r =>
-            r.passed === true && now - moment(r.expires).valueOf() <= 604800000
+          r => r.passed === true && now - unixTime(r.expires) <= 604800000
         );
         // rejected in the last week
         let recentlyRejected = allRevisions.filter(
-          r =>
-            r.passed === false && now - moment(r.expires).valueOf() <= 604800000
+          r => r.passed === false && now - unixTime(r.expires) <= 604800000
         );
         return (
           <div id="revisions-wrapper">
@@ -281,7 +279,7 @@ const RevisionCard = ({
           >
             <img src={backer.icon} className="db br-100 w2 h2 mr2" alt="" />
             <small className="f6 white-70 db ml2">
-              {moment(createdAt).format("MM/DD/YY hh:mma")}
+              {parseDate(createdAt, "P h:mm bbbb")}
             </small>
           </div>
         </div>

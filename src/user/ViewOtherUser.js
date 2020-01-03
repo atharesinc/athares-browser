@@ -2,7 +2,7 @@ import React from "reactn";
 import FeatherIcon from "feather-icons-react";
 import { Scrollbars } from "react-custom-scrollbars";
 import Loader from "../components/Loader";
-import moment from "moment";
+import { parseDate } from "../utils/transform";
 import { Query } from "react-apollo";
 import { GET_USER_BY_ID_ALL } from "../graphql/queries";
 
@@ -144,7 +144,7 @@ function ViewUser(props) {
                   <dd className="f6 f5-ns b ml0 white-70">User Since</dd>
                   <dd className="f4 f3-ns b ml0">
                     {" "}
-                    {moment(user.createdAt).format("MM/DD/YY")}
+                    {parseDate(user.createdAt, "MM/DD/YY")}
                   </dd>
                 </dl>
               </article>

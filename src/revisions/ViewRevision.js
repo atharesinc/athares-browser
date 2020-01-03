@@ -8,7 +8,7 @@ import DiffSection from "./DiffSection";
 import HasVoted from "./HasVoted";
 import { Scrollbars } from "react-custom-scrollbars";
 import Loader from "../components/Loader.js";
-import moment from "moment";
+import { unixTime } from "../utils/transform";
 import { withRouter, Link } from "react-router-dom";
 import FeatherIcon from "feather-icons-react";
 import { graphql } from "react-apollo";
@@ -63,7 +63,7 @@ function ViewRevision(props) {
     if (data.Revision) {
       const { votes, ...revision } = data.Revision;
       // If the user attempts to vote after the revision expires, stop and return;
-      if (moment().valueOf() >= moment(revision.expires).valueOf()) {
+      if (unixTime() >= unixTime(revision.expires)) {
         return false;
       }
 
@@ -114,7 +114,7 @@ function ViewRevision(props) {
 
     const support = votes.filter(({ support }) => support).length;
     const hasVoted = votes.find(({ user: { id } }) => id === props.user);
-    const hasExpired = moment().valueOf() >= moment(revision.expires).valueOf();
+    const hasExpired = unixTime() >= unixTime(revision.expires);
     if (revision.amendment) {
       /* Represents a change to existing legislation; Show diff panels   */
       return (

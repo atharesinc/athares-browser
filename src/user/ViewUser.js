@@ -1,7 +1,7 @@
 import React, { withGlobal, useEffect, useGlobal } from "reactn";
 import FeatherIcon from "feather-icons-react";
 import { Link, withRouter } from "react-router-dom";
-import moment from "moment";
+import { parseDate } from "../utils/transform";
 import Loader from "../components/Loader";
 import { Scrollbars } from "react-custom-scrollbars";
 import { graphql } from "react-apollo";
@@ -162,9 +162,7 @@ function ViewUser(props) {
           </dl>
           <dl className="dib mr5">
             <dd className="f6 f5-ns b ml0 white-70">User Since</dd>
-            <dd className="f4 f3-ns b ml0">
-              {moment(user.createdAt).format("MM/DD/YY")}
-            </dd>
+            <dd className="f4 f3-ns b ml0">{parseDate(user.createdAt, "P")}</dd>
           </dl>
         </article>
         <article className="ph2 ph4-ns pv2">

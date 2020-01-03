@@ -1,13 +1,10 @@
 import React from "react";
-import moment from "moment";
+import { parseDate } from "../utils/transform";
 import FileMessage from "./FileMessage";
 import ImageMessage from "./ImageMessage";
 
 const Message = ({ text = "", file = null, fileName = null, ...props }) => {
-  const timestamp = moment(props.timestamp).format("h:mma");
-  // props.timestamp.substring(0, 10) === moment().format("YYYY-MM-DD")
-  //   ? "Today " + moment(props.timestamp).format("h:mma")
-  //   : moment(props.timestamp).format("h:mma");
+  const timestamp = parseDate(props.timestamp, "h:mm bbbb");
 
   const isImage = (file, fileName) => {
     const imgs = ["gif", "png", "jpg", "jpeg", "bmp"];

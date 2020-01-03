@@ -13,7 +13,8 @@ import {
   GET_AMENDMENTS_FROM_CIRCLE_ID,
   DOES_AMENDMENT_EXIST
 } from "../graphql/queries";
-import moment from "moment";
+import { parseDate } from "../utils/transform";
+import { addSeconds } from "date-fns";
 
 function CreateAmendment({ activeCircle, ...props }) {
   const [name, setName] = useState("");
@@ -97,9 +98,10 @@ function CreateAmendment({ activeCircle, ...props }) {
         user: user,
         title: name,
         newText: amendment.trim(),
-        expires: moment()
-          .add(Math.max(customSigm(numUsers), 61), "s")
-          .format(),
+        expires: parseDate(
+          addSeconds(new Date(), Math.max(customSigm(numUsers), 61))
+        ),
+
         voterThreshold: Math.round(numUsers * ratifiedThreshold(numUsers)),
         repeal: false
       };
@@ -153,9 +155,8 @@ function CreateAmendment({ activeCircle, ...props }) {
     }
   };
 
-  let { data = {} } = props;
-
-  if (loading) {
+  let { data: { Circle, loading: loadingData } = {} } = props;
+  if (loading || loadingData) {
     return (
       <div
         id="dashboard-wrapper"
@@ -168,7 +169,7 @@ function CreateAmendment({ activeCircle, ...props }) {
         <Loader />
       </div>
     );
-  } else if (activeCircle && data.Circle) {
+  } else if (activeCircle && Circle) {
     return (
       <div id="revisions-wrapper">
         <div className="flex ph2 h10">
@@ -189,7 +190,7 @@ function CreateAmendment({ activeCircle, ...props }) {
           >
             <article className="cf">
               <time className="f7 ttu tracked white-80">
-                Draft a new piece of legislation for {data.Circle.name}
+                Draft a new piece of legislation for {Circle.name}
               </time>
               <div className="fn mt4">
                 <div className="measure mb4">
