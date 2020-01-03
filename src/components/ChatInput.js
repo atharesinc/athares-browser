@@ -2,9 +2,13 @@ import React, { useState, useEffect, useCallback } from "reactn";
 import TextareaAutosize from "react-autosize-textarea";
 import FeatherIcon from "feather-icons-react";
 import Loader from "./Loader";
-// import emojer from "emojer";
 // import EXIF from "exif-js";
 import { Picker } from "emoji-mart";
+const emojer = require("emojer.js");
+emojer.setConfigs({
+  html: false
+});
+
 var loadImage = require("blueimp-load-image-npm");
 
 export default function ChatInput(props) {
@@ -48,7 +52,8 @@ export default function ChatInput(props) {
     if (input.trim() === "" && chatInput.value.trim() === "") {
       return false;
     }
-    setInput(chatInput.value);
+
+    setInput(emojer.parse(chatInput.value));
   };
   const toggleEmoji = e => {
     setShowEmoji(!showEmoji);

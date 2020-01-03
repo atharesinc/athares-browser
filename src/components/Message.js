@@ -19,6 +19,18 @@ const Message = ({ text = "", file = null, fileName = null, ...props }) => {
       return <FileMessage file={file} fileName={fileName} />;
     }
   };
+  const onlyEmojiStyle = () => {
+    if (/([\uD800-\uDBFF][\uDC00-\uDFFF])/g.test(text)) {
+      return {
+        marginTop: "0em",
+        background: "none",
+        borderColor: "transparent",
+        fontSize: "2em",
+        padding: "0"
+      };
+    }
+    return {};
+  };
   return (
     <div className="message-wrapper">
       {props.multiMsg === false && (
@@ -42,7 +54,8 @@ const Message = ({ text = "", file = null, fileName = null, ...props }) => {
             <div
               className={`message-content ${props.isMine ? "my-msg" : ""}`}
               style={{
-                marginTop: file && text !== "" ? "0.5em" : "0em"
+                marginTop: file && text !== "" ? "0.5em" : "0em",
+                ...onlyEmojiStyle()
               }}
             >
               {text}

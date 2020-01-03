@@ -23,6 +23,7 @@
     "blueimp-load-image-npm": "^0.1.7",
     "craco-workbox": "^0.1.0",
     "date-fns": "^2.8.1",
+    "emojer.js": "^1.3.3",
     "emoji-mart": "^2.9.2",
     "exif-js": "^2.3.0",
     "feather-icons-react": "^0.3.2",
