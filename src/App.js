@@ -22,7 +22,7 @@ import DMUpdateMonitor from './components/DMUpdateMonitor';
 import OnlineMonitor from './components/OnlineMonitor';
 
 import throttle from 'lodash.throttle';
-import { TweenMax } from 'gsap';
+import TweenLite from 'gsap/TweenLite';
 import AtharesLoader from './components/AtharesLoader';
 import { SIGNIN_USER } from './graphql/mutations';
 import { graphql } from 'react-apollo';
@@ -66,7 +66,7 @@ function App(props) {
 
     const height = window.innerHeight * 0.9,
       width = window.innerWidth * 0.9;
-    TweenMax.to(target, 1.25, {
+    TweenLite.to(target, 1.25, {
       x: ((relX - width / 2) / width) * movement,
       y: ((relY - height / 2) / height) * movement,
     });
