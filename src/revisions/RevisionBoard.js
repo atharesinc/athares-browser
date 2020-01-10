@@ -3,7 +3,7 @@ import { Link, withRouter } from 'react-router-dom';
 import AtharesLoader from '../components/AtharesLoader';
 import { parseDate, unixTime } from '../utils/transform';
 import { Scrollbars } from 'react-custom-scrollbars';
-import FeatherIcon from 'feather-icons-react';
+import { Plus, ChevronLeft } from 'react-feather';
 import {
   GET_REVISIONS_FROM_CIRCLE_ID,
   IS_USER_IN_CIRCLE,
@@ -105,11 +105,7 @@ function RevisionBoard({ user, ...props }) {
           <div id='revisions-wrapper'>
             <div className='flex ph2 mobile-nav' style={{ height: '10vh' }}>
               <Link to='/app' className='flex justify-center items-center'>
-                <FeatherIcon
-                  icon='chevron-left'
-                  className='white db dn-l'
-                  onClick={back}
-                />
+                <ChevronLeft className='white db dn-l' onClick={back} />
               </Link>
               <h2 className='ma3 lh-title white'>Revisions</h2>
             </div>
@@ -203,7 +199,7 @@ const Board = ({
           {title === 'New Revisions' && user && belongsToCircle && (
             <Link to={`/app/circle/${circleID}/add/amendment`}>
               <div className='random-button transparent-hover-white mb2'>
-                <FeatherIcon icon='plus' className='pr2' />
+                <Plus className='pr2' />
                 <div className='h-100'>Create Revision</div>
               </div>
             </Link>

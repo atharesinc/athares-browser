@@ -7,7 +7,7 @@ import { GET_AMENDMENTS_FROM_CIRCLE_ID } from '../graphql/queries';
 import { Query } from 'react-apollo';
 import { SUB_TO_CIRCLES_AMENDMENTS } from '../graphql/subscriptions';
 
-import FeatherIcon from 'feather-icons-react';
+import { Plus, ChevronLeft } from 'react-feather';
 
 function Constitution(props) {
   const [user] = useGlobal('user');
@@ -100,11 +100,7 @@ function Constitution(props) {
             <div id='docs-wrapper'>
               <div className='flex justify-between items-center ph2 mobile-nav'>
                 <Link to='/app' className='flex justify-center items-center'>
-                  <FeatherIcon
-                    icon='chevron-left'
-                    className='white db dn-l'
-                    onClick={back}
-                  />
+                  <ChevronLeft className='white db dn-l' onClick={back} />
                 </Link>
                 <h2 className='ma3 lh-title white'> Constitution </h2>
                 {user && (
@@ -112,7 +108,7 @@ function Constitution(props) {
                     to={`/app/circle/${circle.id}/add/amendment`}
                     className='icon-wrapper'
                   >
-                    <FeatherIcon icon='plus' />
+                    <Plus />
                   </Link>
                 )}
               </div>

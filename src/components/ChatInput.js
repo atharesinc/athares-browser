@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'reactn';
 import TextareaAutosize from 'react-autosize-textarea';
-import FeatherIcon from 'feather-icons-react';
+import { Smile, Paperclip, Send, FileText, Loader } from 'react-feather';
 import AtharesLoader from './AtharesLoader';
 // import EXIF from "exif-js";
 import { Picker } from 'emoji-mart';
@@ -139,7 +139,7 @@ export default function ChatInput(props) {
         />
       );
     } else {
-      return <FeatherIcon icon='file-text' />;
+      return <FileText />;
     }
   };
 
@@ -205,7 +205,7 @@ export default function ChatInput(props) {
             bottom: '10vh',
           }}
         >
-          <FeatherIcon className='spin white' icon='loader' />
+          <Loader className='spin white' />
           <div className='ml2 f6 white-70'>{file ? file.name : 'Sending'}</div>
         </div>
       )}
@@ -251,11 +251,11 @@ export default function ChatInput(props) {
             id='emoji-trigger'
             onClick={toggleEmoji}
           >
-            <FeatherIcon icon='star' />
+            <Smile />
           </div>
           <label htmlFor={'fileTextUpload'}>
             <div className='chat-util-icon'>
-              <FeatherIcon icon='paperclip' />
+              <Paperclip />
             </div>
           </label>
         </div>
@@ -277,7 +277,7 @@ export default function ChatInput(props) {
             style={{ width: '3em' }}
           >
             <div className='chat-util-icon' onClick={submit}>
-              <FeatherIcon icon='send' />
+              <Send />
             </div>
           </div>
         )}

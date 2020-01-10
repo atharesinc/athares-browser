@@ -221,13 +221,11 @@ export default function ImageUpload(props) {
                   className="flex flex-row space-around"
                   style={{ width: width }}
                 >
-                  <FeatherIcon
-                    icon="rotate-ccw"
+                  <RotateCCW
                     className="ghost w-50"
                     onClick={rotate(-90)}
                   />
-                  <FeatherIcon
-                    icon="rotate-cw"
+                  <RotateCW
                     className="ghost w-50"
                     onClick={rotate(90)}
                   />

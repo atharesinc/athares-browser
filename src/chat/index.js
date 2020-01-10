@@ -2,7 +2,7 @@ import React, { useState, useEffect, useGlobal } from 'reactn';
 import ChatWindow from '../components/ChatWindow';
 import ChatInput from '../components/ChatInput';
 import AtharesLoader from '../components/AtharesLoader';
-import FeatherIcon from 'feather-icons-react';
+import { ChevronLeft } from 'react-feather';
 import { Link } from 'react-router-dom';
 
 import { CREATE_MESSAGE } from '../graphql/mutations';
@@ -176,8 +176,7 @@ function Chat(props) {
             <div id='chat-wrapper'>
               <div id='current-channel'>
                 <Link to='/app'>
-                  <FeatherIcon
-                    icon='chevron-left'
+                  <ChevronLeft
                     className='white db dn-l'
                     onClick={updateChannel}
                   />
@@ -189,8 +188,7 @@ function Chat(props) {
                 >
                   {channel.description}
                 </div>
-                {/* <FeatherIcon
-                            icon="more-vertical"
+                {/* <MoreVertical
                             className="white db dn-ns"
                         /> */}
               </div>

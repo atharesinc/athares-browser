@@ -1,5 +1,5 @@
 import React, { Fragment, useState, useGlobal, useEffect } from 'reactn';
-import FeatherIcon from 'feather-icons-react';
+import { AtSign, Lock } from 'react-feather';
 import swal from 'sweetalert';
 import { Link, withRouter } from 'react-router-dom';
 
@@ -112,7 +112,7 @@ function Login(props) {
         <form className='wrapper' id='portal-login' onSubmit={tryLogin}>
           <p className='portal-text'>Login with the form below</p>
           <div className='portal-input-wrapper'>
-            <FeatherIcon className='portal-input-icon h1 w1' icon='at-sign' />
+            <AtSign className='portal-input-icon h1 w1' />
             <input
               placeholder='Email'
               className='portal-input h2 ghost pa2'
@@ -125,7 +125,7 @@ function Login(props) {
             />
           </div>
           <div className='portal-input-wrapper'>
-            <FeatherIcon className='portal-input-icon h1 w1' icon='lock' />
+            <Lock className='portal-input-icon h1 w1' />
             <input
               type='password'
               className='portal-input h2 ghost pa2'

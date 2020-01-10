@@ -1,6 +1,6 @@
 import React, { useState, useGlobal, useEffect } from 'reactn';
 import AtharesLoader from '../components/AtharesLoader';
-import FeatherIcon from 'feather-icons-react';
+import { Loader } from 'react-feather';
 import { CREATE_INVITE } from '../graphql/mutations';
 import { GET_CIRCLE_NAME_BY_ID } from '../graphql/queries';
 import { graphql, Query } from 'react-apollo';
@@ -77,7 +77,7 @@ function ShareCircle(props) {
                 {link ? 'Create New Link' : 'Generate Link'}
               </button>
             ) : (
-              <FeatherIcon className='spin white mt4' icon='loader' />
+              <Loader className='spin white mt4' />
             )}
             {link && (
               <pre

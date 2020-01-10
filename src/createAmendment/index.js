@@ -3,7 +3,7 @@ import ErrorSwap from '../utils/ErrorSwap';
 import AtharesLoader from '../components/AtharesLoader';
 import { withRouter, Link } from 'react-router-dom';
 import { Scrollbars } from 'react-custom-scrollbars';
-import FeatherIcon from 'feather-icons-react';
+import { ChevronLeft } from 'react-feather';
 import swal from 'sweetalert';
 import sha from 'simple-hash-browser';
 import { graphql } from 'react-apollo';
@@ -174,11 +174,7 @@ function CreateAmendment({ activeCircle, ...props }) {
       <div id='revisions-wrapper'>
         <div className='flex ph2 h10'>
           <Link to='/app' className='flex justify-center items-center'>
-            <FeatherIcon
-              icon='chevron-left'
-              className='white db dn-l'
-              onClick={back}
-            />
+            <ChevronLeft className='white db dn-l' onClick={back} />
           </Link>
           <h2 className='ma3 lh-title white'>Create Amendment</h2>
         </div>

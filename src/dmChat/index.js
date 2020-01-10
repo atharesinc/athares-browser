@@ -3,7 +3,7 @@ import ChatWindow from '../components/ChatWindow';
 import ChatInput from '../components/ChatInput';
 import DMSettings from './DMSettings';
 import AtharesLoader from '../components/AtharesLoader';
-import FeatherIcon from 'feather-icons-react';
+import { ChevronLeft, MoreVertical } from 'react-feather';
 import { Link } from 'react-router-dom';
 
 import { decrypt } from 'utils/crypto';
@@ -267,14 +267,10 @@ class DMChat extends Component {
               <div id='chat-wrapper'>
                 <div id='current-dm-channel'>
                   <Link to='/app'>
-                    <FeatherIcon
-                      icon='chevron-left'
-                      className='white db dn-ns'
-                    />
+                    <ChevronLeft className='white db dn-ns' />
                   </Link>
                   <div>{this.normalizeName(channel.name)}</div>
-                  <FeatherIcon
-                    icon='more-vertical'
+                  <MoreVertical
                     className='white db pointer'
                     onClick={this.showDMSettings}
                   />

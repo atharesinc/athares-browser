@@ -1,5 +1,5 @@
 import React from 'reactn';
-import FeatherIcon from 'feather-icons-react';
+import { Phone, Link, Info, AtSign } from 'react-feather';
 import { Scrollbars } from 'react-custom-scrollbars';
 import AtharesLoader from '../components/AtharesLoader';
 import { parseDate } from '../utils/transform';
@@ -62,10 +62,7 @@ function ViewUser(props) {
                 target='__blank'
                 href='https://www.flickr.com/photos/becca02/6727193557'
               >
-                <FeatherIcon
-                  icon='info'
-                  className='h2 w2 white-30 hover-white ma1 pa1'
-                />
+                <Info className='h2 w2 white-30 hover-white ma1 pa1' />
               </a>
             </div>
             {/* user info */}
@@ -79,7 +76,7 @@ function ViewUser(props) {
               <ul className='list ph2 ph4-ns pv2 ma2 w-100 center'>
                 <h1>Info</h1>
                 <li className='flex items-center lh-copy pa3 ph0-l bb b--white-30'>
-                  <FeatherIcon className='w2 h2 w2-ns h2-ns pa1' icon='phone' />
+                  <Phone className='w2 h2 w2-ns h2-ns pa1' />
                   <div className='pl3 flex-auto'>
                     <span className='f6 db white-70'>Phone</span>
                   </div>
@@ -90,10 +87,7 @@ function ViewUser(props) {
                   </div>
                 </li>
                 <li className='flex items-center lh-copy pa3 ph0-l bb b--white-30'>
-                  <FeatherIcon
-                    className='w2 h2 w2-ns h2-ns pa1'
-                    icon='at-sign'
-                  />
+                  <AtSign className='w2 h2 w2-ns h2-ns pa1' />
                   <div className='pl3 flex-auto'>
                     <span className='f6 db white-70'>Email</span>
                   </div>
@@ -104,7 +98,7 @@ function ViewUser(props) {
                   </div>
                 </li>
                 <li className='flex items-center lh-copy pa3 ph0-l bb b--white-30'>
-                  <FeatherIcon className='w2 h2 w2-ns h2-ns pa1' icon='link' />
+                  <Link className='w2 h2 w2-ns h2-ns pa1' />
                   <div className='pl3 flex-auto'>
                     <span className='f6 db white-70'>Unique Name</span>
                   </div>

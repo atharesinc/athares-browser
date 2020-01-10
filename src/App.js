@@ -44,10 +44,6 @@ function App(props) {
   const [width, setWidth] = useState(window.innerWidth);
   const [user, setUser] = useGlobal('user');
   const [, setPub] = useGlobal('setPub');
-  // const [revisions] = useGlobal("revisions");
-  // const [votes] = useGlobal("votes");
-  // const [amendments] = useGlobal("amendments");
-  // const [circles] = useGlobal("circles");
 
   const updateWidth = () => {
     setWidth(window.innerWidth);

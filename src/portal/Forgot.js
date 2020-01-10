@@ -3,7 +3,7 @@ import { CREATE_RESET_REQUEST } from '../graphql/mutations';
 import { graphql } from 'react-apollo';
 import { withRouter } from 'react-router-dom';
 import swal from 'sweetalert';
-import FeatherIcon from 'feather-icons-react';
+import { AtSign } from 'react-feather';
 import AtharesLoader from '../components/AtharesLoader';
 
 function Forgot(props) {
@@ -67,7 +67,7 @@ function Forgot(props) {
             Please enter your email to recover your account.
           </p>
           <div className='portal-input-wrapper mb3'>
-            <FeatherIcon className='portal-input-icon h1 w1' icon='at-sign' />
+            <AtSign className='portal-input-icon h1 w1' />
             <input
               placeholder='Email'
               className='portal-input h2 ghost pa2'

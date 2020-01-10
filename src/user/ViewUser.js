@@ -1,5 +1,5 @@
 import React, { withGlobal, useEffect, useGlobal } from 'reactn';
-import FeatherIcon from 'feather-icons-react';
+import { Info, Phone, AtSign, Hash } from 'react-feather';
 import { Link, withRouter } from 'react-router-dom';
 import { parseDate } from '../utils/transform';
 import AtharesLoader from '../components/AtharesLoader';
@@ -90,10 +90,7 @@ function ViewUser(props) {
           target='__blank'
           href='https://www.flickr.com/photos/becca02/6727193557'
         >
-          <FeatherIcon
-            icon='info'
-            className='h2 w2 white-30 hover-white ma1 pa1'
-          />
+          <Info className='h2 w2 white-30 hover-white ma1 pa1' />
         </a>
       </div>
       {/* user info */}
@@ -110,7 +107,7 @@ function ViewUser(props) {
             className='flex items-center lh-copy pa3 ph0-l bb b--white-30 pointer'
             onClick={toEdit}
           >
-            <FeatherIcon className='w2 h2 w2-ns h2-ns pa1' icon='phone' />
+            <Phone className='w2 h2 w2-ns h2-ns pa1' icon='phone' />
             <div className='pl3 flex-auto'>
               <span className='f6 db white'>Phone</span>
             </div>
@@ -120,7 +117,7 @@ function ViewUser(props) {
             className='flex items-center lh-copy pa3 ph0-l bb b--white-30 pointer'
             onClick={toEdit}
           >
-            <FeatherIcon className='w2 h2 w2-ns h2-ns pa1' icon='at-sign' />
+            <AtSign className='w2 h2 w2-ns h2-ns pa1' icon='at-sign' />
             <div className='pl3 flex-auto'>
               <span className='f6 db white'>Email</span>
             </div>
@@ -132,7 +129,7 @@ function ViewUser(props) {
             className='flex items-center lh-copy pa3 ph0-l bb b--white-30 pointer'
             onClick={toEdit}
           >
-            <FeatherIcon className='w2 h2 w2-ns h2-ns pa1' icon='hash' />
+            <Hash className='w2 h2 w2-ns h2-ns pa1' icon='hash' />
             <div className='pl3 flex-auto'>
               <span className='f6 db white'>Unique Name</span>
             </div>

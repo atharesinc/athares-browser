@@ -5,7 +5,7 @@ import ErrorSwap from '../utils/ErrorSwap';
 import AtharesLoader from '../components/AtharesLoader';
 import swal from 'sweetalert';
 import { Scrollbars } from 'react-custom-scrollbars';
-import FeatherIcon from 'feather-icons-react';
+import { ChevronLeft } from 'react-feather';
 import { Link } from 'react-router-dom';
 import { CREATE_CIRCLE, ADD_USER_TO_CIRCLE } from '../graphql/mutations';
 import { graphql } from 'react-apollo';
@@ -210,11 +210,7 @@ function CreateCircle(props) {
     <div id='revisions-wrapper'>
       <div className='flex ph2 mobile-nav'>
         <Link to='/app' className='flex justify-center items-center'>
-          <FeatherIcon
-            icon='chevron-left'
-            className='white db dn-l'
-            onClick={back}
-          />
+          <ChevronLeft className='white db dn-l' onClick={back} />
         </Link>
         <h2 className='ma3 lh-title white'> Create Circle </h2>
       </div>

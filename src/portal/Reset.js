@@ -9,7 +9,7 @@ import { graphql } from 'react-apollo';
 import compose from 'lodash.flowright';
 import { withRouter } from 'react-router-dom';
 import swal from 'sweetalert';
-import FeatherIcon from 'feather-icons-react';
+import { Link, Lock } from 'react-feather';
 import sha from 'simple-hash-browser';
 import AtharesLoader from '../components/AtharesLoader';
 import { addHours } from 'date-fns';
@@ -134,7 +134,7 @@ function Reset(props) {
               Enter the code sent to your email address.
             </p>
             <div className='portal-input-wrapper mb3'>
-              <FeatherIcon className='portal-input-icon h1 w1' icon='link' />
+              <Link className='portal-input-icon h1 w1' />
               <input
                 placeholder='Code'
                 className='portal-input h2 ghost pa2'
@@ -163,7 +163,7 @@ function Reset(props) {
               Enter a new password for this account.
             </p>
             <div className='portal-input-wrapper mb3'>
-              <FeatherIcon className='portal-input-icon h1 w1' icon='lock' />
+              <Lock className='portal-input-icon h1 w1' />
               <input
                 placeholder='New Password'
                 className='portal-input h2 ghost pa2'
