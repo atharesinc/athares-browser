@@ -7,7 +7,7 @@ import ToggleDiffBar from "./ToggleDiffBar";
 import DiffSection from "./DiffSection";
 import HasVoted from "./HasVoted";
 import { Scrollbars } from "react-custom-scrollbars";
-import Loader from "../components/Loader.js";
+import AtharesLoader from "../components/AtharesLoader.js";
 import { unixTime } from "../utils/transform";
 import { withRouter, Link } from "react-router-dom";
 import FeatherIcon from "feather-icons-react";
@@ -202,7 +202,7 @@ function ViewRevision(props) {
   } else {
     return (
       <div id="docs-wrapper" className="column-center">
-        <Loader />
+        <AtharesLoader />
         <div className="f3 pb2 b mv4 tc">Fetching Revision</div>
       </div>
     );

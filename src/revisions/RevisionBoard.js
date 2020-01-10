@@ -1,19 +1,19 @@
-import React, { useGlobal, withGlobal, useEffect } from "reactn";
-import { Link, withRouter } from "react-router-dom";
-import Loader from "../components/Loader";
-import { parseDate, unixTime } from "../utils/transform";
-import { Scrollbars } from "react-custom-scrollbars";
-import FeatherIcon from "feather-icons-react";
+import React, { useGlobal, withGlobal, useEffect } from 'reactn';
+import { Link, withRouter } from 'react-router-dom';
+import AtharesLoader from '../components/AtharesLoader';
+import { parseDate, unixTime } from '../utils/transform';
+import { Scrollbars } from 'react-custom-scrollbars';
+import FeatherIcon from 'feather-icons-react';
 import {
   GET_REVISIONS_FROM_CIRCLE_ID,
-  IS_USER_IN_CIRCLE
-} from "../graphql/queries";
-import { Query, graphql } from "react-apollo";
+  IS_USER_IN_CIRCLE,
+} from '../graphql/queries';
+import { Query, graphql } from 'react-apollo';
 
 function RevisionBoard({ user, ...props }) {
-  const [, setActiveChannel] = useGlobal("setActiveChannel");
-  const [, setAciveRevision] = useGlobal("setAciveRevision");
-  const [activeCircle, setActiveCircle] = useGlobal("setActiveCircle");
+  const [, setActiveChannel] = useGlobal('setActiveChannel');
+  const [, setAciveRevision] = useGlobal('setAciveRevision');
+  const [activeCircle, setActiveCircle] = useGlobal('setActiveCircle');
 
   useEffect(() => {
     function componentMount() {
@@ -31,7 +31,7 @@ function RevisionBoard({ user, ...props }) {
     props.match.params.id,
     setActiveChannel,
     setAciveRevision,
-    setActiveCircle
+    setActiveCircle,
   ]);
 
   const back = () => {
@@ -45,7 +45,7 @@ function RevisionBoard({ user, ...props }) {
   return (
     <Query
       query={GET_REVISIONS_FROM_CIRCLE_ID}
-      variables={{ id: activeCircle || "" }}
+      variables={{ id: activeCircle || '' }}
       pollInterval={10000}
     >
       {({ data = {} }) => {
@@ -56,20 +56,20 @@ function RevisionBoard({ user, ...props }) {
         if (!circle) {
           return (
             <div
-              id="revisions-wrapper"
+              id='revisions-wrapper'
               style={{
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "center",
-                alignItems: "center"
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'center',
+                alignItems: 'center',
               }}
             >
-              <h1 className="ma3 lh-title white">Revisions</h1>
-              <div className="f6 white-80 db mb4 ml3-l">
+              <h1 className='ma3 lh-title white'>Revisions</h1>
+              <div className='f6 white-80 db mb4 ml3-l'>
                 Review proposed legislation and changes to existing laws
               </div>
 
-              <Loader />
+              <AtharesLoader />
             </div>
           );
         }
@@ -84,56 +84,56 @@ function RevisionBoard({ user, ...props }) {
         allRevisions = allRevisions.map(r => {
           return {
             votes: r.votes.filter(v => v.revision === r.id),
-            ...r
+            ...r,
           };
         });
         let now = unixTime();
 
         // all non-expired revisions
         let newRevisions = allRevisions.filter(
-          r => r.passed === null && now < unixTime(r.expires)
+          r => r.passed === null && now < unixTime(r.expires),
         );
         // passed in the last week
         let recentlyPassed = allRevisions.filter(
-          r => r.passed === true && now - unixTime(r.expires) <= 604800000
+          r => r.passed === true && now - unixTime(r.expires) <= 604800000,
         );
         // rejected in the last week
         let recentlyRejected = allRevisions.filter(
-          r => r.passed === false && now - unixTime(r.expires) <= 604800000
+          r => r.passed === false && now - unixTime(r.expires) <= 604800000,
         );
         return (
-          <div id="revisions-wrapper">
-            <div className="flex ph2 mobile-nav" style={{ height: "10vh" }}>
-              <Link to="/app" className="flex justify-center items-center">
+          <div id='revisions-wrapper'>
+            <div className='flex ph2 mobile-nav' style={{ height: '10vh' }}>
+              <Link to='/app' className='flex justify-center items-center'>
                 <FeatherIcon
-                  icon="chevron-left"
-                  className="white db dn-l"
+                  icon='chevron-left'
+                  className='white db dn-l'
                   onClick={back}
                 />
               </Link>
-              <h2 className="ma3 lh-title white">Revisions</h2>
+              <h2 className='ma3 lh-title white'>Revisions</h2>
             </div>
             <small
-              className="f6 white-80 db mb2 ml3-l ph2"
-              style={{ height: "10vh" }}
+              className='f6 white-80 db mb2 ml3-l ph2'
+              style={{ height: '10vh' }}
             >
               Review proposed legislation and changes to existing laws
               <br />
               <br />
               {user && belongsToCircle && (
                 <Link
-                  to={props.match.url.replace("revisions", "settings")}
-                  className="dim ba br-pill bg-theme pv1 ph2 mt2"
+                  to={props.match.url.replace('revisions', 'settings')}
+                  className='dim ba br-pill bg-theme pv1 ph2 mt2'
                 >
                   Subscribe to Revisions
                 </Link>
               )}
             </small>
-            <div id="revision-board-wrapper">
+            <div id='revision-board-wrapper'>
               <Scrollbars
                 style={{
-                  height: "80vh",
-                  width: "100%"
+                  height: '80vh',
+                  width: '100%',
                 }}
                 autoHide
                 autoHideTimeout={1000}
@@ -142,20 +142,20 @@ function RevisionBoard({ user, ...props }) {
               >
                 <Board
                   revisions={newRevisions}
-                  title={"New Revisions"}
+                  title={'New Revisions'}
                   circleID={activeCircle}
                   user={user}
                   belongsToCircle={belongsToCircle}
                 />
                 <Board
                   revisions={recentlyPassed}
-                  title={"Recently Passed"}
+                  title={'Recently Passed'}
                   circleID={activeCircle}
                   user={user}
                 />
                 <Board
                   revisions={recentlyRejected}
-                  title={"Recently Rejected"}
+                  title={'Recently Rejected'}
                   circleID={activeCircle}
                   user={user}
                 />
@@ -173,38 +173,38 @@ const Board = ({
   revisions,
   circleID,
   user,
-  belongsToCircle = false
+  belongsToCircle = false,
 }) => {
   return (
-    <div className="w-100 w-50-ns pa2 revision-board h-100-ns">
-      <div className="bb b--white pa2 mb2">
-        <div className="white">{title}</div>
+    <div className='w-100 w-50-ns pa2 revision-board h-100-ns'>
+      <div className='bb b--white pa2 mb2'>
+        <div className='white'>{title}</div>
       </div>
       <div
         style={{
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "flex-start",
-          alignItems: "center",
-          width: "100%",
-          height: "100%"
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'flex-start',
+          alignItems: 'center',
+          width: '100%',
+          height: '100%',
         }}
       >
         <Scrollbars
           style={{
-            height: "100%",
-            minHeight: "11.5em"
+            height: '100%',
+            minHeight: '11.5em',
           }}
           autoHide
           autoHideTimeout={1000}
           autoHideDuration={200}
           universal={true}
         >
-          {title === "New Revisions" && user && belongsToCircle && (
+          {title === 'New Revisions' && user && belongsToCircle && (
             <Link to={`/app/circle/${circleID}/add/amendment`}>
-              <div className="random-button transparent-hover-white mb2">
-                <FeatherIcon icon="plus" className="pr2" />
-                <div className="h-100">Create Revision</div>
+              <div className='random-button transparent-hover-white mb2'>
+                <FeatherIcon icon='plus' className='pr2' />
+                <div className='h-100'>Create Revision</div>
               </div>
             </Link>
           )}
@@ -233,53 +233,53 @@ const RevisionCard = ({
   const support = votes.filter(({ support }) => support).length;
   return (
     <Link to={`${props.match.url}/${id}`}>
-      <div style={{ marginBottom: "0.5em", color: "#FFF" }}>
-        <h1 className="f6 bg-theme-light white-80 mv0 ph3 pv2">{title}</h1>
-        <div className="pa3 bg-theme">
+      <div style={{ marginBottom: '0.5em', color: '#FFF' }}>
+        <h1 className='f6 bg-theme-light white-80 mv0 ph3 pv2'>{title}</h1>
+        <div className='pa3 bg-theme'>
           <div
             style={{
-              display: "flex",
-              flexDirection: "row",
-              justifyContent: "space-between",
-              alignItems: "center"
+              display: 'flex',
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              alignItems: 'center',
             }}
-            className="mb2"
+            className='mb2'
           >
             <div
               //  f7 pa1 br-pill ph2 bw1 ba lh-solid bg-none
               className={`f7 pa1 br-pill bw1 ba ph2 lh-solid ${
                 repeal
-                  ? "light-red b--light-red"
+                  ? 'light-red b--light-red'
                   : amendment !== null
-                  ? "theme-blue b--theme-blue"
-                  : "light-green b--light-green"
+                  ? 'theme-blue b--theme-blue'
+                  : 'light-green b--light-green'
               }`}
             >
-              {repeal ? "REPEAL" : amendment !== null ? "REVISION" : "NEW"}
+              {repeal ? 'REPEAL' : amendment !== null ? 'REVISION' : 'NEW'}
             </div>
             <small>
-              <span className="light-green">+{support}</span> /{" "}
-              <span className="red">-{votes.length - support}</span>
+              <span className='light-green'>+{support}</span> /{' '}
+              <span className='red'>-{votes.length - support}</span>
             </small>
           </div>
           <p
-            className="f7 lh-copy measure mv3 white pre-wrap h2"
-            style={{ overflow: "hidden" }}
+            className='f7 lh-copy measure mv3 white pre-wrap h2'
+            style={{ overflow: 'hidden' }}
           >
             {newText}
           </p>
           <div
             style={{
-              display: "flex",
-              flexDirection: "row",
-              justifyContent: "flex-start",
-              alignItems: "center"
+              display: 'flex',
+              flexDirection: 'row',
+              justifyContent: 'flex-start',
+              alignItems: 'center',
             }}
-            className="mt2"
+            className='mt2'
           >
-            <img src={backer.icon} className="db br-100 w2 h2 mr2" alt="" />
-            <small className="f6 white-70 db ml2">
-              {parseDate(createdAt, "P h:mm bbbb")}
+            <img src={backer.icon} className='db br-100 w2 h2 mr2' alt='' />
+            <small className='f6 white-70 db ml2'>
+              {parseDate(createdAt, 'P h:mm bbbb')}
             </small>
           </div>
         </div>
@@ -292,10 +292,10 @@ const RevisionWithRouter = withRouter(RevisionCard);
 export default withRouter(
   withGlobal(({ user, activeCircle }) => ({ user, activeCircle }))(
     graphql(IS_USER_IN_CIRCLE, {
-      name: "isUserInCircle",
+      name: 'isUserInCircle',
       options: ({ activeCircle, user }) => ({
-        variables: { circle: activeCircle || "", user: user || "" }
-      })
-    })(RevisionBoard)
-  )
+        variables: { circle: activeCircle || '', user: user || '' },
+      }),
+    })(RevisionBoard),
+  ),
 );
