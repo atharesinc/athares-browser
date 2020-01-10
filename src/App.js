@@ -22,7 +22,7 @@ import DMUpdateMonitor from './components/DMUpdateMonitor';
 import OnlineMonitor from './components/OnlineMonitor';
 
 import throttle from 'lodash.throttle';
-import TweenLite from 'gsap/TweenLite';
+import { TweenLite } from 'gsap';
 import AtharesLoader from './components/AtharesLoader';
 import { SIGNIN_USER } from './graphql/mutations';
 import { graphql } from 'react-apollo';
