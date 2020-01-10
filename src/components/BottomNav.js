@@ -1,22 +1,18 @@
-import React from "reactn";
-import { Link } from "react-router-dom";
-import FeatherIcon from "feather-icons-react";
+import React from 'reactn';
+import { Link } from 'react-router-dom';
+import { LogIn, UserPlus } from 'react-feather';
 
 const BottomNav = ({ show, activeCircle, belongsToCircle }) => {
   // ask the user to log in
   if (!show) {
     return (
-      <Link className="w-100" to={"/login"}>
+      <Link className='w-100' to={'/login'}>
         <div
-          className="w-100 v-mid bg-theme-dark flex flex-row justify-start items-center pv2 ph3"
-          id="bottom-nav"
+          className='w-100 v-mid bg-theme-dark flex flex-row justify-start items-center pv2 ph3'
+          id='bottom-nav'
         >
-          <FeatherIcon
-            icon={"log-in"}
-            className="white w2 h2 mr3"
-            style={{ height: "1.5em", width: "1.5em" }}
-          />
-          <div className="white">Login or Register</div>
+          <LogIn className='white w2 h2 mr3' style={styles.icon} />
+          <div className='white'>Login or Register</div>
         </div>
       </Link>
     );
@@ -25,10 +21,10 @@ const BottomNav = ({ show, activeCircle, belongsToCircle }) => {
   if (show && !activeCircle) {
     return (
       <div
-        className="w-100 v-mid bg-theme-dark flex flex-row justify-start items-center pv2 ph3"
-        id="bottom-nav-no-hover"
+        className='w-100 v-mid bg-theme-dark flex flex-row justify-start items-center pv2 ph3'
+        id='bottom-nav-no-hover'
       >
-        <div className="white-50">Select a Circle</div>
+        <div className='white-50'>Select a Circle</div>
       </div>
     );
   }
@@ -36,26 +32,26 @@ const BottomNav = ({ show, activeCircle, belongsToCircle }) => {
   if (show && belongsToCircle !== true) {
     return (
       <div
-        className="w-100 v-mid bg-theme-dark flex flex-row justify-start items-center pv2 ph3"
-        id="bottom-nav-no-hover"
+        className='w-100 v-mid bg-theme-dark flex flex-row justify-start items-center pv2 ph3'
+        id='bottom-nav-no-hover'
       />
     );
   }
   // user is logged in and able to add a user to a defined circle
   return (
-    <Link className="w-100" to={"/app/circle/" + activeCircle + "/add/user"}>
+    <Link className='w-100' to={'/app/circle/' + activeCircle + '/add/user'}>
       <div
-        className="w-100 v-mid bg-theme-dark flex flex-row justify-start items-center pv2 ph3"
-        id="bottom-nav"
+        className='w-100 v-mid bg-theme-dark flex flex-row justify-start items-center pv2 ph3'
+        id='bottom-nav'
       >
-        <FeatherIcon
-          icon={"user-plus"}
-          className="white w2 h2 mr3"
-          style={{ height: "1.5em", width: "1.5em" }}
-        />
-        <div className="white">Invite User to Circle</div>
+        <UserPlus className='white w2 h2 mr3' style={styles.icon} />
+        <div className='white'>Invite User to Circle</div>
       </div>
     </Link>
   );
 };
 export default BottomNav;
+
+const styles = {
+  icon: { height: '1.5em', width: '1.5em' },
+};

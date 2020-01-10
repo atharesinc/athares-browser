@@ -1,27 +1,27 @@
-import React from "reactn";
-import FeatherIcon from "feather-icons-react";
-import { parseDate } from "../utils/transform";
-import { Link } from "react-router-dom";
+import React from 'reactn';
+import { Edit } from 'react-feather';
+import { parseDate } from '../utils/transform';
+import { Link } from 'react-router-dom';
 
 const AmendmentView = ({ amendment, toggleEdit, editable, circle }) => {
   return (
-    <div className="amendment-wrapper mb4" id={amendment.id}>
+    <div className='amendment-wrapper mb4' id={amendment.id}>
       {editable &&
         (amendment.revision === null || amendment.revision.passed !== null) && (
-          <div className="amendment-icon-wrapper" onClick={toggleEdit}>
-            <FeatherIcon className="amendment-icon" icon="edit" />
-            <div className="amendment-icon">EDIT</div>
+          <div className='amendment-icon-wrapper' onClick={toggleEdit}>
+            <Edit className='amendment-icon' />
+            <div className='amendment-icon'>EDIT</div>
           </div>
         )}
-      <div style={{ width: "100%" }}>
-        <div className="f4 bb b--white-30 pb2 amendment-title">
-          <div className="mb2">{amendment.title}</div>
-          <div className="f7 white-70 flex flex-row justify-start items-center">
-            <div className="mb1 w-50">
-              Created - {parseDate(amendment.createdAt, "P h:mm bbbb")}
+      <div style={{ width: '100%' }}>
+        <div className='f4 bb b--white-30 pb2 amendment-title'>
+          <div className='mb2'>{amendment.title}</div>
+          <div className='f7 white-70 flex flex-row justify-start items-center'>
+            <div className='mb1 w-50'>
+              Created - {parseDate(amendment.createdAt, 'P h:mm bbbb')}
             </div>
-            <div className="w-50">
-              Updated - {parseDate(amendment.updatedAt, "P h:mm bbbb")}
+            <div className='w-50'>
+              Updated - {parseDate(amendment.updatedAt, 'P h:mm bbbb')}
             </div>
           </div>
         </div>

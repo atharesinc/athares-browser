@@ -1,26 +1,26 @@
-import React, { withGlobal, useGlobal, useEffect } from "reactn";
-import ChannelGroup from "./ChannelGroup";
-import GovernanceChannelGroup from "./GovernanceChannelGroup";
-import { Link } from "react-router-dom";
-import DMList from "./DMList";
+import React, { withGlobal, useGlobal, useEffect } from 'reactn';
+import ChannelGroup from './ChannelGroup';
+import GovernanceChannelGroup from './GovernanceChannelGroup';
+import { Link } from 'react-router-dom';
+import DMList from './DMList';
 
-import BottomNav from "../components/BottomNav";
-import FeatherIcon from "feather-icons-react";
+import BottomNav from '../components/BottomNav';
+import { MoreVertical } from 'react-feather';
 import {
   GET_CHANNELS_BY_CIRCLE_ID,
-  IS_USER_IN_CIRCLE
-} from "../graphql/queries";
-import { SUB_TO_CIRCLES_CHANNELS } from "graphql/subscriptions";
+  IS_USER_IN_CIRCLE,
+} from '../graphql/queries';
+import { SUB_TO_CIRCLES_CHANNELS } from 'graphql/subscriptions';
 
-import { Query, graphql } from "react-apollo";
-import compose from "lodash.flowright";
+import { Query, graphql } from 'react-apollo';
+import compose from 'lodash.flowright';
 
-import Search from "../search";
-import Scrollbars from "react-custom-scrollbars";
+import Search from '../search';
+import Scrollbars from 'react-custom-scrollbars';
 
 function Channels(props) {
-  const [activeChannel, setActiveCircle] = useGlobal("activeChannel");
-  const [unreadChannels] = useGlobal("unreadChannels");
+  const [activeChannel, setActiveCircle] = useGlobal('activeChannel');
+  const [unreadChannels] = useGlobal('unreadChannels');
 
   useEffect(() => {
     if (/\/app\/circle\/.{25}$/.test(props.location.pathname)) {
@@ -45,7 +45,7 @@ function Channels(props) {
   const _subToMore = subscribeToMore => {
     subscribeToMore({
       document: SUB_TO_CIRCLES_CHANNELS,
-      variables: { id: props.activeCircle || "" },
+      variables: { id: props.activeCircle || '' },
       updateQuery: (prev, { subscriptionData }) => {
         if (!subscriptionData.data) {
           return prev;
@@ -55,13 +55,13 @@ function Channels(props) {
           return {
             Circle: {
               ...prev.Circle,
-              channels: [...prev.Circle.channels, newChannel]
-            }
+              channels: [...prev.Circle.channels, newChannel],
+            },
           };
         } else {
           return prev;
         }
-      }
+      },
     });
   };
 
@@ -85,7 +85,7 @@ function Channels(props) {
   return (
     <Query
       query={GET_CHANNELS_BY_CIRCLE_ID}
-      variables={{ id: props.activeCircle || "" }}
+      variables={{ id: props.activeCircle || '' }}
     >
       {({ data = {}, subscribeToMore }) => {
         if (data.Circle) {
@@ -94,30 +94,29 @@ function Channels(props) {
           channels = circle.channels;
           channels = channels.map(ch => ({
             unread: unreadChannels.includes(ch.id),
-            ...ch
+            ...ch,
           }));
         }
         if (circle) {
           return (
-            <div id="channels-wrapper">
-              <div id="circle-name">
+            <div id='channels-wrapper'>
+              <div id='circle-name'>
                 {circle.name}
                 {user && belongsToCircle && (
-                  <FeatherIcon
-                    icon="more-vertical"
-                    className="white"
+                  <MoreVertical
+                    className='white'
                     onClick={goToOptions}
-                    id="circle-options"
+                    id='circle-options'
                   />
                 )}
               </div>
 
-              <div id="channels-list">
+              <div id='channels-list'>
                 {!mobile && <Search />}
                 <Scrollbars
                   style={{
-                    width: "100%",
-                    height: mobile ? "80vh" : "100%"
+                    width: '100%',
+                    height: mobile ? '80vh' : '100%',
                   }}
                   autoHide
                   autoHideTimeout={1000}
@@ -126,16 +125,16 @@ function Channels(props) {
                 >
                   <GovernanceChannelGroup
                     style={style.docs}
-                    name={"Governance"}
+                    name={'Governance'}
                   />
                   <ChannelGroup
                     belongsToCircle={belongsToCircle}
                     style={style.channels}
-                    channelType={"group"}
+                    channelType={'group'}
                     activeChannel={activeChannel}
-                    name={"Channels"}
+                    name={'Channels'}
                     channels={channels.filter(channel => {
-                      return channel.channelType === "group";
+                      return channel.channelType === 'group';
                     })}
                   />
                   <DMList />
@@ -150,26 +149,26 @@ function Channels(props) {
           );
         } else {
           return (
-            <div id="channels-wrapper">
-              <div id="circle-name">No Circle Selected</div>
+            <div id='channels-wrapper'>
+              <div id='circle-name'>No Circle Selected</div>
 
               <div
-                id="channels-list"
+                id='channels-list'
                 style={{
-                  alignItems: "center"
+                  alignItems: 'center',
                 }}
               >
                 {!mobile && <Search />}
-                <div className="w-100">
+                <div className='w-100'>
                   {user ? (
-                    <Link to={"/app/new/circle"}>
-                      <div className="pv2 ph3 w-100 mt2 white-50 glow">
+                    <Link to={'/app/new/circle'}>
+                      <div className='pv2 ph3 w-100 mt2 white-50 glow'>
                         Select a circle or create one
                       </div>
                     </Link>
                   ) : (
-                    <Link to={"/login"}>
-                      <div className="pv2 ph3 w-100">
+                    <Link to={'/login'}>
+                      <div className='pv2 ph3 w-100'>
                         Welcome to Athares
                         <br />
                         <br />
@@ -195,24 +194,24 @@ function Channels(props) {
 
 const style = {
   docs: {
-    flex: 1
+    flex: 1,
   },
   channels: {
-    flex: 1
+    flex: 1,
   },
   dm: {
-    flex: 1
-  }
+    flex: 1,
+  },
 };
 
 export default withGlobal(({ activeCircle, user }) => ({ activeCircle, user }))(
   compose(
     graphql(IS_USER_IN_CIRCLE, {
-      name: "isUserInCircle",
+      name: 'isUserInCircle',
       options: ({ activeCircle, user }) => ({
-        variables: { circle: activeCircle || "", user: user || "" }
-      })
-    })
+        variables: { circle: activeCircle || '', user: user || '' },
+      }),
+    }),
     // ,
     // graphql(GET_DMS_BY_USER, {
     //   name: "getDMsByUser",
@@ -221,5 +220,5 @@ export default withGlobal(({ activeCircle, user }) => ({ activeCircle, user }))(
     //     variables: { id: user || "" },
     //   }),
     // })
-  )(Channels)
+  )(Channels),
 );

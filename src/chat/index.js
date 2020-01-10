@@ -1,24 +1,24 @@
-import React, { useState, useEffect, useGlobal } from "reactn";
-import ChatWindow from "../components/ChatWindow";
-import ChatInput from "../components/ChatInput";
-import Loader from "../components/Loader";
-import FeatherIcon from "feather-icons-react";
-import { Link } from "react-router-dom";
+import React, { useState, useEffect, useGlobal } from 'reactn';
+import ChatWindow from '../components/ChatWindow';
+import ChatInput from '../components/ChatInput';
+import AtharesLoader from '../components/AtharesLoader';
+import { ChevronLeft } from 'react-feather';
+import { Link } from 'react-router-dom';
 
-import { CREATE_MESSAGE } from "../graphql/mutations";
-import { SUB_TO_MESSAGES_BY_CHANNEL_ID } from "../graphql/subscriptions";
-import { GET_MESSAGES_FROM_CHANNEL_ID } from "../graphql/queries";
-import { graphql, Query } from "react-apollo";
-import swal from "sweetalert";
-import { uploadToAWS } from "utils/upload";
+import { CREATE_MESSAGE } from '../graphql/mutations';
+import { SUB_TO_MESSAGES_BY_CHANNEL_ID } from '../graphql/subscriptions';
+import { GET_MESSAGES_FROM_CHANNEL_ID } from '../graphql/queries';
+import { graphql, Query } from 'react-apollo';
+import swal from 'sweetalert';
+import { uploadToAWS } from 'utils/upload';
 
 function Chat(props) {
   const [uploadInProgress, setUploadInProgress] = useState(false);
-  const [user] = useGlobal("user");
-  const [activeChannel, setActiveChannel] = useGlobal("activeChannel");
-  const [, setActiveCircle] = useGlobal("activeCircle");
-  const [unreadChannels, setUnreadChannels] = useGlobal("unreadChannels");
-  const [, setActiveRevision] = useGlobal("activeRevision");
+  const [user] = useGlobal('user');
+  const [activeChannel, setActiveChannel] = useGlobal('activeChannel');
+  const [, setActiveCircle] = useGlobal('activeCircle');
+  const [unreadChannels, setUnreadChannels] = useGlobal('unreadChannels');
+  const [, setActiveRevision] = useGlobal('activeRevision');
 
   useEffect(() => {
     function componentMount() {
@@ -36,7 +36,7 @@ function Chat(props) {
       // // remove this channel from list of channels with unread messages
       if (unreadChannels.indexOf(activeChannel) !== -1) {
         const index = unreadChannels.findIndex(
-          item => item.id === props.match.params.id
+          item => item.id === props.match.params.id,
         );
 
         setUnreadChannels(unreadChannels.splice(index));
@@ -52,7 +52,7 @@ function Chat(props) {
     unreadChannels,
     setActiveChannel,
     setUnreadChannels,
-    props.match.params.id
+    props.match.params.id,
   ]);
 
   // useEffect(() => {
@@ -74,7 +74,7 @@ function Chat(props) {
   // ]);
 
   const scrollToBottom = () => {
-    let chatBox = document.getElementById("chat-window-scroller");
+    let chatBox = document.getElementById('chat-window-scroller');
     if (chatBox) {
       /* scroll to bottom */
       chatBox = chatBox.firstElementChild;
@@ -86,7 +86,7 @@ function Chat(props) {
   };
 
   const submit = async (text, file = null) => {
-    let chatInput = document.getElementById("chat-input");
+    let chatInput = document.getElementById('chat-input');
 
     if (file) {
       setUploadInProgress(true);
@@ -104,20 +104,20 @@ function Chat(props) {
         channel: activeChannel,
         user: user,
         file: file !== null ? url.url : null,
-        fileName: file !== null ? file.name : null
+        fileName: file !== null ? file.name : null,
       };
 
       let newMessageRes = await props.createMessage({
         variables: {
-          ...newMessage
-        }
+          ...newMessage,
+        },
       });
 
       newMessage.id = newMessageRes.data.createMessage.id;
 
       /* clear textbox */
-      chatInput.value = "";
-      chatInput.setAttribute("rows", 1);
+      chatInput.value = '';
+      chatInput.setAttribute('rows', 1);
       setUploadInProgress(false);
 
       /* scroll to bottom */
@@ -126,16 +126,16 @@ function Chat(props) {
       setUploadInProgress(false);
       console.error(new Error(err));
       swal(
-        "Error",
-        "We were unable to send your message, please try again later",
-        "error"
+        'Error',
+        'We were unable to send your message, please try again later',
+        'error',
       );
     }
   };
   const _subToMore = subscribeToMore => {
     subscribeToMore({
       document: SUB_TO_MESSAGES_BY_CHANNEL_ID,
-      variables: { id: activeChannel || "" },
+      variables: { id: activeChannel || '' },
       updateQuery: (prev, { subscriptionData }) => {
         if (!subscriptionData.data) {
           return prev;
@@ -145,13 +145,13 @@ function Chat(props) {
           return {
             Channel: {
               ...prev.Channel,
-              messages: [...prev.Channel.messages, newMsg]
-            }
+              messages: [...prev.Channel.messages, newMsg],
+            },
           };
         } else {
           return prev;
         }
-      }
+      },
     });
   };
 
@@ -161,7 +161,7 @@ function Chat(props) {
   return (
     <Query
       query={GET_MESSAGES_FROM_CHANNEL_ID}
-      variables={{ id: activeChannel || "" }}
+      variables={{ id: activeChannel || '' }}
       onCompleted={scrollToBottom}
     >
       {({ data = {}, subscribeToMore }) => {
@@ -173,24 +173,22 @@ function Chat(props) {
 
         if (channel) {
           return (
-            <div id="chat-wrapper">
-              <div id="current-channel">
-                <Link to="/app">
-                  <FeatherIcon
-                    icon="chevron-left"
-                    className="white db dn-l"
+            <div id='chat-wrapper'>
+              <div id='current-channel'>
+                <Link to='/app'>
+                  <ChevronLeft
+                    className='white db dn-l'
                     onClick={updateChannel}
                   />
                 </Link>
                 <div>{channel.name}</div>
                 <div
-                  className="f6 dn db-ns"
-                  style={{ background: "none", color: "#FFFFFF80" }}
+                  className='f6 dn db-ns'
+                  style={{ background: 'none', color: '#FFFFFF80' }}
                 >
                   {channel.description}
                 </div>
-                {/* <FeatherIcon
-                            icon="more-vertical"
+                {/* <MoreVertical
                             className="white db dn-ns"
                         /> */}
               </div>
@@ -205,9 +203,9 @@ function Chat(props) {
           );
         } else {
           return (
-            <div id="chat-wrapper" style={{ justifyContent: "center" }}>
-              <Loader />
-              <h1 className="mb3 mt0 lh-title mt4 f3 f2-ns">
+            <div id='chat-wrapper' style={{ justifyContent: 'center' }}>
+              <AtharesLoader />
+              <h1 className='mb3 mt0 lh-title mt4 f3 f2-ns'>
                 Getting Messages
               </h1>
             </div>
@@ -218,4 +216,4 @@ function Chat(props) {
   );
 }
 
-export default graphql(CREATE_MESSAGE, { name: "createMessage" })(Chat);
+export default graphql(CREATE_MESSAGE, { name: 'createMessage' })(Chat);

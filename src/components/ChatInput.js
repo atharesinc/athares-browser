@@ -1,18 +1,18 @@
-import React, { useState, useEffect, useCallback } from "reactn";
-import TextareaAutosize from "react-autosize-textarea";
-import FeatherIcon from "feather-icons-react";
-import Loader from "./Loader";
+import React, { useState, useEffect, useCallback } from 'reactn';
+import TextareaAutosize from 'react-autosize-textarea';
+import { Smile, Paperclip, Send, FileText, Loader } from 'react-feather';
+import AtharesLoader from './AtharesLoader';
 // import EXIF from "exif-js";
-import { Picker } from "emoji-mart";
-const emojer = require("emojer.js");
+import { Picker } from 'emoji-mart';
+const emojer = require('emojer.js');
 emojer.setConfigs({
-  html: false
+  html: false,
 });
 
-var loadImage = require("blueimp-load-image-npm");
+var loadImage = require('blueimp-load-image-npm');
 
 export default function ChatInput(props) {
-  const [input, setInput] = useState("");
+  const [input, setInput] = useState('');
   const [showFilePreview, setShowFilePreview] = useState(false);
   const [file, setFile] = useState(null);
   const [fileIsImage, setFileIsImage] = useState(false);
@@ -27,29 +27,29 @@ export default function ChatInput(props) {
       if (showEmoji === false) {
         return;
       }
-      if (e.target.closest(".emoji-mart") !== null) {
+      if (e.target.closest('.emoji-mart') !== null) {
         return;
       }
-      if (e.target.closest("#emoji-trigger") !== null) {
+      if (e.target.closest('#emoji-trigger') !== null) {
         return;
       }
-      if (e.target.closest(".emoji-mart") === null) {
+      if (e.target.closest('.emoji-mart') === null) {
         setShowEmoji(false);
       }
     },
-    [showEmoji]
+    [showEmoji],
   );
 
   useEffect(() => {
-    window.addEventListener("click", hideEmojis);
+    window.addEventListener('click', hideEmojis);
     return () => {
-      window.removeEventListener("click", hideEmojis);
+      window.removeEventListener('click', hideEmojis);
     };
   }, [hideEmojis]);
 
   const changeText = () => {
-    let chatInput = document.getElementById("chat-input");
-    if (input.trim() === "" && chatInput.value.trim() === "") {
+    let chatInput = document.getElementById('chat-input');
+    if (input.trim() === '' && chatInput.value.trim() === '') {
       return false;
     }
 
@@ -60,13 +60,13 @@ export default function ChatInput(props) {
   };
 
   const submitHandler = e => {
-    if (e.key !== "Enter") {
+    if (e.key !== 'Enter') {
       return false;
     }
     let mobile = window.innerWidth < 993;
 
     if (e.shiftKey === false && mobile === false) {
-      if (input.trim() === "" && file === null) {
+      if (input.trim() === '' && file === null) {
         return false;
       }
       submit();
@@ -84,33 +84,33 @@ export default function ChatInput(props) {
   };
 
   const submit = async () => {
-    if (input.trim() === "" && file === null) {
+    if (input.trim() === '' && file === null) {
       return false;
     }
     // send the message to parent
-    let realFile = document.getElementById("fileTextUpload").files[0];
+    let realFile = document.getElementById('fileTextUpload').files[0];
     props.submit(input, realFile);
-    setInput("");
+    setInput('');
     setShowFilePreview(false);
     setFile(null);
     setFilePreview(null);
     setFileIsImage(false);
     setLoadingImage(false);
 
-    document.getElementById("fileTextUpload").value = "";
+    document.getElementById('fileTextUpload').value = '';
 
-    let chatInput = document.getElementById("chat-input");
+    let chatInput = document.getElementById('chat-input');
     chatInput.focus();
-    chatInput.value = "";
+    chatInput.value = '';
   };
 
   const onChange = async e => {
-    const imgs = ["gif", "png", "jpg", "jpeg", "bmp"];
+    const imgs = ['gif', 'png', 'jpg', 'jpeg', 'bmp'];
     let newFile = e.currentTarget.files[0];
     let extension = newFile.name.match(/\.(.{1,4})$/i)[1];
 
     if (
-      newFile.type.includes("image/") &&
+      newFile.type.includes('image/') &&
       imgs.findIndex(i => i === extension.toLowerCase()) !== -1
     ) {
       setFileIsImage(true);
@@ -128,18 +128,18 @@ export default function ChatInput(props) {
   const shouldRenderImage = () => {
     if (fileIsImage) {
       if (loadingImage) {
-        return <Loader />;
+        return <AtharesLoader />;
       }
       return (
         <img
-          className="mw4 mr2"
+          className='mw4 mr2'
           style={{ transform: rotate }}
           src={filePreview}
           alt={file.name}
         />
       );
     } else {
-      return <FeatherIcon icon="file-text" />;
+      return <FileText />;
     }
   };
 
@@ -155,7 +155,7 @@ export default function ChatInput(props) {
     loadImage.parseMetaData(newFile, function(data) {
       let ori = 0;
       if (data.exif) {
-        ori = data.exif.get("Orientation");
+        ori = data.exif.get('Orientation');
       }
       loadImage(
         newFile,
@@ -175,8 +175,8 @@ export default function ChatInput(props) {
           meta: true,
           canvas: true,
           orientation: ori,
-          maxWidth: 600
-        }
+          maxWidth: 600,
+        },
       );
     });
   };
@@ -191,93 +191,93 @@ export default function ChatInput(props) {
   };
 
   let mobile = window.innerWidth < 993;
-  let width = mobile ? "100%" : "300px";
+  let width = mobile ? '100%' : '300px';
 
   return (
-    <div id="chat-input-wrapper">
+    <div id='chat-input-wrapper'>
       {/* new stuff below */}
       {props.uploadInProgress && (
         <div
-          className="w-100 flex flex-row justify-start items-center ph2 bg-theme-light openDown"
+          className='w-100 flex flex-row justify-start items-center ph2 bg-theme-light openDown'
           style={{
-            height: "3em",
-            position: "absolute",
-            bottom: "10vh"
+            height: '3em',
+            position: 'absolute',
+            bottom: '10vh',
           }}
         >
-          <FeatherIcon className="spin white" icon="loader" />
-          <div className="ml2 f6 white-70">{file ? file.name : "Sending"}</div>
+          <Loader className='spin white' />
+          <div className='ml2 f6 white-70'>{file ? file.name : 'Sending'}</div>
         </div>
       )}
       {showEmoji && (
         <Picker
-          native="true"
-          title={""}
+          native='true'
+          title={''}
           showPreview={false}
           onSelect={selectEmoji}
           style={{
             width,
-            position: "absolute",
-            bottom: "10vh"
+            position: 'absolute',
+            bottom: '10vh',
           }}
         />
       )}
       <div
-        className="w-100 flex flex-row justify-start items-center ph2 bg-theme-light openDown"
+        className='w-100 flex flex-row justify-start items-center ph2 bg-theme-light openDown'
         style={{
-          height: showFilePreview ? (fileIsImage ? "5em" : "3em") : 0,
-          overflow: showFilePreview ? "normal" : "hidden",
-          position: "absolute",
-          bottom: "10vh"
+          height: showFilePreview ? (fileIsImage ? '5em' : '3em') : 0,
+          overflow: showFilePreview ? 'normal' : 'hidden',
+          position: 'absolute',
+          bottom: '10vh',
         }}
       >
         <input
-          style={{ height: 0, width: 0, visibility: "hidden" }}
-          type="file"
-          name="file"
-          id="fileTextUpload"
+          style={{ height: 0, width: 0, visibility: 'hidden' }}
+          type='file'
+          name='file'
+          id='fileTextUpload'
           onChange={onChange}
         />
         {showFilePreview ? shouldRenderImage() : null}
-        {file && <div className="ml2 f6 white-70">{file.name}</div>}
+        {file && <div className='ml2 f6 white-70'>{file.name}</div>}
       </div>
 
       {/* end new stuff */}
-      <div className="flex flex-row items-start justify-start">
-        <div id="chat-util-icons">
+      <div className='flex flex-row items-start justify-start'>
+        <div id='chat-util-icons'>
           {/* This should be a smile but feather-icons-react is behind :\ */}
           <div
-            className="chat-util-icon"
-            id="emoji-trigger"
+            className='chat-util-icon'
+            id='emoji-trigger'
             onClick={toggleEmoji}
           >
-            <FeatherIcon icon="star" />
+            <Smile />
           </div>
-          <label htmlFor={"fileTextUpload"}>
-            <div className="chat-util-icon">
-              <FeatherIcon icon="paperclip" />
+          <label htmlFor={'fileTextUpload'}>
+            <div className='chat-util-icon'>
+              <Paperclip />
             </div>
           </label>
         </div>
         <TextareaAutosize
           rows={1}
           maxRows={10}
-          id="chat-input"
+          id='chat-input'
           value={input}
-          placeholder="Enter Message"
+          placeholder='Enter Message'
           onKeyDown={submitHandler}
           onChange={changeText}
-          tabIndex="1"
+          tabIndex='1'
           // style={{ minHeight: "10vh", maxHeight: "30vh", height: "auto" }}
         />
         {window.innerWidth < 993 && (
           <div
-            id="chat-util-icons"
-            className="mobile-chat-bar"
-            style={{ width: "3em" }}
+            id='chat-util-icons'
+            className='mobile-chat-bar'
+            style={{ width: '3em' }}
           >
-            <div className="chat-util-icon" onClick={submit}>
-              <FeatherIcon icon="send" />
+            <div className='chat-util-icon' onClick={submit}>
+              <Send />
             </div>
           </div>
         )}

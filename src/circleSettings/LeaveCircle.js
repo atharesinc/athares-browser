@@ -1,24 +1,24 @@
-import React, { useGlobal, useEffect, withGlobal } from "reactn";
-import Loader from "../components/Loader";
-import swal from "sweetalert";
+import React, { useGlobal, useEffect, withGlobal } from 'reactn';
+import AtharesLoader from '../components/AtharesLoader';
+import swal from 'sweetalert';
 import {
   DELETE_USER_FROM_CIRCLE,
-  DELETE_CIRCLE_PERMISSION
-} from "../graphql/mutations";
+  DELETE_CIRCLE_PERMISSION,
+} from '../graphql/mutations';
 import {
   GET_CIRCLE_NAME_BY_ID,
-  GET_CIRCLE_PREFS_FOR_USER
-} from "../graphql/queries";
-import { graphql, Query } from "react-apollo";
-import compose from "lodash.flowright";
-import { withRouter } from "react-router-dom";
+  GET_CIRCLE_PREFS_FOR_USER,
+} from '../graphql/queries';
+import { graphql, Query } from 'react-apollo';
+import compose from 'lodash.flowright';
+import { withRouter } from 'react-router-dom';
 
 function LeaveCircle(props) {
-  const [, setActiveCircle] = useGlobal("activeCircle");
+  const [, setActiveCircle] = useGlobal('activeCircle');
 
   useEffect(() => {
     if (!props.user || !props.activeCircle) {
-      props.history.replace("/app");
+      props.history.replace('/app');
     }
   }, [props.user, props.activeCircle, props.history]);
 
@@ -28,9 +28,9 @@ function LeaveCircle(props) {
 
     swal("Are you sure you'd like to leave this Circle?", {
       buttons: {
-        cancel: "Not yet",
-        confirm: true
-      }
+        cancel: 'Not yet',
+        confirm: true,
+      },
     })
       .then(async value => {
         if (value === true) {
@@ -38,19 +38,19 @@ function LeaveCircle(props) {
 
           props.deleteCirclePermission({
             variables: {
-              id
-            }
+              id,
+            },
           });
           props.deleteUserFomCircle({
             variables: {
               user,
-              circle: activeCircle
-            }
+              circle: activeCircle,
+            },
           });
           swal(
-            "Removed From Circle",
+            'Removed From Circle',
             `You have left this Circle. You will have to be re-invited to participate at a later time.`,
-            "warning"
+            'warning',
           );
           setActiveCircle(null);
           props.history.push(`/app`);
@@ -58,7 +58,7 @@ function LeaveCircle(props) {
       })
       .catch(err => {
         console.error(err);
-        swal("Error", "There was an error leaving the Circle.", "error");
+        swal('Error', 'There was an error leaving the Circle.', 'error');
       });
   };
 
@@ -67,19 +67,19 @@ function LeaveCircle(props) {
       {({ loading, data: { Circle: circle } = {} }) => {
         if (loading) {
           return (
-            <div className="w-100 flex justify-center items-center">
-              <Loader />
+            <div className='w-100 flex justify-center items-center'>
+              <AtharesLoader />
             </div>
           );
         }
         return (
-          <div className="mv3 pa2 pv3 ba b--red">
-            <article className="mb3">
-              <time className="f4 lh-title white">
+          <div className='mv3 pa2 pv3 ba b--red'>
+            <article className='mb3'>
+              <time className='f4 lh-title white'>
                 Leave the Circle {circle.name}
               </time>
             </article>
-            <div id="comment-desc" className="f6 white-80">
+            <div id='comment-desc' className='f6 white-80'>
               By pressing "Leave Circle" you will be removed from all circle
               communication. You will not be able to use it's channels, or vote
               in revision polls.
@@ -89,8 +89,8 @@ function LeaveCircle(props) {
             </div>
 
             <button
-              id="create-circle-button"
-              className="btn-red mt4"
+              id='create-circle-button'
+              className='btn-red mt4'
               onClick={leaveCircle}
             >
               Leave Circle
@@ -105,14 +105,14 @@ function LeaveCircle(props) {
 export default withGlobal(({ user, activeCircle }) => ({ user, activeCircle }))(
   compose(
     graphql(GET_CIRCLE_PREFS_FOR_USER, {
-      name: "getCirclePrefs",
+      name: 'getCirclePrefs',
       options: ({ user, activeCircle }) => ({
-        variables: { user: user || "", circle: activeCircle || "" }
-      })
+        variables: { user: user || '', circle: activeCircle || '' },
+      }),
     }),
     graphql(DELETE_USER_FROM_CIRCLE, {
-      name: "deleteUserFomCircle"
+      name: 'deleteUserFomCircle',
     }),
-    graphql(DELETE_CIRCLE_PERMISSION, { name: "deleteCirclePermission" })
-  )(withRouter(LeaveCircle))
+    graphql(DELETE_CIRCLE_PERMISSION, { name: 'deleteCirclePermission' }),
+  )(withRouter(LeaveCircle)),
 );

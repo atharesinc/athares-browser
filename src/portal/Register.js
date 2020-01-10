@@ -1,37 +1,37 @@
-import React, { Fragment, useEffect, useState, useGlobal } from "reactn";
-import FeatherIcon from "feather-icons-react";
-import { validateRegister } from "../utils/validators";
-import { Link, withRouter } from "react-router-dom";
-import swal from "sweetalert";
-import defaultUser from "./defaultUser.json";
-import Loader from "../components/Loader";
-import sha from "simple-hash-browser";
+import React, { Fragment, useEffect, useState, useGlobal } from 'reactn';
+import { User, AtSign, Lock } from 'react-feather';
+import { validateRegister } from '../utils/validators';
+import { Link, withRouter } from 'react-router-dom';
+import swal from 'sweetalert';
+import defaultUser from './defaultUser.json';
+import AtharesLoader from '../components/AtharesLoader';
+import sha from 'simple-hash-browser';
 import {
   CREATE_USER,
   SIGNIN_USER,
-  CREATE_USER_PREF
-} from "../graphql/mutations";
-import { graphql } from "react-apollo";
-import compose from "lodash.flowright";
-import { pair } from "utils/crypto";
-import SimpleCrypto from "simple-crypto-js";
+  CREATE_USER_PREF,
+} from '../graphql/mutations';
+import { graphql } from 'react-apollo';
+import compose from 'lodash.flowright';
+import { pair } from 'utils/crypto';
+import SimpleCrypto from 'simple-crypto-js';
 
 function Register(props) {
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [password, setPassword] = useState("");
-  const [email, setEmail] = useState("");
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const [user, setUser] = useGlobal("user");
-  const [, setPub] = useGlobal("pub");
-  const [, setActiveChannel] = useGlobal("activeChannel");
-  const [, setActiveCircle] = useGlobal("activeCircle");
-  const [, setActiveRevision] = useGlobal("activeRevision");
+  const [user, setUser] = useGlobal('user');
+  const [, setPub] = useGlobal('pub');
+  const [, setActiveChannel] = useGlobal('activeChannel');
+  const [, setActiveCircle] = useGlobal('activeCircle');
+  const [, setActiveRevision] = useGlobal('activeRevision');
 
   useEffect(() => {
     if (user) {
-      props.history.replace("/app");
+      props.history.replace('/app');
     } else {
       setActiveChannel(null);
       setActiveCircle(null);
@@ -42,7 +42,7 @@ function Register(props) {
     props.history,
     setActiveChannel,
     setActiveCircle,
-    setActiveRevision
+    setActiveRevision,
   ]);
 
   const tryRegister = async e => {
@@ -53,11 +53,11 @@ function Register(props) {
       firstName,
       lastName,
       email,
-      password
+      password,
     });
 
     if (isValid !== undefined) {
-      swal("Error", isValid[Object.keys(isValid)[0]][0], "error");
+      swal('Error', isValid[Object.keys(isValid)[0]][0], 'error');
       setLoading(false);
       return false;
     }
@@ -77,145 +77,145 @@ function Register(props) {
           icon: defaultUser.text,
           password: hashedToken,
           pub: keys.pub,
-          priv: simpleCrypto.encrypt(keys.priv)
-        }
+          priv: simpleCrypto.encrypt(keys.priv),
+        },
       });
       const res = await signinUser({
         variables: {
           email,
-          password: hashedToken
-        }
+          password: hashedToken,
+        },
       });
 
       const {
         data: {
-          signinUser: { token, userId }
-        }
+          signinUser: { token, userId },
+        },
       } = res;
       await createUserPref({
         variables: {
-          id: userId
-        }
+          id: userId,
+        },
       });
       //store in redux
-      window.localStorage.setItem("ATHARES_ALIAS", email);
-      window.localStorage.setItem("ATHARES_HASH", hashedToken);
-      window.localStorage.setItem("ATHARES_TOKEN", token);
+      window.localStorage.setItem('ATHARES_ALIAS', email);
+      window.localStorage.setItem('ATHARES_HASH', hashedToken);
+      window.localStorage.setItem('ATHARES_TOKEN', token);
       setUser(userId);
       setPub(hashedToken);
 
-      props.history.push("/app");
+      props.history.push('/app');
       setLoading(false);
     } catch (err) {
       setLoading(false);
       console.error(new Error(err));
-      if (err.message.indexOf("Field name = email") !== -1) {
+      if (err.message.indexOf('Field name = email') !== -1) {
         swal(
-          "Error",
-          "A user already exists with this email address.",
-          "error"
+          'Error',
+          'A user already exists with this email address.',
+          'error',
         );
       } else {
-        swal("Error", err.message, "error");
+        swal('Error', err.message, 'error');
       }
     }
   };
   const updateInfo = () => {
-    setFirstName(document.getElementById("registerFirstName").value);
-    setLastName(document.getElementById("registerLastName").value);
-    setPassword(document.getElementById("registerPassword").value);
-    setEmail(document.getElementById("registerEmail").value);
+    setFirstName(document.getElementById('registerFirstName').value);
+    setLastName(document.getElementById('registerLastName').value);
+    setPassword(document.getElementById('registerPassword').value);
+    setEmail(document.getElementById('registerEmail').value);
   };
 
   return (
     <Fragment>
-      <div id="portal-header">
+      <div id='portal-header'>
         <img
-          src="/img/Athares-owl-logo-large-white.png"
-          id="portal-logo"
-          alt="logo"
+          src='/img/Athares-owl-logo-large-white.png'
+          id='portal-logo'
+          alt='logo'
         />
         <img
-          src="/img/Athares-type-small-white.png"
-          id="portal-brand"
-          alt="brand"
+          src='/img/Athares-type-small-white.png'
+          id='portal-brand'
+          alt='brand'
         />
       </div>
       {loading ? (
         <div
-          className="flex flex-row justify-center items-center"
-          id="portal-register"
+          className='flex flex-row justify-center items-center'
+          id='portal-register'
         >
-          <Loader />
+          <AtharesLoader />
         </div>
       ) : (
-        <form className="wrapper" id="portal-register" onSubmit={tryRegister}>
-          <p className="portal-text">
+        <form className='wrapper' id='portal-register' onSubmit={tryRegister}>
+          <p className='portal-text'>
             Create an account by completing the following fields
           </p>
-          <div className="portal-input-wrapper">
-            <FeatherIcon className="portal-input-icon h1 w1" icon="user" />
+          <div className='portal-input-wrapper'>
+            <User className='portal-input-icon h1 w1' />
             <input
-              type="text"
-              className="portal-input h2 ghost pa2"
-              placeholder="First Name"
-              id="registerFirstName"
+              type='text'
+              className='portal-input h2 ghost pa2'
+              placeholder='First Name'
+              id='registerFirstName'
               onChange={updateInfo}
               value={firstName}
-              tabIndex="1"
+              tabIndex='1'
             />
           </div>
-          <div className="portal-input-wrapper">
-            <FeatherIcon className="portal-input-icon h1 w1" icon="user" />
+          <div className='portal-input-wrapper'>
+            <User className='portal-input-icon h1 w1' />
             <input
-              type="text"
-              className="portal-input h2 ghost pa2"
-              placeholder="Last Name"
-              id="registerLastName"
+              type='text'
+              className='portal-input h2 ghost pa2'
+              placeholder='Last Name'
+              id='registerLastName'
               onChange={updateInfo}
               value={lastName}
-              tabIndex="2"
+              tabIndex='2'
             />
           </div>
-          <div className="portal-input-wrapper">
-            <FeatherIcon className="portal-input-icon h1 w1" icon="at-sign" />
+          <div className='portal-input-wrapper'>
+            <AtSign className='portal-input-icon h1 w1' />
             <input
-              placeholder="Email"
-              className="portal-input h2 ghost pa2"
+              placeholder='Email'
+              className='portal-input h2 ghost pa2'
               required
-              type="email"
+              type='email'
               onChange={updateInfo}
               value={email}
-              id="registerEmail"
-              tabIndex="3"
+              id='registerEmail'
+              tabIndex='3'
             />
           </div>
-          <div className="portal-input-wrapper">
-            <FeatherIcon className="portal-input-icon h1 w1" icon="lock" />
+          <div className='portal-input-wrapper'>
+            <Lock className='portal-input-icon h1 w1' />
             <input
-              type="password"
-              className="portal-input h2 ghost pa2"
-              placeholder="Password"
-              id="registerPassword"
+              type='password'
+              className='portal-input h2 ghost pa2'
+              placeholder='Password'
+              id='registerPassword'
               onChange={updateInfo}
               value={password}
-              tabIndex="4"
+              tabIndex='4'
             />
           </div>
           <button
-            id="register-button"
-            className="f6 link dim br-pill bg-white ba bw1 ph3 pv2 mb2 dib black"
+            id='register-button'
+            className='f6 link dim br-pill bg-white ba bw1 ph3 pv2 mb2 dib black'
             onClick={tryRegister}
-            tabIndex="4"
+            tabIndex='4'
           >
             REGISTER
           </button>
-          <Link to="/login">
-            <div className="switch-portal">I already have an account</div>
+          <Link to='/login'>
+            <div className='switch-portal'>I already have an account</div>
           </Link>
-          <Link to="policy">
-            <div className="white-70 dim ph4 pv2 f6">
-              {" "}
+          <Link to='policy'>
+            <div className='white-70 dim ph4 pv2 f6'>
+              {' '}
               By registering, you acknowledge that you agree to the Terms of Use
               and have read the Privacy Policy.
             </div>
@@ -227,9 +227,9 @@ function Register(props) {
 }
 
 export default compose(
-  graphql(SIGNIN_USER, { name: "signinUser" }),
+  graphql(SIGNIN_USER, { name: 'signinUser' }),
   graphql(CREATE_USER, {
-    name: "createUser"
+    name: 'createUser',
   }),
-  graphql(CREATE_USER_PREF, { name: "createUserPref" })
+  graphql(CREATE_USER_PREF, { name: 'createUserPref' }),
 )(withRouter(Register));

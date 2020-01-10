@@ -1,30 +1,30 @@
-import React, { useCallback, useState, useGlobal, useEffect } from "reactn";
-import ImageUpload from "../components/ImageUpload";
-import ErrorSwap from "../utils/ErrorSwap";
-import Phone from "react-phone-number-input";
-import "react-phone-number-input/rrui.css";
-import "react-phone-number-input/style.css";
-import { Link, withRouter } from "react-router-dom";
-import Loader from "../components/Loader";
-import { Scrollbars } from "react-custom-scrollbars";
+import React, { useCallback, useState, useGlobal, useEffect } from 'reactn';
+import ImageUpload from '../components/ImageUpload';
+import ErrorSwap from '../utils/ErrorSwap';
+import Phone from 'react-phone-number-input';
+import 'react-phone-number-input/rrui.css';
+import 'react-phone-number-input/style.css';
+import { Link, withRouter } from 'react-router-dom';
+import AtharesLoader from '../components/AtharesLoader';
+import { Scrollbars } from 'react-custom-scrollbars';
 
-import { UPDATE_USER } from "../graphql/mutations";
-import { graphql } from "react-apollo";
-import { uploadToAWS } from "utils/upload";
+import { UPDATE_USER } from '../graphql/mutations';
+import { graphql } from 'react-apollo';
+import { uploadToAWS } from 'utils/upload';
 
 function EditUser(props) {
-  const [user] = useGlobal("user");
+  const [user] = useGlobal('user');
   const [userState, setUserState] = useState(
     user
       ? {
           id: props.user.id || null,
-          icon: props.user.icon || "",
-          phone: props.user.phone || "",
-          firstName: props.user.firstName || "",
-          lastName: props.user.lastName || "",
-          uname: props.user.uname || ""
+          icon: props.user.icon || '',
+          phone: props.user.phone || '',
+          firstName: props.user.firstName || '',
+          lastName: props.user.lastName || '',
+          uname: props.user.uname || '',
         }
-      : {}
+      : {},
   );
 
   const [phoneTaken, setPhoneTaken] = useState(false);
@@ -35,7 +35,7 @@ function EditUser(props) {
 
   const componentMount = useCallback(() => {
     if (!props.user) {
-      props.history.replace("/app");
+      props.history.replace('/app');
     }
     setUserState(props.user);
     setLoading(false);
@@ -52,26 +52,26 @@ function EditUser(props) {
   const changeImage = imageUrl => {
     setUserState({
       ...userState,
-      icon: imageUrl
+      icon: imageUrl,
     });
   };
 
   const updateFirstName = e => {
     setUserState({
       ...userState,
-      firstName: e.target.value.substring(0, 51)
+      firstName: e.target.value.substring(0, 51),
     });
   };
   const updateLastName = e => {
     setUserState({
       ...userState,
-      lastName: e.target.value.substring(0, 51)
+      lastName: e.target.value.substring(0, 51),
     });
   };
   const updateUsername = e => {
     setUserState({
       ...userState,
-      uname: e.target.value.substring(0, 100)
+      uname: e.target.value.substring(0, 100),
     });
 
     setUnameTaken(false);
@@ -79,7 +79,7 @@ function EditUser(props) {
   const updatePhone = number => {
     setUserState({
       ...userState,
-      phone: number
+      phone: number,
     });
     setPhoneTaken(false);
   };
@@ -94,9 +94,9 @@ function EditUser(props) {
     });
   };
   const b64toBlob = (b64Data, sliceSize = 512) => {
-    const block = b64Data.split(";");
+    const block = b64Data.split(';');
     // get the real base64 content of the file
-    const realData = block[1].split(",")[1];
+    const realData = block[1].split(',')[1];
     const byteCharacters = atob(realData);
     var byteArrays = [];
 
@@ -113,7 +113,7 @@ function EditUser(props) {
       byteArrays.push(byteArray);
     }
 
-    return new Blob(byteArrays, { type: "image/png" });
+    return new Blob(byteArrays, { type: 'image/png' });
   };
   const onSubmit = async e => {
     e.preventDefault();
@@ -129,11 +129,11 @@ function EditUser(props) {
 
     try {
       let updatedUser = {
-        firstName: firstName || "",
-        lastName: lastName || "",
-        phone: phone || "",
-        uname: uname || "",
-        icon: props.user.icon
+        firstName: firstName || '',
+        lastName: lastName || '',
+        phone: phone || '',
+        uname: uname || '',
+        icon: props.user.icon,
       };
 
       // only update the image if the user has updated it
@@ -159,15 +159,15 @@ function EditUser(props) {
       await props.updateUser({
         variables: {
           id: user,
-          ...updatedUser
-        }
+          ...updatedUser,
+        },
       });
 
       setLoading(false);
       setPhoneTaken(false);
       setUnameTaken(false);
 
-      props.history.push("/app/user");
+      props.history.push('/app/user');
     } catch (err) {
       console.error(new Error(err));
       setLoading(false);
@@ -176,18 +176,18 @@ function EditUser(props) {
 
   const shrinkBase64 = base64String => {
     return new Promise(resolve => {
-      var img = document.createElement("img");
-      img.crossOrigin = "anonymous";
+      var img = document.createElement('img');
+      img.crossOrigin = 'anonymous';
       img.onload = function() {
-        var canvas = document.createElement("canvas");
-        var ctx = canvas.getContext("2d");
+        var canvas = document.createElement('canvas');
+        var ctx = canvas.getContext('2d');
 
         canvas.width = 200;
         canvas.height = 200;
 
         ctx.drawImage(this, 0, 0, 200, 200);
 
-        resolve(canvas.toDataURL("image/png"));
+        resolve(canvas.toDataURL('image/png'));
       };
 
       img.src = base64String;
@@ -204,115 +204,115 @@ function EditUser(props) {
   if (loading || id === null) {
     return (
       <div
-        id="dashboard-wrapper"
+        id='dashboard-wrapper'
         style={{
-          justifyContent: "center"
+          justifyContent: 'center',
         }}
-        className="pa2"
+        className='pa2'
       >
-        <Loader />
-        <h1 className="mb3 mt0 lh-title mt4 f3 f2-ns">Loading...</h1>
+        <AtharesLoader />
+        <h1 className='mb3 mt0 lh-title mt4 f3 f2-ns'>Loading...</h1>
       </div>
     );
   }
   return (
-    <div id="dashboard-wrapper">
+    <div id='dashboard-wrapper'>
       <form
-        className="pa2 pa4-ns white wrapper"
+        className='pa2 pa4-ns white wrapper'
         onSubmit={onSubmit}
-        id="update-user-form"
+        id='update-user-form'
       >
-        <article className="cf">
+        <article className='cf'>
           <div
-            className="w-100 row-center"
+            className='w-100 row-center'
             style={{
-              justifyContent: "space-between",
-              flexDirection: "row"
+              justifyContent: 'space-between',
+              flexDirection: 'row',
             }}
           >
             <Link
-              className="f6 link dim br-pill ba bw1 ph3 pv2 dib white"
-              to="/app/user"
+              className='f6 link dim br-pill ba bw1 ph3 pv2 dib white'
+              to='/app/user'
             >
               BACK
             </Link>
-            <h1 className="mv0 lh-title">Edit Info</h1>
+            <h1 className='mv0 lh-title'>Edit Info</h1>
           </div>
           <Scrollbars
-            style={{ width: "100%", height: "80vh" }}
+            style={{ width: '100%', height: '80vh' }}
             autoHide
             autoHideTimeout={1000}
             autoHideDuration={200}
             universal={true}
           >
-            <header className="fn fl-ns w-50-ns pr4-ns">
+            <header className='fn fl-ns w-50-ns pr4-ns'>
               <ImageUpload
                 onSet={changeImage}
                 defaultImage={icon}
                 editMode={toggleEditMode}
               />
-              <small id="name-desc" className="f6 white-80 db mb2">
+              <small id='name-desc' className='f6 white-80 db mb2'>
                 Your profile picture will be cropped as a circle. It is
                 recommended you upload a square photo with dimensions around
                 250x250 pixels.
               </small>
             </header>
-            <div className="fn fl-ns w-50-ns mt4">
-              <div className="row-center">
-                <div className="w-50 mb4">
-                  <label htmlFor="firstName" className="f6 b db mb2">
+            <div className='fn fl-ns w-50-ns mt4'>
+              <div className='row-center'>
+                <div className='w-50 mb4'>
+                  <label htmlFor='firstName' className='f6 b db mb2'>
                     First Name
                   </label>
                   <input
-                    id="firstName"
-                    className="input-reset ba pa2 mb2 db ghost w-90"
-                    type="text"
-                    aria-describedby="name-desc"
+                    id='firstName'
+                    className='input-reset ba pa2 mb2 db ghost w-90'
+                    type='text'
+                    aria-describedby='name-desc'
                     required
-                    value={firstName || ""}
+                    value={firstName || ''}
                     onChange={updateFirstName}
                   />
                 </div>
-                <div className="w-50 mb4">
-                  <label htmlFor="lastName" className="f6 b db mb2">
+                <div className='w-50 mb4'>
+                  <label htmlFor='lastName' className='f6 b db mb2'>
                     Last Name
                   </label>
                   <input
-                    id="lastName"
-                    className="input-reset ba pa2 mb2 db ghost w-100"
-                    type="text"
-                    aria-describedby="edit-last-name"
+                    id='lastName'
+                    className='input-reset ba pa2 mb2 db ghost w-100'
+                    type='text'
+                    aria-describedby='edit-last-name'
                     required
-                    value={lastName || ""}
+                    value={lastName || ''}
                     onChange={updateLastName}
                   />
                 </div>
               </div>
-              <div className="measure mb4">
-                <label htmlFor="name" className="f6 b db mb2">
+              <div className='measure mb4'>
+                <label htmlFor='name' className='f6 b db mb2'>
                   Phone Number
                 </label>
                 <Phone
-                  placeholder="+1 123 456 7890"
-                  value={phone || ""}
-                  country="US"
-                  inputClassName="db w-100 ghost pa2"
-                  aria-describedby="name-desc"
+                  placeholder='+1 123 456 7890'
+                  value={phone || ''}
+                  country='US'
+                  inputClassName='db w-100 ghost pa2'
+                  aria-describedby='name-desc'
                   displayInitialValueAsLocalNumber={true}
                   onChange={updatePhone}
                   nativeCountrySelect
-                  className="mv2"
+                  className='mv2'
                 />
                 <ErrorSwap
                   condition={!phoneTaken}
                   normal={
-                    <small id="name-desc" className="f6 white-80 db mb2">
+                    <small id='name-desc' className='f6 white-80 db mb2'>
                       Your phone number is used for multi-factor authentication.
                       This number must be unique.
                     </small>
                   }
                   error={
-                    <small id="name-desc" className="f6 red db mb2">
+                    <small id='name-desc' className='f6 red db mb2'>
                       This number has already been taken.
                     </small>
                   }
@@ -353,29 +353,29 @@ function EditUser(props) {
 									}
 								/>
 							</div>*/}
-              <div className="measure mb4">
-                <label htmlFor="uname" className="f6 b db mb2">
+              <div className='measure mb4'>
+                <label htmlFor='uname' className='f6 b db mb2'>
                   Unique Name
                 </label>
                 <input
-                  id="uname"
-                  className="input-reset ba pa2 mb2 db w-100 ghost"
-                  type="text"
-                  aria-describedby="name-desc"
-                  placeholder="firstname.lastname"
-                  value={uname || ""}
+                  id='uname'
+                  className='input-reset ba pa2 mb2 db w-100 ghost'
+                  type='text'
+                  aria-describedby='name-desc'
+                  placeholder='firstname.lastname'
+                  value={uname || ''}
                   onChange={updateUsername}
                 />
                 <ErrorSwap
                   condition={!unameTaken}
                   normal={
-                    <small id="name-desc" className="f6 white-80 db mb2">
+                    <small id='name-desc' className='f6 white-80 db mb2'>
                       This is a human-readable way to uniquely identify each
                       user. This name must be unique.
                     </small>
                   }
                   error={
-                    <small id="name-desc" className="f6 red db mb2">
+                    <small id='name-desc' className='f6 red db mb2'>
                       Sorry! This name has already been taken.
                     </small>
                   }
@@ -386,7 +386,7 @@ function EditUser(props) {
         </article>
 
         {!editMode && (
-          <button id="create-circle-button" className="btn" type="submit">
+          <button id='create-circle-button' className='btn' type='submit'>
             SAVE
           </button>
         )}
@@ -395,6 +395,6 @@ function EditUser(props) {
   );
 }
 
-export default graphql(UPDATE_USER, { name: "updateUser" })(
-  withRouter(EditUser)
+export default graphql(UPDATE_USER, { name: 'updateUser' })(
+  withRouter(EditUser),
 );

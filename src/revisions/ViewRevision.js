@@ -1,31 +1,31 @@
-import React, { useState, withGlobal, useEffect, useGlobal } from "reactn";
-import RevisionHeader from "./RevisionHeader";
-import RevisionStats from "./RevisionStats";
-import VoteButtons from "./VoteButtons";
-import RevisionStatus from "./RevisionStatus";
-import ToggleDiffBar from "./ToggleDiffBar";
-import DiffSection from "./DiffSection";
-import HasVoted from "./HasVoted";
-import { Scrollbars } from "react-custom-scrollbars";
-import Loader from "../components/Loader.js";
-import { unixTime } from "../utils/transform";
-import { withRouter, Link } from "react-router-dom";
-import FeatherIcon from "feather-icons-react";
-import { graphql } from "react-apollo";
-import compose from "lodash.flowright";
+import React, { useState, withGlobal, useEffect, useGlobal } from 'reactn';
+import RevisionHeader from './RevisionHeader';
+import RevisionStats from './RevisionStats';
+import VoteButtons from './VoteButtons';
+import RevisionStatus from './RevisionStatus';
+import ToggleDiffBar from './ToggleDiffBar';
+import DiffSection from './DiffSection';
+import HasVoted from './HasVoted';
+import { Scrollbars } from 'react-custom-scrollbars';
+import AtharesLoader from '../components/AtharesLoader.js';
+import { unixTime } from '../utils/transform';
+import { withRouter, Link } from 'react-router-dom';
+import { ChevronLeft } from 'react-feather';
+import { graphql } from 'react-apollo';
+import compose from 'lodash.flowright';
 
-import { CREATE_VOTE, UPDATE_VOTE } from "../graphql/mutations";
+import { CREATE_VOTE, UPDATE_VOTE } from '../graphql/mutations';
 
-import { GET_REVISION_BY_ID, IS_USER_IN_CIRCLE } from "../graphql/queries";
-import swal from "sweetalert";
+import { GET_REVISION_BY_ID, IS_USER_IN_CIRCLE } from '../graphql/queries';
+import swal from 'sweetalert';
 
 function ViewRevision(props) {
   const [mode, setMode] = useState(0);
   const [value, setValue] = useState(0); // integer state
 
-  const [, setActiveRevision] = useGlobal("activeRevision");
-  const [, setActiveCircle] = useGlobal("activeCircle");
-  const [, setActiveChannel] = useGlobal("activeChannel");
+  const [, setActiveRevision] = useGlobal('activeRevision');
+  const [, setActiveCircle] = useGlobal('activeCircle');
+  const [, setActiveChannel] = useGlobal('activeChannel');
 
   const back = () => {
     props.history.push(`/app`);
@@ -46,7 +46,7 @@ function ViewRevision(props) {
     setActiveRevision,
     setActiveCircle,
     props.match.url,
-    setActiveChannel
+    setActiveChannel,
   ]);
 
   const vote = async support => {
@@ -74,8 +74,8 @@ function ViewRevision(props) {
           await props.updateVote({
             variables: {
               vote: hasVoted.id,
-              support
-            }
+              support,
+            },
           });
         } else {
           // create a new vote, this user hasn't voted yet
@@ -83,13 +83,13 @@ function ViewRevision(props) {
             variables: {
               revision: activeRevision,
               user: props.user,
-              support
-            }
+              support,
+            },
           });
         }
       } catch (err) {
         console.error(new Error(err));
-        swal("Error", "Unable to cast vote. Please try again later", "error");
+        swal('Error', 'Unable to cast vote. Please try again later', 'error');
       }
     }
   };
@@ -118,18 +118,14 @@ function ViewRevision(props) {
     if (revision.amendment) {
       /* Represents a change to existing legislation; Show diff panels   */
       return (
-        <div id="revisions-wrapper">
-          <div className="flex ph2 mobile-nav">
-            <Link to="/app" className="flex justify-center items-center">
-              <FeatherIcon
-                icon="chevron-left"
-                className="white db dn-l"
-                onClick={back}
-              />
+        <div id='revisions-wrapper'>
+          <div className='flex ph2 mobile-nav'>
+            <Link to='/app' className='flex justify-center items-center'>
+              <ChevronLeft className='white db dn-l' onClick={back} />
             </Link>
-            <h2 className="ma3 lh-title white">{title}</h2>
+            <h2 className='ma3 lh-title white'>{title}</h2>
           </div>
-          <Scrollbars style={{ height: "90vh", width: "100%" }}>
+          <Scrollbars style={{ height: '90vh', width: '100%' }}>
             <RevisionHeader
               title={title}
               isNew={false}
@@ -137,7 +133,7 @@ function ViewRevision(props) {
             />
 
             {hasVoted && <HasVoted vote={hasVoted} />}
-            <div className="bg-theme ma2 ma4-ns">
+            <div className='bg-theme ma2 ma4-ns'>
               <RevisionStatus {...revision} support={support} />
               <DiffSection {...revision} mode={mode} />
               {revision.amendment && revision.repeal === false && (
@@ -150,7 +146,7 @@ function ViewRevision(props) {
               />
               {props.user && !hasExpired && belongsToCircle && (
                 <VoteButtons vote={vote} />
-              )}{" "}
+              )}{' '}
             </div>
           </Scrollbars>
         </div>
@@ -158,28 +154,24 @@ function ViewRevision(props) {
     } else {
       /* Represents a new revision; Show single panel */
       return (
-        <div id="revisions-wrapper">
-          <div className="flex ph2 mobile-nav">
-            <Link to="/app" className="flex justify-center items-center">
-              <FeatherIcon
-                icon="chevron-left"
-                className="white db dn-l"
-                onClick={back}
-              />
+        <div id='revisions-wrapper'>
+          <div className='flex ph2 mobile-nav'>
+            <Link to='/app' className='flex justify-center items-center'>
+              <ChevronLeft className='white db dn-l' onClick={back} />
             </Link>
-            <h2 className="ma3 lh-title white">{title}</h2>
+            <h2 className='ma3 lh-title white'>{title}</h2>
           </div>
-          <Scrollbars style={{ height: "90vh", width: "100%" }}>
+          <Scrollbars style={{ height: '90vh', width: '100%' }}>
             <RevisionHeader title={title} isNew={true} />
             {hasVoted && <HasVoted vote={hasVoted} />}
 
-            <div className="bg-theme ma2 ma4-ns">
+            <div className='bg-theme ma2 ma4-ns'>
               <RevisionStatus {...revision} support={support} />
-              <div className="pa3 white pre-wrap">
+              <div className='pa3 white pre-wrap'>
                 <Scrollbars
                   style={{
-                    height: "11em",
-                    width: "100%"
+                    height: '11em',
+                    width: '100%',
                   }}
                 >
                   {newText}
@@ -201,9 +193,9 @@ function ViewRevision(props) {
     }
   } else {
     return (
-      <div id="docs-wrapper" className="column-center">
-        <Loader />
-        <div className="f3 pb2 b mv4 tc">Fetching Revision</div>
+      <div id='docs-wrapper' className='column-center'>
+        <AtharesLoader />
+        <div className='f3 pb2 b mv4 tc'>Fetching Revision</div>
       </div>
     );
   }
@@ -212,22 +204,22 @@ function ViewRevision(props) {
 export default withGlobal(({ user, activeCircle, activeRevision }) => ({
   user,
   activeCircle,
-  activeRevision
+  activeRevision,
 }))(
   compose(
-    graphql(CREATE_VOTE, { name: "createVote" }),
-    graphql(UPDATE_VOTE, { name: "updateVote" }),
+    graphql(CREATE_VOTE, { name: 'createVote' }),
+    graphql(UPDATE_VOTE, { name: 'updateVote' }),
     graphql(IS_USER_IN_CIRCLE, {
-      name: "isUserInCircle",
+      name: 'isUserInCircle',
       options: ({ activeCircle, user }) => ({
-        variables: { circle: activeCircle || "", user: user || "" }
-      })
+        variables: { circle: activeCircle || '', user: user || '' },
+      }),
     }),
     graphql(GET_REVISION_BY_ID, {
       options: ({ activeRevision }) => ({
-        variables: { id: activeRevision || "" },
-        pollInterval: 5000
-      })
-    })
-  )(withRouter(ViewRevision))
+        variables: { id: activeRevision || '' },
+        pollInterval: 5000,
+      }),
+    }),
+  )(withRouter(ViewRevision)),
 );

@@ -1,28 +1,28 @@
-import React, { useState, useGlobal, withGlobal, Fragment } from "reactn";
-import { graphql } from "react-apollo";
-import compose from "lodash.flowright";
-import FeatherIcon from "feather-icons-react";
-import AddMoreUsers from "./AddMoreUsers";
-import { GET_USERS_BY_CHANNEL_ID, GET_USER_KEYS } from "../graphql/queries";
+import React, { useState, useGlobal, withGlobal, Fragment } from 'reactn';
+import { graphql } from 'react-apollo';
+import compose from 'lodash.flowright';
+import { UserPlus, Plus } from 'react-feather';
+import AddMoreUsers from './AddMoreUsers';
+import { GET_USERS_BY_CHANNEL_ID, GET_USER_KEYS } from '../graphql/queries';
 import {
   ADD_USER_TO_CHANNEL,
   CREATE_KEY,
-  UPDATE_CHANNEL_NAME
-} from "../graphql/mutations";
-import SimpleCrypto from "simple-crypto-js";
-import { decrypt, encrypt } from "utils/crypto";
-import swal from "sweetalert";
+  UPDATE_CHANNEL_NAME,
+} from '../graphql/mutations';
+import SimpleCrypto from 'simple-crypto-js';
+import { decrypt, encrypt } from 'utils/crypto';
+import swal from 'sweetalert';
 
 function AddUserToDM(props) {
   const [selectedUsers, setSelectedUsers] = useState([]);
-  const [showAddMoreUsers, setShowAddMoreUsers] = useGlobal("showAddMoreUsers");
+  const [showAddMoreUsers, setShowAddMoreUsers] = useGlobal('showAddMoreUsers');
   const submit = async () => {
     // hoo boy theres a lot to do here
     let { activeChannel, updateChannelName } = props;
     let { User: user } = props.getUserKeys;
     // get the users encrypted priv key
     let userChannelKey = user.keys[0].key;
-    let myToken = window.localStorage.getItem("ATHARES_HASH");
+    let myToken = window.localStorage.getItem('ATHARES_HASH');
 
     // decrypt user's priv with stored token
     let simpleCrypto = new SimpleCrypto(myToken);
@@ -43,8 +43,8 @@ function AddUserToDM(props) {
           variables: {
             key: encryptedKey,
             user: u.id,
-            channel: activeChannel
-          }
+            channel: activeChannel,
+          },
         });
       });
 
@@ -53,16 +53,16 @@ function AddUserToDM(props) {
         props.addUserToChannel({
           variables: {
             channel: activeChannel,
-            user: u.id
-          }
-        })
+            user: u.id,
+          },
+        }),
       );
       const { users: existingUsers } = props.getUsers.Channel;
       const allUsers = [...selectedUsers, ...existingUsers];
 
       const channelName = allUsers
-        .map(u => u.firstName + " " + u.lastName)
-        .join(", ");
+        .map(u => u.firstName + ' ' + u.lastName)
+        .join(', ');
 
       // store all the keys, add all the users, and update the channel name
       await Promise.all(promiseList);
@@ -71,18 +71,18 @@ function AddUserToDM(props) {
       updateChannelName({
         variables: {
           id: activeChannel,
-          name: channelName
-        }
+          name: channelName,
+        },
       });
 
       showAddMoreUsers(false);
       setSelectedUsers([]);
 
       props.getUsers.refetch();
-      swal("Users Added", "Successfully added users", "success");
+      swal('Users Added', 'Successfully added users', 'success');
     } catch (err) {
       console.error(new Error(err));
-      swal("Error", "There was an error adding users at this time", "error");
+      swal('Error', 'There was an error adding users at this time', 'error');
     }
   };
   const toggleUserInput = () => {
@@ -96,27 +96,26 @@ function AddUserToDM(props) {
   return (
     <Fragment>
       <div
-        className="flex items-center lh-copy h3 bb b--white-10 dim pointer ph3"
+        className='flex items-center lh-copy h3 bb b--white-10 dim pointer ph3'
         onClick={toggleUserInput}
       >
-        <div className="flex-auto">
-          <span className="f5 db white">Add Users</span>
+        <div className='flex-auto'>
+          <span className='f5 db white'>Add Users</span>
           {users.length >= 6 && (
-            <span className="f6 white-50">You can't add any more users</span>
+            <span className='f6 white-50'>You can't add any more users</span>
           )}
         </div>
-        <FeatherIcon className="w2 h2 h3-ns" icon="user-plus" />
+        <UserPlus className='w2 h2 h3-ns' />
       </div>
       {showAddMoreUsers && (
-        <div className="flex flex-row justify-between items-center">
+        <div className='flex flex-row justify-between items-center'>
           <AddMoreUsers
             selectedUsers={selectedUsers || []}
             existingUsers={users || []}
             updateList={setSelectedUsers}
           />
-          <FeatherIcon
-            icon="plus"
-            className="white w3 h-100 bg-theme-blue pv1 ph2 pointer"
+          <Plus
+            className='white w3 h-100 bg-theme-blue pv1 ph2 pointer'
             onClick={submit}
           />
         </div>
@@ -127,23 +126,23 @@ function AddUserToDM(props) {
 
 export default withGlobal(({ user, activeChannel }) => ({
   user,
-  activeChannel
+  activeChannel,
 }))(
   compose(
-    graphql(ADD_USER_TO_CHANNEL, { name: "addUserToChannel" }),
-    graphql(UPDATE_CHANNEL_NAME, { name: "updateChannelName" }),
-    graphql(CREATE_KEY, { name: "createKey" }),
+    graphql(ADD_USER_TO_CHANNEL, { name: 'addUserToChannel' }),
+    graphql(UPDATE_CHANNEL_NAME, { name: 'updateChannelName' }),
+    graphql(CREATE_KEY, { name: 'createKey' }),
     graphql(GET_USER_KEYS, {
-      name: "getUserKeys",
+      name: 'getUserKeys',
       options: ({ activeChannel, user }) => ({
-        variables: { channel: activeChannel || "", user: user || "" }
-      })
+        variables: { channel: activeChannel || '', user: user || '' },
+      }),
     }),
     graphql(GET_USERS_BY_CHANNEL_ID, {
-      name: "getUsers",
+      name: 'getUsers',
       options: ({ activeChannel }) => ({
-        variables: { id: activeChannel || "" }
-      })
-    })
-  )(AddUserToDM)
+        variables: { id: activeChannel || '' },
+      }),
+    }),
+  )(AddUserToDM),
 );
