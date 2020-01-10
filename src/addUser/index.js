@@ -88,12 +88,8 @@ function AddUser(props) {
         <h2 className='ma3 lh-title white'> Invite Users </h2>
       </div>
       <form
-        className='pa4 white wrapper mobile-body'
+        className='pa4 white wrapper mobile-body scroll-form'
         onSubmit={onSubmit}
-        id='create-circle-form'
-        style={{
-          overflowY: 'scroll',
-        }}
       >
         <article className='cf'>
           <time className='f7 ttu tracked white-60'>

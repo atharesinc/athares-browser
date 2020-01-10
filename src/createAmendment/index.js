@@ -179,11 +179,7 @@ function CreateAmendment({ activeCircle, ...props }) {
           <h2 className='ma3 lh-title white'>Create Amendment</h2>
         </div>
         <Scrollbars style={{ height: '85vh', width: '100%' }}>
-          <form
-            className='pa2 pa4-ns white wrapper'
-            onSubmit={onSubmit}
-            id='create-circle-form'
-          >
+          <form className='pa2 pa4-ns white wrapper' onSubmit={onSubmit}>
             <article className='cf'>
               <time className='f7 ttu tracked white-80'>
                 Draft a new piece of legislation for {Circle.name}

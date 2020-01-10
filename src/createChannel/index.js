@@ -116,7 +116,6 @@ function CreateChannel(props) {
             <form
               className='pa2 pa4-ns white wrapper mobile-body'
               onSubmit={onSubmit}
-              id='create-circle-form'
             >
               <Scrollbars style={{ height: '90vh', width: '100%' }}>
                 <article className='cf'>

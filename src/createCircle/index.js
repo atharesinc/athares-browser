@@ -217,7 +217,6 @@ function CreateCircle(props) {
       <form
         className='pa2 pa4-ns white wrapper mobile-body'
         onSubmit={onSubmit}
-        id='create-circle-form'
       >
         <Scrollbars style={{ height: '100%', width: '100%' }}>
           <article className='cf'>

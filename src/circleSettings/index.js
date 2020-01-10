@@ -31,10 +31,7 @@ function CircleSettings(props) {
         </Link>
         <h2 className='ma3 lh-title white'> Settings </h2>
       </div>
-      <div
-        id='create-circle-form'
-        className='pa2 pa4-ns white wrapper mobile-body'
-      >
+      <div className='pa2 pa4-ns white wrapper mobile-body'>
         <ScrollBars
           style={{ width: '100%', height: '100%' }}
           autoHide
