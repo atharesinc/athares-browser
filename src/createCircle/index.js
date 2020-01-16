@@ -29,18 +29,10 @@ function CreateCircle(props) {
       if (!user) {
         props.history.replace('/app');
       }
-
-      fetch(icon)
-        .then(function(response) {
-          return response.blob();
-        })
-        .then(function(blob) {
-          setIcon(blob);
-        });
     };
 
     componentMount();
-  }, [icon, props.history, user]);
+  }, [props.history, user]);
 
   const changeImage = imageUrl => {
     setIcon(imageUrl);
@@ -216,6 +208,7 @@ function CreateCircle(props) {
       </div>
       <form
         className='pa2 pa4-ns white wrapper mobile-body'
+        id='create-circle-form'
         onSubmit={onSubmit}
       >
         <Scrollbars style={{ height: '100%', width: '100%' }}>

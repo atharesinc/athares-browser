@@ -1,16 +1,16 @@
-import React, { setGlobal } from "reactn";
-import ReactDOM from "react-dom";
-import App from "./App";
-import { BrowserRouter } from "react-router-dom";
+import React, { setGlobal } from 'reactn';
+import ReactDOM from 'react-dom';
+import App from './App';
+import { BrowserRouter } from 'react-router-dom';
 
-import { ApolloProvider } from "react-apollo";
-import { ApolloClient } from "apollo-client";
-import { link, cache } from "./graphql";
-import * as serviceWorker from "./serviceWorker";
+import { ApolloProvider } from 'react-apollo';
+import { ApolloClient } from 'apollo-client';
+import { link, cache } from './graphql';
+import * as serviceWorker from './serviceWorker';
 
 const client = new ApolloClient({
   link,
-  cache
+  cache,
 });
 
 setGlobal({
@@ -37,9 +37,10 @@ setGlobal({
   showSearch: false,
   dmSettings: false,
   showAddMoreUsers: false,
-  searchParams: "",
+  searchParams: '',
   isOnline: false,
-  showMenu: false
+  showMenu: false,
+  darkMode: false,
 });
 
 ReactDOM.render(
@@ -48,6 +49,6 @@ ReactDOM.render(
       <App />
     </BrowserRouter>
   </ApolloProvider>,
-  document.getElementById("root")
+  document.getElementById('root'),
 );
 serviceWorker.register();
