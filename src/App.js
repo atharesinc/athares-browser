@@ -22,11 +22,13 @@ import DMUpdateMonitor from './components/DMUpdateMonitor';
 import OnlineMonitor from './components/OnlineMonitor';
 
 import throttle from 'lodash.throttle';
-import { TweenLite } from 'gsap';
+import { TweenLite, CSSPlugin } from 'gsap';
 import AtharesLoader from './components/AtharesLoader';
 import { SIGNIN_USER } from './graphql/mutations';
 import { graphql } from 'react-apollo';
 import { logout } from './utils/state';
+import AuthRedirect from './auth';
+import AuthSuccess from './authSuccess';
 
 const DesktopLayout = lazy(() => import('./DesktopLayout'));
 const MobileLayout = lazy(() => import('./MobileLayout'));
@@ -245,6 +247,16 @@ function App(props) {
                 )}
               />
               {/* <Route exact path="/test" component={Test} /> */}
+              <Route
+                exact
+                path='/auth'
+                render={props => <AuthRedirect {...props} />}
+              />
+              <Route
+                exact
+                path='/auth/success'
+                render={props => <AuthSuccess {...props} />}
+              />
               <Route render={() => <NoMatch />} />
             </AnimatedSwitch>
           </div>

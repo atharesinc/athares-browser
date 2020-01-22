@@ -10,6 +10,8 @@
     "react-test-renderer": "^16.3.1"
   },
   "dependencies": {
+    "@8base/app-provider": "^0.37.2",
+    "@8base/react-sdk": "^0.37.2",
     "@apollo/react-hooks": "^3.1.1",
     "@craco/craco": "^3.5.0",
     "apollo-cache-inmemory": "^1.5.1",

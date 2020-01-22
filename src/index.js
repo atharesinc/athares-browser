@@ -1,11 +1,18 @@
 import React, { setGlobal } from 'reactn';
-import ReactDOM from 'react-dom';
-import App from './App';
+import { render } from 'react-dom';
 import { BrowserRouter } from 'react-router-dom';
-
 import { ApolloProvider } from 'react-apollo';
 import { ApolloClient } from 'apollo-client';
+import { AppProvider } from '@8base/react-sdk';
+
 import { link, cache } from './graphql';
+import {
+  authClient,
+  onSuccess,
+  onError,
+  workspaceEndpoint,
+} from './graphql/auth';
+import App from './App';
 import * as serviceWorker from './serviceWorker';
 
 const client = new ApolloClient({
@@ -43,12 +50,19 @@ setGlobal({
   darkMode: false,
 });
 
-ReactDOM.render(
-  <ApolloProvider client={client}>
-    <BrowserRouter>
-      <App />
-    </BrowserRouter>
-  </ApolloProvider>,
+render(
+  <AppProvider
+    uri={workspaceEndpoint}
+    authClient={authClient}
+    onRequestSuccess={onSuccess}
+    onRequestError={onError}
+  >
+    <ApolloProvider client={client}>
+      <BrowserRouter>
+        <App />
+      </BrowserRouter>
+    </ApolloProvider>
+  </AppProvider>,
   document.getElementById('root'),
 );
 serviceWorker.register();
