@@ -1,18 +1,18 @@
-import React, { useGlobal } from "reactn";
-import ChannelGroup from "./ChannelGroup";
-import { Query } from "react-apollo";
-import { GET_DMS_BY_USER } from "../graphql/queries";
-import { SUB_TO_DM_CHANNELS } from "graphql/subscriptions";
+import React, { useGlobal } from 'reactn';
+import ChannelGroup from './ChannelGroup';
+import { Query } from 'react-apollo';
+import { GET_DMS_BY_USER } from '../graphql/queries';
+import { SUB_TO_DM_CHANNELS } from 'graphql/subscriptions';
 
 export default function DMList(props) {
-  const [user] = useGlobal("user");
-  const [activeChannel] = useGlobal("activeChannel");
-  const [unreadDMs] = useGlobal("unreadDMs");
+  const [user] = useGlobal('user');
+  const [activeChannel] = useGlobal('activeChannel');
+  const [unreadDMs] = useGlobal('unreadDMs');
 
   const _subToMore = subscribeToMore => {
     subscribeToMore({
       document: SUB_TO_DM_CHANNELS,
-      variables: { id: user || "" },
+      variables: { id: user || '' },
       updateQuery: (prev, { subscriptionData }) => {
         if (!subscriptionData.data) {
           return prev;
@@ -23,7 +23,7 @@ export default function DMList(props) {
 
         const index = prev.User.channels.findIndex(c => c.id === newChannel.id);
 
-        if (Channel.mutation === "CREATED") {
+        if (Channel.mutation === 'CREATED') {
           // did we already add this channel? If so, return prev
           if (index !== -1) {
             return prev;
@@ -32,19 +32,19 @@ export default function DMList(props) {
           return {
             User: {
               ...prev.User,
-              channels: [...prev.User.channels, newChannel]
-            }
+              channels: [...prev.User.channels, newChannel],
+            },
           };
         }
 
-        if (Channel.mutation === "UPDATED") {
+        if (Channel.mutation === 'UPDATED') {
           // has the user been removed from this channel (it no loner appears as a channel belonging to them)
           if (index === -1) {
             return {
               User: {
                 ...prev.User,
-                channels: prev.User.channels.splice(index)
-              }
+                channels: prev.User.channels.splice(index),
+              },
             };
           }
 
@@ -53,41 +53,41 @@ export default function DMList(props) {
           return {
             User: {
               ...prev.User,
-              channels: newArr
-            }
+              channels: newArr,
+            },
           };
         }
         return prev;
-      }
+      },
     });
   };
 
   return (
-    <Query query={GET_DMS_BY_USER} variables={{ id: user || "" }}>
+    <Query query={GET_DMS_BY_USER} variables={{ id: user || '' }}>
       {({ data = {}, subscribeToMore }) => {
         _subToMore(subscribeToMore);
 
         let userObj = null;
         let dms = [];
         // get channel data, if any
-        if (data.User && data.User.channels) {
-          dms = data.User.channels.map(dm => ({
+        if (data.user && data.user.channels.items) {
+          dms = data.user.channels.items.map(dm => ({
             unread: unreadDMs.includes(dm.id),
-            ...dm
+            ...dm,
           }));
-          userObj = data.User;
+          userObj = data.user;
           userObj = {
             id: userObj.id,
             firstName: userObj.firstName,
-            lastName: userObj.lastName
+            lastName: userObj.lastName,
           };
         }
         return (
           <ChannelGroup
             style={style.dm}
-            channelType={"dm"}
+            channelType={'dm'}
             activeChannel={activeChannel}
-            name={"Direct Messages"}
+            name={'Direct Messages'}
             channels={dms}
             user={userObj}
           />
@@ -99,6 +99,6 @@ export default function DMList(props) {
 
 const style = {
   dm: {
-    flex: 1
-  }
+    flex: 1,
+  },
 };

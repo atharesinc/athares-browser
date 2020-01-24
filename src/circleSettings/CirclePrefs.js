@@ -21,7 +21,7 @@ function CirclePrefs(props) {
   }, [props.user, props.activeCircle, props.history]);
 
   const updateAmendmentPref = async checked => {
-    let { id } = props.data.User.circlePermissions[0];
+    let { id } = props.data.circle.circlePermissions.items[0];
 
     await props.updateAmendmentPref({
       variables: {
@@ -31,7 +31,7 @@ function CirclePrefs(props) {
     });
   };
   const updateRevisionPref = async checked => {
-    let { id } = props.data.User.circlePermissions[0];
+    let { id } = props.data.circle.circlePermissions.items[0];
 
     await props.updateRevisionPref({
       variables: {
@@ -41,7 +41,7 @@ function CirclePrefs(props) {
     });
   };
   const updateEmailPref = async checked => {
-    let { id } = props.data.User.circlePermissions[0];
+    let { id } = props.data.circle.circlePermissions.items[0];
     await props.updateEmailPref({
       variables: {
         id,
@@ -62,7 +62,7 @@ function CirclePrefs(props) {
       </div>
     );
   }
-  let perm = user.circlePermissions[0];
+  let perm = user.circlePermissions.items[0];
   return (
     <div className='mv3 pa2'>
       <article className='mb3'>

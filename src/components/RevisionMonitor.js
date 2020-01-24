@@ -1,16 +1,16 @@
-import { Component, withGlobal } from "reactn";
-import { withRouter } from "react-router-dom";
-import { unixTime } from "../utils/transform";
+import { Component, withGlobal } from 'reactn';
+import { withRouter } from 'react-router-dom';
+import { unixTime } from '../utils/transform';
 import {
   CREATE_AMENDMENT_FROM_REVISION,
   DENY_REVISION,
   UPDATE_AMENDMENT_FROM_REVISION,
-  UPDATE_AMENDMENT_FROM_REVISION_AND_DELETE
-} from "../graphql/mutations";
-import { GET_ACTIVE_REVISIONS_BY_USER_ID } from "../graphql/queries";
-import { graphql } from "react-apollo";
-import compose from "lodash.flowright";
-import sha from "simple-hash-browser";
+  UPDATE_AMENDMENT_FROM_REVISION_AND_DELETE,
+} from '../graphql/mutations';
+import { GET_ACTIVE_REVISIONS_BY_USER_ID } from '../graphql/queries';
+import { graphql } from 'react-apollo';
+import compose from 'lodash.flowright';
+import sha from 'simple-hash-browser';
 
 let checkItemsTimer = null;
 
@@ -21,11 +21,11 @@ class RevisionMonitor extends Component {
   }
   componentDidUpdate(prevProps) {
     // only do the following if revisions are loaded, not before
-    if (this.props.data.User) {
+    if (this.props.data.user) {
       // get a flat list of revisions for current and past props
       let allRevisions = this.getAllRevisions();
-      let prevRevisions = prevProps.data.User
-        ? prevProps.data.User.circles
+      let prevRevisions = prevProps.data.user
+        ? prevProps.data.user.circles.items
             .map(c => c.revisions.map(r => ({ ...r, circle: c.id })))
             .flat(1)
         : [];
@@ -37,14 +37,15 @@ class RevisionMonitor extends Component {
     }
   }
   getAllRevisions = () => {
-    return this.props.data.User.circles
+    console.log(this.props.data.user);
+    return this.props.data.user.circles.items
       .map(c => c.revisions.map(r => ({ ...r, circle: c.id })))
       .flat(1);
   };
   getNext = () => {
     clearTimeout(this.checkItemsTimer);
     let now = unixTime();
-    if (!this.props.data.User) {
+    if (!this.props.data.user) {
       return false;
     }
     let revisions = this.getAllRevisions();
@@ -62,7 +63,7 @@ class RevisionMonitor extends Component {
 
         this.checkIfPass({
           circleId: items[i].circle,
-          revisionId: items[i].id
+          revisionId: items[i].id,
         });
         break;
       } else if (unixTime(items[i].expires) > now) {
@@ -99,8 +100,8 @@ class RevisionMonitor extends Component {
           await this.props.deleteAmendment({
             variables: {
               revision: thisRevision.id,
-              amendment: thisRevision.amendment.id
-            }
+              amendment: thisRevision.amendment.id,
+            },
           });
           this.getNext();
         } else {
@@ -110,8 +111,8 @@ class RevisionMonitor extends Component {
             JSON.stringify({
               id: thisRevision.id,
               title: thisRevision.title,
-              text: thisRevision.newText
-            })
+              text: thisRevision.newText,
+            }),
           );
           if (thisRevision.amendment) {
             await this.props.updateAmendment({
@@ -121,8 +122,8 @@ class RevisionMonitor extends Component {
                 text: thisRevision.newText,
                 revision: thisRevision.id,
                 circle: thisRevision.circle,
-                hash
-              }
+                hash,
+              },
             });
             this.getNext();
           } else {
@@ -132,8 +133,8 @@ class RevisionMonitor extends Component {
                 text: thisRevision.newText,
                 revision: thisRevision.id,
                 circle: thisRevision.circle,
-                hash
-              }
+                hash,
+              },
             });
             this.getNext();
           }
@@ -142,8 +143,8 @@ class RevisionMonitor extends Component {
         // it fails and we ignore it forever
         await this.props.denyRevision({
           variables: {
-            id: thisRevision.id
-          }
+            id: thisRevision.id,
+          },
         });
         this.getNext();
       }
@@ -161,20 +162,21 @@ class RevisionMonitor extends Component {
 export default withGlobal(({ user }) => ({ user }))(
   compose(
     graphql(UPDATE_AMENDMENT_FROM_REVISION_AND_DELETE, {
-      name: "deleteAmendment"
+      name: 'deleteAmendment',
     }),
-    graphql(UPDATE_AMENDMENT_FROM_REVISION, { name: "updateAmendment" }),
+    graphql(UPDATE_AMENDMENT_FROM_REVISION, { name: 'updateAmendment' }),
     graphql(CREATE_AMENDMENT_FROM_REVISION, {
-      name: "createAmendmentFromRevision"
+      name: 'createAmendmentFromRevision',
     }),
     graphql(DENY_REVISION, {
-      name: "denyRevision"
+      name: 'denyRevision',
     }),
     graphql(GET_ACTIVE_REVISIONS_BY_USER_ID, {
       options: ({ user }) => ({
-        variables: { id: user || "" },
-        pollInterval: 10000
-      })
-    })
-  )(withRouter(RevisionMonitor))
+        variables: { id: user || '' },
+        // re-enable
+        // pollInterval: 10000
+      }),
+    }),
+  )(withRouter(RevisionMonitor)),
 );

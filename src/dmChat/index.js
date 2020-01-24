@@ -247,10 +247,10 @@ class DMChat extends Component {
         onCompleted={this.scrollToBottom}
       >
         {({ data = {}, subscribeToMore }) => {
-          if (data.Channel) {
+          if (data.channel) {
             this._subToMore(subscribeToMore);
-            channel = data.Channel;
-            messages = data.Channel.messages;
+            channel = data.channel;
+            messages = data.channel.messages;
           }
           if (getUserKeys.User) {
             user = getUserKeys.User;

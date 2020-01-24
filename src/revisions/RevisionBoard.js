@@ -46,12 +46,13 @@ function RevisionBoard({ user, ...props }) {
     <Query
       query={GET_REVISIONS_FROM_CIRCLE_ID}
       variables={{ id: activeCircle || '' }}
-      pollInterval={10000}
+      // re-enable
+      // pollInterval={10000}
     >
       {({ data = {} }) => {
-        if (data.Circle) {
-          circle = data.Circle;
-          allRevisions = data.Circle.revisions;
+        if (data.circle) {
+          circle = data.circle;
+          allRevisions = data.circle.revisions.items;
         }
         if (!circle) {
           return (

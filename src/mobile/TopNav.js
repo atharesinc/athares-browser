@@ -10,12 +10,13 @@ const TopNav = ({ showSearch = false, ...props }) => {
     <Query
       query={GET_USER_BY_ID}
       variables={{ id: props.user || '' }}
-      pollInterval={2000}
+      // re-enable
+      // pollInterval={2000}
     >
       {({ loading, err, data = {} }) => {
         let user = null;
-        if (data.User) {
-          user = data.User;
+        if (data.user) {
+          user = data.user;
         }
         return (
           <div

@@ -1,8 +1,13 @@
-import gql from "graphql-tag";
+import gql from 'graphql-tag';
 
 export const SUB_TO_MESSAGES_BY_CHANNEL_ID = gql`
   subscription subToMessages($id: ID!) {
-    Message(filter: { mutation_in: CREATED, node: { channel: { id: $id } } }) {
+    Messages(
+      filter: {
+        mutation_in: create
+        node: { channel: { id: { equals: $id } } }
+      }
+    ) {
       node {
         id
         text
@@ -22,10 +27,12 @@ export const SUB_TO_MESSAGES_BY_CHANNEL_ID = gql`
 
 export const SUB_TO_DMS_BY_USER = gql`
   subscription subtoDMs($ids: [ID!]!) {
-    Message(
+    Messages(
       filter: {
-        mutation_in: CREATED
-        node: { channel: { AND: { id_in: $ids, channelType: "dm" } } }
+        mutation_in: create
+        node: {
+          channel: { AND: { id: { in: $ids }, channelType: { equals: "dm" } } }
+        }
       }
     ) {
       node {
@@ -44,10 +51,14 @@ export const SUB_TO_DMS_BY_USER = gql`
 
 export const SUB_TO_ALL_CIRCLES_CHANNELS = gql`
   subscription subToCallCirclesChannel($ids: [ID!]!) {
-    Message(
+    Messages(
       filter: {
-        mutation_in: CREATED
-        node: { channel: { AND: { id_in: $ids, channelType: "group" } } }
+        mutation_in: create
+        node: {
+          channel: {
+            AND: { id: { in: $ids }, channelType: { equals: "group" } }
+          }
+        }
       }
     ) {
       node {
@@ -65,10 +76,10 @@ export const SUB_TO_ALL_CIRCLES_CHANNELS = gql`
 
 export const SUB_TO_CIRCLES_AMENDMENTS = gql`
   subscription($id: ID!) {
-    Amendment(
+    Amendments(
       filter: {
-        mutation_in: [CREATED, UPDATED, DELETED]
-        node: { circle: { id: $id } }
+        mutation_in: [create, update, delete]
+        node: { circle: { id: { equals: $id } } }
       }
     ) {
       previousValues {
@@ -91,10 +102,10 @@ export const SUB_TO_CIRCLES_AMENDMENTS = gql`
 `;
 export const SUB_TO_CIRCLES_CHANNELS = gql`
   subscription($id: ID!) {
-    Channel(
+    Channels(
       filter: {
-        mutation_in: [CREATED, UPDATED, DELETED]
-        node: { circle: { id: $id } }
+        mutation_in: [create, update, delete]
+        node: { circle: { id: { equals: $id } } }
       }
     ) {
       node {
@@ -109,10 +120,10 @@ export const SUB_TO_CIRCLES_CHANNELS = gql`
 
 export const SUB_TO_DM_CHANNELS = gql`
   subscription($id: ID!) {
-    Channel(
+    Channels(
       filter: {
-        mutation_in: [CREATED, DELETED, UPDATED]
-        node: { users_every: { id: $id } }
+        mutation_in: [create, delete, update]
+        node: { users: { every: { id: { equals: $id } } } }
       }
     ) {
       mutation
@@ -121,7 +132,9 @@ export const SUB_TO_DM_CHANNELS = gql`
         name
         channelType
         users {
-          id
+          items {
+            id
+          }
         }
       }
     }

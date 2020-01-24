@@ -23,7 +23,7 @@ function ViewUser(props) {
   };
 
   const updatePref = async checked => {
-    let { id } = props.data.User.prefs;
+    let { id } = props.data.user.prefs;
 
     await props.updateMarketingEmail({
       variables: {

@@ -50,7 +50,7 @@ function Channels(props) {
         if (!subscriptionData.data) {
           return prev;
         }
-        let newChannel = subscriptionData.data.Channel.node;
+        let newChannel = subscriptionData.data.channel.node;
         if (!prev.Circle.channels.find(c => c.id === newChannel.id)) {
           return {
             Circle: {
@@ -88,10 +88,10 @@ function Channels(props) {
       variables={{ id: props.activeCircle || '' }}
     >
       {({ data = {}, subscribeToMore }) => {
-        if (data.Circle) {
+        if (data.circle) {
           _subToMore(subscribeToMore);
-          circle = data.Circle;
-          channels = circle.channels;
+          circle = data.circle;
+          channels = circle.channels.items;
           channels = channels.map(ch => ({
             unread: unreadChannels.includes(ch.id),
             ...ch,

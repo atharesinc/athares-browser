@@ -165,10 +165,10 @@ function Chat(props) {
       onCompleted={scrollToBottom}
     >
       {({ data = {}, subscribeToMore }) => {
-        if (data.Channel) {
+        if (data.channel) {
           _subToMore(subscribeToMore);
-          channel = data.Channel;
-          messages = data.Channel.messages;
+          channel = data.channel;
+          messages = data.channel.messages;
         }
 
         if (channel) {

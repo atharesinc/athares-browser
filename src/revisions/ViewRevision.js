@@ -60,8 +60,8 @@ function ViewRevision(props) {
     ) {
       return false;
     }
-    if (data.Revision) {
-      const { votes, ...revision } = data.Revision;
+    if (data.revision) {
+      const { votes, ...revision } = data.revision;
       // If the user attempts to vote after the revision expires, stop and return;
       if (unixTime() >= unixTime(revision.expires)) {
         return false;
@@ -101,7 +101,7 @@ function ViewRevision(props) {
   let belongsToCircle = false;
   const { data = {}, isUserInCircle, activeCircle } = props;
 
-  if (data.Revision && isUserInCircle) {
+  if (data.revision && isUserInCircle) {
     if (
       isUserInCircle.allCircles &&
       isUserInCircle.allCircles.length !== 0 &&
@@ -109,7 +109,7 @@ function ViewRevision(props) {
     ) {
       belongsToCircle = true;
     }
-    revision = data.Revision;
+    revision = data.revision;
     const { newText, title, votes } = revision;
 
     const support = votes.filter(({ support }) => support).length;
@@ -218,7 +218,8 @@ export default withGlobal(({ user, activeCircle, activeRevision }) => ({
     graphql(GET_REVISION_BY_ID, {
       options: ({ activeRevision }) => ({
         variables: { id: activeRevision || '' },
-        pollInterval: 5000,
+        // re-enable
+        // pollInterval: 5000,
       }),
     }),
   )(withRouter(ViewRevision)),

@@ -7,7 +7,7 @@ const clientId = process.env.REACT_APP_AUTH_CLIENT_ID;
  * authentication profile that gets set up in the 8base
  * management console.
  */
-const logoutRedirectUri = `${window.location.origin}/`;
+const logoutRedirectUri = `${window.location.origin}/app`;
 const redirectUri = `${window.location.origin}/auth/success`;
 /**
  * There are multiple auth strategies that can be
@@ -32,10 +32,10 @@ const workspaceEndpoint = process.env.REACT_APP_WORKSPACE_ENDPOINT;
 const onSuccess = ({ operation }) => {
   const message = operation.getContext();
 
-  if (message) {
-    // eslint-disable-next-line no-console
-    console.error(message);
-  }
+  // if (message) {
+  //   // eslint-disable-next-line no-console
+  //   console.error('no issues here!', message);
+  // }
 };
 
 const onError = ({ graphQLErrors }) => {

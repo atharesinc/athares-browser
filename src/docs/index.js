@@ -90,9 +90,9 @@ function Constitution(props) {
       fetchPolicy={'cache-and-network'}
     >
       {({ data = {}, subscribeToMore }) => {
-        if (data.Circle) {
-          circle = data.Circle;
-          amendments = data.Circle.amendments;
+        if (data.circle) {
+          circle = data.circle;
+          amendments = data.circle.amendments.items;
           _subToMore(subscribeToMore);
         }
         if (circle) {

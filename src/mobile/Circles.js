@@ -13,11 +13,12 @@ const Circles = ({ setActive, user, ...props }) => {
     <Query
       query={GET_CIRCLES_BY_USER_ID}
       variables={{ id: user || '' }}
-      pollInterval={3000}
+      // re-enable
+      // pollInterval={3000}
     >
       {({ loading, err, data = {} }) => {
-        if (data.User) {
-          circles = data.User.circles;
+        if (data.user) {
+          circles = data.user.circles.items;
         }
         return (
           <div className='mobile-top-nav w-100 v-mid bg-theme flex flex-row items-center pv0 ph3'>

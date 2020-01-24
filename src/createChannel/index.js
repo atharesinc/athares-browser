@@ -85,7 +85,7 @@ function CreateChannel(props) {
     <Query query={GET_CIRCLE_NAME_BY_ID} variables={{ id: activeCircle || '' }}>
       {({ loading: dataLoading, err, data = {} }) => {
         if (data) {
-          circle = data.Circle;
+          circle = data.circle;
         }
         if (loading || dataLoading) {
           return (

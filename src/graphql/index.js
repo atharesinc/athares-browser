@@ -1,21 +1,22 @@
-import { split, concat, ApolloLink } from "apollo-link";
-import { HttpLink } from "apollo-link-http";
-import { WebSocketLink } from "apollo-link-ws";
-import { getMainDefinition } from "apollo-utilities";
-import { InMemoryCache } from "apollo-cache-inmemory";
-import { RetryLink } from "apollo-link-retry";
+import { split, concat, ApolloLink } from 'apollo-link';
+import { HttpLink } from 'apollo-link-http';
+import { WebSocketLink } from 'apollo-link-ws';
+import { getMainDefinition } from 'apollo-utilities';
+import { InMemoryCache } from 'apollo-cache-inmemory';
+import { RetryLink } from 'apollo-link-retry';
+import { Client } from '@8base/api-client';
 
 let uri =
-  process.env.NODE_ENV === "production"
+  process.env.NODE_ENV === 'production'
     ? process.env.REACT_APP_PROD_GQL_HTTP_URL
     : process.env.REACT_APP_DEV_GQL_HTTP_URL;
 // Create an http link:
 const httpLink = new HttpLink({
-  uri
+  uri,
 });
 
 const wsUri =
-  process.env.NODE_ENV === "production"
+  process.env.NODE_ENV === 'production'
     ? process.env.REACT_APP_PROD_GQL_WS_URL
     : process.env.REACT_APP_DEV_GQL_WS_URL;
 
@@ -25,9 +26,9 @@ const wsLink = new WebSocketLink({
   options: {
     reconnect: true,
     connectionParams: {
-      authToken: "Bearer " + localStorage.getItem("ATHARES_TOKEN") || ""
-    }
-  }
+      authToken: 'Bearer ' + localStorage.getItem('ATHARES_TOKEN') || '',
+    },
+  },
 });
 
 // create cache
@@ -35,15 +36,15 @@ const cache = new InMemoryCache();
 
 const authMiddleware = new ApolloLink((operation, forward) => {
   // abort if offline
-  if (localStorage.getItem("isOnline") === "false") {
+  if (localStorage.getItem('isOnline') === 'false') {
     return false;
   }
 
   // add the authorization to the headers
   operation.setContext({
     headers: {
-      authorization: "Bearer " + localStorage.getItem("ATHARES_TOKEN") || ""
-    }
+      authorization: 'Bearer ' + localStorage.getItem('ATHARES_TOKEN') || '',
+    },
   });
 
   return forward(operation);
@@ -51,8 +52,8 @@ const authMiddleware = new ApolloLink((operation, forward) => {
 
 const retry = new RetryLink({
   attempts: (count, operation, error) => {
-    return localStorage.getItem("isOnline") !== "false";
-  }
+    return localStorage.getItem('isOnline') !== 'false';
+  },
 });
 
 // using the ability to split links, you can send data to each link
@@ -61,10 +62,16 @@ const link = split(
   // split based on operation type
   ({ query }) => {
     const { kind, operation } = getMainDefinition(query);
-    return kind === "OperationDefinition" && operation === "subscription";
+    return kind === 'OperationDefinition' && operation === 'subscription';
   },
   wsLink,
-  concat(retry, concat(authMiddleware, httpLink))
+  concat(retry, concat(authMiddleware, httpLink)),
 );
+/*
+  8base client
+*/
 
-export { link, cache };
+/* Instantiate new instance with workspace endpoint */
+const client = new Client(process.env.REACT_APP_WORKSPACE_ENDPOINT);
+
+export { link, cache, client };

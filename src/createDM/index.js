@@ -39,7 +39,7 @@ function CreateDM(props) {
 
   const submit = async (text = '', file = null) => {
     let { data } = props;
-    if (!data.User) {
+    if (!data.user) {
       return false;
     }
     // We're going to allow users to have no recipients because they always get added to a channel on creation

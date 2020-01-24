@@ -1,14 +1,16 @@
-import gql from "graphql-tag";
+import gql from 'graphql-tag';
 
 export const GET_ALL_NOTICES = gql`
   {
-    allNotices {
-      id
-      title
-      text
-      createdAt
-      circle {
+    noticesList {
+      items {
         id
+        title
+        text
+        createdAt
+        circle {
+          id
+        }
       }
     }
   }
@@ -16,7 +18,7 @@ export const GET_ALL_NOTICES = gql`
 
 export const GET_USER_BY_ID = gql`
   query getUserById($id: ID!) {
-    User(id: $id) {
+    user(id: $id) {
       id
       firstName
       lastName
@@ -28,7 +30,7 @@ export const GET_USER_BY_ID = gql`
 
 export const GET_USER_BY_EMAIL = gql`
   query($email: String!) {
-    User(email: $email) {
+    user(email: $email) {
       id
     }
   }
@@ -36,7 +38,7 @@ export const GET_USER_BY_EMAIL = gql`
 
 export const GET_USER_BY_ID_ALL = gql`
   query getUserByIdAll($id: ID!) {
-    User(id: $id) {
+    user(id: $id) {
       id
       firstName
       lastName
@@ -46,14 +48,20 @@ export const GET_USER_BY_ID_ALL = gql`
       phone
       createdAt
       circles {
-        id
+        items {
+          id
+        }
       }
       revisions {
-        id
-        passed
+        items {
+          id
+          passed
+        }
       }
       votes {
-        id
+        items {
+          id
+        }
       }
     }
   }
@@ -61,12 +69,14 @@ export const GET_USER_BY_ID_ALL = gql`
 
 export const GET_CIRCLES_BY_USER_ID = gql`
   query getCirclesByUserId($id: ID!) {
-    User(id: $id) {
+    user(id: $id) {
       id
       circles {
-        id
-        icon
-        name
+        items {
+          id
+          icon
+          name
+        }
       }
     }
   }
@@ -74,22 +84,24 @@ export const GET_CIRCLES_BY_USER_ID = gql`
 
 export const GET_CHANNELS_BY_CIRCLE_ID = gql`
   query getChannelsByCircleId($id: ID!) {
-    Circle(id: $id) {
+    circle(id: $id) {
       id
       name
       preamble
       channels {
-        id
-        name
-        channelType
-        createdAt
+        items {
+          id
+          name
+          channelType
+          createdAt
+        }
       }
     }
   }
 `;
 export const GET_CIRCLE_NAME_BY_ID = gql`
   query getCircleNameById($id: ID!) {
-    Circle(id: $id) {
+    circle(id: $id) {
       name
     }
   }
@@ -97,21 +109,23 @@ export const GET_CIRCLE_NAME_BY_ID = gql`
 
 export const GET_MESSAGES_FROM_CHANNEL_ID = gql`
   query getMessagesByChannelId($id: ID!) {
-    Channel(id: $id) {
+    channel(id: $id) {
       id
       name
       description
       messages {
-        id
-        text
-        createdAt
-        file
-        fileName
-        user {
+        items {
           id
-          icon
-          firstName
-          lastName
+          text
+          createdAt
+          file
+          fileName
+          user {
+            id
+            icon
+            firstName
+            lastName
+          }
         }
       }
     }
@@ -120,22 +134,26 @@ export const GET_MESSAGES_FROM_CHANNEL_ID = gql`
 
 export const GET_AMENDMENTS_FROM_CIRCLE_ID = gql`
   query getAmendmentsFromCircleId($id: ID!) {
-    Circle(id: $id) {
+    circle(id: $id) {
       id
       name
       users {
-        id
+        items {
+          id
+        }
       }
       preamble
       amendments {
-        id
-        title
-        text
-        createdAt
-        updatedAt
-        revision {
+        items {
           id
-          passed
+          title
+          text
+          createdAt
+          updatedAt
+          revision {
+            id
+            passed
+          }
         }
       }
     }
@@ -144,7 +162,7 @@ export const GET_AMENDMENTS_FROM_CIRCLE_ID = gql`
 
 export const GET_REVISION_BY_ID = gql`
   query getRevisionById($id: ID!) {
-    Revision(id: $id) {
+    revision(id: $id) {
       id
       circle {
         id
@@ -167,10 +185,12 @@ export const GET_REVISION_BY_ID = gql`
         lastName
       }
       votes {
-        id
-        support
-        user {
+        items {
           id
+          support
+          user {
+            id
+          }
         }
       }
     }
@@ -179,28 +199,32 @@ export const GET_REVISION_BY_ID = gql`
 
 export const GET_REVISIONS_FROM_CIRCLE_ID = gql`
   query getRevisionsFromCircleId($id: ID!) {
-    Circle(id: $id) {
+    circle(id: $id) {
       id
       name
       preamble
       revisions {
-        passed
-        backer {
+        items {
+          passed
+          backer {
+            id
+            icon
+          }
+          repeal
+          expires
+          voterThreshold
           id
-          icon
-        }
-        repeal
-        expires
-        voterThreshold
-        id
-        title
-        newText
-        createdAt
-        amendment {
-          id
-        }
-        votes {
-          support
+          title
+          newText
+          createdAt
+          amendment {
+            id
+          }
+          votes {
+            items {
+              support
+            }
+          }
         }
       }
     }
@@ -209,25 +233,31 @@ export const GET_REVISIONS_FROM_CIRCLE_ID = gql`
 
 export const GET_ACTIVE_REVISIONS_BY_USER_ID = gql`
   query getActiveRevisionsByUserId($id: ID!) {
-    User(id: $id) {
+    user(id: $id) {
       id
       circles {
-        id
-        revisions {
-          repeal
-          expires
-          passed
-          voterThreshold
+        items {
           id
-          title
-          newText
-          oldText
-          amendment {
-            id
-          }
-          votes {
-            id
-            support
+          revisions {
+            items {
+              repeal
+              expires
+              passed
+              voterThreshold
+              id
+              title
+              newText
+              oldText
+              amendment {
+                id
+              }
+              votes {
+                items {
+                  id
+                  support
+                }
+              }
+            }
           }
         }
       }
@@ -237,33 +267,37 @@ export const GET_ACTIVE_REVISIONS_BY_USER_ID = gql`
 
 export const SEARCH_FOR_USER = gql`
   query searchForUser($text: String!) {
-    allUsers(
+    usersList(
       filter: {
         OR: [
-          { firstName_contains: $text }
-          { lastName_contains: $text }
-          { email_contains: $text }
-          { uname_contains: $text }
+          { firstName: { contains: $text } }
+          { lastName: { contains: $text } }
+          { email: { contains: $text } }
+          { uname: { contains: $text } }
         ]
       }
     ) {
-      id
-      firstName
-      lastName
-      uname
-      icon
-      pub
-      email
+      items {
+        id
+        firstName
+        lastName
+        uname
+        icon
+        pub
+        email
+      }
     }
   }
 `;
 
 export const GET_USERS_BY_CIRCLE_ID = gql`
   query getUsersByCircleId($id: ID!) {
-    Circle(id: $id) {
+    circle(id: $id) {
       id
       users {
-        id
+        items {
+          id
+        }
       }
     }
   }
@@ -271,16 +305,20 @@ export const GET_USERS_BY_CIRCLE_ID = gql`
 
 export const GET_DMS_BY_USER = gql`
   query getDMsByUser($id: ID!) {
-    User(id: $id) {
+    user(id: $id) {
       id
       firstName
       lastName
-      channels(filter: { channelType: "dm" }) {
-        id
-        name
-        channelType
-        users {
+      channels(filter: { channelType: { equals: "dm" } }) {
+        items {
           id
+          name
+          channelType
+          users {
+            items {
+              id
+            }
+          }
         }
       }
     }
@@ -300,14 +338,21 @@ export const GET_RESET_REQUEST = gql`
 
 export const GET_USER_KEYS = gql`
   query getUserKeys($user: ID!, $channel: ID) {
-    User(id: $user) {
+    user(id: $user) {
       id
       priv
       firstName
       lastName
-      keys(filter: { user: { id: $user }, channel: { id: $channel } }) {
-        id
-        key
+      keys(
+        filter: {
+          user: { id: { equals: $user } }
+          channel: { id: { equals: $channel } }
+        }
+      ) {
+        items {
+          id
+          key
+        }
       }
     }
   }
@@ -315,78 +360,88 @@ export const GET_USER_KEYS = gql`
 
 export const SEARCH_ALL = gql`
   query searchForUser($text: String!, $id: ID!) {
-    allCircles(
+    circlesList(
       last: 5
-      filter: { OR: [{ id: $id }, { name_contains: $text }] }
+      filter: { OR: [{ id: { equals: $id } }, { name: { contains: $text } }] }
     ) {
-      id
-      name
-      icon
+      items {
+        id
+        name
+        icon
+      }
     }
-    allChannels(
+    channelsList(
       last: 5
       filter: {
-        channelType_not: "dm"
-        OR: [{ id: $id }, { name_contains: $text }]
+        channelType: { equals: "dm" }
+        OR: [{ id: { equals: $id } }, { name: { contains: $text } }]
       }
     ) {
-      id
-      name
-      description
-      createdAt
-      circle {
+      items {
         id
         name
+        description
+        createdAt
+        circle {
+          id
+          name
+        }
       }
     }
-    allRevisions(
+    revisionsList(
       last: 5
-      filter: { OR: [{ id: $id }, { title_contains: $text }] }
+      filter: { OR: [{ id: { equals: $id } }, { title: { contains: $text } }] }
     ) {
-      id
-      title
-      createdAt
-      circle {
+      items {
         id
-        name
+        title
+        createdAt
+        circle {
+          id
+          name
+        }
       }
     }
-    allAmendments(
+    amendmentsList(
       last: 5
-      filter: { OR: [{ id: $id }, { title_contains: $text }] }
+      filter: { OR: [{ id: { equals: $id } }, { title: { contains: $text } }] }
     ) {
-      id
-      title
-      text
-      createdAt
-      circle {
+      items {
         id
-        name
+        title
+        text
+        createdAt
+        circle {
+          id
+          name
+        }
       }
     }
-    allUsers(
+    usersList(
       last: 5
       filter: {
         OR: [
-          { id: $id }
-          { firstName_contains: $text }
-          { lastName_contains: $text }
-          { email_contains: $text }
-          { uname_contains: $text }
+          { id: { equals: $id } }
+          { firstName: { contains: $text } }
+          { lastName: { contains: $text } }
+          { email: { contains: $text } }
+          { uname: { contains: $text } }
         ]
       }
     ) {
-      id
-      firstName
-      lastName
-      icon
+      items {
+        id
+        firstName
+        lastName
+        icon
+      }
     }
   }
 `;
 
 export const GET_INVITE_BY_ID = gql`
   query getInviteById($id: ID!) {
-    Invite(id: $id) {
+    invite(id: $id) {
       id
       hasAccepted
       inviter {
@@ -406,12 +461,14 @@ export const GET_INVITE_BY_ID = gql`
 
 export const GET_USERS_BY_CHANNEL_ID = gql`
   query getUsersByChannelId($id: ID!) {
-    Channel(id: $id) {
+    channel(id: $id) {
       id
       users {
-        id
-        firstName
-        lastName
+        items {
+          id
+          firstName
+          lastName
+        }
       }
     }
   }
@@ -419,7 +476,7 @@ export const GET_USERS_BY_CHANNEL_ID = gql`
 
 export const GET_WEB_SUBS = gql`
   query getWebSubs($id: ID!) {
-    User(id: $id) {
+    user(id: $id) {
       id
       webSubs {
         id
@@ -431,12 +488,16 @@ export const GET_WEB_SUBS = gql`
 
 export const GET_ALL_USERS_CIRCLES_CHANNELS = gql`
   query getAllMyChannels($id: ID!) {
-    User(id: $id) {
+    user(id: $id) {
       id
       circles {
-        id
-        channels {
+        items {
           id
+          channels {
+            items {
+              id
+            }
+          }
         }
       }
     }
@@ -445,15 +506,17 @@ export const GET_ALL_USERS_CIRCLES_CHANNELS = gql`
 
 export const GET_CIRCLE_PREFS_FOR_USER = gql`
   query($user: ID!, $circle: ID!) {
-    User(id: $user) {
+    user(id: $user) {
       id
-      circlePermissions(filter: { circle: { id: $circle } }) {
-        id
-        amendments
-        revisions
-        useSMS
-        usePush
-        useEmail
+      circlePermissions(filter: { circle: { id: { equals: $circle } } }) {
+        items {
+          id
+          amendments
+          revisions
+          useSMS
+          usePush
+          useEmail
+        }
       }
     }
   }
@@ -461,11 +524,13 @@ export const GET_CIRCLE_PREFS_FOR_USER = gql`
 
 export const GET_USER_PREF_BY_ID = gql`
   query($id: ID!) {
-    User(id: $id) {
+    user(id: $id) {
       id
       prefs {
-        id
-        maySendMarketingEmail
+        items {
+          id
+          maySendMarketingEmail
+        }
       }
     }
   }
@@ -473,13 +538,15 @@ export const GET_USER_PREF_BY_ID = gql`
 
 export const GET_CIRCLE_NOTICES = gql`
   query($id: ID!) {
-    Circle(id: $id) {
+    circle(id: $id) {
       id
-      notices(orderBy: createdAt_DESC) {
-        id
-        title
-        text
-        createdAt
+      notices(sort: { createdAt: DESC }) {
+        items {
+          id
+          title
+          text
+          createdAt
+        }
       }
     }
   }
@@ -487,20 +554,59 @@ export const GET_CIRCLE_NOTICES = gql`
 
 export const IS_USER_IN_CIRCLE = gql`
   query($circle: ID!, $user: ID!) {
-    allCircles(
-      filter: { AND: [{ id: $circle }, { users_some: { id: $user } }] }
+    circlesList(
+      filter: {
+        AND: [
+          { id: { equals: $circle } }
+          { users: { some: { id: { equals: $user } } } }
+        ]
+      }
       first: 1
     ) {
-      id
+      items {
+        id
+      }
     }
   }
 `;
 
 export const DOES_AMENDMENT_EXIST = gql`
   query doesAmendmentExistInCircle($title: String!, $circleId: ID!) {
-    allAmendments(filter: { title: $title, circle: { id: $circleId } }) {
+    amendmentsList(
+      filter: {
+        title: { equals: $title }
+        circle: { id: { equals: $circleId } }
+      }
+    ) {
+      items {
+        id
+        title
+      }
+    }
+  }
+`;
+
+/*
+  8base queries
+*/
+
+/* Query the for the ID of the logged in user */
+export const CURRENT_USER_QUERY = gql`
+  query currentUser {
+    user {
       id
-      title
+    }
+  }
+`;
+
+export const TEST_QUERY = gql`
+  query {
+    usersList {
+      items {
+        id
+        email
+        icon
+      }
     }
   }
 `;

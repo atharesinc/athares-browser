@@ -11,16 +11,17 @@ function ViewUser(props) {
     <Query
       query={GET_USER_BY_ID_ALL}
       variables={{ id: props.match.params.id || '' }}
-      pollInterval={10000}
+      // re-enable
+      // pollInterval={10000}
     >
       {({ loading, err, data = {} }) => {
         let user,
           stats = null;
-        if (data.User) {
-          user = data.User;
+        if (data.user) {
+          user = data.user;
           stats = {
             voteCount: user.votes.length,
-            circleCount: user.circles.length,
+            circleCount: user.circles.items.length,
             revisionCount: user.revisions.length,
             passedRevisionCount: user.revisions.filter(r => r.passed).length,
           };

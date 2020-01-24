@@ -1,13 +1,13 @@
-import React, { useState, useEffect, useGlobal } from "reactn";
-import ViewUser from "./ViewUser";
-import EditUser from "./EditUser";
-import ViewOtherUser from "./ViewOtherUser"; // same as view user w/o btns to toggle
-import { Switch, Route } from "react-router-dom";
-import { Query } from "react-apollo";
-import { GET_USER_BY_ID_ALL } from "../graphql/queries";
+import React, { useState, useEffect, useGlobal } from 'reactn';
+import ViewUser from './ViewUser';
+import EditUser from './EditUser';
+import ViewOtherUser from './ViewOtherUser'; // same as view user w/o btns to toggle
+import { Switch, Route } from 'react-router-dom';
+import { Query } from 'react-apollo';
+import { GET_USER_BY_ID_ALL } from '../graphql/queries';
 
 function User(props) {
-  const [user] = useGlobal("user");
+  const [user] = useGlobal('user');
   const [, setLoadingUser] = useState(false);
 
   useEffect(() => {
@@ -15,26 +15,27 @@ function User(props) {
     if (/user\/.+/.test(props.location.pathname)) {
       setLoadingUser(true);
     } else if (!user) {
-      props.history.replace("/app");
+      props.history.replace('/app');
     }
   }, [user, props.history, setLoadingUser, props.location.pathname]);
 
   return (
     <Query
       query={GET_USER_BY_ID_ALL}
-      variables={{ id: user || "" }}
-      pollInterval={1500}
+      variables={{ id: user || '' }}
+      // re-enable
+      // pollInterval={1500}
     >
       {({ loading, err, data = {} }) => {
         let userObj,
           stats = null;
-        if (data.User) {
-          userObj = data.User;
+        if (data.user) {
+          userObj = data.user;
           stats = {
             voteCount: userObj.votes.length,
             circleCount: userObj.circles.length,
             revisionCount: userObj.revisions.length,
-            passedRevisionCount: userObj.revisions.filter(r => r.passed).length
+            passedRevisionCount: userObj.revisions.filter(r => r.passed).length,
           };
         }
         const { match } = props;

@@ -12,7 +12,7 @@ import { withRouter } from 'react-router-dom';
 import swal from 'sweetalert';
 import { Scrollbars } from 'react-custom-scrollbars';
 import MiniLoginRegister from './MiniLoginRegister';
-import { logout } from '../utils/state';
+import { logout } from '../utils/auth';
 
 function Invite(props) {
   const [loading] = useGlobal('loading');
