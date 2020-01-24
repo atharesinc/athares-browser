@@ -56,12 +56,13 @@ render(
     authClient={authClient}
     onRequestSuccess={onSuccess}
     onRequestError={onError}
+    withSubscriptions={true}
   >
-    <ApolloProvider client={client}>
-      <BrowserRouter>
-        <App />
-      </BrowserRouter>
-    </ApolloProvider>
+    {/* <ApolloProvider client={client}> */}
+    <BrowserRouter>
+      <App />
+    </BrowserRouter>
+    {/* </ApolloProvider> */}
   </AppProvider>,
   document.getElementById('root'),
 );

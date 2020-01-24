@@ -26,9 +26,11 @@ import { TweenLite, CSSPlugin } from 'gsap';
 import AtharesLoader from './components/AtharesLoader';
 import { SIGNIN_USER } from './graphql/mutations';
 import { graphql } from 'react-apollo';
-import { logout } from './utils/state';
+import { loginWithToken, logout } from './utils/auth';
 import AuthRedirect from './auth';
 import AuthSuccess from './authSuccess';
+import * as compose from 'lodash.flowright';
+import { withAuth } from '@8base/react-sdk';
 
 const DesktopLayout = lazy(() => import('./DesktopLayout'));
 const MobileLayout = lazy(() => import('./MobileLayout'));
@@ -90,34 +92,24 @@ function App(props) {
 
   const componentMount = useCallback(async () => {
     // check if user could log in
+
     if (
       !user &&
       localStorage.getItem('ATHARES_ALIAS') &&
-      localStorage.getItem('ATHARES_HASH')
+      localStorage.getItem('ATHARES_TOKEN')
     ) {
       // indicate that the user is logging in and syncing
       let alias = localStorage.getItem('ATHARES_ALIAS');
-      let hash = localStorage.getItem('ATHARES_HASH');
+      let token = localStorage.getItem('ATHARES_TOKEN');
 
       try {
-        const res = await signinUser({
-          variables: {
-            email: alias,
-            password: hash,
-          },
-        });
-
-        const {
-          data: {
-            signinUser: { token, userId },
-          },
-        } = res;
-        setUser(userId);
-        setPub(hash);
-        window.localStorage.setItem('ATHARES_TOKEN', token);
+        const id = await loginWithToken(token, alias);
+        setUser(id);
+        // setPub(hash);
       } catch (err) {
         console.error(new Error(err));
-        // there was some sort of error auto-logging in, clear localStorage and redux just in case
+        // there was some sort of error auto-logging in, clear localStorage and logout just in case
+        await props.auth.authClient.logout();
         logout();
       }
     }
@@ -249,13 +241,13 @@ function App(props) {
               {/* <Route exact path="/test" component={Test} /> */}
               <Route
                 exact
-                path='/auth'
-                render={props => <AuthRedirect {...props} />}
+                path='/auth/success'
+                render={props => <AuthSuccess {...props} />}
               />
               <Route
                 exact
-                path='/auth/success'
-                render={props => <AuthSuccess {...props} />}
+                path='/auth'
+                render={props => <AuthRedirect {...props} />}
               />
               <Route render={() => <NoMatch />} />
             </AnimatedSwitch>
@@ -266,4 +258,8 @@ function App(props) {
   );
 }
 
-export default graphql(SIGNIN_USER, { name: 'signinUser' })(withRouter(App));
+export default compose(
+  graphql(SIGNIN_USER, { name: 'signinUser' }),
+  withRouter,
+  withAuth,
+)(App);

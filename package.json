@@ -10,6 +10,8 @@
     "react-test-renderer": "^16.3.1"
   },
   "dependencies": {
+    "@8base/api-client": "^1.2.1",
+    "@8base/apollo-links": "^1.2.1",
     "@8base/app-provider": "^0.37.2",
     "@8base/react-sdk": "^0.37.2",
     "@apollo/react-hooks": "^3.1.1",

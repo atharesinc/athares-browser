@@ -4,7 +4,8 @@ import { Link } from 'react-router-dom';
 import { Grid, Info, HelpCircle, LogOut } from 'react-feather';
 import { Query } from 'react-apollo';
 import { GET_USER_BY_ID } from '../graphql/queries';
-import { logout } from '../utils/state';
+import { logout } from '../utils/auth';
+import { withAuth } from '@8base/app-provider';
 
 function MenuWrapper(props) {
   // const [, setShowInstall] = useState("showInstall");
@@ -15,6 +16,8 @@ function MenuWrapper(props) {
 
   const logoutUser = async () => {
     logout();
+
+    await props.auth.authClient.logout();
     setShowMenu(false);
   };
 
@@ -83,8 +86,9 @@ function MenuWrapper(props) {
     <Query query={GET_USER_BY_ID} variables={{ id: user || '' }}>
       {({ data = {}, subscribeToMore }) => {
         let userObj = null;
-        if (data.User) {
-          userObj = data.User;
+
+        if (data.user) {
+          userObj = data.user;
           _subToMore(subscribeToMore);
         }
         return (
@@ -97,7 +101,7 @@ function MenuWrapper(props) {
             menuClassName={'push-menu white pt2'}
             onStateChange={isMenuOpen}
           >
-            {userObj ? (
+            {user && userObj ? (
               <Link
                 className='dt w-100 pb2-ns pv2 pl2-ns pl3 dim hover-bg-black-05'
                 to='/app/user'
@@ -193,7 +197,7 @@ function MenuWrapper(props) {
                         <span className="f7 db white-70">Report an issue</span>
                     </div>
                 </Link> */}
-              {userObj && (
+              {user && (
                 <div
                   className='flex items-center lh-copy ph3 h3 bb b--white-10 dim'
                   onClick={logoutUser}
@@ -212,4 +216,4 @@ function MenuWrapper(props) {
   );
 }
 
-export default MenuWrapper;
+export default withAuth(MenuWrapper);
