@@ -3,7 +3,6 @@ import { User, AtSign, Lock } from 'react-feather';
 import { validateRegister } from '../utils/validators';
 import { Link, withRouter } from 'react-router-dom';
 import swal from 'sweetalert';
-import defaultUser from '../portal/defaultUser.json';
 import sha from 'simple-hash-browser';
 import {
   CREATE_USER,
@@ -53,7 +52,7 @@ function MiniRegister(props) {
           firstName,
           lastName,
           email,
-          icon: defaultUser.text,
+          icon: 'img/user-default.png',
           password: hashedToken,
           pub: keys.pub,
           priv: simpleCrypto.encrypt(keys.priv),

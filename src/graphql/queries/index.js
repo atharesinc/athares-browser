@@ -28,6 +28,18 @@ export const GET_USER_BY_ID = gql`
   }
 `;
 
+export const GET_USER_BY_ID_WITH_PRIV = gql`
+  query getUserById($id: ID!) {
+    user(id: $id) {
+      id
+      firstName
+      lastName
+      icon
+      pub
+      priv
+    }
+  }
+`;
 export const GET_USER_BY_EMAIL = gql`
   query($email: String!) {
     user(email: $email) {
@@ -290,6 +302,32 @@ export const SEARCH_FOR_USER = gql`
   }
 `;
 
+export const SEARCH_FOR_USER_WITH_PUB = gql`
+  query searchForUser($text: String!) {
+    usersList(
+      filter: {
+        pub: { not_equals: null }
+        OR: [
+          { firstName: { contains: $text } }
+          { lastName: { contains: $text } }
+          { email: { contains: $text } }
+          { uname: { contains: $text } }
+        ]
+      }
+    ) {
+      items {
+        id
+        firstName
+        lastName
+        uname
+        icon
+        pub
+        email
+      }
+    }
+  }
+`;
+
 export const GET_USERS_BY_CIRCLE_ID = gql`
   query getUsersByCircleId($id: ID!) {
     circle(id: $id) {
@@ -373,7 +411,7 @@ export const SEARCH_ALL = gql`
     channelsList(
       last: 5
       filter: {
-        channelType: { equals: "dm" }
+        channelType: { equals: "group" }
         OR: [{ id: { equals: $id } }, { name: { contains: $text } }]
       }
     ) {
@@ -527,10 +565,8 @@ export const GET_USER_PREF_BY_ID = gql`
     user(id: $id) {
       id
       prefs {
-        items {
-          id
-          maySendMarketingEmail
-        }
+        id
+        maySendMarketingEmail
       }
     }
   }
@@ -595,6 +631,9 @@ export const CURRENT_USER_QUERY = gql`
   query currentUser {
     user {
       id
+      prefs {
+        id
+      }
     }
   }
 `;

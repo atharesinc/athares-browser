@@ -18,6 +18,7 @@ import { graphql, Query } from 'react-apollo';
 import compose from 'lodash.flowright';
 import { uploadToAWS } from 'utils/upload';
 import swal from 'sweetalert';
+import GetPINModal from '../components/GetPINModal';
 
 class DMChat extends Component {
   constructor(props) {
@@ -28,8 +29,13 @@ class DMChat extends Component {
       text: '',
       uploadInProgress: false,
     };
+
     this.simpleCrypto = new SimpleCrypto('nope');
   }
+
+  setPinPad = flag => {
+    this.setState({ showPinPad: flag });
+  };
 
   async componentDidMount() {
     if (this.props.user === null) {
@@ -44,22 +50,23 @@ class DMChat extends Component {
     ) {
       this.setGlobal({ activechannel: this.props.match.params.id });
     }
+
     // see this channel
     if (this.props.activeChannel) {
       const index = unreadDMs.indexOf(this.props.activeChannel);
       this.setGlobal({ unreadDMs: unreadDMs.splice(index) });
     }
 
-    if (this.props.getUserKeys.User) {
+    if (this.props.getUserKeys.user) {
       try {
         let hashed = window.localStorage.getItem('ATHARES_HASH');
         let simpleCryptoForUserPriv = new SimpleCrypto(hashed);
         const userPriv = simpleCryptoForUserPriv.decrypt(
-          this.props.getUserKeys.User.priv,
+          this.props.getUserKeys.user.priv,
         );
 
         let decryptedChannelSecret = await decrypt(
-          this.props.getUserKeys.User.keys[0].key,
+          this.props.getUserKeys.user.keys.items[0].key,
           userPriv,
         );
 
@@ -74,10 +81,11 @@ class DMChat extends Component {
   }
 
   doesUserBelong = () => {
-    if (typeof this.props.getUserKeys.User.keys[0] === 'undefined') {
+    if (typeof this.props.getUserKeys.user.keys.items[0] === 'undefined') {
       this.props.history.replace('/app');
     }
   };
+
   async componentDidUpdate(prevProps) {
     if (
       this.props.activeChannel &&
@@ -88,18 +96,18 @@ class DMChat extends Component {
       this.setGlobal({ unreadDMs: unreadDMs.splice(index) });
     }
 
-    if (prevProps.getUserKeys.User !== this.props.getUserKeys.User) {
+    if (prevProps.getUserKeys.user !== this.props.getUserKeys.user) {
       this.doesUserBelong();
       try {
         let hashed = window.localStorage.getItem('ATHARES_HASH');
         let simpleCryptoForUserPriv = new SimpleCrypto(hashed);
 
         let userPriv = simpleCryptoForUserPriv.decrypt(
-          this.props.getUserKeys.User.priv,
+          this.props.getUserKeys.user.priv,
         );
 
         let decryptedChannelSecret = await decrypt(
-          this.props.getUserKeys.User.keys[0].key,
+          this.props.getUserKeys.user.keys.items[0].key,
           userPriv,
         );
 
@@ -184,9 +192,9 @@ class DMChat extends Component {
       .filter(
         n =>
           n !==
-          this.props.getUserKeys.User.firstName +
+          this.props.getUserKeys.user.firstName +
             ' ' +
-            this.props.getUserKeys.User.lastName,
+            this.props.getUserKeys.user.lastName,
       );
     if (retval.length === 0) {
       return name;
@@ -240,20 +248,41 @@ class DMChat extends Component {
     let channel = null,
       messages = [],
       user = null;
+
     return (
       <Query
         query={GET_MESSAGES_FROM_CHANNEL_ID}
         variables={{ id: this.props.activeChannel || '' }}
         onCompleted={this.scrollToBottom}
       >
-        {({ data = {}, subscribeToMore }) => {
+        {({ data = {}, loading: loadingMessages, subscribeToMore }) => {
           if (data.channel) {
             this._subToMore(subscribeToMore);
             channel = data.channel;
-            messages = data.channel.messages;
+            messages = data.channel.messages.items;
           }
-          if (getUserKeys.User) {
-            user = getUserKeys.User;
+          if (getUserKeys.user) {
+            user = getUserKeys.user;
+          }
+
+          if (getUserKeys.loading || loadingMessages) {
+            return (
+              <div id='chat-wrapper' style={{ justifyContent: 'center' }}>
+                <AtharesLoader />
+              </div>
+            );
+          }
+
+          if (!window.localStorage.getItem('ATHARES_HASH')) {
+            return (
+              <div id='chat-wrapper' style={{ justifyContent: 'center' }}>
+                <GetPINModal
+                  priv={user.priv}
+                  show={this.setPinPad}
+                  id={this.props.user}
+                />
+              </div>
+            );
           }
 
           if (channel && messages && user && this.state.cryptoEnabled) {
@@ -287,13 +316,12 @@ class DMChat extends Component {
                 {this.global.dmSettings && <DMSettings />}
               </div>
             );
-          } else {
-            return (
-              <div id='chat-wrapper' style={{ justifyContent: 'center' }}>
-                <AtharesLoader />
-              </div>
-            );
           }
+          return (
+            <div id='chat-wrapper' style={{ justifyContent: 'center' }}>
+              <AtharesLoader />
+            </div>
+          );
         }}
       </Query>
     );

@@ -30,8 +30,7 @@ const authClient = Auth.createClient(
 const workspaceEndpoint = process.env.REACT_APP_WORKSPACE_ENDPOINT;
 
 const onSuccess = ({ operation }) => {
-  const message = operation.getContext();
-
+  // const message = operation.getContext();
   // if (message) {
   //   // eslint-disable-next-line no-console
   //   console.error('no issues here!', message);

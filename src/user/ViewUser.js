@@ -12,6 +12,7 @@ import { GET_USER_PREF_BY_ID } from '../graphql/queries';
 
 function ViewUser(props) {
   const [loadingUser] = useGlobal('loadingUser');
+
   useEffect(() => {
     if (!props.userId) {
       props.history.replace('/app');
@@ -32,12 +33,11 @@ function ViewUser(props) {
       },
     });
   };
-
   const {
     loading,
     user,
     stats,
-    data: { User: userPref },
+    data: { user: userPref },
   } = props;
 
   if (loading || !userPref || loadingUser) {
@@ -75,7 +75,9 @@ function ViewUser(props) {
             </div>
           </div>
           <h1 className='f4 f3-ns fw6 white'>
-            {user.firstName + ' ' + user.lastName}
+            {user.firstName
+              ? user.firstName + ' ' + user.lastName
+              : 'Use "Edit" to give yourself a name'}
           </h1>
           <div
             className='br-100 pa1 br-pill ba bw2 w4 h4 center pointer'

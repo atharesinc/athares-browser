@@ -23,7 +23,7 @@ const Circles = ({ setActive, user, ...props }) => {
         return (
           <div className='mobile-top-nav w-100 v-mid bg-theme flex flex-row items-center pv0 ph3'>
             <Link
-              to={user ? '/app/new/circle' : '/login'}
+              to={user ? '/app/new/circle' : '/auth'}
               className='flex flex-row justify-between items-center'
             >
               <PlusCircle

@@ -26,7 +26,7 @@ class RevisionMonitor extends Component {
       let allRevisions = this.getAllRevisions();
       let prevRevisions = prevProps.data.user
         ? prevProps.data.user.circles.items
-            .map(c => c.revisions.map(r => ({ ...r, circle: c.id })))
+            .map(c => c.revisions.items.map(r => ({ ...r, circle: c.id })))
             .flat(1)
         : [];
       if (allRevisions.length !== prevRevisions.length) {
@@ -37,9 +37,14 @@ class RevisionMonitor extends Component {
     }
   }
   getAllRevisions = () => {
-    console.log(this.props.data.user);
     return this.props.data.user.circles.items
-      .map(c => c.revisions.map(r => ({ ...r, circle: c.id })))
+      .map(c =>
+        c.revisions.items.map(r => ({
+          ...r,
+          circle: c.id,
+          votes: r.votes.items,
+        })),
+      )
       .flat(1);
   };
   getNext = () => {
@@ -93,7 +98,7 @@ class RevisionMonitor extends Component {
       if (
         supportVotes.length > votes.length / 2 &&
         unixTime() >= unixTime(thisRevision.expires) &&
-        votes.length >= thisRevision.voterThreshold
+        votes.length >= parseInt(thisRevision.voterThreshold, 10)
       ) {
         // if this revision is a repeal, update the revision like in updateAmendment but also delete amendment
         if (thisRevision.repeal === true) {

@@ -134,6 +134,7 @@ function CreateCircle(props) {
           circle: newCircle.id,
         },
       });
+
       // set activeCircle as this one
       setActiveCircle(newCircle.id);
 
@@ -147,7 +148,7 @@ function CreateCircle(props) {
       props.history.push('/app/circle/' + newCircle.id + '/constitution');
     } catch (e) {
       setLoading(false);
-
+      console.log(e);
       if (e.message.includes('Field name = name')) {
         swal('Error', 'A Circle with this name already exists.', 'error');
         return;

@@ -3,7 +3,6 @@ import { User, AtSign, Lock } from 'react-feather';
 import { validateRegister } from '../utils/validators';
 import { Link, withRouter } from 'react-router-dom';
 import swal from 'sweetalert';
-import defaultUser from './defaultUser.json';
 import AtharesLoader from '../components/AtharesLoader';
 import sha from 'simple-hash-browser';
 import {
@@ -74,7 +73,7 @@ function Register(props) {
           firstName,
           lastName,
           email,
-          icon: defaultUser.text,
+          icon: 'img/user-default.png',
           password: hashedToken,
           pub: keys.pub,
           priv: simpleCrypto.encrypt(keys.priv),
@@ -210,7 +209,7 @@ function Register(props) {
           >
             REGISTER
           </button>
-          <Link to='/login'>
+          <Link to='/auth'>
             <div className='switch-portal'>I already have an account</div>
           </Link>
           <Link to='policy'>

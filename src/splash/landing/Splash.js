@@ -23,7 +23,7 @@ const Splash = props => {
             </div>
             <span className='dib ph3 white-70 mb3'>or</span>
             <div className='f6 link dim br-pill ba bw1 ph3 pv2 mb2 dib white'>
-              <Link to='/login'>Get Started</Link>
+              <Link to='/auth'>Get Started</Link>
             </div>
           </div>
         </div>

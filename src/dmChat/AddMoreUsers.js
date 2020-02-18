@@ -1,17 +1,17 @@
-import React, { useState, useGlobal } from "reactn";
-import ReactTags from "react-tag-autocomplete";
-import TagComponent from "../components/TagComponent";
-import { SEARCH_FOR_USER } from "../graphql/queries";
-import { Query } from "react-apollo";
+import React, { useState, useGlobal } from 'reactn';
+import ReactTags from 'react-tag-autocomplete';
+import TagComponent from '../components/TagComponent';
+import { SEARCH_FOR_USER_WITH_PUB } from '../graphql/queries';
+import { Query } from 'react-apollo';
 
 function AddMoreUsers(props) {
-  const [search, setSearch] = useState("");
-  const [user] = useGlobal("user");
+  const [search, setSearch] = useState('');
+  const [user] = useGlobal('user');
 
   const deleteItem = i => {
     // returns the index of the selected user we'd like to remove
     let updatedListOfSelections = props.selectedUsers.filter(
-      (u, it) => i !== it
+      (u, it) => i !== it,
     );
     props.updateList(updatedListOfSelections);
   };
@@ -27,8 +27,8 @@ function AddMoreUsers(props) {
   let suggestions = [];
   return (
     <Query
-      query={SEARCH_FOR_USER}
-      variables={{ text: search || "s7d9f87vs69d8fv7" }}
+      query={SEARCH_FOR_USER_WITH_PUB}
+      variables={{ text: search || 's7d9f87vs69d8fv7' }}
     >
       {({ data: { allUsers = [] } = {} }) => {
         // filter data.suggestions by users that are in selectedUsers list
@@ -40,19 +40,19 @@ function AddMoreUsers(props) {
             .filter(s => selectedUsers.findIndex(su => su.id === s.id) === -1)
             .filter(s => s.id !== user)
             .map(s => ({
-              name: s.firstName + " " + s.lastName + " - " + s.email,
-              ...s
+              name: s.firstName + ' ' + s.lastName + ' - ' + s.email,
+              ...s,
             }));
         }
         return (
-          <div className="w-100 h-30 black">
+          <div className='w-100 h-30 black'>
             <ReactTags
               tags={selectedUsers}
               suggestions={suggestions}
               handleDelete={deleteItem}
               handleAddition={addition}
               handleInputChange={inputChange}
-              placeholder={props.shouldPlaceholder ? "Enter a name" : " "}
+              placeholder={props.shouldPlaceholder ? 'Enter a name' : ' '}
               autofocus={true}
               tagComponent={TagComponent}
             />

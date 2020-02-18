@@ -58,6 +58,7 @@ function CreateAmendment({ activeCircle, ...props }) {
     return 0.4 / (1 + Math.pow(Math.E, -1 * n * 0.2));
   };
   const onSubmit = async e => {
+    console.log('submit');
     e.preventDefault();
     // validate & trim fields
     // ???
@@ -65,33 +66,48 @@ function CreateAmendment({ activeCircle, ...props }) {
     setLoading(true);
 
     let {
-      data: { Circle: circle },
+      data: { circle },
     } = props;
 
-    let numUsers = circle.users.length;
+    console.log(circle);
+    let numUsers = circle.users.items.length;
+
     try {
       // make sure this circle doesnt already have an amendment by the same name
-      const {
-        data: { allAmendments },
-        error,
-      } = await props.doesAmendmentExistInCircle.refetch({
+      console.log('breakpoint 1');
+      const res = await props.doesAmendmentExistInCircle.refetch({
         circleId: activeCircle,
         title: name,
       });
 
-      if (error) {
-        throw error;
+      console.log('breakpoint 2', res);
+
+      if (res.errors) {
+        throw new Error(res.errors[0]);
       }
-      if (allAmendments.length !== 0) {
+
+      const {
+        data: {
+          amendmentsList: { items: amendments },
+        },
+      } = res;
+
+      console.log('breakpoint 3');
+
+      if (amendments.length !== 0) {
         setIsTaken(true);
         return false;
       }
+
+      console.log('breakpoint 4');
 
       // make sure the amendment isn't empty
       if (amendment.trim() === '') {
         setIsEmpty(true);
         return false;
       }
+
+      console.log('breakpoint 5');
 
       let newRevision = {
         circle: activeCircle,
@@ -102,9 +118,12 @@ function CreateAmendment({ activeCircle, ...props }) {
           addSeconds(new Date(), Math.max(customSigm(numUsers), 61)),
         ),
 
-        voterThreshold: Math.round(numUsers * ratifiedThreshold(numUsers)),
+        voterThreshold: Math.round(
+          numUsers * ratifiedThreshold(numUsers),
+        ).toString(),
         repeal: false,
       };
+
       let hash = await sha(
         JSON.stringify({
           title: newRevision.title,
@@ -114,14 +133,23 @@ function CreateAmendment({ activeCircle, ...props }) {
           voterThreshold: newRevision.voterThreshold,
         }),
       );
+
+      newRevision = {
+        ...newRevision,
+        hash,
+      };
+
+      console.log('breakpoint 6', newRevision);
+
       let newRevisionRes = await props.createRevision({
         variables: {
           ...newRevision,
-          hash,
         },
       });
 
-      newRevision.id = newRevisionRes.data.createRevision.id;
+      console.log('breakpoint 7', newRevisionRes);
+
+      newRevision.id = newRevisionRes.data.revisionCreate.id;
 
       const newVote = {
         revision: newRevision.id,
@@ -135,27 +163,30 @@ function CreateAmendment({ activeCircle, ...props }) {
         },
       });
 
-      setActiveRevision(newRevision.id);
+      console.log('breakpoint 8');
 
+      setActiveRevision(newRevision.id);
+      setLoading(false);
       props.history.push(
         `/app/circle/${activeCircle}/revisions/${newRevision.id}`,
       );
     } catch (err) {
+      setLoading(false);
       if (
         !err.message.includes('unique constraint would be violated') ||
         !err.message.includes('hash')
       ) {
-        console.error(new Error(err));
         swal(
           'Error',
           'There was an error connecting to the Athares network. Please try again later.',
           'error',
         );
       }
+      console.error(new Error(err));
     }
   };
 
-  let { data: { Circle, loading: loadingData } = {} } = props;
+  let { data: { circle, loading: loadingData } = {} } = props;
   if (loading || loadingData) {
     return (
       <div
@@ -169,7 +200,7 @@ function CreateAmendment({ activeCircle, ...props }) {
         <AtharesLoader />
       </div>
     );
-  } else if (activeCircle && Circle) {
+  } else if (activeCircle && circle) {
     return (
       <div id='revisions-wrapper'>
         <div className='flex ph2 h10'>
@@ -182,7 +213,7 @@ function CreateAmendment({ activeCircle, ...props }) {
           <form className='pa2 pa4-ns white wrapper' onSubmit={onSubmit}>
             <article className='cf'>
               <time className='f7 ttu tracked white-80'>
-                Draft a new piece of legislation for {Circle.name}
+                Draft a new piece of legislation for {circle.name}
               </time>
               <div className='fn mt4'>
                 <div className='measure mb4'>

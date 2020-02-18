@@ -116,7 +116,9 @@ function MenuWrapper(props) {
                 </div>
                 <div className='dtc v-mid pl3'>
                   <h1 className='f5 f5-ns fw6 lh-title white mv0'>
-                    {userObj.firstName + ' ' + userObj.lastName}
+                    {userObj.firstName
+                      ? userObj.firstName + ' ' + userObj.lastName
+                      : "What's Your Name?"}
                   </h1>
                   <h2 className='f6 f7-ns fw4 mt0 mb0 white-60'>
                     View Profile
@@ -126,7 +128,7 @@ function MenuWrapper(props) {
             ) : (
               <Link
                 className='dt w-100 pb2-ns pv2 pl2-ns pl3 dim hover-bg-black-05'
-                to='/login'
+                to='/auth'
                 onClick={alsoToggleMenu}
               >
                 <div className='dtc w3 h3 v-mid'>

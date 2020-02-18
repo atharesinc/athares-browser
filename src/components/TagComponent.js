@@ -8,7 +8,11 @@ const TagComponent = props => {
       title='Click to remove tag'
       onClick={props.onDelete}
     >
-      <img src={props.tag.icon} alt='' className='tag-icon' />
+      <img
+        src={props.tag ? props.tag.icon : '/img/user-default.png'}
+        alt=''
+        className='tag-icon'
+      />
       <span className={props.classNames.selectedTagName}>{props.tag.name}</span>
     </button>
   );

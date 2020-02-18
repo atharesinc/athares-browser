@@ -7,7 +7,7 @@ import { ChevronLeft } from 'react-feather';
 
 import { encrypt } from '../utils/crypto';
 import SimpleCrypto from 'simple-crypto-js';
-import { GET_USER_BY_ID } from '../graphql/queries';
+import { GET_USER_BY_ID_WITH_PRIV } from '../graphql/queries';
 import {
   CREATE_DM_CHANNEL,
   CREATE_KEY,
@@ -18,12 +18,16 @@ import { graphql } from 'react-apollo';
 import compose from 'lodash.flowright';
 import { uploadToAWS } from 'utils/upload';
 import swal from 'sweetalert';
+import CreatePINModal from '../components/CreatePINModal';
+import GetPINModal from '../components/GetPINModal';
 
 function CreateDM(props) {
   const [text, setText] = useState('');
   const [selectedUsers, setSelectedUsers] = useState([]);
   const [uploadInProgress, setUploadInProgress] = useState(false);
   const [, setActiveChannel] = useGlobal('activeChannel');
+  const [showCreatePin, setShowCreatePin] = useState(false);
+  const [showGetPin, setShowGetPin] = useState(false);
 
   useEffect(() => {
     function componentMount() {
@@ -42,6 +46,7 @@ function CreateDM(props) {
     if (!data.user) {
       return false;
     }
+
     // We're going to allow users to have no recipients because they always get added to a channel on creation
     // This defaults to a "just you" channel but they can later add users if they like
     // if (selectedUsers.length === 0) {
@@ -55,9 +60,10 @@ function CreateDM(props) {
     if (text.trim().length === 0 && file === null) {
       return false;
     }
+
     setUploadInProgress(true);
 
-    let { User: user } = props.data;
+    let { user } = props.data;
 
     // create a symmetric key for the new channel
     var _secretKey = SimpleCrypto.generateRandom({ length: 256 });
@@ -68,7 +74,13 @@ function CreateDM(props) {
     selectedUsers.push(user);
 
     const tempName = selectedUsers
-      .map(u => u.firstName + ' ' + u.lastName)
+      .map(u => {
+        if (u.firstName && u.lastName) {
+          return u.firstName + ' ' + u.lastName;
+        } else {
+          return 'Anonymous';
+        }
+      })
       .join(', ');
 
     const newChannel = {
@@ -82,10 +94,11 @@ function CreateDM(props) {
       let res = await props.createChannel({
         variables: {
           ...newChannel,
+          id: user.id,
         },
       });
 
-      let { id } = res.data.createChannel;
+      let { id } = res.data.channelCreate;
 
       // give each user an encrypted copy of this keypair and store it in
       let promiseList = selectedUsers.map(async u => {
@@ -117,6 +130,7 @@ function CreateDM(props) {
       if (file) {
         fetch(file);
       }
+
       // send the first message, encrypted with the channel's key pair
       let newMessage = {
         text: simpleCrypto.encrypt(text.trim()),
@@ -126,7 +140,7 @@ function CreateDM(props) {
         fileName: file !== null ? file.name : null,
       };
 
-      props.createMessage({
+      await props.createMessage({
         variables: {
           ...newMessage,
         },
@@ -145,8 +159,33 @@ function CreateDM(props) {
     setUploadInProgress(false);
   };
 
+  // if the user has no public key, prompt to create one
+  if (props.data.user && !props.data.user.pub) {
+    if (showCreatePin === false) {
+      setShowCreatePin(true);
+    }
+  }
+
+  // if the user has a public key, but has not decrypted their private key
+  if (
+    props.data.user &&
+    props.data.user.pub &&
+    !window.localStorage.getItem('ATHARES_HASH')
+  ) {
+    if (showGetPin === false) {
+      setShowGetPin(true);
+    }
+  }
+
   return (
     <div id='chat-wrapper'>
+      {showCreatePin && (
+        <CreatePINModal id={props.user} hide={setShowCreatePin} />
+      )}
+      {showGetPin && (
+        <GetPINModal priv={props.data.user.priv} show={setShowGetPin} />
+      )}
+
       <div id='create-dm-channel'>
         <Link to='/app'>
           <ChevronLeft className='white db dn-l' />
@@ -174,7 +213,7 @@ export default withGlobal(({ user }) => ({ user }))(
     graphql(ADD_USER_TO_CHANNEL, { name: 'addUserToChannel' }),
     graphql(CREATE_DM_CHANNEL, { name: 'createChannel' }),
     graphql(CREATE_KEY, { name: 'createKey' }),
-    graphql(GET_USER_BY_ID, {
+    graphql(GET_USER_BY_ID_WITH_PRIV, {
       options: ({ user }) => ({ variables: { id: user || '' } }),
     }),
   )(withRouter(CreateDM)),

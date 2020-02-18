@@ -1,17 +1,17 @@
-import React, { useState } from "reactn";
-import ReactTags from "react-tag-autocomplete";
-import TagComponent from "../components/TagComponent";
-import swal from "sweetalert";
-import { SEARCH_FOR_USER } from "../graphql/queries";
-import { Query } from "react-apollo";
+import React, { useState } from 'reactn';
+import ReactTags from 'react-tag-autocomplete';
+import TagComponent from '../components/TagComponent';
+import swal from 'sweetalert';
+import { SEARCH_FOR_USER_WITH_PUB } from '../graphql/queries';
+import { Query } from 'react-apollo';
 
 function DMInviteList(props) {
-  const [search, setSearch] = useState("");
+  const [search, setSearch] = useState('');
 
   const deleteItem = i => {
     // returns the index of the selected user we'd like to remove
     let updatedListOfSelections = props.selectedUsers.filter(
-      (u, it) => i !== it
+      (u, it) => i !== it,
     );
     props.updateList(updatedListOfSelections);
   };
@@ -27,9 +27,9 @@ function DMInviteList(props) {
       props.updateList(newSelectedList);
     } else {
       swal(
-        "Sorry",
-        "Private groups are limited to 6 members, maybe try creating a Circle?",
-        "warning"
+        'Sorry',
+        'Private groups are limited to 6 members, maybe try creating a Circle?',
+        'warning',
       );
       return;
     }
@@ -39,8 +39,8 @@ function DMInviteList(props) {
   let suggestions = [];
   return (
     <Query
-      query={SEARCH_FOR_USER}
-      variables={{ text: search || "s7d9f87vs69d8fv7" }}
+      query={SEARCH_FOR_USER_WITH_PUB}
+      variables={{ text: search || 's7d9f87vs69d8fv7' }}
     >
       {({ data: { allUsers = [] } = {} }) => {
         // filter data.suggestions by users that are in selectedUsers list
@@ -51,13 +51,13 @@ function DMInviteList(props) {
             .filter(s => selectedUsers.findIndex(su => su.id === s.id) === -1)
             // .filter(s => s.id !== props.user)
             .map(s => ({
-              name: s.firstName + " " + s.lastName + " - " + s.email,
-              ...s
+              name: s.firstName + ' ' + s.lastName + ' - ' + s.email,
+              ...s,
             }));
         }
         return (
-          <div className="wrapper">
-            <div className="white mh3">To:</div>
+          <div className='wrapper'>
+            <div className='white mh3'>To:</div>
             <ReactTags
               tags={props.selectedUsers}
               suggestions={suggestions}
@@ -66,8 +66,8 @@ function DMInviteList(props) {
               handleInputChange={inputChange}
               placeholder={
                 props.shouldPlaceholder || suggestions.length === 0
-                  ? "Enter a name"
-                  : " "
+                  ? 'Enter a name'
+                  : ' '
               }
               autofocus={true}
               tagComponent={TagComponent}

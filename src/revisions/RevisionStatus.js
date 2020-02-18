@@ -1,5 +1,5 @@
-import React from "reactn";
-import { withRouter, Link } from "react-router-dom";
+import React from 'reactn';
+import { withRouter, Link } from 'react-router-dom';
 
 const RevisionStatus = ({ amendment, support, votes, circle, repeal }) => {
   if (amendment && repeal === false) {
@@ -18,9 +18,9 @@ const RevisionStatus = ({ amendment, support, votes, circle, repeal }) => {
         >
           #{amendment.id}
         </Link>
-        <small className="mb2 mb0-ns popIn">
-          <span className="light-green">+{support}</span> /{" "}
-          <span className="red">-{votes.length - support}</span>
+        <small className='mb2 mb0-ns popIn'>
+          <span className='light-green'>+{support}</span> /{' '}
+          <span className='red'>-{votes.length - support}</span>
         </small>
       </div>
     );
@@ -34,9 +34,9 @@ const RevisionStatus = ({ amendment, support, votes, circle, repeal }) => {
         >
           REPEAL
         </div>
-        <small className="popIn">
-          <span className="light-green">+{support}</span> /{" "}
-          <span className="red">-{votes.length - support}</span>
+        <small className='popIn'>
+          <span className='light-green'>+{support}</span> /{' '}
+          <span className='red'>-{votes.length - support}</span>
         </small>
       </div>
     );
@@ -47,13 +47,13 @@ const RevisionStatus = ({ amendment, support, votes, circle, repeal }) => {
       >
         <div
           className={`f7 pa1 br-pill ph2 bw1 ba lh-solid bg-none`}
-          style={{ color: "#9eebcf", borderColor: "#9eebcf" }}
+          style={{ color: '#9eebcf', borderColor: '#9eebcf' }}
         >
           NEW
         </div>
-        <small className="popIn">
-          <span className="light-green">+{support}</span> /{" "}
-          <span className="red">-{votes.length - support}</span>
+        <small className='popIn'>
+          <span className='light-green'>+{support}</span> /{' '}
+          <span className='red'>-{votes.length - support}</span>
         </small>
       </div>
     );

@@ -91,7 +91,7 @@ function Reset(props) {
       if (localStorage.getItem('ATHARES_HASH')) {
         localStorage.setItem('ATHARES_HASH', hashedPass);
       }
-      props.history.push('/login');
+      props.history.push('/auth');
       setLoading(false);
     } catch (err) {
       console.error(new Error(err));

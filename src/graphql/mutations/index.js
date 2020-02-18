@@ -58,7 +58,7 @@ export const CREATE_CIRCLE = gql`
 // we also create a permission object for this circle and user
 export const ADD_USER_TO_CIRCLE = gql`
   mutation addCircleToUser($circle: ID!, $user: ID!) {
-    circleUpdate(data: { id: " ", users: { connect: { id: $user } } }) {
+    circleUpdate(data: { id: $circle, users: { connect: { id: $user } } }) {
       id
     }
     circlePermissionCreate(
@@ -106,16 +106,24 @@ export const CREATE_DM_CHANNEL = gql`
     $name: String!
     $description: String
     $channelType: String!
+    $id: ID!
   ) {
     channelCreate(
       data: {
         channelType: $channelType
         name: $name
         description: $description
+        users: { connect: { id: $id } }
       }
     ) {
       id
       name
+      description
+      users {
+        items {
+          id
+        }
+      }
     }
   }
 `;
@@ -162,7 +170,7 @@ export const CREATE_REVISION = gql`
     $title: String!
     $amendment: ID
     $expires: DateTime!
-    $voterThreshold: BigInt!
+    $voterThreshold: String!
     $hash: String!
     $repeal: Boolean!
   ) {
@@ -441,94 +449,104 @@ export const ADD_REVISION_TO_AMENDMENT = gql`
   }
 `;
 
+export const UPDATE_USER_GENERIC = gql`
+  mutation($data: UserUpdateInput!) {
+    userUpdate(data: $data) {
+      id
+      pub
+      priv
+    }
+  }
+`;
+
 /* 
   DEPRECATED MUTATIONS
 
   These will not work since the switch to 8base, but they aren't necessary since 8base Auth0 handles auth management
 */
 
-// export const CREATE_USER = gql`
-//   mutation CREATE_USER(
-//     $firstName: String!
-//     $lastName: String!
-//     $email: String!
-//     $password: String!
-//     $icon: String!
-//     $pub: String!
-//     $priv: String!
-//   ) {
-//     createUser(
-//       firstName: $firstName
-//       lastName: $lastName
-//       email: $email
-//       password: $password
-//       icon: $icon
-//       pub: $pub
-//       priv: $priv
-//     ) {
-//       id
-//       firstName
-//       lastName
-//       email
-//       icon
-//     }
-//   }
-// `;
-// export const CREATE_RESET_REQUEST = gql`
-//   mutation($token: String!, $email: String!) {
-//     createResetRequest(token: $token, email: $email) {
-//       id
-//     }
-//   }
-// `;
+export const CREATE_USER = gql`
+  mutation CREATE_USER(
+    $firstName: String!
+    $lastName: String!
+    $email: String!
+    $password: String!
+    $icon: String!
+    $pub: String!
+    $priv: String!
+  ) {
+    createUser(
+      firstName: $firstName
+      lastName: $lastName
+      email: $email
+      password: $password
+      icon: $icon
+      pub: $pub
+      priv: $priv
+    ) {
+      id
+      firstName
+      lastName
+      email
+      icon
+    }
+  }
+`;
+export const CREATE_RESET_REQUEST = gql`
+  mutation($token: String!, $email: String!) {
+    createResetRequest(token: $token, email: $email) {
+      id
+    }
+  }
+`;
 
-// export const UPDATE_USER_PASSWORD = gql`
-//   mutation($user: ID!, $password: String!) {
-//     updateUser(id: $user, password: $password) {
-//       id
-//     }
-//   }
-// `;
+export const UPDATE_USER_PASSWORD = gql`
+  mutation($user: ID!, $password: String!) {
+    updateUser(id: $user, password: $password) {
+      id
+    }
+  }
+`;
 
-// export const SIGNIN_USER = gql`
-//   mutation SIGNIN_USER($email: String!, $password: String!) {
-//     signinUser(email: $email, password: $password) {
-//       token
-//       userId
-//     }
-//   }
-// `;
+export const SIGNIN_USER = gql`
+  mutation SIGNIN_USER($email: String!, $password: String!) {
+    signinUser(email: $email, password: $password) {
+      token
+      userId
+    }
+  }
+`;
 
-// export const CREATE_INVITE = gql`
-//   mutation createInvite($inviter: ID!, $circle: ID!) {
-//     createInvite(inviterId: $inviter, circleId: $circle, hasAccepted: false) {
-//       id
-//     }
-//   }
-// `;
+export const CREATE_INVITE = gql`
+  mutation createInvite($inviter: ID!, $circle: ID!) {
+    createInvite(inviterId: $inviter, circleId: $circle, hasAccepted: false) {
+      id
+    }
+  }
+`;
 
-// export const UPDATE_INVITE = gql`
-//   mutation updateInvite($id: ID!) {
-//     updateInvite(id: $id, hasAccepted: true) {
-//       id
-//     }
-//   }
-// `;
+export const UPDATE_INVITE = gql`
+  mutation updateInvite($id: ID!) {
+    updateInvite(id: $id, hasAccepted: true) {
+      id
+    }
+  }
+`;
 
-// export const CREATE_WEB_SUB = gql`
-//   mutation($sub: Json!, $user: ID!) {
-//     createWebPushSubscription(subscription: $sub, userId: $user) {
-//       id
-//     }
-//   }
-// `;
-// export const DELETE_WEB_SUB = gql`
-//   mutation($id: ID!) {
-//     deleteWebPushSubscription(id: $id) {
-//       id
-//     }
-//   }
-// `;
+export const CREATE_WEB_SUB = gql`
+  mutation($sub: Json!, $user: ID!) {
+    createWebPushSubscription(subscription: $sub, userId: $user) {
+      id
+    }
+  }
+`;
+export const DELETE_WEB_SUB = gql`
+  mutation($id: ID!) {
+    deleteWebPushSubscription(id: $id) {
+      id
+    }
+  }
+`;
 
 /* not used directly, but occurrs when adding a user to a circle */
 // export const CREATE_CIRCLE_PERMISSION = gql`
@@ -547,10 +565,10 @@ export const ADD_REVISION_TO_AMENDMENT = gql`
 //   }
 // `;
 
-// export const DELETE_RESET_REQUEST = gql`
-//   mutation($id: ID!) {
-//     deleteResetRequest(id: $id) {
-//       success
-//     }
-//   }
-// `;
+export const DELETE_RESET_REQUEST = gql`
+  mutation($id: ID!) {
+    deleteResetRequest(id: $id) {
+      success
+    }
+  }
+`;

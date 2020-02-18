@@ -6,7 +6,7 @@ import compose from 'lodash.flowright';
 import { loginWithToken } from '../utils/auth';
 
 class CallbackContainer extends React.Component {
-  async handleAuthentication({ idToken, email }) {
+  async handleAuthentication({ idToken, email, ...rest }) {
     /**
      * Set Auth headers for communicating with the 8base API.
      */
@@ -24,12 +24,16 @@ class CallbackContainer extends React.Component {
 
   async componentDidMount() {
     const { auth, history } = this.props;
+
     /* Get authResult from auth client after redirect */
     const authResult = await auth.authClient.getAuthorizedData();
+
     /* Identify or create user record using authenticated details */
     await this.handleAuthentication(authResult);
-    /* Add the idToken to the auth state */
+
+    /* Add the idToken to the auth state, this becomes the Authorization: Bearer ... header in GraphQL requests to 8base*/
     auth.authClient.setState({ token: authResult.idToken });
+
     /* Redirect user to app path */
     history.replace('/app');
   }

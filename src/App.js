@@ -37,10 +37,10 @@ const MobileLayout = lazy(() => import('./MobileLayout'));
 const Policy = lazy(() => import('./policy'));
 const SplashPage = lazy(() => import('./splash/landing'));
 const Roadmap = lazy(() => import('./splash/roadmap'));
-const Login = lazy(() => import('./portal/Login'));
+// const Login = lazy(() => import('./portal/Login'));
 const Reset = lazy(() => import('./portal/Reset'));
 const Forgot = lazy(() => import('./portal/Forgot'));
-const Register = lazy(() => import('./portal/Register'));
+// const Register = lazy(() => import('./portal/Register'));
 const Invite = lazy(() => import('./invite'));
 const About = lazy(() => import('./splash/about'));
 
@@ -144,15 +144,15 @@ function App(props) {
               atActive={{ opacity: 1 }}
               className='wrapper switch-wrapper'
             >
-              <Route
+              {/* <Route
                 exact
-                path='/login'
+                path='/auth'
                 render={props => (
                   <Suspense fallback={<AtharesLoader className='center' />}>
                     <Login {...props} />
                   </Suspense>
                 )}
-              />
+              /> */}
               <Route
                 path='/reset/:id'
                 render={props => (
@@ -170,7 +170,7 @@ function App(props) {
                   </Suspense>
                 )}
               />
-              <Route
+              {/* <Route
                 exact
                 path='/register'
                 render={props => (
@@ -178,7 +178,7 @@ function App(props) {
                     <Register {...props} />
                   </Suspense>
                 )}
-              />
+              /> */}
               <Route
                 exact
                 path='/'

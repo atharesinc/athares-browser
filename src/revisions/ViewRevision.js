@@ -55,11 +55,12 @@ function ViewRevision(props) {
     // make sure the user belongs to this circle
     if (
       !isUserInCircle ||
-      !isUserInCircle.allCircles ||
-      isUserInCircle.allCircles[0].id !== activeCircle
+      !isUserInCircle.circlesList.items ||
+      isUserInCircle.circlesList.items[0].id !== activeCircle
     ) {
       return false;
     }
+
     if (data.revision) {
       const { votes, ...revision } = data.revision;
       // If the user attempts to vote after the revision expires, stop and return;
@@ -67,7 +68,9 @@ function ViewRevision(props) {
         return false;
       }
 
-      const hasVoted = votes.find(({ user: { id } }) => id === props.user);
+      const hasVoted = votes.items.find(
+        ({ user: { id } }) => id === props.user,
+      );
       try {
         if (hasVoted) {
           // update this user's existing vote
@@ -93,6 +96,7 @@ function ViewRevision(props) {
       }
     }
   };
+
   const checkIfPass = () => {
     setValue(value + 1);
   };
@@ -103,18 +107,24 @@ function ViewRevision(props) {
 
   if (data.revision && isUserInCircle) {
     if (
-      isUserInCircle.allCircles &&
-      isUserInCircle.allCircles.length !== 0 &&
-      isUserInCircle.allCircles[0].id === activeCircle
+      isUserInCircle.circlesList &&
+      isUserInCircle.circlesList.items.length !== 0 &&
+      isUserInCircle.circlesList.items[0].id === activeCircle
     ) {
       belongsToCircle = true;
     }
+
     revision = data.revision;
-    const { newText, title, votes } = revision;
+    const {
+      newText,
+      title,
+      votes: { items: votes },
+    } = revision;
 
     const support = votes.filter(({ support }) => support).length;
     const hasVoted = votes.find(({ user: { id } }) => id === props.user);
     const hasExpired = unixTime() >= unixTime(revision.expires);
+
     if (revision.amendment) {
       /* Represents a change to existing legislation; Show diff panels   */
       return (
@@ -134,7 +144,7 @@ function ViewRevision(props) {
 
             {hasVoted && <HasVoted vote={hasVoted} />}
             <div className='bg-theme ma2 ma4-ns'>
-              <RevisionStatus {...revision} support={support} />
+              <RevisionStatus {...revision} support={support} votes={votes} />
               <DiffSection {...revision} mode={mode} />
               {revision.amendment && revision.repeal === false && (
                 <ToggleDiffBar mode={mode} toggle={setMode} />
@@ -142,6 +152,7 @@ function ViewRevision(props) {
               <RevisionStats
                 {...revision}
                 support={support}
+                votes={votes}
                 hasExpired={hasExpired}
               />
               {props.user && !hasExpired && belongsToCircle && (
@@ -166,7 +177,7 @@ function ViewRevision(props) {
             {hasVoted && <HasVoted vote={hasVoted} />}
 
             <div className='bg-theme ma2 ma4-ns'>
-              <RevisionStatus {...revision} support={support} />
+              <RevisionStatus {...revision} support={support} votes={votes} />
               <div className='pa3 white pre-wrap'>
                 <Scrollbars
                   style={{
@@ -182,6 +193,7 @@ function ViewRevision(props) {
                 support={support}
                 hasExpired={hasExpired}
                 checkIfPass={checkIfPass}
+                votes={votes}
               />
               {props.user && !hasExpired && belongsToCircle && (
                 <VoteButtons vote={vote} />

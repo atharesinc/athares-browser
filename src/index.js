@@ -1,11 +1,8 @@
 import React, { setGlobal } from 'reactn';
 import { render } from 'react-dom';
 import { BrowserRouter } from 'react-router-dom';
-import { ApolloProvider } from 'react-apollo';
-import { ApolloClient } from 'apollo-client';
 import { AppProvider } from '@8base/react-sdk';
 
-import { link, cache } from './graphql';
 import {
   authClient,
   onSuccess,
@@ -14,11 +11,6 @@ import {
 } from './graphql/auth';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
-
-const client = new ApolloClient({
-  link,
-  cache,
-});
 
 setGlobal({
   // state
@@ -58,11 +50,9 @@ render(
     onRequestError={onError}
     withSubscriptions={true}
   >
-    {/* <ApolloProvider client={client}> */}
     <BrowserRouter>
       <App />
     </BrowserRouter>
-    {/* </ApolloProvider> */}
   </AppProvider>,
   document.getElementById('root'),
 );

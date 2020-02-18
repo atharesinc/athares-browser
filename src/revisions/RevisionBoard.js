@@ -13,7 +13,7 @@ import { Query, graphql } from 'react-apollo';
 function RevisionBoard({ user, ...props }) {
   const [, setActiveChannel] = useGlobal('setActiveChannel');
   const [, setAciveRevision] = useGlobal('setAciveRevision');
-  const [activeCircle, setActiveCircle] = useGlobal('setActiveCircle');
+  const [activeCircle, setActiveCircle] = useGlobal('activeCircle');
 
   useEffect(() => {
     function componentMount() {
@@ -74,20 +74,22 @@ function RevisionBoard({ user, ...props }) {
             </div>
           );
         }
+
         if (
-          isUserInCircle.allCircles &&
-          isUserInCircle.allCircles.length !== 0 &&
-          isUserInCircle.allCircles[0].id === activeCircle
+          isUserInCircle.circlesList &&
+          isUserInCircle.circlesList.items.length !== 0 &&
+          isUserInCircle.circlesList.items[0].id === activeCircle
         ) {
           belongsToCircle = true;
         }
 
         allRevisions = allRevisions.map(r => {
           return {
-            votes: r.votes.filter(v => v.revision === r.id),
             ...r,
+            votes: r.votes.items.filter(v => v.revision === r.id),
           };
         });
+
         let now = unixTime();
 
         // all non-expired revisions

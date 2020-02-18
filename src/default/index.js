@@ -95,7 +95,7 @@ function Dashboard(props) {
                             </Link> */}
           </div>
         ) : (
-          <Link className='pv3 w-100 ph4' to={'/login'}>
+          <Link className='pv3 w-100 ph4' to={'/auth'}>
             <div className='bg-white-10 pv3 w-100 ph4 tracked tc transparent-hover-white'>
               You are not signed in
             </div>

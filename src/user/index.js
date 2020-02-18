@@ -31,11 +31,13 @@ function User(props) {
           stats = null;
         if (data.user) {
           userObj = data.user;
+
           stats = {
-            voteCount: userObj.votes.length,
-            circleCount: userObj.circles.length,
-            revisionCount: userObj.revisions.length,
-            passedRevisionCount: userObj.revisions.filter(r => r.passed).length,
+            voteCount: userObj.votes.items.length,
+            circleCount: userObj.circles.items.length,
+            revisionCount: userObj.revisions.items.length,
+            passedRevisionCount: userObj.revisions.items.filter(r => r.passed)
+              .length,
           };
         }
         const { match } = props;
@@ -49,7 +51,6 @@ function User(props) {
                 <ViewUser stats={stats} user={userObj} loading={loading} />
               )}
             />
-            )
             <Route
               exact
               path={`${match.path}/edit`}

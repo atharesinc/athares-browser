@@ -1,5 +1,5 @@
 import React from 'reactn';
-import { Phone, Link, Info, AtSign } from 'react-feather';
+import { Phone, Link, Info, AtSign, AlertCircle } from 'react-feather';
 import { Scrollbars } from 'react-custom-scrollbars';
 import AtharesLoader from '../components/AtharesLoader';
 import { parseDate } from '../utils/transform';
@@ -15,15 +15,32 @@ function ViewUser(props) {
       // pollInterval={10000}
     >
       {({ loading, err, data = {} }) => {
+        if (err || (loading === false && !data.user)) {
+          return (
+            <div
+              id='dashboard-wrapper'
+              style={{
+                justifyContent: 'center',
+              }}
+              className='pa2'
+            >
+              <AlertCircle className='w4 h4 pa1 white' />
+              <h1 className='mb3 mt0 lh-title mt4 f3 f2-ns'>
+                This user doesn't seem to exist.
+              </h1>
+            </div>
+          );
+        }
         let user,
           stats = null;
         if (data.user) {
           user = data.user;
           stats = {
-            voteCount: user.votes.length,
+            voteCount: user.votes.items.length,
             circleCount: user.circles.items.length,
-            revisionCount: user.revisions.length,
-            passedRevisionCount: user.revisions.filter(r => r.passed).length,
+            revisionCount: user.revisions.items.length,
+            passedRevisionCount: user.revisions.items.filter(r => r.passed)
+              .length,
           };
         }
         if (loading) {
@@ -50,7 +67,11 @@ function ViewUser(props) {
                   className='w-100 row-center'
                   style={{ justifyContent: 'space-between' }}
                 />
-                <h1 className='f4 f3-ns fw6 white'>{`${user.firstName} ${user.lastName}`}</h1>
+                <h1 className='f4 f3-ns fw6 white'>
+                  {user.firstName && user.lastName
+                    ? `${user.firstName} ${user.lastName}`
+                    : 'Anonymous'}
+                </h1>
                 <div
                   className='br-100 pa1 br-pill ba bw2 w4 h4 center user-profile-icon'
                   style={{
@@ -139,7 +160,7 @@ function ViewUser(props) {
                   <dd className='f6 f5-ns b ml0 white-70'>User Since</dd>
                   <dd className='f4 f3-ns b ml0'>
                     {' '}
-                    {parseDate(user.createdAt, 'MM/DD/YY')}
+                    {parseDate(user.createdAt, 'MM/dd/yy')}
                   </dd>
                 </dl>
               </article>

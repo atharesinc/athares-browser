@@ -74,14 +74,15 @@ function Channels(props) {
 
   // see if the user actually belongs to this circle
   if (
-    isUserInCircle.allCircles &&
-    isUserInCircle.allCircles.length !== 0 &&
-    isUserInCircle.allCircles[0].id === activeCircle
+    isUserInCircle.circlesList &&
+    isUserInCircle.circlesList.items.length !== 0 &&
+    isUserInCircle.circlesList.items[0].id === activeCircle
   ) {
     belongsToCircle = true;
   }
 
   const mobile = window.innerWidth < 993;
+
   return (
     <Query
       query={GET_CHANNELS_BY_CIRCLE_ID}
@@ -141,7 +142,7 @@ function Channels(props) {
                 </Scrollbars>
               </div>
               <BottomNav
-                show={!!user}
+                loggedIn={!!user}
                 belongsToCircle={belongsToCircle}
                 activeCircle={activeCircle}
               />
@@ -167,7 +168,7 @@ function Channels(props) {
                       </div>
                     </Link>
                   ) : (
-                    <Link to={'/login'}>
+                    <Link to={'/auth'}>
                       <div className='pv2 ph3 w-100'>
                         Welcome to Athares
                         <br />
@@ -180,7 +181,7 @@ function Channels(props) {
                 <DMList />
               </div>
               <BottomNav
-                show={!!user}
+                loggedIn={!!user}
                 belongsToCircle={belongsToCircle}
                 activeCircle={activeCircle}
               />
